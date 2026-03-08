@@ -1,9 +1,10 @@
 from django.urls import path
-from . import views
+
+from .views import email_detail_view, email_list_view
 
 app_name = "emailing"
 
 urlpatterns = [
-    path("emails/", views.email_list_view, name="email_list"),
-    path("emails/<int:pk>/", views.email_detail_view, name="email_detail"),
+    path("", email_list_view, name="email_list"),
+    path("<int:pk>/", email_detail_view, name="email_detail"),
 ]

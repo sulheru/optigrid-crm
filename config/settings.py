@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     "apps.inferences",
     "apps.updates",
     "apps.recommendations",
+    "apps.tasks",
+    "apps.opportunities",
     "apps.events",
 ]
 

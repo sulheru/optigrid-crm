@@ -8,6 +8,8 @@ from apps.inferences.models import InferenceRecord
 from apps.updates.models import CRMUpdateProposal
 from apps.recommendations.models import AIRecommendation
 
+from apps.tasks.models import CRMTask
+from apps.opportunities.models import Opportunity
 
 def _pretty_json(value):
     if value is None:
@@ -21,10 +23,6 @@ def _pretty_json(value):
 
 
 def _extract_payload(obj):
-    """
-    Devuelve una representación segura para mostrar en template,
-    sin depender de que todos los modelos usen el mismo nombre de campo.
-    """
     for attr in ("value", "payload", "proposed_payload"):
         if hasattr(obj, attr):
             return getattr(obj, attr)
@@ -60,6 +58,41 @@ def _count_pipeline_objects_for_email(email):
         "proposals_count": proposals_qs.count(),
         "recommendations_count": recommendations_qs.count(),
     }
+
+
+def dashboard_view(request):
+    total_emails = EmailMessage.objects.count()
+    total_recommendations = AIRecommendation.objects.count()
+    total_proposals = CRMUpdateProposal.objects.count()
+
+    pending_proposals = CRMUpdateProposal.objects.filter(
+        proposal_status="pending"
+    ).count()
+
+    recent_emails = list(
+        EmailMessage.objects.all().order_by("-sent_at", "-created_at", "-id")[:8]
+    )
+
+    for email in recent_emails:
+        counts = _count_pipeline_objects_for_email(email)
+        email.facts_count = counts["facts_count"]
+        email.inferences_count = counts["inferences_count"]
+        email.proposals_count = counts["proposals_count"]
+        email.recommendations_count = counts["recommendations_count"]
+
+    recent_proposals = CRMUpdateProposal.objects.all().order_by("-created_at", "-id")[:8]
+    recent_recommendations = AIRecommendation.objects.all().order_by("-created_at", "-id")[:8]
+
+    context = {
+        "total_emails": total_emails,
+        "total_recommendations": total_recommendations,
+        "total_proposals": total_proposals,
+        "pending_proposals": pending_proposals,
+        "recent_emails": recent_emails,
+        "recent_proposals": recent_proposals,
+        "recent_recommendations": recent_recommendations,
+    }
+    return render(request, "dashboard/home.html", context)
 
 
 def email_list_view(request):
@@ -130,3 +163,24 @@ def email_detail_view(request, pk):
         "recommendations": recommendations,
     }
     return render(request, "emailing/email_detail.html", context)
+
+
+def recommendations_list_view(request):
+    recommendations = AIRecommendation.objects.all().order_by("-created_at", "-id")
+    return render(request, "recommendations/list.html", {
+        "recommendations": recommendations,
+    })
+
+
+def tasks_list_view(request):
+    tasks = CRMTask.objects.all().order_by("-created_at", "-id")
+    return render(request, "tasks/list.html", {
+        "tasks": tasks,
+    })
+
+
+def opportunities_list_view(request):
+    opportunities = Opportunity.objects.all().order_by("-created_at", "-id")
+    return render(request, "opportunities/list.html", {
+        "opportunities": opportunities,
+    })

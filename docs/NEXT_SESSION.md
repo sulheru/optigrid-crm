@@ -1,91 +1,55 @@
 # NEXT SESSION
 
-## Estado actual
+Project: OptiGrid CRM
+Phase: Recommendation Operations Layer
 
-Pipeline IA-first operativo y ya visible desde navegador.
+## Goal
 
-Actualmente existe:
+Transform recommendations into actionable CRM decisions from the UI.
 
-- pipeline funcional:
-  - EmailMessage
-  - FactRecord
-  - InferenceRecord
-  - CRMUpdateProposal
-  - AIRecommendation
-- comando demo funcional
-- UI mínima de inspección:
-  - `/emails/`
-  - `/emails/<id>/`
+## Tasks
 
----
+1. Improve /recommendations/ view
 
-## Objetivo de la próxima sesión
+Add:
 
-Hacer la segunda iteración de la UI del CRM.
+- filters
+- status indicators
+- clearer recommendation types
 
----
+2. Add actions
 
-## Tareas
+Buttons:
 
-### 1. Mejorar lista de emails
+- Create Task
+- Dismiss Recommendation
+- Promote to Opportunity
 
-Ruta:
+3. Add state transitions
 
-`/emails/`
+Recommendation states:
 
-Añadir o refinar:
+new
+materialized
+dismissed
+executed
 
-- conteo de facts
-- conteo de inferences
-- conteo de proposals
-- conteo de recommendations
-- navegación más clara al detalle
+4. Add audit command
 
----
+New management command:
 
-### 2. Refinar vista de detalle
+python manage.py crm_pipeline_report
 
-Ruta:
+Outputs counts for:
 
-`/emails/<id>/`
+emails
+facts
+inferences
+recommendations
+tasks
+opportunities
 
-Mejorar:
+5. Optional
 
-- legibilidad visual
-- agrupación por bloques
-- presentación más clara del body
-- presentación más clara de facts / inferences / proposals / recommendations
-
----
-
-### 3. Crear dashboard mínimo
-
-Ruta sugerida:
-
-`/`
-
-Mostrar:
-
-- total de emails procesados
-- recomendaciones activas
-- propuestas recientes
-- accesos rápidos a emails recientes
-
----
-
-### 4. Preparar siguiente capa UI
-
-Evaluar diseño para estas vistas futuras:
-
-- `/recommendations/`
-- `/tasks/`
-- `/opportunities/`
-
----
-
-## Objetivo
-
-Pasar de una UI meramente funcional a una UI operativa mínima del CRM.
-
-La siguiente sesión no debe ir todavía a frontend complejo.
-Debe consolidar primero una interfaz útil, clara y navegable con Django templates.
+Opportunity detail page
+Task detail page

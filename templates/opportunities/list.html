@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Opportunities · OptiGrid CRM</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f6f7f9; color: #1f2937; }
+    .page { max-width: 1100px; margin: 0 auto; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .header a { text-decoration: none; color: #2563eb; font-weight: 600; }
+    .item { padding: 16px; border-bottom: 1px solid #e5e7eb; }
+    .item:last-child { border-bottom: 0; }
+    .meta { color: #6b7280; font-size: 13px; margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Opportunities</h1>
+      <a href="/">← Dashboard</a>
+    </div>
+    <div class="card">
+      {% for opportunity in opportunities %}
+        <div class="item">
+          <strong>{{ opportunity.title }}</strong>
+          <div class="meta">
+            ID {{ opportunity.id }} · stage {{ opportunity.stage }} · confidence {{ opportunity.confidence }}
+          </div>
+          <div>{{ opportunity.summary }}</div>
+        </div>
+      {% empty %}
+        <div class="item">No hay opportunities.</div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

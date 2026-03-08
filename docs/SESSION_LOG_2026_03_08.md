@@ -1,161 +1,117 @@
-# SESSION LOG — 2026-03-08
+# SESSION LOG
+Date: 2026-03-08
+Project: OptiGrid CRM
+Phase: UI Iteration 2 + Task / Opportunity Engine
 
-## Objetivo de la sesión
-Restaurar el pipeline completo de ingestión de emails y extenderlo con generación de recomendaciones IA.
+## Objectives of the session
 
----
+1. Improve UI inspection of email pipeline
+2. Build CRM dashboard
+3. Implement Recommendation → Task → Opportunity flow
 
-# Estado inicial
+## Completed work
 
-El proyecto tenía implementado el vertical slice:
+### UI Improvements
 
-EmailMessage → FactRecord → InferenceRecord → CRMUpdateProposal
+Implemented improved email pipeline inspection UI.
 
-pero:
+Routes:
 
-- `email_ingest.py` estaba roto
-- `demo_email_flow.py` estaba truncado
-- el pipeline no generaba recomendaciones
+/emails/
+/emails/<id>/
 
----
+Capabilities:
 
-# Trabajo realizado
+- facts visualization
+- inferences visualization
+- CRM proposals
+- AI recommendations
 
-## 1. Restauración del pipeline
+### Dashboard
 
-Se reconstruyó el pipeline operativo:
+New route:
 
-EmailMessage  
-→ FactRecord  
-→ InferenceRecord  
-→ CRMUpdateProposal
+/
 
-Servicios implicados:
+Displays:
 
+- total emails
+- total recommendations
+- total proposals
+- pending proposals
+- recent emails
+- recent recommendations
+- recent proposals
 
-services/fact_extraction.py
-services/inference_engine.py
-services/update_proposals.py
-services/email_ingest.py
+### CRM execution layer
 
+New domain entities implemented:
 
----
+CRMTask
+Opportunity
 
-## 2. Restauración del comando demo
+Pipeline extended:
 
-Se reescribió completamente:
+Email
+ → Facts
+ → Inferences
+ → Recommendations
+ → Tasks
+ → Opportunities
 
+### Task Materialization Engine
 
-apps/emailing/management/commands/demo_email_flow.py
+Command:
 
+python manage.py materialize_recommendations
 
-Ahora permite probar escenarios:
+Converts:
 
+AIRecommendation → CRMTask
 
-interest
-redirect
-timing
-budget
-light
+Properties:
 
+- idempotent
+- prevents duplicate task creation
 
----
+### Opportunity Promotion Engine
 
-## 3. Implementación del módulo AIRecommendation
+Command:
 
-Se creó:
+python manage.py promote_tasks
 
+Converts:
 
-apps/recommendations/services.py
+CRMTask → Opportunity
 
+Only selected task types are promotable.
 
-Función principal:
+Also idempotent.
 
+## Verification
 
-create_recommendation_from_inference()
+Executed:
 
+python manage.py materialize_recommendations
+python manage.py promote_tasks
 
-Pipeline actualizado:
+Result:
 
-EmailMessage  
-→ FactRecord  
-→ InferenceRecord  
-→ CRMUpdateProposal  
-→ AIRecommendation
+created=0 reused=34 tasks
+created=0 reused=3 opportunities
 
----
+Confirms idempotent behavior.
 
-## 4. Integración en email_ingest
+## System state
 
-Se añadió generación de recomendaciones desde cada inferencia.
+Fully functional IA-first CRM vertical slice.
 
-Archivo:
+Key modules:
 
-
-services/email_ingest.py
-
-
----
-
-## 5. Verificación completa
-
-Se ejecutaron:
-
-
-python manage.py demo_email_flow
-python manage.py demo_email_flow --scenario redirect
-python manage.py demo_email_flow --scenario timing
-python manage.py demo_email_flow --scenario budget
-python manage.py demo_email_flow --scenario light
-
-
-Resultados correctos:
-
-| Scenario | Facts | Inferences | Proposals | Recommendations |
-|--------|------|-----------|-----------|----------------|
-interest | 2 | 3 | 1 | 1 |
-redirect | 1 | 2 | 1 | 1 |
-timing | 1 | 2 | 1 | 1 |
-budget | 1 | 1 | 0 | 1 |
-light | 1 | 1 | 0 | 1 |
-
----
-
-# Arquitectura actual del pipeline
-
-EmailMessage  
-↓  
-FactRecord  
-↓  
-InferenceRecord  
-↓  
-CRMUpdateProposal  
-↓  
-AIRecommendation
-
----
-
-# Estado del sistema
-
-Pipeline funcional end-to-end.
-
-Componentes activos:
-
-- extracción de hechos
-- generación de inferencias
-- propuestas de actualización CRM
-- recomendaciones operativas IA
-
----
-
-# Próximos pasos recomendados
-
-1. UI de inspección del pipeline
-2. listado de emails procesados
-3. vista detalle del email
-4. visualización de Facts / Inferences / Proposals / Recommendations
-5. integración futura con Microsoft Graph
-
----
-
-Fin de sesión.
+Email ingestion
+Fact extraction
+Inference layer
+Recommendation engine
+Task engine
+Opportunity engine
+Dashboard UI

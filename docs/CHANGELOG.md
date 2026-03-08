@@ -143,3 +143,35 @@ Cambios técnicos principales:
 
 Resultado:
 primera interfaz operativa para visualizar el “cerebro” del CRM IA-first.
+
+## 2026-03-08
+
+### Added
+
+CRMTask domain model
+Opportunity domain model
+
+Task materialization engine
+Opportunity promotion engine
+
+Dashboard UI
+
+### Improved
+
+Email pipeline inspector UI
+
+### Commands
+
+materialize_recommendations
+promote_tasks
+
+### Architecture
+
+Extended pipeline:
+
+Email → Facts → Inferences → Recommendations → Tasks → Opportunities
+
+### Properties
+
+Pipeline is idempotent
+Tasks and opportunities are not duplicated on repeated execution
