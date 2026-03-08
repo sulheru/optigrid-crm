@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Emails procesados</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 10px; vertical-align: top; }
+        th { background: #f5f5f5; text-align: left; }
+        a { text-decoration: none; }
+        .muted { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Emails procesados</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Asunto</th>
+                <th>Estado</th>
+                <th>Remitente</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for email in emails %}
+            <tr>
+                <td>
+                    <a href="{% url 'emailing:email_detail' email.pk %}">{{ email.pk }}</a>
+                </td>
+                <td>{{ email.subject|default:"(sin asunto)" }}</td>
+                <td>{{ email.message_status|default:"-" }}</td>
+                <td>{{ email.sender|default:"-" }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4" class="muted">No hay emails todavía.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

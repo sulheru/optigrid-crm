@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Email {{ email.pk }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.45; }
+        .block { margin-bottom: 28px; }
+        .card { border: 1px solid #ddd; padding: 12px; margin: 10px 0; border-radius: 8px; }
+        .muted { color: #666; }
+        pre { white-space: pre-wrap; word-break: break-word; }
+    </style>
+</head>
+<body>
+    <p><a href="{% url 'emailing:email_list' %}">← Volver al listado</a></p>
+
+    <h1>Email {{ email.pk }}</h1>
+
+    <div class="block">
+        <div class="card">
+            <p><strong>Asunto:</strong> {{ email.subject|default:"(sin asunto)" }}</p>
+            <p><strong>Estado:</strong> {{ email.message_status|default:"-" }}</p>
+            <p><strong>Remitente:</strong> {{ email.sender|default:"-" }}</p>
+            <p><strong>Destinatarios:</strong> {{ email.recipients|default:"-" }}</p>
+            <p><strong>Texto:</strong></p>
+            <pre>{{ email.body_text|default:"(sin body_text)" }}</pre>
+        </div>
+    </div>
+
+    <div class="block">
+        <h2>Facts</h2>
+        {% for item in facts %}
+            <div class="card">
+                <p><strong>ID:</strong> {{ item.pk }}</p>
+                <p><strong>Tipo:</strong> {{ item.fact_type|default:item.kind|default:"-" }}</p>
+                <p><strong>Valor:</strong> {{ item.fact_value|default:item.value|default:"-" }}</p>
+                <p><strong>Confidence:</strong> {{ item.confidence|default:"-" }}</p>
+            </div>
+        {% empty %}
+            <p class="muted">No hay facts.</p>
+        {% endfor %}
+    </div>
+
+    <div class="block">
+        <h2>Inferences</h2>
+        {% for item in inferences %}
+            <div class="card">
+                <p><strong>ID:</strong> {{ item.pk }}</p>
+                <p><strong>Tipo:</strong> {{ item.inference_type|default:item.kind|default:"-" }}</p>
+                <p><strong>Valor:</strong> {{ item.inference_value|default:item.value|default:"-" }}</p>
+                <p><strong>Confidence:</strong> {{ item.confidence|default:"-" }}</p>
+                <p><strong>Rationale:</strong> {{ item.rationale|default:"-" }}</p>
+            </div>
+        {% empty %}
+            <p class="muted">No hay inferences.</p>
+        {% endfor %}
+    </div>
+
+    <div class="block">
+        <h2>Update Proposals</h2>
+        {% for item in proposals %}
+            <div class="card">
+                <p><strong>ID:</strong> {{ item.pk }}</p>
+                <p><strong>Target:</strong> {{ item.target_entity_type|default:"-" }} / {{ item.target_entity_id|default:"-" }}</p>
+                <p><strong>Tipo:</strong> {{ item.proposed_change_type|default:"-" }}</p>
+                <p><strong>Estado:</strong> {{ item.proposal_status|default:"-" }}</p>
+                <p><strong>Confidence:</strong> {{ item.confidence|default:"-" }}</p>
+                <p><strong>Reason:</strong> {{ item.reason|default:"-" }}</p>
+            </div>
+        {% empty %}
+            <p class="muted">No hay proposals.</p>
+        {% endfor %}
+    </div>
+
+    <div class="block">
+        <h2>Recommendations</h2>
+        {% for item in recommendations %}
+            <div class="card">
+                <p><strong>ID:</strong> {{ item.pk }}</p>
+                <p><strong>Tipo:</strong> {{ item.recommendation_type|default:"-" }}</p>
+                <p><strong>Texto:</strong> {{ item.recommendation_text|default:"-" }}</p>
+                <p><strong>Prioridad:</strong> {{ item.priority|default:"-" }}</p>
+                <p><strong>Confidence:</strong> {{ item.confidence|default:"-" }}</p>
+                <p><strong>Rationale:</strong> {{ item.rationale|default:"-" }}</p>
+            </div>
+        {% empty %}
+            <p class="muted">No hay recommendations.</p>
+        {% endfor %}
+    </div>
+
+    <div class="block">
+        <h2>Events</h2>
+        {% for item in events %}
+            <div class="card">
+                <p><strong>ID:</strong> {{ item.pk }}</p>
+                <p><strong>Tipo:</strong> {{ item.event_type|default:"-" }}</p>
+                <p><strong>Aggregate:</strong> {{ item.aggregate_type|default:"-" }} / {{ item.aggregate_id|default:"-" }}</p>
+                <p><strong>Triggered by:</strong> {{ item.triggered_by_type|default:"-" }}</p>
+                <p><strong>Payload:</strong> {{ item.payload|default:"-" }}</p>
+            </div>
+        {% empty %}
+            <p class="muted">No hay events.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
