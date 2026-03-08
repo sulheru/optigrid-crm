@@ -1,0 +1,8 @@
+Django>=5.0
+djangorestframework
+psycopg[binary]
+celery
+redis
+python-dotenv
+requests
+msal
