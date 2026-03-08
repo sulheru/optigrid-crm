@@ -2,69 +2,90 @@
 
 ## Estado actual
 
-Pipeline IA-first completamente operativo.
+Pipeline IA-first operativo y ya visible desde navegador.
 
-EmailMessage  
-→ FactRecord  
-→ InferenceRecord  
-→ CRMUpdateProposal  
-→ AIRecommendation
+Actualmente existe:
 
-Demo funcional mediante:
-
-python manage.py demo_email_flow
-
----
-
-# Objetivo de la próxima sesión
-
-Crear interfaz de inspección del pipeline.
+- pipeline funcional:
+  - EmailMessage
+  - FactRecord
+  - InferenceRecord
+  - CRMUpdateProposal
+  - AIRecommendation
+- comando demo funcional
+- UI mínima de inspección:
+  - `/emails/`
+  - `/emails/<id>/`
 
 ---
 
-# Tareas
+## Objetivo de la próxima sesión
 
-## 1 Crear vista de emails procesados
+Hacer la segunda iteración de la UI del CRM.
 
-URL:
+---
 
-/emails/
+## Tareas
+
+### 1. Mejorar lista de emails
+
+Ruta:
+
+`/emails/`
+
+Añadir o refinar:
+
+- conteo de facts
+- conteo de inferences
+- conteo de proposals
+- conteo de recommendations
+- navegación más clara al detalle
+
+---
+
+### 2. Refinar vista de detalle
+
+Ruta:
+
+`/emails/<id>/`
+
+Mejorar:
+
+- legibilidad visual
+- agrupación por bloques
+- presentación más clara del body
+- presentación más clara de facts / inferences / proposals / recommendations
+
+---
+
+### 3. Crear dashboard mínimo
+
+Ruta sugerida:
+
+`/`
 
 Mostrar:
 
-- email_id
-- subject
-- sender
-- facts count
-- inferences count
-- proposals count
-- recommendations count
+- total de emails procesados
+- recomendaciones activas
+- propuestas recientes
+- accesos rápidos a emails recientes
 
 ---
 
-## 2 Crear vista de detalle
+### 4. Preparar siguiente capa UI
 
-URL:
+Evaluar diseño para estas vistas futuras:
 
-/emails/<id>/
-
-Mostrar:
-
-EmailMessage  
-Facts  
-Inferences  
-Proposals  
-Recommendations
+- `/recommendations/`
+- `/tasks/`
+- `/opportunities/`
 
 ---
 
-## 3 Añadir navegación mínima
+## Objetivo
 
-Template simple Django.
+Pasar de una UI meramente funcional a una UI operativa mínima del CRM.
 
----
-
-# Objetivo
-
-Poder visualizar el "cerebro del CRM".
-
+La siguiente sesión no debe ir todavía a frontend complejo.
+Debe consolidar primero una interfaz útil, clara y navegable con Django templates.
