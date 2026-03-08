@@ -22,21 +22,27 @@
                 <th>Asunto</th>
                 <th>Estado</th>
                 <th>Remitente</th>
+                <th>Facts</th>
+                <th>Inferences</th>
+                <th>Proposals</th>
+                <th>Recommendations</th>
             </tr>
         </thead>
         <tbody>
-        {% for email in emails %}
+        {% for row in rows %}
             <tr>
-                <td>
-                    <a href="{% url 'emailing:email_detail' email.pk %}">{{ email.pk }}</a>
-                </td>
-                <td>{{ email.subject|default:"(sin asunto)" }}</td>
-                <td>{{ email.message_status|default:"-" }}</td>
-                <td>{{ email.sender|default:"-" }}</td>
+                <td><a href="/emails/{{ row.email.id }}/">{{ row.email.id }}</a></td>
+                <td>{{ row.email.subject|default:"(sin asunto)" }}</td>
+                <td>{{ row.email.message_status|default:"-" }}</td>
+                <td>{{ row.email.sender|default:"-" }}</td>
+                <td>{{ row.facts_count }}</td>
+                <td>{{ row.inferences_count }}</td>
+                <td>{{ row.proposals_count }}</td>
+                <td>{{ row.recommendations_count }}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="4" class="muted">No hay emails todavía.</td>
+                <td colspan="8" class="muted">No hay emails todavía.</td>
             </tr>
         {% endfor %}
         </tbody>
