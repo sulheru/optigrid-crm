@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import get_object_or_404, render
 
 from apps.emailing.models import EmailMessage
@@ -7,81 +9,124 @@ from apps.updates.models import CRMUpdateProposal
 from apps.recommendations.models import AIRecommendation
 
 
-EMAIL_SOURCE_TYPES = ["emailmessage", "email_message", "EmailMessage"]
-INFERENCE_SOURCE_TYPES = ["inference", "inferencerecord", "inference_record", "InferenceRecord"]
+def _pretty_json(value):
+    if value is None:
+        return "{}"
+    if isinstance(value, str):
+        return value
+    try:
+        return json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True)
+    except TypeError:
+        return str(value)
 
 
-def _facts_for_email(email):
-    return FactRecord.objects.filter(
+def _extract_payload(obj):
+    """
+    Devuelve una representación segura para mostrar en template,
+    sin depender de que todos los modelos usen el mismo nombre de campo.
+    """
+    for attr in ("value", "payload", "proposed_payload"):
+        if hasattr(obj, attr):
+            return getattr(obj, attr)
+    return None
+
+
+def _count_pipeline_objects_for_email(email):
+    facts_qs = FactRecord.objects.filter(
+        source_type="email_message",
         source_id=email.id,
-        source_type__in=EMAIL_SOURCE_TYPES,
-    ).order_by("-id")
+    )
 
-
-def _inferences_for_email(email):
-    return InferenceRecord.objects.filter(
+    inferences_qs = InferenceRecord.objects.filter(
+        source_type="email_message",
         source_id=email.id,
-        source_type__in=EMAIL_SOURCE_TYPES,
-    ).order_by("-id")
+    )
 
+    inference_ids = list(inferences_qs.values_list("id", flat=True))
 
-def _proposals_for_email(email, inference_ids):
-    return CRMUpdateProposal.objects.filter(
-        target_entity_id__in=[email.id] + inference_ids
-    ).order_by("-id")
+    proposals_qs = CRMUpdateProposal.objects.filter(
+        target_entity_type="inference_record",
+        target_entity_id__in=inference_ids,
+    )
 
+    recommendations_qs = AIRecommendation.objects.filter(
+        scope_type="inference",
+        scope_id__in=inference_ids,
+    )
 
-def _recommendations_for_email(email, inference_ids):
-    return AIRecommendation.objects.filter(
-        scope_id__in=[email.id] + inference_ids
-    ).order_by("-id")
+    return {
+        "facts_count": facts_qs.count(),
+        "inferences_count": inferences_qs.count(),
+        "proposals_count": proposals_qs.count(),
+        "recommendations_count": recommendations_qs.count(),
+    }
 
 
 def email_list_view(request):
-    emails = EmailMessage.objects.all().order_by("-id")
-
-    rows = []
-    for email in emails:
-        facts = _facts_for_email(email)
-        inferences = _inferences_for_email(email)
-        inference_ids = list(inferences.values_list("id", flat=True))
-        proposals = _proposals_for_email(email, inference_ids)
-        recommendations = _recommendations_for_email(email, inference_ids)
-
-        rows.append({
-            "email": email,
-            "facts_count": facts.count(),
-            "inferences_count": inferences.count(),
-            "proposals_count": proposals.count(),
-            "recommendations_count": recommendations.count(),
-        })
-
-    return render(
-        request,
-        "emailing/email_list.html",
-        {
-            "rows": rows,
-        },
+    emails = list(
+        EmailMessage.objects.all().order_by("-sent_at", "-created_at", "-id")
     )
+
+    for email in emails:
+        counts = _count_pipeline_objects_for_email(email)
+        email.facts_count = counts["facts_count"]
+        email.inferences_count = counts["inferences_count"]
+        email.proposals_count = counts["proposals_count"]
+        email.recommendations_count = counts["recommendations_count"]
+
+    context = {
+        "emails": emails,
+    }
+    return render(request, "emailing/email_list.html", context)
 
 
 def email_detail_view(request, pk):
     email = get_object_or_404(EmailMessage, pk=pk)
 
-    facts = _facts_for_email(email)
-    inferences = _inferences_for_email(email)
-    inference_ids = list(inferences.values_list("id", flat=True))
-    proposals = _proposals_for_email(email, inference_ids)
-    recommendations = _recommendations_for_email(email, inference_ids)
-
-    return render(
-        request,
-        "emailing/email_detail.html",
-        {
-            "email": email,
-            "facts": facts,
-            "inferences": inferences,
-            "proposals": proposals,
-            "recommendations": recommendations,
-        },
+    facts = list(
+        FactRecord.objects.filter(
+            source_type="email_message",
+            source_id=email.id,
+        ).order_by("id")
     )
+
+    inferences = list(
+        InferenceRecord.objects.filter(
+            source_type="email_message",
+            source_id=email.id,
+        ).order_by("id")
+    )
+
+    inference_ids = [obj.id for obj in inferences]
+
+    proposals = list(
+        CRMUpdateProposal.objects.filter(
+            target_entity_type="inference_record",
+            target_entity_id__in=inference_ids,
+        ).order_by("id")
+    )
+
+    recommendations = list(
+        AIRecommendation.objects.filter(
+            scope_type="inference",
+            scope_id__in=inference_ids,
+        ).order_by("id")
+    )
+
+    for obj in facts:
+        obj.display_payload = _pretty_json(_extract_payload(obj))
+
+    for obj in inferences:
+        obj.display_payload = _pretty_json(_extract_payload(obj))
+
+    for obj in proposals:
+        obj.display_payload = _pretty_json(_extract_payload(obj))
+
+    context = {
+        "email": email,
+        "facts": facts,
+        "inferences": inferences,
+        "proposals": proposals,
+        "recommendations": recommendations,
+    }
+    return render(request, "emailing/email_detail.html", context)

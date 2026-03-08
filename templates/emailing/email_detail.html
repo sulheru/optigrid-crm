@@ -1,70 +1,417 @@
 <!doctype html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <title>Email {{ email.id }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 24px; }
-        .box { border: 1px solid #ddd; padding: 14px; margin-bottom: 16px; }
-        .muted { color: #666; }
-        pre { white-space: pre-wrap; word-break: break-word; }
-        a { text-decoration: none; }
-    </style>
+  <meta charset="utf-8">
+  <title>{{ email.subject|default:"(sin asunto)" }} · OptiGrid CRM</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f6f7f9;
+      color: #1f2937;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .topbar a {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 6px 0 0 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .meta-row {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .meta-label {
+      font-weight: 700;
+      color: #374151;
+      display: inline-block;
+      min-width: 90px;
+    }
+
+    .email-body {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-size: 14px;
+      color: #111827;
+      background: #fcfcfd;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .item {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .item-body {
+      padding: 14px;
+    }
+
+    .payload {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      background: #fcfcfd;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    .recommendation-text {
+      margin: 0 0 12px 0;
+      line-height: 1.55;
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .empty {
+      padding: 16px;
+      border: 1px dashed #d1d5db;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <p><a href="/emails/">← Volver</a></p>
-
-    <h1>Email {{ email.id }}</h1>
-
-    <div class="box">
-        <p><strong>Asunto:</strong> {{ email.subject|default:"(sin asunto)" }}</p>
-        <p><strong>Estado:</strong> {{ email.message_status|default:"-" }}</p>
-        <p><strong>Remitente:</strong> {{ email.sender|default:"-" }}</p>
-        <p><strong>Direction:</strong> {{ email.direction|default:"-" }}</p>
-        <p><strong>Sent at:</strong> {{ email.sent_at|default:"-" }}</p>
-        <p><strong>Received at:</strong> {{ email.received_at|default:"-" }}</p>
-        <p><strong>Body:</strong></p>
-        <pre>{{ email.body_text|default:"(sin body_text)" }}</pre>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <h1 class="title">{{ email.subject|default:"(sin asunto)" }}</h1>
+        <p class="subtitle">Inspección detallada del pipeline IA-first</p>
+      </div>
+      <div>
+        <a href="{% url 'emailing:email_list' %}">← Volver a emails</a>
+      </div>
     </div>
 
-    <div class="box">
-        <h2>Facts</h2>
-        {% for item in facts %}
-            <pre>{{ item.id }} | {{ item.fact_type }} | confidence={{ item.confidence }}
-{{ item.fact_value }}</pre>
-        {% empty %}
-            <p class="muted">No hay facts.</p>
-        {% endfor %}
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h2>Email</h2>
+        </div>
+        <div class="card-body">
+          <div class="meta-row">
+            <span class="meta-label">ID:</span>
+            <span>{{ email.id }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Sender:</span>
+            <span>{{ email.sender|default:"—" }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Direction:</span>
+            <span>{{ email.direction|default:"—" }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Status:</span>
+            <span>{{ email.message_status|default:"—" }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Sent at:</span>
+            <span>{{ email.sent_at|default:email.created_at|date:"Y-m-d H:i" }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Thread:</span>
+            <span>
+              {% if email.thread_id %}
+                {{ email.thread_id }}
+              {% else %}
+                —
+              {% endif %}
+            </span>
+          </div>
+
+          <h3 style="margin:20px 0 10px 0; font-size:16px;">Body</h3>
+          <div class="email-body">{{ email.body_text|default:"(sin contenido)" }}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Resumen del pipeline</h2>
+        </div>
+        <div class="card-body">
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-value">{{ facts|length }}</div>
+              <div class="stat-label">Facts</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">{{ inferences|length }}</div>
+              <div class="stat-label">Inferences</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">{{ proposals|length }}</div>
+              <div class="stat-label">Proposals</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">{{ recommendations|length }}</div>
+              <div class="stat-label">Recommendations</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="box">
-        <h2>Inferences</h2>
-        {% for item in inferences %}
-            <pre>{{ item.id }} | {{ item.inference_type }} | confidence={{ item.confidence }}
-{{ item.inference_value }}</pre>
-        {% empty %}
-            <p class="muted">No hay inferences.</p>
-        {% endfor %}
+    <div class="section">
+      <h2 class="section-title">Facts</h2>
+      {% if facts %}
+        <div class="item-list">
+          {% for fact in facts %}
+            <div class="item">
+              <div class="item-header">
+                <div class="item-title">
+                  {{ fact.fact_type|default:"fact" }}
+                </div>
+                <div class="badges">
+                  <span class="badge">ID {{ fact.id }}</span>
+                  <span class="badge">confidence {{ fact.confidence|default:"—" }}</span>
+                </div>
+              </div>
+              <div class="item-body">
+                <pre class="payload">{{ fact.display_payload }}</pre>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">No hay facts para este email.</div>
+      {% endif %}
     </div>
 
-    <div class="box">
-        <h2>Proposals</h2>
-        {% for item in proposals %}
-            <pre>{{ item.id }} | {{ item.proposed_change_type }} | confidence={{ item.confidence }}
-{{ item.proposed_payload }}</pre>
-        {% empty %}
-            <p class="muted">No hay proposals.</p>
-        {% endfor %}
+    <div class="section">
+      <h2 class="section-title">Inferences</h2>
+      {% if inferences %}
+        <div class="item-list">
+          {% for inference in inferences %}
+            <div class="item">
+              <div class="item-header">
+                <div class="item-title">
+                  {{ inference.inference_type|default:"inference" }}
+                </div>
+                <div class="badges">
+                  <span class="badge">ID {{ inference.id }}</span>
+                  <span class="badge">confidence {{ inference.confidence|default:"—" }}</span>
+                </div>
+              </div>
+              <div class="item-body">
+                <pre class="payload">{{ inference.display_payload }}</pre>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">No hay inferences para este email.</div>
+      {% endif %}
     </div>
 
-    <div class="box">
-        <h2>Recommendations</h2>
-        {% for item in recommendations %}
-            <pre>{{ item.id }} | {{ item.recommendation_type }} | confidence={{ item.confidence }}
-{{ item.recommendation_text }}</pre>
-        {% empty %}
-            <p class="muted">No hay recommendations.</p>
-        {% endfor %}
+    <div class="section">
+      <h2 class="section-title">Proposals</h2>
+      {% if proposals %}
+        <div class="item-list">
+          {% for proposal in proposals %}
+            <div class="item">
+              <div class="item-header">
+                <div class="item-title">
+                  {{ proposal.proposed_change_type|default:"proposal" }}
+                </div>
+                <div class="badges">
+                  <span class="badge">ID {{ proposal.id }}</span>
+                  <span class="badge">confidence {{ proposal.confidence|default:"—" }}</span>
+                  <span class="badge">status {{ proposal.proposal_status|default:"—" }}</span>
+                </div>
+              </div>
+              <div class="item-body">
+                <pre class="payload">{{ proposal.display_payload }}</pre>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">No hay proposals para este email.</div>
+      {% endif %}
     </div>
+
+    <div class="section">
+      <h2 class="section-title">Recommendations</h2>
+      {% if recommendations %}
+        <div class="item-list">
+          {% for recommendation in recommendations %}
+            <div class="item">
+              <div class="item-header">
+                <div class="item-title">
+                  {{ recommendation.recommendation_type|default:"recommendation" }}
+                </div>
+                <div class="badges">
+                  <span class="badge">ID {{ recommendation.id }}</span>
+                  <span class="badge">confidence {{ recommendation.confidence|default:"—" }}</span>
+                  <span class="badge">status {{ recommendation.status|default:"—" }}</span>
+                </div>
+              </div>
+              <div class="item-body">
+                <p class="recommendation-text">
+                  {{ recommendation.recommendation_text|default:"(sin texto de recomendación)" }}
+                </p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">No hay recommendations para este email.</div>
+      {% endif %}
+    </div>
+  </div>
 </body>
 </html>
