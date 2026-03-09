@@ -29,6 +29,27 @@ def _extract_payload(obj):
     return None
 
 
+
+
+def _map_recommendation_type_to_task_type(recommendation_type):
+    value = (recommendation_type or "").strip()
+
+    mapping = {
+        "reply_strategy": "reply_email",
+        "followup": "follow_up",
+        "schedule_call": "schedule_call",
+        "prepare_proposal": "prepare_proposal",
+        "qualification": "review_manually",
+        "opportunity_review": "review_manually",
+        "pricing_strategy": "review_manually",
+        "timing_strategy": "review_manually",
+        "contact_strategy": "review_manually",
+        "next_action": "review_manually",
+        "hold": "review_manually",
+    }
+
+    return mapping.get(value, "review_manually")
+
 def _count_pipeline_objects_for_email(email):
     facts_qs = FactRecord.objects.filter(
         source_type="email_message",
@@ -167,8 +188,29 @@ def email_detail_view(request, pk):
 
 def recommendations_list_view(request):
     recommendations = AIRecommendation.objects.all().order_by("-created_at", "-id")
+
+    status = (request.GET.get("status") or "").strip()
+    recommendation_type = (request.GET.get("recommendation_type") or "").strip()
+
+    if status:
+        recommendations = recommendations.filter(status=status)
+
+    if recommendation_type:
+        recommendations = recommendations.filter(recommendation_type=recommendation_type)
+
+    recommendation_types = (
+        AIRecommendation.objects
+        .order_by("recommendation_type")
+        .values_list("recommendation_type", flat=True)
+        .distinct()
+    )
+
     return render(request, "recommendations/list.html", {
         "recommendations": recommendations,
+        "selected_status": status,
+        "selected_recommendation_type": recommendation_type,
+        "status_choices": AIRecommendation.STATUS_CHOICES,
+        "recommendation_types": recommendation_types,
     })
 
 
@@ -184,3 +226,70 @@ def opportunities_list_view(request):
     return render(request, "opportunities/list.html", {
         "opportunities": opportunities,
     })
+
+from django.shortcuts import redirect
+from django.views.decorators.http import require_POST
+
+
+@require_POST
+def recommendation_create_task_view(request, pk):
+
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+    task_type = _map_recommendation_type_to_task_type(recommendation.recommendation_type)
+
+    task, created = CRMTask.objects.get_or_create(
+        source_recommendation=recommendation,
+        defaults={
+            "title": recommendation.recommendation_text[:200],
+            "description": recommendation.recommendation_text,
+            "task_type": task_type,
+            "status": "open",
+            "priority": "normal",
+        },
+    )
+
+    updated_fields = []
+
+    if task.task_type != task_type:
+        task.task_type = task_type
+        updated_fields.append("task_type")
+
+    if not task.description and recommendation.recommendation_text:
+        task.description = recommendation.recommendation_text
+        updated_fields.append("description")
+
+    if updated_fields:
+        task.save(update_fields=updated_fields)
+
+    if recommendation.status != "materialized":
+        recommendation.status = "materialized"
+        recommendation.save(update_fields=["status"])
+
+    return redirect("recommendations")
+
+
+@require_POST
+def recommendation_dismiss_view(request, pk):
+
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status not in ["dismissed", "executed"]:
+        recommendation.status = "dismissed"
+        recommendation.save(update_fields=["status"])
+
+    return redirect("recommendations")
+
+
+@require_POST
+def task_set_status_view(request, pk):
+    task = get_object_or_404(CRMTask, pk=pk)
+
+    new_status = (request.POST.get("status") or "").strip()
+    allowed_statuses = {"open", "in_progress", "done", "dismissed"}
+
+    if new_status in allowed_statuses and task.status != new_status:
+        task.status = new_status
+        task.save(update_fields=["status"])
+
+    return redirect("tasks")
+
