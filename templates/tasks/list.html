@@ -12,6 +12,31 @@
     .item { padding: 16px; border-bottom: 1px solid #e5e7eb; }
     .item:last-child { border-bottom: 0; }
     .meta { color: #6b7280; font-size: 13px; margin: 6px 0; }
+    .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions form { margin: 0; }
+    button {
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: #111827;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: #f9fafb; }
+    .muted { color: #6b7280; font-size: 13px; margin-top: 10px; }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    .status-open { background: #dbeafe; color: #1d4ed8; }
+    .status-in_progress { background: #fef3c7; color: #92400e; }
+    .status-done { background: #dcfce7; color: #166534; }
+    .status-dismissed { background: #e5e7eb; color: #4b5563; }
   </style>
 </head>
 <body>
@@ -24,10 +49,58 @@
       {% for task in tasks %}
         <div class="item">
           <strong>{{ task.title }}</strong>
+          <span class="badge status-{{ task.status }}">{{ task.status }}</span>
+
           <div class="meta">
-            ID {{ task.id }} · {{ task.task_type }} · status {{ task.status }} · priority {{ task.priority }}
+            ID {{ task.id }} · {{ task.task_type }} · priority {{ task.priority }}
+            {% if task.source_recommendation_id %}
+              · recommendation {{ task.source_recommendation_id }}
+            {% endif %}
           </div>
+
           <div>{{ task.description }}</div>
+
+          <div class="actions">
+            {% if task.status == "open" %}
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="in_progress">
+                <button type="submit">Start</button>
+              </form>
+
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="done">
+                <button type="submit">Done</button>
+              </form>
+
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="dismissed">
+                <button type="submit">Dismiss</button>
+              </form>
+            {% elif task.status == "in_progress" %}
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="done">
+                <button type="submit">Done</button>
+              </form>
+
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="dismissed">
+                <button type="submit">Dismiss</button>
+              </form>
+
+              <form method="post" action="/tasks/{{ task.id }}/set-status/">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="open">
+                <button type="submit">Reopen</button>
+              </form>
+            {% else %}
+              <div class="muted">Sin acciones disponibles para este estado.</div>
+            {% endif %}
+          </div>
         </div>
       {% empty %}
         <div class="item">No hay tasks.</div>

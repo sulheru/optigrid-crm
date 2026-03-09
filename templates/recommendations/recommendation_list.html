@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Recommendations</title>
+<style>
+
+body { font-family: Arial; margin: 30px; }
+
+.card{
+border:1px solid #ddd;
+padding:15px;
+margin-bottom:12px;
+border-radius:6px;
+}
+
+.badge{
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+}
+
+.new{background:#eef;}
+.materialized{background:#efe;}
+.dismissed{background:#eee;}
+.executed{background:#ffd;}
+
+button{
+padding:6px 10px;
+margin-right:6px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Recommendations</h1>
+
+<form method="get">
+
+Status
+<select name="status">
+<option value="">All</option>
+{% for value,label in status_choices %}
+<option value="{{value}}">{{label}}</option>
+{% endfor %}
+</select>
+
+Type
+<select name="recommendation_type">
+<option value="">All</option>
+{% for t in recommendation_types %}
+<option value="{{t}}">{{t}}</option>
+{% endfor %}
+</select>
+
+<button type="submit">Filter</button>
+
+</form>
+
+<hr>
+
+{% for r in recommendations %}
+
+<div class="card">
+
+<b>#{{r.id}}</b>
+
+<span class="badge {{r.status}}">
+{{r.status}}
+</span>
+
+<p>{{r.recommendation_text}}</p>
+
+Confidence: {{r.confidence}}
+
+<br><br>
+
+{% if r.status == "new" %}
+
+<form method="post" action="/recommendations/{{r.id}}/create-task/">
+{% csrf_token %}
+<button>Create Task</button>
+</form>
+
+<form method="post" action="/recommendations/{{r.id}}/dismiss/">
+{% csrf_token %}
+<button>Dismiss</button>
+</form>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>
