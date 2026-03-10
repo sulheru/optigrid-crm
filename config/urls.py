@@ -7,6 +7,7 @@ from apps.emailing.views import (
     recommendations_list_view,
     recommendation_create_task_view,
     recommendation_dismiss_view,
+    recommendation_promote_opportunity_view,
     task_set_status_view,
     tasks_list_view,
 )
@@ -19,6 +20,11 @@ urlpatterns = [
     path("recommendations/", recommendations_list_view, name="recommendations"),
     path("recommendations/<int:pk>/create-task/", recommendation_create_task_view),
     path("recommendations/<int:pk>/dismiss/", recommendation_dismiss_view),
+    path(
+        "recommendations/<int:pk>/promote-opportunity/",
+        recommendation_promote_opportunity_view,
+        name="recommendation_promote_opportunity",
+    ),
 
     path("tasks/", tasks_list_view, name="tasks"),
     path("tasks/<int:pk>/set-status/", task_set_status_view, name="task_set_status"),

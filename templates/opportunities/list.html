@@ -6,12 +6,97 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; background: #f6f7f9; color: #1f2937; }
     .page { max-width: 1100px; margin: 0 auto; }
-    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
     .header a { text-decoration: none; color: #2563eb; font-weight: 600; }
-    .item { padding: 16px; border-bottom: 1px solid #e5e7eb; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .item {
+      padding: 18px;
+      border-bottom: 1px solid #e5e7eb;
+    }
     .item:last-child { border-bottom: 0; }
-    .meta { color: #6b7280; font-size: 13px; margin: 6px 0; }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      color: #111827;
+    }
+
+    .company {
+      color: #4b5563;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0 12px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stage-new { background: #dbeafe; color: #1d4ed8; }
+    .stage-qualified { background: #dcfce7; color: #166534; }
+    .stage-proposal { background: #fef3c7; color: #92400e; }
+    .stage-won { background: #d1fae5; color: #065f46; }
+    .stage-lost { background: #fee2e2; color: #991b1b; }
+
+    .metric {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    .summary {
+      line-height: 1.55;
+      color: #1f2937;
+      background: #fcfcfd;
+      border: 1px solid #eef2f7;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .summary-empty {
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 12px;
+      color: #6b7280;
+      font-size: 13px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
@@ -20,14 +105,62 @@
       <h1>Opportunities</h1>
       <a href="/">← Dashboard</a>
     </div>
+
     <div class="card">
       {% for opportunity in opportunities %}
         <div class="item">
-          <strong>{{ opportunity.title }}</strong>
-          <div class="meta">
-            ID {{ opportunity.id }} · stage {{ opportunity.stage }} · confidence {{ opportunity.confidence }}
+          <div class="topline">
+            <div>
+              <h2 class="title">{{ opportunity.title|default:"Untitled opportunity" }}</h2>
+              <div class="company">
+                {% if opportunity.company_name %}
+                  {{ opportunity.company_name }}
+                {% else %}
+                  Sin empresa asociada todavía
+                {% endif %}
+              </div>
+            </div>
+
+            <div>
+              <span class="badge stage-{{ opportunity.stage|default:'new' }}">
+                {{ opportunity.get_stage_display|default:opportunity.stage|default:"New" }}
+              </span>
+            </div>
           </div>
-          <div>{{ opportunity.summary }}</div>
+
+          <div class="meta">
+            <div class="metric">
+              Confidence:
+              {% if opportunity.confidence or opportunity.confidence == 0 %}
+                {{ opportunity.confidence|floatformat:2 }}
+              {% else %}
+                —
+              {% endif %}
+            </div>
+
+            <div class="metric">
+              Estimated value:
+              {% if opportunity.estimated_value %}
+                {{ opportunity.estimated_value }}
+              {% else %}
+                —
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="summary {% if not opportunity.summary %}summary-empty{% endif %}">
+            {% if opportunity.summary %}
+              {{ opportunity.summary }}
+            {% else %}
+              No summary disponible todavía.
+            {% endif %}
+          </div>
+
+          <div class="footer">
+            <span>ID {{ opportunity.id }}</span>
+            <span>Created {{ opportunity.created_at|date:"Y-m-d H:i" }}</span>
+            <span>Updated {{ opportunity.updated_at|date:"Y-m-d H:i" }}</span>
+          </div>
         </div>
       {% empty %}
         <div class="item">No hay opportunities.</div>

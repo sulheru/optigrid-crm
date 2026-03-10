@@ -1,15 +1,16 @@
 import json
 
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.emailing.models import EmailMessage
 from apps.facts.models import FactRecord
 from apps.inferences.models import InferenceRecord
 from apps.updates.models import CRMUpdateProposal
 from apps.recommendations.models import AIRecommendation
-
 from apps.tasks.models import CRMTask
 from apps.opportunities.models import Opportunity
+
 
 def _pretty_json(value):
     if value is None:
@@ -27,8 +28,6 @@ def _extract_payload(obj):
         if hasattr(obj, attr):
             return getattr(obj, attr)
     return None
-
-
 
 
 def _map_recommendation_type_to_task_type(recommendation_type):
@@ -49,6 +48,7 @@ def _map_recommendation_type_to_task_type(recommendation_type):
     }
 
     return mapping.get(value, "review_manually")
+
 
 def _count_pipeline_objects_for_email(email):
     facts_qs = FactRecord.objects.filter(
@@ -187,16 +187,18 @@ def email_detail_view(request, pk):
 
 
 def recommendations_list_view(request):
-    recommendations = AIRecommendation.objects.all().order_by("-created_at", "-id")
+    qs = AIRecommendation.objects.all()
 
     status = (request.GET.get("status") or "").strip()
     recommendation_type = (request.GET.get("recommendation_type") or "").strip()
 
     if status:
-        recommendations = recommendations.filter(status=status)
+        qs = qs.filter(status=status)
 
     if recommendation_type:
-        recommendations = recommendations.filter(recommendation_type=recommendation_type)
+        qs = qs.filter(recommendation_type=recommendation_type)
+
+    recommendations = qs.order_by("-created_at", "-id")
 
     recommendation_types = (
         AIRecommendation.objects
@@ -227,13 +229,22 @@ def opportunities_list_view(request):
         "opportunities": opportunities,
     })
 
-from django.shortcuts import redirect
-from django.views.decorators.http import require_POST
+
+def _build_opportunity_payload_from_recommendation(recommendation):
+    text = (recommendation.recommendation_text or "").strip()
+    title = text[:255] if text else "Opportunity detected from recommendation"
+
+    return {
+        "title": title,
+        "summary": text or title,
+        "stage": "new",
+        "confidence": getattr(recommendation, "confidence", 0.0) or 0.0,
+        "company_name": "",
+    }
 
 
 @require_POST
 def recommendation_create_task_view(request, pk):
-
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
     task_type = _map_recommendation_type_to_task_type(recommendation.recommendation_type)
 
@@ -269,8 +280,50 @@ def recommendation_create_task_view(request, pk):
 
 
 @require_POST
-def recommendation_dismiss_view(request, pk):
+def recommendation_promote_opportunity_view(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
+    allowed_types = {
+        "opportunity_review",
+        "prepare_proposal",
+        "schedule_call",
+        "pricing_strategy",
+        "qualification",
+    }
+
+    if recommendation.recommendation_type not in allowed_types:
+        return redirect("recommendations")
+
+    if recommendation.status == "dismissed":
+        return redirect("recommendations")
+
+    payload = _build_opportunity_payload_from_recommendation(recommendation)
+
+    # Dedupe simple para esta V1:
+    # evita crear varias oportunidades idénticas desde la misma recomendación textual.
+    opportunity = Opportunity.objects.filter(
+        title=payload["title"],
+        summary=payload["summary"],
+    ).order_by("-id").first()
+
+    if opportunity is None:
+        opportunity = Opportunity.objects.create(
+            title=payload["title"],
+            summary=payload["summary"],
+            stage=payload["stage"],
+            confidence=payload["confidence"],
+            company_name=payload["company_name"],
+        )
+
+    if recommendation.status != "executed":
+        recommendation.status = "executed"
+        recommendation.save(update_fields=["status"])
+
+    return redirect("opportunities")
+
+
+@require_POST
+def recommendation_dismiss_view(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
     if recommendation.status not in ["dismissed", "executed"]:
@@ -292,4 +345,3 @@ def task_set_status_view(request, pk):
         task.save(update_fields=["status"])
 
     return redirect("tasks")
-

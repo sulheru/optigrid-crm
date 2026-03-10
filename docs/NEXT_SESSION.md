@@ -1,55 +1,101 @@
-# NEXT SESSION
-
-Project: OptiGrid CRM
-Phase: Recommendation Operations Layer
+# OptiGrid CRM — NEXT SESSION
 
 ## Goal
 
-Transform recommendations into actionable CRM decisions from the UI.
+Improve the **Opportunity Operations Layer** and reduce manual review workload.
 
-## Tasks
+## Priority Tasks
 
-1. Improve /recommendations/ view
+### 1 — Opportunity Pipeline UX
+
+Improve `/opportunities/`:
 
 Add:
 
-- filters
-- status indicators
-- clearer recommendation types
+- filters by stage
+- sorting by estimated_value
+- sorting by confidence
 
-2. Add actions
+Optional:
 
-Buttons:
+- stage transition buttons
 
-- Create Task
-- Dismiss Recommendation
-- Promote to Opportunity
+Example:
 
-3. Add state transitions
+New → Qualified → Proposal → Won/Lost
 
-Recommendation states:
+This will turn the page into a real sales pipeline view.
 
-new
-materialized
-dismissed
-executed
+---
 
-4. Add audit command
+### 2 — Task Specialization
 
-New management command:
+Current report:
 
-python manage.py crm_pipeline_report
+review_manually tasks: 26
 
-Outputs counts for:
+We should reduce manual review.
 
-emails
-facts
-inferences
-recommendations
-tasks
-opportunities
+Split task types:
 
-5. Optional
+- opportunity_review
+- qualification_review
+- pricing_review
 
-Opportunity detail page
-Task detail page
+Goal:
+
+Reduce operational ambiguity.
+
+---
+
+### 3 — Recommendation Intelligence
+
+Improve detection of opportunity signals.
+
+Signals to detect:
+
+- pricing discussion
+- proposal request
+- call scheduling
+- scope discussion
+
+Generate:
+
+AIRecommendation(type="opportunity_review")
+
+---
+
+### 4 — Opportunity Enrichment
+
+Automatically populate:
+
+company_name
+estimated_value
+confidence
+
+Sources:
+
+- email metadata
+- inference payload
+- proposal content
+
+---
+
+### 5 — Pipeline Metrics
+
+Extend `crm_pipeline_report`:
+
+Add:
+
+- average confidence
+- opportunities created per recommendation type
+- task completion rate
+
+---
+
+## Strategic Direction
+
+Continue evolving OptiGrid CRM into a:
+
+AI-driven **Opportunity Intelligence Engine**.
+

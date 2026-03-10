@@ -1,55 +1,88 @@
-# HANDOFF
+# OptiGrid CRM — HANDOFF CURRENT
 
-Project: OptiGrid CRM
-Date: 2026-03-08
+## System State
 
-## Current State
+The AI-first CRM pipeline is fully operational.
 
-The system now implements a full IA-first CRM pipeline.
-
-Email processing pipeline:
+Pipeline:
 
 EmailMessage
- → FactRecord
- → InferenceRecord
- → AIRecommendation
- → CRMTask
- → Opportunity
+→ FactRecord
+→ InferenceRecord
+→ CRMUpdateProposal
+→ AIRecommendation
+→ CRMTask
+→ Opportunity
 
-### UI
+### Current Data Snapshot
 
-Dashboard:
-/ 
+emails: 48  
+facts: 45  
+inferences: 66  
+proposals: 21  
+recommendations: 34  
+tasks: 34  
+opportunities: 3
 
-Email inspection:
-/emails/
-/emails/<id>/
+### Operational UI
 
-Operational views:
+Pages available:
+
 /recommendations/
 /tasks/
 /opportunities/
 
-### Automation
+### Recommendation Operations
 
-Task materialization:
+Actions:
 
-python manage.py materialize_recommendations
+- Create Task
+- Dismiss
+- Promote to Opportunity
 
-Opportunity promotion:
+### Task Operations
 
-python manage.py promote_tasks
+Statuses:
 
-Both processes are idempotent.
+- open
+- in_progress
+- done
+- dismissed
 
-### Key milestone
+### Opportunity Model
 
-The system has moved from a passive inference engine to an operational CRM capable of generating tasks and opportunities.
+Fields:
 
-## Next logical step
+- title
+- company_name
+- stage
+- estimated_value
+- confidence
+- summary
 
-Enhance Recommendations UI:
+Stages:
 
-- action buttons
-- task creation from UI
-- recommendation state transitions
+- new
+- qualified
+- proposal
+- won
+- lost
+
+### Observability
+
+Command available:
+
+
+python manage.py crm_pipeline_report
+
+
+Provides a full pipeline audit.
+
+### Key Achievement
+
+The system now performs:
+
+conversation → signal → recommendation → action → opportunity
+
+This transforms the CRM from a passive registry into an **AI-assisted commercial operations engine**.
+
