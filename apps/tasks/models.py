@@ -15,6 +15,9 @@ class CRMTask(models.Model):
         ("schedule_call", "Schedule Call"),
         ("prepare_proposal", "Prepare Proposal"),
         ("review_manually", "Review Manually"),
+        ("opportunity_review", "Opportunity review"),
+        ("qualification_review", "Qualification review"),
+        ("pricing_review", "Pricing review"),
     ]
 
     source_recommendation = models.ForeignKey(

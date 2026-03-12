@@ -1,66 +1,49 @@
-# OptiGrid CRM — CHANGELOG
+# OptiGrid CRM — Changelog
 
-## 2026-03-10 — Opportunity Engine & Observability
+## 2026-03-12
 
 ### Added
 
-AI Opportunity Engine (V1):
+Opportunity.source_recommendation field.
 
-- New action: **Promote Recommendation → Opportunity**
-- Route: `/recommendations/<id>/promote-opportunity/`
-- Security rules to avoid promotion of dismissed recommendations
-- Basic deduplication logic for opportunities
+Permite trazabilidad directa entre AIRecommendation y Opportunity.
 
-### UI Improvements
+---
 
-Recommendations UI:
+### Improved
 
-- Visual badge system for recommendation types
-- Highlight for `opportunity_review`
-- Button **Promote to Opportunity**
+Opportunity deduplication logic.
 
-Opportunities UI:
+Antes:
+title + summary
 
-- New layout showing:
-  - title
-  - company_name
-  - stage
-  - confidence
-  - estimated_value
-  - summary
-  - created_at / updated_at
+Ahora:
+source_recommendation → fallback title + summary
 
-### Observability
+---
 
-New management command:
+### UI
 
+Opportunity board ahora incluye:
 
-python manage.py crm_pipeline_report
+- KPI metrics
+- pipeline stage counts
+- average confidence
+- estimated pipeline value
 
+---
 
-Provides:
+### Stability
 
-- Pipeline totals
-- Recommendations by status
-- Recommendations by type
-- Recommendations by confidence buckets
-- Tasks by status
-- Tasks by type
-- Tasks by priority
-- Opportunities by stage
+/opportunities/ endpoint validado y estabilizado.
+
+Stage transitions funcionando correctamente.
+
+---
 
 ### Architecture
 
-Pipeline now supports:
+Opportunity pipeline ahora completo:
 
-EmailMessage  
-→ FactRecord  
-→ InferenceRecord  
-→ CRMUpdateProposal  
-→ AIRecommendation  
-→ CRMTask  
-→ Opportunity
+Email → Facts → Inference → Proposal → Recommendation → Task → Opportunity
 
-Recommendations can now be promoted directly to opportunities.
-
-This marks the beginning of the **AI Opportunity Engine layer**.

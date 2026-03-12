@@ -1,101 +1,110 @@
-# OptiGrid CRM — NEXT SESSION
+# OptiGrid CRM — Next Session
 
-## Goal
+FASE: Opportunity Intelligence Layer
 
-Improve the **Opportunity Operations Layer** and reduce manual review workload.
-
-## Priority Tasks
-
-### 1 — Opportunity Pipeline UX
-
-Improve `/opportunities/`:
-
-Add:
-
-- filters by stage
-- sorting by estimated_value
-- sorting by confidence
-
-Optional:
-
-- stage transition buttons
-
-Example:
-
-New → Qualified → Proposal → Won/Lost
-
-This will turn the page into a real sales pipeline view.
+Fecha base: 2026-03-12
 
 ---
 
-### 2 — Task Specialization
+## Contexto
 
-Current report:
+El CRM ya soporta pipeline completo:
 
-review_manually tasks: 26
+Email
+→ Facts
+→ Inference
+→ Proposals
+→ Recommendations
+→ Tasks
+→ Opportunities
 
-We should reduce manual review.
-
-Split task types:
-
-- opportunity_review
-- qualification_review
-- pricing_review
-
-Goal:
-
-Reduce operational ambiguity.
+El siguiente paso es permitir que la IA analice **opportunities existentes**.
 
 ---
 
-### 3 — Recommendation Intelligence
+## Objetivo principal
 
-Improve detection of opportunity signals.
+Implementar **Opportunity Intelligence Engine**.
 
-Signals to detect:
-
-- pricing discussion
-- proposal request
-- call scheduling
-- scope discussion
-
-Generate:
-
-AIRecommendation(type="opportunity_review")
+Esto permitirá generar recomendaciones desde una opportunity.
 
 ---
 
-### 4 — Opportunity Enrichment
+## Nuevo flujo
 
-Automatically populate:
+Opportunity
+↓
+AI Analysis
+↓
+AIRecommendation
 
-company_name
-estimated_value
-confidence
+Tipos previstos:
 
-Sources:
-
-- email metadata
-- inference payload
-- proposal content
-
----
-
-### 5 — Pipeline Metrics
-
-Extend `crm_pipeline_report`:
-
-Add:
-
-- average confidence
-- opportunities created per recommendation type
-- task completion rate
+pricing_strategy
+reply_strategy
+followup
+risk_flag
+next_action
 
 ---
 
-## Strategic Direction
+## Primera implementación
 
-Continue evolving OptiGrid CRM into a:
+Añadir comando:
 
-AI-driven **Opportunity Intelligence Engine**.
+python manage.py analyze_opportunity <id>
+
+El comando:
+
+1. carga la opportunity
+2. reconstruye contexto
+3. genera recomendaciones
+
+---
+
+## Context reconstruction
+
+Opportunity
+↓
+source_recommendation
+↓
+proposal
+↓
+inference
+↓
+facts
+↓
+emails
+
+Esto permite reasoning completo.
+
+---
+
+## Resultado esperado
+
+El CRM pasa de:
+
+detectar oportunidades
+
+a
+
+asistir activamente en cerrar oportunidades.
+
+---
+
+## Verificaciones iniciales
+
+Antes de empezar:
+
+cd ~/OptiGrid_Project/og_pilot/optigrid_crm
+source .venv/bin/activate
+
+python manage.py check
+python manage.py runserver
+
+Verificar:
+
+/recommendations/
+/tasks/
+/opportunities/
 

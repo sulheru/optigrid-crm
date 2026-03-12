@@ -1,88 +1,103 @@
-# OptiGrid CRM — HANDOFF CURRENT
+# OptiGrid CRM — Current Handoff
 
-## System State
+Fecha: 2026-03-12
 
-The AI-first CRM pipeline is fully operational.
+## Estado actual
 
-Pipeline:
+La capa Opportunity Operations está completada.
 
-EmailMessage
-→ FactRecord
-→ InferenceRecord
-→ CRMUpdateProposal
-→ AIRecommendation
-→ CRMTask
-→ Opportunity
+El sistema ya puede:
 
-### Current Data Snapshot
+- detectar señales comerciales
+- generar recomendaciones
+- materializar tareas
+- crear oportunidades
+- operar pipeline de ventas
 
-emails: 48  
-facts: 45  
-inferences: 66  
-proposals: 21  
-recommendations: 34  
-tasks: 34  
-opportunities: 3
+---
 
-### Operational UI
+## Componentes operativos
 
-Pages available:
+### Opportunity model
 
-/recommendations/
-/tasks/
+apps/opportunities/models.py
+
+Incluye:
+
+source_task
+source_recommendation
+stage
+estimated_value
+confidence
+
+---
+
+### Opportunity board
+
+Endpoint:
+
 /opportunities/
 
-### Recommendation Operations
+UI:
 
-Actions:
+pipeline board
+stage transitions
+KPI dashboard
 
-- Create Task
-- Dismiss
-- Promote to Opportunity
+---
 
-### Task Operations
+### Metrics
 
-Statuses:
+KPIs calculados en:
 
-- open
-- in_progress
-- done
-- dismissed
+opportunities_list_view
 
-### Opportunity Model
+Incluyen:
 
-Fields:
+total opportunities
+pipeline estimated value
+average confidence
+stage distribution
 
-- title
-- company_name
-- stage
-- estimated_value
-- confidence
-- summary
+---
 
-Stages:
+## Arquitectura actual
 
-- new
-- qualified
-- proposal
-- won
-- lost
+EmailMessage
+↓
+FactRecord
+↓
+InferenceRecord
+↓
+CRMUpdateProposal
+↓
+AIRecommendation
+↓
+CRMTask
+↓
+Opportunity
 
-### Observability
+---
 
-Command available:
+## Estado de estabilidad
 
+Sistema funcional.
 
-python manage.py crm_pipeline_report
+Validado con:
 
+python manage.py check
+python manage.py runserver
 
-Provides a full pipeline audit.
+---
 
-### Key Achievement
+## Próxima evolución recomendada
 
-The system now performs:
+Opportunity Intelligence Layer.
 
-conversation → signal → recommendation → action → opportunity
+Permitir análisis IA sobre oportunidades para generar:
 
-This transforms the CRM from a passive registry into an **AI-assisted commercial operations engine**.
+pricing_strategy
+next_action
+followup
+risk_flags
 

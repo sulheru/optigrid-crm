@@ -18,6 +18,14 @@ class Opportunity(models.Model):
         related_name="opportunities",
     )
 
+    source_recommendation = models.ForeignKey(
+        "recommendations.AIRecommendation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="spawned_opportunities",
+    )
+
     title = models.CharField(max_length=255)
     company_name = models.CharField(max_length=255, blank=True)
     stage = models.CharField(max_length=30, choices=STATUS_CHOICES, default="new")

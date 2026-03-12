@@ -4,6 +4,7 @@ from django.urls import include, path
 from apps.emailing.views import (
     dashboard_view,
     opportunities_list_view,
+    opportunity_set_stage_view,
     recommendations_list_view,
     recommendation_create_task_view,
     recommendation_dismiss_view,
@@ -29,5 +30,6 @@ urlpatterns = [
     path("tasks/", tasks_list_view, name="tasks"),
     path("tasks/<int:pk>/set-status/", task_set_status_view, name="task_set_status"),
 
+    path("opportunities/<int:pk>/set-stage/", opportunity_set_stage_view, name="opportunity_set_stage"),
     path("opportunities/", opportunities_list_view, name="opportunities"),
 ]
