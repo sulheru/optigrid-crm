@@ -1,110 +1,69 @@
-# OptiGrid CRM — Next Session
+# Next Session — Opportunity Intelligence Expansion
 
-FASE: Opportunity Intelligence Layer
-
-Fecha base: 2026-03-12
-
----
-
-## Contexto
-
-El CRM ya soporta pipeline completo:
-
-Email
-→ Facts
-→ Inference
-→ Proposals
-→ Recommendations
-→ Tasks
-→ Opportunities
-
-El siguiente paso es permitir que la IA analice **opportunities existentes**.
-
----
-
-## Objetivo principal
-
-Implementar **Opportunity Intelligence Engine**.
-
-Esto permitirá generar recomendaciones desde una opportunity.
-
----
-
-## Nuevo flujo
-
-Opportunity
-↓
-AI Analysis
-↓
-AIRecommendation
-
-Tipos previstos:
-
-pricing_strategy
-reply_strategy
-followup
-risk_flag
-next_action
-
----
-
-## Primera implementación
-
-Añadir comando:
+Current system supports:
 
 python manage.py analyze_opportunity <id>
 
-El comando:
+Next improvements:
 
-1. carga la opportunity
-2. reconstruye contexto
-3. genera recomendaciones
+## 1 Batch Opportunity Analysis
 
----
+Add command:
 
-## Context reconstruction
+python manage.py analyze_open_opportunities
 
-Opportunity
-↓
-source_recommendation
-↓
-proposal
-↓
-inference
-↓
-facts
-↓
-emails
+Behavior:
 
-Esto permite reasoning completo.
+- iterate over open opportunities
+- run analysis
+- generate recommendations
 
----
+## 2 UI Integration
 
-## Resultado esperado
+Opportunity list should display:
 
-El CRM pasa de:
+- recommendation count
+- opportunity stage
+- last analysis status
 
-detectar oportunidades
+Opportunity detail page should show:
 
-a
+Opportunity Intelligence panel:
 
-asistir activamente en cerrar oportunidades.
+Context:
 
----
+- key inference
+- detected signals
+- relevant email snippet
 
-## Verificaciones iniciales
+Recommendations:
 
-Antes de empezar:
+- followup
+- risk_flag
+- next_action
 
-cd ~/OptiGrid_Project/og_pilot/optigrid_crm
-source .venv/bin/activate
+## 3 Recommendation Materialization
 
-python manage.py check
-python manage.py runserver
+Allow specific opportunity recommendations to become tasks.
 
-Verificar:
+Example:
 
-/recommendations/
-/tasks/
-/opportunities/
+followup → CRMTask
 
+But only via explicit user action.
+
+## 4 Observability
+
+Add command:
+
+python manage.py crm_pipeline_report
+
+Include opportunity metrics:
+
+- opportunities analyzed
+- recommendations generated
+- reuse ratio
+
+Goal:
+
+Visibility into Opportunity Intelligence effectiveness.

@@ -1,103 +1,67 @@
-# OptiGrid CRM — Current Handoff
+# OptiGrid CRM — Current State
 
-Fecha: 2026-03-12
+## System Status
 
-## Estado actual
+Pipeline is fully operational:
 
-La capa Opportunity Operations está completada.
+Email → Facts → Inferences → Proposals → Recommendations → Tasks → Opportunities
 
-El sistema ya puede:
+Opportunity Intelligence Layer V1 has been added.
 
-- detectar señales comerciales
-- generar recomendaciones
-- materializar tareas
-- crear oportunidades
-- operar pipeline de ventas
+## New Capability
 
----
+Command:
 
-## Componentes operativos
+python manage.py analyze_opportunity <id>
 
-### Opportunity model
+The command:
 
-apps/opportunities/models.py
+1. Reconstructs opportunity context
+2. Traverses lineage backwards
+3. Extracts signals from:
 
-Incluye:
+- inferences
+- facts
+- emails
 
-source_task
-source_recommendation
-stage
-estimated_value
-confidence
+4. Generates new AI recommendations.
 
----
+## Context Reconstruction
 
-### Opportunity board
+Current lineage model:
 
-Endpoint:
-
-/opportunities/
-
-UI:
-
-pipeline board
-stage transitions
-KPI dashboard
-
----
-
-### Metrics
-
-KPIs calculados en:
-
-opportunities_list_view
-
-Incluyen:
-
-total opportunities
-pipeline estimated value
-average confidence
-stage distribution
-
----
-
-## Arquitectura actual
-
-EmailMessage
-↓
-FactRecord
-↓
-InferenceRecord
-↓
-CRMUpdateProposal
-↓
 AIRecommendation
-↓
-CRMTask
-↓
-Opportunity
+→ InferenceRecord
+→ FactRecord
+→ EmailMessage
 
----
+Example:
 
-## Estado de estabilidad
+Email:
+"Ahora no, escríbeme en mayo"
 
-Sistema funcional.
+Fact:
+timing_statement
 
-Validado con:
+Inference:
+next_best_action = follow_up_later
 
-python manage.py check
-python manage.py runserver
-
----
-
-## Próxima evolución recomendada
-
-Opportunity Intelligence Layer.
-
-Permitir análisis IA sobre oportunidades para generar:
-
-pricing_strategy
-next_action
+Recommendation:
 followup
-risk_flags
 
+## Key Files
+
+apps/opportunities/management/commands/analyze_opportunity.py  
+apps/opportunities/services/context_builder.py  
+
+## Stability
+
+Stable.
+
+No existing pipeline components were modified.
+
+## Next Logical Steps
+
+1. Batch opportunity analysis
+2. UI integration
+3. Recommendation materialization rules
