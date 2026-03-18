@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Prioritized Opportunities · OptiGrid CRM</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f6f7f9; color: #1f2937; }
+    .page { max-width: 1400px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 18px; }
+    .title h1 { margin: 0; font-size: 28px; }
+    .title p { margin: 6px 0 0 0; color: #6b7280; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+    .filters { padding: 16px; border-bottom: 1px solid #e5e7eb; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .filters select, .filters button, .filters label { font-size: 14px; }
+    .filters select { padding: 8px 10px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; }
+    .filters button { padding: 8px 12px; border-radius: 8px; border: 0; background: #111827; color: #fff; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid #f0f2f4; font-size: 14px; }
+    th { background: #f9fafb; color: #374151; font-weight: 700; }
+    tr:hover td { background: #fcfcfd; }
+    .muted { color: #6b7280; }
+    .stack { display: flex; flex-direction: column; gap: 6px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1; }
+    .badge-high { background: #fee2e2; color: #991b1b; }
+    .badge-medium { background: #fef3c7; color: #92400e; }
+    .badge-monitor { background: #dbeafe; color: #1d4ed8; }
+    .badge-low { background: #e5e7eb; color: #374151; }
+    .badge-risk { background: #fce7f3; color: #9d174d; }
+    .badge-action { background: #dcfce7; color: #166534; }
+    .badge-status { background: #ede9fe; color: #5b21b6; }
+    .badge-auto { background: #cffafe; color: #155e75; }
+    .score { font-size: 24px; font-weight: 800; }
+    .empty { padding: 30px; text-align: center; color: #6b7280; }
+    .subline { font-size: 12px; color: #6b7280; }
+    .kpi { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+    .kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 14px 16px; min-width: 170px; }
+    .kpi-card .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+    .kpi-card .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
+    .link-btn { display: inline-block; padding: 6px 10px; border-radius: 8px; background: #111827; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; }
+    .mini-list { margin-top: 6px; }
+    .mini-item { font-size: 12px; color: #4b5563; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="title">
+        <h1>Prioritized Opportunities</h1>
+        <p>Analytical pipeline view prepared for future autotasking.</p>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-card">
+        <div class="label">Visible opportunities</div>
+        <div class="value">{{ stats.visible_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">High priority</div>
+        <div class="value">{{ stats.high_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Blocked execution</div>
+        <div class="value">{{ stats.blocked_count }}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <form method="get" class="filters">
+        <label>
+          Stage
+          <select name="stage">
+            {% for value, label in stage_choices %}
+              <option value="{{ value }}" {% if selected_stage == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>
+          <input type="checkbox" name="needs_attention" value="1" {% if needs_attention_only %}checked{% endif %}>
+          Needs attention only
+        </label>
+
+        <button type="submit">Apply</button>
+      </form>
+
+      {% if rows %}
+      <table>
+        <thead>
+          <tr>
+            <th>Opportunity</th>
+            <th>Score</th>
+            <th>Priority</th>
+            <th>Risks</th>
+            <th>Next actions</th>
+            <th>Execution</th>
+            <th>Activity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>
+              <div class="stack">
+                <strong>{{ row.title }}</strong>
+                <span class="muted">{{ row.company_name|default:"—" }}</span>
+                <span class="subline">Stage: {{ row.stage }} · Confidence: {{ row.confidence|floatformat:2 }}</span>
+                <span class="subline">
+                  Recommendations: {{ row.active_recommendation_count }} ·
+                  Open tasks: {{ row.open_task_count }}
+                  {% if row.auto_task_count %}
+                    · Auto tasks: {{ row.auto_task_count }}
+                  {% endif %}
+                </span>
+                <div>
+                  <a class="link-btn" href="{% url 'opportunities_ui:opportunity_tasks' row.opportunity_id %}">View tasks</a>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="stack">
+                <span class="score">{{ row.relevance_score }}</span>
+                <span class="subline">
+                  {% if row.estimated_value %}
+                    €{{ row.estimated_value }}
+                  {% else %}
+                    no estimated value
+                  {% endif %}
+                </span>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-{{ row.priority_bucket }}">{{ row.priority_bucket }}</span>
+            </td>
+            <td>
+              <div class="badges">
+                {% if row.risk_flags %}
+                  {% for flag in row.risk_flags %}
+                    <span class="badge badge-risk">{{ flag }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </div>
+            </td>
+            <td>
+              <div class="badges">
+                {% if row.next_actions %}
+                  {% for action in row.next_actions %}
+                    <span class="badge badge-action">{{ action }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </div>
+            </td>
+            <td>
+              <div class="stack">
+                <span class="badge badge-status">{{ row.execution_status }}</span>
+                {% if row.auto_task_count %}
+                  <span class="badge badge-auto">auto: {{ row.auto_task_count }}</span>
+                {% endif %}
+                <span class="subline">Overdue tasks: {{ row.overdue_task_count }}</span>
+
+                {% if row.auto_tasks %}
+                <div class="mini-list">
+                  {% for task in row.auto_tasks|slice:":2" %}
+                    <div class="mini-item">
+                      #{{ task.id }} · {{ task.task_type }} · {{ task.status }}
+                    </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </td>
+            <td>
+              <div class="stack">
+                <span class="subline">
+                  {% if row.days_since_last_interaction is not None %}
+                    Last interaction {{ row.days_since_last_interaction }} day(s) ago
+                  {% else %}
+                    No interaction tracked
+                  {% endif %}
+                </span>
+                <span class="subline">
+                  {% if row.last_analyzed_at %}
+                    Analyzed: {{ row.last_analyzed_at }}
+                  {% else %}
+                    Never analyzed
+                  {% endif %}
+                </span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">No opportunities match the current filters.</div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

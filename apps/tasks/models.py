@@ -20,6 +20,19 @@ class CRMTask(models.Model):
         ("pricing_review", "Pricing review"),
     ]
 
+    SOURCE_CHOICES = [
+        ("manual", "Manual"),
+        ("auto", "Auto"),
+    ]
+
+    opportunity = models.ForeignKey(
+        "opportunities.Opportunity",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tasks",
+    )
+
     source_recommendation = models.ForeignKey(
         "recommendations.AIRecommendation",
         on_delete=models.SET_NULL,
@@ -34,6 +47,13 @@ class CRMTask(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="open")
     priority = models.CharField(max_length=20, default="normal")
     due_at = models.DateTimeField(null=True, blank=True)
+
+    source = models.CharField(
+        max_length=20,
+        choices=SOURCE_CHOICES,
+        default="manual",
+    )
+    source_action = models.CharField(max_length=100, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

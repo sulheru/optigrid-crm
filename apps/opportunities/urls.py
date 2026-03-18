@@ -1,10 +1,11 @@
 from django.urls import path
 
-from .views import list_opportunities, transition_opportunity_stage
-
-app_name = "opportunities"
+from apps.opportunities.views_prioritized import (
+    opportunity_tasks_view,
+    prioritized_opportunities_view,
+)
 
 urlpatterns = [
-    path("", list_opportunities, name="list"),
-    path("<int:pk>/transition/", transition_opportunity_stage, name="transition"),
+    path("prioritized/", prioritized_opportunities_view, name="prioritized_opportunities"),
+    path("<int:pk>/tasks/", opportunity_tasks_view, name="opportunity_tasks"),
 ]

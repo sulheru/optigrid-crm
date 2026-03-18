@@ -32,4 +32,9 @@ urlpatterns = [
 
     path("opportunities/<int:pk>/set-stage/", opportunity_set_stage_view, name="opportunity_set_stage"),
     path("opportunities/", opportunities_list_view, name="opportunities"),
+
+    path(
+        "opportunities/",
+        include(("apps.opportunities.urls", "opportunities"), namespace="opportunities_ui"),
+    ),
 ]

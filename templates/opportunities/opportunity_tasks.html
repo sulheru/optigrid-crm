@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Opportunity Tasks · OptiGrid CRM</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f6f7f9; color: #1f2937; }
+    .page { max-width: 1200px; margin: 0 auto; }
+    .header { margin-bottom: 18px; }
+    .header h1 { margin: 0 0 6px 0; }
+    .header p { margin: 0; color: #6b7280; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+    .link-btn { display: inline-block; padding: 8px 12px; border-radius: 8px; background: #111827; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; margin-bottom: 18px; }
+    .section { padding: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .stat { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+    .stat .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+    .stat .value { font-size: 22px; font-weight: 800; margin-top: 6px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid #f0f2f4; font-size: 14px; }
+    th { background: #f9fafb; color: #374151; font-weight: 700; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1; }
+    .badge-auto { background: #cffafe; color: #155e75; }
+    .badge-manual { background: #e5e7eb; color: #374151; }
+    .badge-status { background: #ede9fe; color: #5b21b6; }
+    .badge-priority { background: #dcfce7; color: #166534; }
+    .muted { color: #6b7280; }
+    .empty { padding: 24px; color: #6b7280; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="header">
+        <h1>{{ opportunity.title }}</h1>
+        <p>{{ opportunity.company_name|default:"—" }} · stage {{ opportunity.stage }} · score {{ priority_row.relevance_score }}</p>
+      </div>
+      <div>
+        <a class="link-btn" href="{% url 'opportunities_ui:prioritized_opportunities' %}">Back to prioritized view</a>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="grid">
+        <div class="stat">
+          <div class="label">Priority</div>
+          <div class="value">{{ priority_row.priority_bucket }}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Open tasks</div>
+          <div class="value">{{ open_tasks_count }}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Auto tasks</div>
+          <div class="value">{{ auto_tasks_count }}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Execution</div>
+          <div class="value">{{ priority_row.execution_status }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      {% if tasks %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Task</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Source</th>
+            <th>Source action</th>
+            <th>Priority</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+          <tr>
+            <td>#{{ task.id }}</td>
+            <td>
+              <strong>{{ task.title }}</strong>
+              {% if task.description %}
+                <div class="muted">{{ task.description|truncatechars:120 }}</div>
+              {% endif %}
+            </td>
+            <td>{{ task.task_type }}</td>
+            <td><span class="badge badge-status">{{ task.status }}</span></td>
+            <td>
+              {% if task.source == "auto" %}
+                <span class="badge badge-auto">auto</span>
+              {% else %}
+                <span class="badge badge-manual">manual</span>
+              {% endif %}
+            </td>
+            <td>{{ task.source_action|default:"—" }}</td>
+            <td><span class="badge badge-priority">{{ task.priority }}</span></td>
+            <td>
+              {% if task.due_at %}
+                {{ task.due_at }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">No tasks found for this opportunity.</div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

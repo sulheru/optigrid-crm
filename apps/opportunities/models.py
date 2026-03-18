@@ -29,9 +29,16 @@ class Opportunity(models.Model):
     title = models.CharField(max_length=255)
     company_name = models.CharField(max_length=255, blank=True)
     stage = models.CharField(max_length=30, choices=STATUS_CHOICES, default="new")
-    estimated_value = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    estimated_value = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
     confidence = models.FloatField(default=0.0)
     summary = models.TextField(blank=True)
+
+    last_analyzed_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
