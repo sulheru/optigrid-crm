@@ -1,80 +1,62 @@
-## Session — 2026-03-16
+# SESSION LOG — 2026-03-18
 
-### Objective
-Implement **Opportunity Intelligence Layer V1** allowing opportunities to be analyzed using full CRM pipeline context.
+## Objetivo de la sesión
 
-### Work Completed
+Implementar análisis automático de oportunidades abiertas.
 
-Implemented management command:
+---
 
-    python manage.py analyze_opportunity <id>
+## Trabajo realizado
 
-The command now reconstructs full context chain:
+1. Creación de comando batch:
+   - analyze_open_opportunities
 
-Opportunity
-→ source_task
-→ source_recommendation
-→ inference
-→ fact
-→ email
+2. Refactor:
+   - extracción de lógica a servicio común
 
-Context builder now supports reverse lineage reconstruction:
+3. Resolución de errores:
+   - campo incorrecto (opportunity_status → stage)
+   - paso de id vs objeto
+   - context como objeto vs dict
 
-InferenceRecord
-→ FactRecord (via source_type=fact_record)
-→ EmailMessage (via source_type=email_message)
+4. Implementación final:
+   - motor de recomendaciones activo
+   - dedupe
+   - reuse
 
-### Example Output
+---
 
-Opportunity #1 context:
+## Resultado
 
-inferences: 1
-facts: 1
-emails: 1
+Sistema capaz de:
 
-Detected reasoning chain:
+- analizar oportunidades en batch
+- generar recomendaciones automáticamente
+- evitar duplicación
+- reutilizar correctamente
 
-Email:
-"Ahora no, escríbeme en mayo y lo retomamos."
+---
 
-Fact extracted:
-timing_statement
+## Validación
 
-Inference derived:
-next_best_action = follow_up_later (may)
+Ejecución repetida confirma:
 
-Generated recommendations:
+- primera ejecución → crea
+- siguientes → reutiliza
 
-- followup
-- risk_flag
-- next_action
+---
 
-### Improvements Added
+## Estado emocional del sistema 😄
 
-Context builder improvements:
+Primer comportamiento realmente "autónomo" del CRM.
 
-- scope_type alias normalization
-- reverse lineage reconstruction
-- safe model resolution
-- deduplicated entity loading
-- email/thread discovery
-- contextual summary generation
+Ya no es solo memoria.
+Empieza a ser operador.
 
-### Result
+---
 
-Opportunity Intelligence Layer V1 is now operational.
+## Conclusión
 
-Opportunities can be analyzed using:
+Se ha alcanzado el primer milestone real de:
 
-- email signals
-- extracted facts
-- derived inferences
-- existing recommendations
-- task context
-
-without breaking the existing CRM pipeline.
-
-### Status
-
-STABLE
-Ready for batch analysis and UI integration.
+CRM IA-first operativo

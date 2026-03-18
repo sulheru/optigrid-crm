@@ -1,69 +1,78 @@
-# Next Session — Opportunity Intelligence Expansion
+# NEXT SESSION — Opportunity Intelligence V2
 
-Current system supports:
+## Objetivo
 
-python manage.py analyze_opportunity <id>
+Convertir Opportunity Intelligence en un sistema autónomo.
 
-Next improvements:
+---
 
-## 1 Batch Opportunity Analysis
+## Prioridad 1 — Automatización
 
-Add command:
+Implementar ejecución automática:
 
-python manage.py analyze_open_opportunities
+### Opción A (simple)
+- Django management command vía cron
 
-Behavior:
+### Opción B (recomendada)
+- Celery periodic task
+- Intervalo configurable (ej: cada 15 min)
 
-- iterate over open opportunities
-- run analysis
-- generate recommendations
+---
 
-## 2 UI Integration
+## Prioridad 2 — Tracking
 
-Opportunity list should display:
+Añadir campo a Opportunity:
 
-- recommendation count
-- opportunity stage
-- last analysis status
+- last_analyzed_at
 
-Opportunity detail page should show:
+Evitar análisis redundante innecesario.
 
-Opportunity Intelligence panel:
+---
 
-Context:
+## Prioridad 3 — Inteligencia
 
-- key inference
-- detected signals
-- relevant email snippet
+Mejorar lógica de análisis:
 
-Recommendations:
+- usar más señales del contexto:
+  - inference_type
+  - fact_type
+  - timing
+  - engagement
+- scoring de oportunidad
+- detección de "stalled opportunities"
 
-- followup
-- risk_flag
-- next_action
+---
 
-## 3 Recommendation Materialization
+## Prioridad 4 — Priorización
 
-Allow specific opportunity recommendations to become tasks.
+Crear:
 
-Example:
+Daily Prioritization Layer
 
-followup → CRMTask
+Salida:
 
-But only via explicit user action.
+- Top oportunidades a trabajar hoy
+- Alertas
+- Acciones sugeridas
 
-## 4 Observability
+---
 
-Add command:
+## Objetivo final
 
-python manage.py crm_pipeline_report
+Pasar de:
 
-Include opportunity metrics:
+"comando manual de análisis"
 
-- opportunities analyzed
-- recommendations generated
-- reuse ratio
+a:
 
-Goal:
+"sistema que monitoriza y actúa automáticamente"
 
-Visibility into Opportunity Intelligence effectiveness.
+---
+
+## Regla clave
+
+Mantener:
+
+- trazabilidad
+- no duplicación
+- separación hecho / inferencia / decisión

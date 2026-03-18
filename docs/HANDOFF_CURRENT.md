@@ -1,67 +1,75 @@
-# OptiGrid CRM — Current State
+# HANDOFF — CURRENT STATE
 
-## System Status
+## Estado general
 
-Pipeline is fully operational:
+El sistema CRM IA-first está completamente funcional a nivel de pipeline:
 
-Email → Facts → Inferences → Proposals → Recommendations → Tasks → Opportunities
+Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
 
-Opportunity Intelligence Layer V1 has been added.
+Se ha añadido una nueva capa:
 
-## New Capability
+## Opportunity Intelligence Layer V1
 
-Command:
+Capacidad:
 
+- Analizar oportunidades abiertas
+- Generar recomendaciones automáticamente
+- Evitar duplicados
+- Reutilizar recomendaciones existentes
+
+---
+
+## Componentes clave
+
+### Servicio central
+apps/opportunities/services/opportunity_analyzer.py
+
+Responsabilidad:
+- Ejecutar lógica de análisis
+- Generar/reutilizar recomendaciones
+
+---
+
+### Comandos
+
+#### Individual
 python manage.py analyze_opportunity <id>
 
-The command:
+#### Batch
+python manage.py analyze_open_opportunities
 
-1. Reconstructs opportunity context
-2. Traverses lineage backwards
-3. Extracts signals from:
+---
 
-- inferences
-- facts
-- emails
+## Estado técnico
 
-4. Generates new AI recommendations.
+- Batch analysis funcionando
+- Dedupe funcionando
+- Context builder integrado
+- No errores runtime
+- Sistema estable
 
-## Context Reconstruction
+---
 
-Current lineage model:
+## Limitaciones actuales
 
-AIRecommendation
-→ InferenceRecord
-→ FactRecord
-→ EmailMessage
+- No ejecución automática (manual command)
+- Reglas de análisis básicas (heurísticas simples)
+- No persistencia de métricas de análisis
 
-Example:
+---
 
-Email:
-"Ahora no, escríbeme en mayo"
+## Riesgos
 
-Fact:
-timing_statement
+- Lógica aún simple (no LLM-driven todavía)
+- Falta priorización global entre oportunidades
+- No hay scheduling automático
 
-Inference:
-next_best_action = follow_up_later
+---
 
-Recommendation:
-followup
+## Estado real
 
-## Key Files
+Sistema listo para:
 
-apps/opportunities/management/commands/analyze_opportunity.py  
-apps/opportunities/services/context_builder.py  
-
-## Stability
-
-Stable.
-
-No existing pipeline components were modified.
-
-## Next Logical Steps
-
-1. Batch opportunity analysis
-2. UI integration
-3. Recommendation materialization rules
+→ Automatización completa (V2)
+→ Integración con eventos
+→ Prioritization layer

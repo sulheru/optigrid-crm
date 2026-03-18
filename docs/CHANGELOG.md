@@ -1,122 +1,28 @@
-# OptiGrid CRM — CHANGELOG
+# CHANGELOG — OptiGrid CRM
 
-## 2026-03-09
-
-### Recommendation Operations Layer
-
-Se implementa la primera capa operativa del CRM IA-first.
-
-Las recomendaciones generadas por el motor de inferencias ahora pueden
-convertirse en acciones reales desde la interfaz.
-
-### Cambios principales
-
-#### UI
-
-Nueva operativa en:
-
-/recommendations/
-
-Acciones disponibles:
-
-- Create Task
-- Dismiss Recommendation
-
-Las acciones modifican el estado de `AIRecommendation`.
-
-Estados operativos:
-
-- new
-- materialized
-- dismissed
-- executed
-
-#### Tasks UI
-
-La vista `/tasks/` ahora permite cambiar el estado de las tareas.
-
-Acciones:
-
-- Start → in_progress
-- Done → done
-- Dismiss → dismissed
-- Reopen → open
-
-Esto convierte la lista de tareas en un panel operativo.
-
-#### Mapping Recommendation → Task
-
-Se añade un mapeo explícito entre:
-
-AIRecommendation.recommendation_type  
-CRMTask.task_type
-
-Esto evita inconsistencias entre el motor de recomendaciones y el modelo
-de tareas.
-
-Ejemplos:
-
-reply_strategy → reply_email  
-followup → follow_up  
-qualification → review_manually  
-pricing_strategy → review_manually
-
-#### CLI
-
-Nuevo comando:
-
-python manage.py crm_pipeline_report
-
-Permite validar rápidamente el estado del pipeline.
-
-Incluye:
-
-- emails
-- facts
-- inferences
-- proposals
-- recommendations
-- tasks
-- opportunities
-
-También muestra estadísticas por tipo y estado.
-
-### Estado actual del pipeline
-
-emails=48  
-facts=45  
-inferences=66  
-proposals=21  
-recommendations=34  
-tasks=34  
-opportunities=3
-
-La arquitectura IA-first está completamente operativa.
-
-
-## 2026-03-16
+## 2026-03-18 — Opportunity Intelligence V1 (Batch Analysis)
 
 ### Added
-Opportunity Intelligence Layer V1
+- Nuevo comando: `analyze_open_opportunities`
+- Servicio central: `analyze_opportunity_core`
+- Generación automática de recomendaciones sobre oportunidades abiertas:
+  - followup
+  - next_action
+  - risk_flag
 
-New command:
+### Improved
+- Refactor de `analyze_opportunity` para usar lógica compartida
+- Eliminación de duplicación de lógica de análisis
 
-    python manage.py analyze_opportunity <id>
+### Behavior
+- Sistema ahora analiza oportunidades en batch
+- Detección de señales desde contexto reconstruido
+- Dedupe de recomendaciones existente
 
-Features:
+### Validated
+- No duplicación de recomendaciones
+- Reuse correcto en ejecuciones sucesivas
+- Pipeline intacto (no rompe flujo existente)
 
-- reconstructs full context chain
-- derives reasoning from email → fact → inference
-- generates opportunity-level recommendations
-- prevents duplicate recommendations
-- reuses existing ones when applicable
-
-Context builder enhancements:
-
-- alias normalization for scope_type
-- reverse lineage reconstruction
-- inference → fact → email tracing
-- contextual summary generation
-
-### Result
-CRM opportunities can now be analyzed with full pipeline awareness.
+### Notes
+Primera versión del Opportunity Intelligence Layer operando de forma semiautomática.
