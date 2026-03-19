@@ -10,6 +10,38 @@ from apps.opportunities.services.context_builder import build_opportunity_analys
 from apps.tasks.models import CRMTask
 
 
+ACTION_LABELS = {
+    "schedule_followup": "Schedule follow-up",
+    "advance_opportunity": "Advance opportunity",
+    "review_pricing_strategy": "Review pricing strategy",
+    "review_opportunity_stall": "Review stalled opportunity",
+    "define_next_action": "Define next action",
+}
+
+RISK_FLAG_LABELS = {
+    "stale_interaction": "Stale interaction",
+    "no_open_task": "No open task",
+    "overdue_task": "Overdue task",
+    "pricing_risk": "Pricing risk",
+    "relationship_risk": "Relationship risk",
+}
+
+EXECUTION_STATUS_LABELS = {
+    "blocked": "Blocked",
+    "auto_task_open": "Auto task open",
+    "task_open": "Task open",
+    "suggested": "Suggested",
+    "no_action": "No action",
+}
+
+PRIORITY_LABELS = {
+    "high": "High",
+    "medium": "Medium",
+    "monitor": "Monitor",
+    "low": "Low",
+}
+
+
 def _as_text(value: Any) -> str:
     if value is None:
         return ""
@@ -56,6 +88,14 @@ def _days_since(value):
 def _contains_any(text: str, needles: list[str]) -> bool:
     haystack = _as_text(text).lower()
     return any(needle in haystack for needle in needles)
+
+
+def _labelize(values: list[str], mapping: dict[str, str]) -> list[str]:
+    return [mapping.get(v, v.replace("_", " ").title()) for v in values]
+
+
+def _label(value: str, mapping: dict[str, str]) -> str:
+    return mapping.get(value, value.replace("_", " ").title())
 
 
 def _stage_base_score(stage: str) -> int:
@@ -353,18 +393,25 @@ class OpportunityPriorityRow:
             "estimated_value": self.estimated_value,
             "relevance_score": self.relevance_score,
             "priority_bucket": self.priority_bucket,
+            "priority_label": _label(self.priority_bucket, PRIORITY_LABELS),
             "risk_flags": self.risk_flags,
+            "risk_flag_labels": _labelize(self.risk_flags, RISK_FLAG_LABELS),
             "next_actions": self.next_actions,
+            "next_action_labels": _labelize(self.next_actions, ACTION_LABELS),
             "open_task_count": self.open_task_count,
             "overdue_task_count": self.overdue_task_count,
             "auto_task_count": self.auto_task_count,
             "active_recommendation_count": self.active_recommendation_count,
             "execution_status": self.execution_status,
+            "execution_status_label": _label(self.execution_status, EXECUTION_STATUS_LABELS),
             "last_contact_at": self.last_contact_at,
             "days_since_last_interaction": self.days_since_last_interaction,
             "last_analyzed_at": self.last_analyzed_at,
             "auto_tasks": self.auto_tasks,
             "open_tasks": self.open_tasks,
+            "has_risk": len(self.risk_flags) > 0,
+            "has_autotasks": self.auto_task_count > 0,
+            "has_open_tasks": self.open_task_count > 0,
         }
 
 

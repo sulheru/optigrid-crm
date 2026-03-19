@@ -1,152 +1,192 @@
-# SESSION_LOG.md
 
-## Sesión
-2026-03-18 — OptiGrid CRM — Opportunity Intelligence V2, Prioritized UI y Autotasking V1
+SESSION_LOG
+Session date
 
-## Objetivo de la sesión
-Evolucionar Opportunity Intelligence desde análisis manual hacia un sistema más autónomo con:
-- análisis automático/preparado para scheduling
-- tracking de análisis por oportunidad
-- scoring simple con señales reales
-- base de priorización operativa
-- UI de oportunidades priorizadas
-- autotasking activable/desactivable
+2026-03-19
 
-## Trabajo realizado
+Session focus
 
-### 1. Opportunity Intelligence V2
-Se consolidó la capa de análisis de oportunidades abiertas con:
-- `last_analyzed_at` en `Opportunity`
-- lógica de `should_analyze()`
-- scoring interpretable
-- `risk_flags`
-- `next_actions`
-- dedupe/reuse de recomendaciones alineado con estados reales
+Refinement, semantic clarity, operational control.
 
-### 2. Automatización preparada
-Se dejó preparada la estructura para ejecución periódica:
-- task Celery para análisis batch de oportunidades abiertas
-- settings configurables para frecuencia, batch y ventana mínima de reanálisis
+Starting point
 
-### 3. Prioritized Opportunities UI + Backend
-Se implementó una nueva vista de priorización:
-- ruta `/opportunities/prioritized/`
-- backend de read model de priorización
-- ordenación por score
-- visualización de:
-  - prioridad
-  - riesgos
-  - siguientes acciones
-  - estado de ejecución
-  - fecha de último análisis
-  - tareas abiertas
-  - autotasks
+System already had:
 
-### 4. Autotasking V1
-Se implementó autotasking con feature flag:
-- `AUTO_TASKING_ENABLED`
-- materialización automática de tasks a partir de `next_actions`
-- dedupe de tasks automáticas
-- umbral mínimo por prioridad
-- trazabilidad con:
-  - `source = manual | auto`
-  - `source_action`
-
-### 5. Trazabilidad UI de tasks
-Se implementó:
-- enlace desde oportunidades priorizadas a tasks de la oportunidad
-- vista `/opportunities/<id>/tasks/`
-- visualización de tasks con:
-  - tipo
-  - estado
-  - source
-  - source_action
-  - prioridad
-  - due date
-
-## Archivos tocados o creados
-- `apps/opportunities/models.py`
-- `apps/opportunities/migrations/0004_opportunity_last_analyzed_at.py`
-- `apps/opportunities/services/opportunity_analyzer.py`
-- `apps/opportunities/services/prioritization.py`
-- `apps/opportunities/services/autotasker.py`
-- `apps/opportunities/tasks.py`
-- `apps/opportunities/views_prioritized.py`
-- `apps/opportunities/urls.py`
-- `apps/opportunities/management/commands/analyze_open_opportunities.py`
-- `apps/tasks/models.py`
-- `config/celery.py`
-- `config/urls.py`
-- `config/settings.py`
-- `templates/opportunities/prioritized.html`
-- `templates/opportunities/opportunity_tasks.html`
-
-## Validaciones realizadas
-
-### Analyzer manual
-Con `AUTO_TASKING_ENABLED = False`:
-- análisis correcto
-- scoring correcto
-- dedupe/reuse correcto
-- sin creación de tasks
-
-Con `AUTO_TASKING_ENABLED = True`:
-- Opportunity 1 → 2 tasks creadas
-- Opportunity 4 → 1 task creada
-- Opportunity 5 → 0 tasks creadas por quedar en `monitor`
-
-### UI validada
-La vista priorizada mostró correctamente:
-- Opportunity 1 con `auto_task_open` y `auto: 2`
-- Opportunity 4 con `auto_task_open` y `auto: 1`
-- Opportunity 5 con `suggested`
-
-La vista de detalle de tasks de Opportunity 1 mostró:
-- 2 tasks abiertas
-- ambas `source = auto`
-- `source_action` visible
-- trazabilidad correcta
-
-## Estado final al cierre
-El sistema queda funcionando con:
-
-Pipeline base:
-Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
-
-Nueva capacidad operativa:
 Opportunity Intelligence V2
-- análisis priorizado
-- panel de oportunidades priorizadas
-- autotasking activable/desactivable
-- trazabilidad de tasks automáticas
 
-## Pendientes recomendados para próxima sesión
-1. Pulido semántico de labels:
-- `execution_status`
-- `risk_flags`
-- `next_actions`
+Prioritized Opportunities UI
 
-2. Ajuste de mapping:
-- `advance_opportunity` debería mapear mejor a `opportunity_review`
-- mantener `define_next_action -> review_manually`
-- mantener `schedule_followup -> follow_up`
+Autotasking V1
 
-3. Mejoras de UI:
-- labels legibles en vez de slugs
-- filtros por:
-  - auto tasks
-  - blocked
-  - suggested
-  - no_action
+Goal of session:
 
-4. Gobernanza futura:
-- revocación o control de autotasks
-- trazabilidad más explícita recommendation -> task -> opportunity
+improve semantics
 
-## Nota de cierre
-La sesión cierra una fase importante:
-- Opportunity Intelligence V2 implementado
-- priorización operativa visible en UI
-- Autotasking V1 funcionando con control por flag
+improve readability
 
-El CRM ya se comporta como un sistema semiautónomo de análisis y ejecución comercial.
+improve operational filtering and visibility
+
+prepare system for governance, without rebuilding architecture
+
+Work completed
+A. Prioritization semantics
+
+Reviewed and stabilized prioritization presentation layer:
+
+added labels for priority buckets
+
+added labels for risk flags
+
+added labels for next actions
+
+added labels for execution status
+
+B. Prioritized opportunities UI
+
+Updated prioritized view to support:
+
+high only filter
+
+with autotasks filter
+
+no action filter
+
+with risk filter
+
+Improved UI presentation:
+
+AUTO badge
+
+BLOCKED badge
+
+SUGGESTED badge
+
+cleaner semantic rendering
+
+C. Task detail UI
+
+Updated opportunity task detail page to improve governance readability:
+
+AUTO / MANUAL badges
+
+readable task type display
+
+readable source action display
+
+execution summary
+
+risk and next action context blocks
+
+D. Stability incident and recovery
+
+A partial overwrite of prioritization.py caused import failure:
+
+build_opportunity_priority_row could not be imported
+
+Django runserver failed during URL loading
+
+Recovery action:
+
+rewrote apps/opportunities/services/prioritization.py completely
+
+restored full module behavior
+
+revalidated imports and runtime
+
+E. Validation
+
+Validation completed successfully:
+
+python manage.py check passed
+
+python manage.py runserver passed
+
+prioritized UI loaded correctly
+
+stage filters loaded correctly
+
+autotasks filter loaded correctly
+
+F. Analyzer validation
+
+Ran:
+
+python manage.py analyze_open_opportunities
+
+Observed:
+
+3 open opportunities analyzed
+
+high-priority opportunities reused existing tasks
+
+monitor opportunity showed no_open_task
+
+no unnecessary autotask creation
+
+task dedupe/reuse working correctly
+
+Summary observed:
+
+opportunities_total: 3
+
+opportunities_analyzed: 3
+
+opportunities_skipped: 0
+
+recommendations_created: 0
+
+recommendations_reused: 3
+
+tasks_created: 0
+
+tasks_reused: 3
+
+Architectural result
+
+The system now clearly supports:
+
+Analytical layer
+
+facts
+
+inferences
+
+recommendations
+
+Decision layer
+
+scoring
+
+priority buckets
+
+risk flags
+
+next actions
+
+Partial execution layer
+
+autotasking
+
+execution state
+
+source tracing
+
+operational UI visibility
+
+This session successfully improved the system from a recommendation engine into a more governable operational CRM core.
+
+Files updated
+
+apps/opportunities/services/prioritization.py
+
+apps/opportunities/views_prioritized.py
+
+templates/opportunities/prioritized.html
+
+templates/opportunities/opportunity_tasks.html
+
+End state
+
+Stable.
+Working.
+Ready for Governance V3 baseline in the next session.

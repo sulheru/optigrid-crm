@@ -1,87 +1,67 @@
-# CHANGELOG.md
+# CHANGELOG
 
-## 2026-03-18 — OPPORTUNITY INTELLIGENCE V2
-Se refactorizó el análisis de oportunidades abiertas para evolucionar de comando manual a servicio reutilizable.
+## 2026-03-19 — Opportunity Intelligence V2 refinement pass
 
-Cambios:
-- `last_analyzed_at` en `Opportunity`
-- `should_analyze()` para evitar reanálisis innecesario
-- scoring interpretable
-- `risk_flags`
-- `next_actions`
-- mantenimiento de dedupe/reuse de recomendaciones
+### Added
+- Human-readable semantic labels for prioritized opportunities:
+  - priority labels
+  - risk flag labels
+  - next action labels
+  - execution status labels
+- Backend filters for prioritized opportunities UI:
+  - high only
+  - with autotasks
+  - no action
+  - with risk
+- Visual badges in prioritized opportunities UI:
+  - AUTO
+  - BLOCKED
+  - SUGGESTED
+- Improved opportunity task detail UI:
+  - AUTO / MANUAL source badges
+  - human-readable task type labels
+  - human-readable source action labels
+  - execution summary block
+  - risk / next action summary cards
 
-Impacto:
-- Opportunity Intelligence pasa a ser una capa analítica real, no solo un comando batch.
+### Changed
+- Rebuilt `apps/opportunities/services/prioritization.py` as a complete, stable module after partial overwrite issue.
+- `views_prioritized.py` now consumes enriched `row.to_dict()` payloads instead of relying on raw slugs in templates.
+- `templates/opportunities/prioritized.html` now renders labels instead of internal slugs.
+- `templates/opportunities/opportunity_tasks.html` now presents clearer operational governance semantics.
 
----
+### Preserved / Verified
+- Existing pipeline remains intact:
 
-## 2026-03-18 — AUTOMATION PREP
-Se preparó la automatización periódica vía Celery para análisis de oportunidades.
+  `Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity`
 
-Cambios:
-- task periódica para analizar oportunidades abiertas
-- settings configurables para frecuencia, batch y recheck window
-- integración con el core existente de análisis
+- Opportunity Intelligence V2 remains active:
+  - scoring
+  - priority buckets
+  - risk flags
+  - next actions
+  - execution status
+  - last_analyzed_at tracking
+- Autotasking V1 remains operational:
+  - threshold by priority
+  - dedupe / reuse
+  - source = auto/manual
+  - source_action tracking
 
-Impacto:
-- el sistema queda preparado para pasar de análisis manual a análisis continuo.
+### Validation
+- `python manage.py check` → OK
+- `python manage.py runserver` → OK
+- Prioritized UI validated on:
+  - `/opportunities/prioritized/`
+  - `?autotasks=1`
+  - `?stage=new`
+  - `?stage=qualified`
+  - `?stage=proposal`
+- `python manage.py analyze_open_opportunities` validated:
+  - opportunities analyzed correctly
+  - tasks reused correctly
+  - monitor opportunities not auto-materialized below threshold
 
----
-
-## 2026-03-18 — PRIORITIZED OPPORTUNITIES UI
-Se implementó una vista de priorización de oportunidades.
-
-Cambios:
-- ruta `/opportunities/prioritized/`
-- score, priority bucket, risk flags y next actions en UI
-- execution status
-- filtros por stage y needs attention
-- KPIs de resumen
-
-Impacto:
-- aparece un panel operativo de lectura para supervisión comercial.
-
----
-
-## 2026-03-18 — AUTOTASKING V1
-Se añadió materialización automática de tasks a partir de `next_actions`, controlada por feature flag.
-
-Cambios:
-- `AUTO_TASKING_ENABLED`
-- `AUTO_TASKING_MIN_PRIORITY`
-- `AUTO_TASKING_ALLOWED_ACTIONS`
-- servicio `autotasker.py`
-- dedupe de autotasks
-- integración con `analyze_opportunity()`
-
-Impacto:
-- el sistema no solo propone acciones, también puede empezar a ejecutarlas.
-
----
-
-## 2026-03-18 — TASK TRACEABILITY
-Se enriqueció `CRMTask` para soportar trazabilidad de automatización.
-
-Cambios:
-- FK `opportunity`
-- campo `source`
-- campo `source_action`
-
-Impacto:
-- se distingue tarea manual de automática.
-- mejora de trazabilidad y de lectura operativa.
-
----
-
-## 2026-03-18 — OPPORTUNITY TASK DETAIL VIEW
-Se implementó vista dedicada de tasks por oportunidad.
-
-Cambios:
-- ruta `/opportunities/<id>/tasks/`
-- detalle de tasks por oportunidad
-- visualización de `source_action`, estado, vencimiento y tipo
-- enlace desde la vista priorizada
-
-Impacto:
-- la UI ya permite inspección operativa real por oportunidad.
+### Notes
+This session focused on refinement, clarity, and control.
+No architectural rebuild was performed.

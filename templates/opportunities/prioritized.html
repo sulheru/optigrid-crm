@@ -79,7 +79,27 @@
 
         <label>
           <input type="checkbox" name="needs_attention" value="1" {% if needs_attention_only %}checked{% endif %}>
-          Needs attention only
+          Needs attention
+        </label>
+
+        <label>
+          <input type="checkbox" name="high" value="1" {% if filters.high %}checked{% endif %}>
+          High only
+        </label>
+
+        <label>
+          <input type="checkbox" name="autotasks" value="1" {% if filters.autotasks %}checked{% endif %}>
+          With autotasks
+        </label>
+
+        <label>
+          <input type="checkbox" name="no_action" value="1" {% if filters.no_action %}checked{% endif %}>
+          No action
+        </label>
+
+        <label>
+          <input type="checkbox" name="risk" value="1" {% if filters.risk %}checked{% endif %}>
+          With risk
         </label>
 
         <button type="submit">Apply</button>
@@ -131,12 +151,12 @@
               </div>
             </td>
             <td>
-              <span class="badge badge-{{ row.priority_bucket }}">{{ row.priority_bucket }}</span>
+              <span class="badge badge-{{ row.priority_bucket }}">{{ row.priority_label }}</span>
             </td>
             <td>
               <div class="badges">
-                {% if row.risk_flags %}
-                  {% for flag in row.risk_flags %}
+                {% if row.risk_flag_labels %}
+                  {% for flag in row.risk_flag_labels %}
                     <span class="badge badge-risk">{{ flag }}</span>
                   {% endfor %}
                 {% else %}
@@ -146,8 +166,8 @@
             </td>
             <td>
               <div class="badges">
-                {% if row.next_actions %}
-                  {% for action in row.next_actions %}
+                {% if row.next_action_labels %}
+                  {% for action in row.next_action_labels %}
                     <span class="badge badge-action">{{ action }}</span>
                   {% endfor %}
                 {% else %}
@@ -157,10 +177,22 @@
             </td>
             <td>
               <div class="stack">
-                <span class="badge badge-status">{{ row.execution_status }}</span>
-                {% if row.auto_task_count %}
-                  <span class="badge badge-auto">auto: {{ row.auto_task_count }}</span>
-                {% endif %}
+                <div class="badges">
+                  <span class="badge badge-status">{{ row.execution_status_label }}</span>
+
+                  {% if row.has_autotasks %}
+                    <span class="badge badge-auto">AUTO</span>
+                  {% endif %}
+
+                  {% if row.execution_status == "blocked" %}
+                    <span class="badge badge-risk">BLOCKED</span>
+                  {% endif %}
+
+                  {% if row.execution_status == "suggested" %}
+                    <span class="badge badge-action">SUGGESTED</span>
+                  {% endif %}
+                </div>
+
                 <span class="subline">Overdue tasks: {{ row.overdue_task_count }}</span>
 
                 {% if row.auto_tasks %}

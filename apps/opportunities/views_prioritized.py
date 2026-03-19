@@ -12,15 +12,33 @@ def prioritized_opportunities_view(request):
     stage = (request.GET.get("stage") or "").strip() or None
     needs_attention_only = request.GET.get("needs_attention") in {"1", "true", "yes"}
 
+    filter_high = request.GET.get("high") == "1"
+    filter_autotasks = request.GET.get("autotasks") == "1"
+    filter_no_action = request.GET.get("no_action") == "1"
+    filter_risk = request.GET.get("risk") == "1"
+
     rows = build_prioritized_opportunities(
         stage=stage,
         needs_attention_only=needs_attention_only,
     )
+    rows = [row.to_dict() for row in rows]
+
+    if filter_high:
+        rows = [r for r in rows if r["priority_bucket"] == "high"]
+
+    if filter_autotasks:
+        rows = [r for r in rows if r["has_autotasks"]]
+
+    if filter_no_action:
+        rows = [r for r in rows if not r["has_open_tasks"]]
+
+    if filter_risk:
+        rows = [r for r in rows if r["has_risk"]]
 
     stats = {
         "visible_count": len(rows),
-        "high_count": len([row for row in rows if row.priority_bucket == "high"]),
-        "blocked_count": len([row for row in rows if row.execution_status == "blocked"]),
+        "high_count": len([r for r in rows if r["priority_bucket"] == "high"]),
+        "blocked_count": len([r for r in rows if r["execution_status"] == "blocked"]),
     }
 
     return render(
@@ -31,6 +49,12 @@ def prioritized_opportunities_view(request):
             "stats": stats,
             "selected_stage": stage or "",
             "needs_attention_only": needs_attention_only,
+            "filters": {
+                "high": filter_high,
+                "autotasks": filter_autotasks,
+                "no_action": filter_no_action,
+                "risk": filter_risk,
+            },
             "stage_choices": [
                 ("", "All"),
                 ("new", "New"),
@@ -43,7 +67,7 @@ def prioritized_opportunities_view(request):
 
 def opportunity_tasks_view(request, pk: int):
     opportunity = get_object_or_404(Opportunity, pk=pk)
-    priority_row = build_opportunity_priority_row(opportunity)
+    priority_row = build_opportunity_priority_row(opportunity).to_dict()
 
     tasks = CRMTask.objects.filter(opportunity=opportunity).order_by("-created_at", "-id")
     open_tasks = [task for task in tasks if task.status in {"open", "in_progress"}]
