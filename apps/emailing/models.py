@@ -1,56 +1,134 @@
 from django.db import models
-from apps.companies.models import Company
-from apps.contacts.models import Contact
 
 
-class EmailThread(models.Model):
+class OutboundEmail(models.Model):
+    TYPE_FIRST_CONTACT = "first_contact"
+    TYPE_FOLLOWUP = "followup"
 
-    external_provider = models.CharField(max_length=50, default="m365")
+    TYPE_CHOICES = [
+        (TYPE_FIRST_CONTACT, "First contact"),
+        (TYPE_FOLLOWUP, "Follow-up"),
+    ]
 
-    external_thread_ref = models.CharField(max_length=255)
+    STATUS_DRAFT = "draft"
+    STATUS_APPROVED = "approved"
+    STATUS_SENT = "sent"
+    STATUS_FAILED = "failed"
 
-    subject = models.CharField(max_length=500)
+    STATUS_CHOICES = [
+        (STATUS_DRAFT, "Draft"),
+        (STATUS_APPROVED, "Approved"),
+        (STATUS_SENT, "Sent"),
+        (STATUS_FAILED, "Failed"),
+    ]
 
-    thread_status = models.CharField(max_length=50, default="open")
+    opportunity = models.ForeignKey(
+        "opportunities.Opportunity",
+        on_delete=models.CASCADE,
+        related_name="outbound_emails",
+    )
 
-    linked_company = models.ForeignKey(
-        Company,
+    source_inbound = models.ForeignKey(
+        "emailing.InboundEmail",
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL
+        related_name="generated_followups",
     )
 
-    linked_contact = models.ForeignKey(
-        Contact,
+    email_type = models.CharField(
+        max_length=30,
+        choices=TYPE_CHOICES,
+        default=TYPE_FIRST_CONTACT,
+    )
+
+    to_email = models.CharField(max_length=255, blank=True, default="")
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_DRAFT,
+    )
+
+    generated_by = models.CharField(max_length=50, default="ai")
+
+    approved_at = models.DateTimeField(null=True, blank=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    failed_at = models.DateTimeField(null=True, blank=True)
+    failure_reason = models.TextField(blank=True, default="")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.subject} [{self.status}] [{self.email_type}]"
+
+
+class InboundEmail(models.Model):
+    STATUS_NEW = "new"
+    STATUS_REVIEWED = "reviewed"
+    STATUS_LINKED = "linked"
+
+    STATUS_CHOICES = [
+        (STATUS_NEW, "New"),
+        (STATUS_REVIEWED, "Reviewed"),
+        (STATUS_LINKED, "Linked"),
+    ]
+
+    REPLY_INTERESTED = "interested"
+    REPLY_NOT_NOW = "not_now"
+    REPLY_NOT_INTERESTED = "not_interested"
+    REPLY_NEEDS_INFO = "needs_info"
+    REPLY_UNCLEAR = "unclear"
+
+    REPLY_TYPE_CHOICES = [
+        (REPLY_INTERESTED, "Interested"),
+        (REPLY_NOT_NOW, "Not now"),
+        (REPLY_NOT_INTERESTED, "Not interested"),
+        (REPLY_NEEDS_INFO, "Needs info"),
+        (REPLY_UNCLEAR, "Unclear"),
+    ]
+
+    opportunity = models.ForeignKey(
+        "opportunities.Opportunity",
+        on_delete=models.CASCADE,
+        related_name="inbound_emails",
+    )
+
+    source_outbound = models.ForeignKey(
+        "emailing.OutboundEmail",
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL
+        related_name="simulated_replies",
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    from_email = models.CharField(max_length=255, blank=True, default="")
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
 
-
-class EmailMessage(models.Model):
-
-    thread = models.ForeignKey(
-        EmailThread,
-        related_name="messages",
-        on_delete=models.CASCADE
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
     )
 
-    external_message_ref = models.CharField(max_length=255)
+    reply_type = models.CharField(
+        max_length=30,
+        choices=REPLY_TYPE_CHOICES,
+        default=REPLY_UNCLEAR,
+    )
 
-    direction = models.CharField(max_length=20)
-
-    sender = models.EmailField()
-
-    subject = models.CharField(max_length=500)
-
-    body_text = models.TextField(blank=True)
-
-    sent_at = models.DateTimeField(null=True)
-
-    message_status = models.CharField(max_length=50, default="synced")
-
+    received_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-received_at", "-created_at"]
+
+    def __str__(self):
+        return f"{self.subject} [{self.reply_type}]"

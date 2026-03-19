@@ -1,123 +1,89 @@
-# NEXT SESSION — OptiGrid CRM
+# NEXT SESSION — Conversation Intelligence V1
 
 ---
 
-## CONTEXTO
+## 🎯 Objective
 
-Sistema evolucionando hacia:
-
-AI Commercial Operating System
-
-Base ya implementada:
-
-- CRM Core
-- Opportunity Intelligence
-- Governance base
-- Strategy Chat V1
+Convert inbound replies into structured decisions.
 
 ---
 
-## OBJETIVO DE LA SESIÓN
+## 🧩 Tasks
 
-Iniciar FASE 4:
+### 1. Reply Interpretation Layer
 
-TARGET INTELLIGENCE LAYER
+Create service:
 
----
+- interpret_reply(inbound)
 
-## BLOQUE 1 — MODELOS
+Output:
 
-Crear:
-
-- LeadSuggestion
-- LeadSignal
-- LeadResearchSnapshot
-
-Ubicación:
-apps/lead_research/models.py
+- intent
+- urgency
+- recommended_action
 
 ---
 
-## BLOQUE 2 — SCHEMAS
+### 2. Decision Engine
 
-Crear:
+Map reply_type → actions:
 
-- lead discovery schema
-- enrichment schema
-- hypothesis schema
-
-Ubicación:
-apps/lead_research/schemas.py
-
----
-
-## BLOQUE 3 — DISCOVERY ENGINE
-
-Crear servicio:
-
-apps/lead_research/services/signal_discovery.py
-
-Responsable de:
-
-- generar queries dinámicas
-- llamar a Gemini
-- validar output
-- deduplicar
-- persistir sugerencias
+- interested → create next step
+- needs_info → generate detailed reply
+- not_now → create follow-up task
+- not_interested → mark opportunity inactive
+- unclear → clarification reply
 
 ---
 
-## BLOQUE 4 — MEMORY
+### 3. Opportunity Update
 
-Evitar repetición de:
+Enhance:
 
-- companies existentes
-- suggestions previas
-- dismissed
-
----
-
-## BLOQUE 5 — BACKGROUND TASK
-
-Celery task:
-
-- ejecutar discovery periódicamente
+- stage transitions
+- priority updates
+- engagement scoring
 
 ---
 
-## BLOQUE 6 — UI
+### 4. UI Enhancements
 
-Vista mínima:
-
-- lista de sugerencias
-- acciones:
-  - approve
-  - dismiss
-  - reopen
+- show "AI Suggested Action"
+- one-click apply
 
 ---
 
-## REGLAS
+## 🧠 Key Principle
 
-- todo estructurado (no texto libre)
-- usar Pydantic
-- logs claros
-- no romper pipeline actual
+From:
 
----
+Inbox = messages
 
-## RESULTADO ESPERADO
+To:
 
-Sistema capaz de:
-
-- descubrir nuevas empresas automáticamente
-- evitar duplicados
-- generar contexto útil
-- preparar base para pipeline automático
+Inbox = decisions
 
 ---
 
-## NOTA
+## ⚠️ Constraint
 
-Esto es el punto de entrada del sistema autónomo completo.
+NO full automation yet.
 
+Keep:
+
+AI suggests → User approves
+
+---
+
+## 🚀 Stretch Goal
+
+Auto-generate follow-ups without clicking "generate"
+(but still require approval)
+
+---
+
+## 🧭 Expected Outcome
+
+System becomes:
+
+AI Sales Assistant → AI Sales Operator

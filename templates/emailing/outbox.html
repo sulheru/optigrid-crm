@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Outbox · OptiGrid CRM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      background: #f6f7f9;
+      color: #1f2937;
+    }
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header-actions a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-left: 8px;
+      display: inline-block;
+    }
+    .send-all {
+      background: #2563eb;
+    }
+    .go-leads {
+      background: #4b5563;
+    }
+    .filters {
+      margin-bottom: 12px;
+    }
+    .filters a {
+      margin-right: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #2563eb;
+    }
+    .bulkbar {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .bulkbar button, .bulkbar select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: white;
+      font-size: 14px;
+    }
+    .bulkbar .apply {
+      background: #111827;
+      color: white;
+      border-color: #111827;
+      font-weight: bold;
+    }
+    .section-title {
+      margin: 20px 0 12px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .row-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .subject {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .meta {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .status, .etype {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      background: #e5e7eb;
+      color: #374151;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .status.draft { background: #fef3c7; color: #92400e; }
+    .status.approved { background: #dbeafe; color: #1d4ed8; }
+    .status.sent { background: #dcfce7; color: #166534; }
+    .status.failed { background: #fee2e2; color: #991b1b; }
+    .etype.first_contact { background: #ede9fe; color: #6d28d9; }
+    .etype.followup { background: #e0f2fe; color: #0369a1; }
+
+    pre {
+      white-space: pre-wrap;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .actions {
+      margin-top: 12px;
+    }
+    .actions a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    .approve {
+      background: #16a34a;
+      color: white;
+    }
+    .send {
+      background: #2563eb;
+      color: white;
+    }
+    .draft {
+      background: #6b7280;
+      color: white;
+    }
+    .empty {
+      background: white;
+      border: 1px dashed #d1d5db;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      color: #6b7280;
+    }
+    .checkbox-col {
+      padding-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Outbox</h1>
+      <div class="header-actions">
+        <a class="go-leads" href="/leads/">Lead Inbox</a>
+        <a class="send-all" href="/outbox/send/?type={{ email_type }}">Send All Approved</a>
+      </div>
+    </div>
+
+    <div class="filters">
+      <strong>By status:</strong>
+      <a href="/outbox/?status=all&type={{ email_type }}">All ({{ counts.all }})</a>
+      <a href="/outbox/?status=draft&type={{ email_type }}">Draft ({{ counts.draft }})</a>
+      <a href="/outbox/?status=approved&type={{ email_type }}">Approved ({{ counts.approved }})</a>
+      <a href="/outbox/?status=sent&type={{ email_type }}">Sent ({{ counts.sent }})</a>
+      <a href="/outbox/?status=failed&type={{ email_type }}">Failed ({{ counts.failed }})</a>
+    </div>
+
+    <div class="filters">
+      <strong>By type:</strong>
+      <a href="/outbox/?status={{ status }}&type=all">All</a>
+      <a href="/outbox/?status={{ status }}&type=first_contact">First contact ({{ counts.first_contact }})</a>
+      <a href="/outbox/?status={{ status }}&type=followup">Follow-up ({{ counts.followup }})</a>
+    </div>
+
+    {% if emails %}
+      <form method="post" action="/outbox/bulk-action/" id="bulk-form">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="{{ status }}">
+        <input type="hidden" name="type" value="{{ email_type }}">
+
+        <div class="bulkbar">
+          <button type="button" onclick="selectAllEmails()">Select All</button>
+          <button type="button" onclick="selectNoEmails()">Select None</button>
+
+          <select name="action" required>
+            <option value="">Apply action...</option>
+            <option value="approve">Approve selected</option>
+            <option value="send">Send selected</option>
+            <option value="back_to_draft">Back to draft</option>
+          </select>
+
+          <button class="apply" type="submit">Apply</button>
+        </div>
+
+        {% for e in emails %}
+          <div class="card">
+            <div class="row-top">
+              <div class="checkbox-col">
+                <input type="checkbox" class="email-checkbox" name="selected_ids" value="{{ e.id }}">
+              </div>
+
+              <div style="flex:1;">
+                <div class="subject">
+                  {{ e.subject }}
+                  <span class="status {{ e.status }}">{{ e.status }}</span>
+                  <span class="etype {{ e.email_type }}">{{ e.email_type }}</span>
+                </div>
+
+                <div class="meta">
+                  Opportunity:
+                  {% if e.opportunity %}
+                    #{{ e.opportunity.id }} · {{ e.opportunity.title }}
+                  {% else %}
+                    —
+                  {% endif %}
+                  <br>
+                  Company:
+                  {% if e.opportunity %}
+                    {{ e.opportunity.company_name|default:"—" }}
+                  {% else %}
+                    —
+                  {% endif %}
+                  <br>
+                  To: {{ e.to_email|default:"(sin destinatario todavía)" }}
+                  <br>
+                  Generated by: {{ e.generated_by }}
+                  <br>
+                  Created: {{ e.created_at }}
+                  {% if e.approved_at %}<br>Approved: {{ e.approved_at }}{% endif %}
+                  {% if e.sent_at %}<br>Sent: {{ e.sent_at }}{% endif %}
+                  {% if e.failure_reason %}<br>Failure: {{ e.failure_reason }}{% endif %}
+                </div>
+
+                <pre>{{ e.body }}</pre>
+
+                <div class="actions">
+                  {% if e.status == "draft" %}
+                    <a class="approve" href="/outbox/{{ e.id }}/approve/">Approve</a>
+                  {% elif e.status == "approved" %}
+                    <a class="send" href="/outbox/{{ e.id }}/send/">Send</a>
+                    <a class="draft" href="/outbox/{{ e.id }}/draft/">Back to draft</a>
+                  {% elif e.status == "failed" %}
+                    <a class="approve" href="/outbox/{{ e.id }}/approve/">Approve again</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </form>
+    {% else %}
+      <div class="empty">
+        No hay emails en outbox todavía.
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    function selectAllEmails() {
+      document.querySelectorAll('.email-checkbox').forEach(cb => cb.checked = true);
+    }
+
+    function selectNoEmails() {
+      document.querySelectorAll('.email-checkbox').forEach(cb => cb.checked = false);
+    }
+  </script>
+</body>
+</html>

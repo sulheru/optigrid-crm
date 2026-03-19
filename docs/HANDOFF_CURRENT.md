@@ -1,127 +1,71 @@
-# HANDOFF — CURRENT STATE
+# HANDOFF — CURRENT SYSTEM STATE
 
 ---
 
-## 🧠 CONTEXTO GENERAL
+## 🧠 System Type
 
-Proyecto:
-
-OptiGrid CRM → evolucionando a AI Commercial Operating System
-
-Objetivo:
-
-Construir un sistema donde la IA ejecuta funciones comerciales completas y el usuario actúa como supervisor.
+AI Commercial Operating System (early stage)
 
 ---
 
-## ✅ ESTADO ACTUAL
+## 🔄 Core Loop (WORKING)
 
-### CORE
-
-- Pipeline completo operativo:
-  Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
-
-- UI funcional:
-  - oportunidades
-  - tareas
-  - recomendaciones
+Lead → Approve → Opportunity → Draft Email → Send → Inbound → Follow-up Draft
 
 ---
 
-### OPPORTUNITY INTELLIGENCE V2
+## 🧩 Key Components
 
-- scoring
-- priority
-- risk flags
-- next actions
-- análisis batch
-- reuse de recommendations/tasks
+### OutboundEmail
+- types: first_contact, followup
+- statuses: draft, approved, sent
 
-Comando:
-python manage.py analyze_open_opportunities
-
----
-
-### AUTOTASKER
-
-- generación automática de tareas
-- integración con recommendations
+### InboundEmail
+- reply_type classification
+- linked to opportunity
+- linked to source outbound
 
 ---
 
-### GOVERNANCE BASE
+## ⚙️ Services
 
-- tasks pueden ser revocadas
-- persistencia de decisiones humanas
-- sistema respeta `is_revoked`
-
----
-
-### STRATEGY LAYER
-
-Estado:
-
-- Strategy Chat V1 funcional
-- Strategy Chat V2 iniciado
-
-Fix aplicado:
-
-- eliminación de referencia a `StrategyChatView` inexistente
-- sistema estable (`python manage.py check` OK)
+- outbound_sender
+- inbound_simulator
+- reply_generator
 
 ---
 
-## ⚠️ LIMITACIONES ACTUALES
+## 🧠 Current Capability
 
-- No hay discovery autónomo de empresas
-- No hay enrichment estructurado
-- No hay hipótesis comerciales automáticas
-- No hay outbound automatizado
-- Jarvis no ejecuta acciones aún
+System can:
 
----
-
-## 🎯 SIGUIENTE OBJETIVO
-
-FASE 4 — Target Intelligence Layer
+- initiate outreach
+- simulate replies
+- generate contextual follow-ups
 
 ---
 
-## 🧩 BLOQUES A IMPLEMENTAR
+## ⚠️ Limitations
 
-1. LeadSuggestion model
-2. LeadSignal model
-3. LeadResearchSnapshot
-4. Signal Discovery Engine (Gemini)
-5. Memory / dedupe system
-6. Celery task
-7. Inbox UI
+- no real email integration
+- no true AI classification (rule-based)
+- no decision engine
+- no opportunity state transitions
 
 ---
 
-## 🔁 FLUJO OBJETIVO INMEDIATO
+## 🎯 Immediate Next Step
 
-Gemini → discovery → dedupe → store → inbox → approve → CRM
-
----
-
-## 🧠 PRINCIPIO CLAVE
-
-El sistema debe pasar de:
-
-- reaccionar a emails
-
-A:
-
-- generar oportunidades activamente
+Conversation Intelligence Layer
 
 ---
 
-## 📍 SIGUIENTE SESIÓN
+## 🧭 Strategic Direction
 
-Arrancar:
+Move from:
 
-apps/lead_research/
+Tooling
 
----
+To:
 
+Autonomous decision system

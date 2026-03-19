@@ -19,6 +19,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    "apps.lead_research",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -117,3 +118,17 @@ AUTO_TASKING_ALLOWED_ACTIONS = [
     "review_opportunity_stall",
     "define_next_action",
 ]
+
+LEAD_RESEARCH_USE_MOCK = True
+
+LEAD_RESEARCH_DISCOVERY_QUERIES = [
+    "DACH mid-market companies with infrastructure growth signals",
+    "Companies hiring network cloud security infrastructure in Germany Austria Switzerland",
+    "Recent expansion or funding signals in industrial and B2B software companies in DACH",
+]
+
+CELERY_BEAT_SCHEDULE = globals().get("CELERY_BEAT_SCHEDULE", {})
+CELERY_BEAT_SCHEDULE["lead-signal-discovery-every-6-hours"] = {
+    "task": "apps.lead_research.tasks.run_lead_signal_discovery",
+    "schedule": 60 * 60 * 6,
+}
