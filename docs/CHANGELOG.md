@@ -1,67 +1,34 @@
-# CHANGELOG
+# CHANGELOG — OptiGrid CRM
 
-## 2026-03-19 — Opportunity Intelligence V2 refinement pass
+## [2026-03-19] — Governance Base (Tasks)
 
 ### Added
-- Human-readable semantic labels for prioritized opportunities:
-  - priority labels
-  - risk flag labels
-  - next action labels
-  - execution status labels
-- Backend filters for prioritized opportunities UI:
-  - high only
-  - with autotasks
-  - no action
-  - with risk
-- Visual badges in prioritized opportunities UI:
-  - AUTO
-  - BLOCKED
-  - SUGGESTED
-- Improved opportunity task detail UI:
-  - AUTO / MANUAL source badges
-  - human-readable task type labels
-  - human-readable source action labels
-  - execution summary block
-  - risk / next action summary cards
+- Campo `is_revoked` en CRMTask
+- Endpoint para revocar tasks desde UI
+- Propiedades:
+  - `is_auto`
+  - `can_be_revoked`
+  - `effective_status_label`
 
 ### Changed
-- Rebuilt `apps/opportunities/services/prioritization.py` as a complete, stable module after partial overwrite issue.
-- `views_prioritized.py` now consumes enriched `row.to_dict()` payloads instead of relying on raw slugs in templates.
-- `templates/opportunities/prioritized.html` now renders labels instead of internal slugs.
-- `templates/opportunities/opportunity_tasks.html` now presents clearer operational governance semantics.
+- Refactor de modelo CRMTask:
+  - Simplificación de task types
+  - Nuevos estados: scheduled, blocked, cancelled
+  - Eliminación de priority y source_recommendation
 
-### Preserved / Verified
-- Existing pipeline remains intact:
+### Autotasker
+- Añadido control de governance:
+  - No recrear tasks si existe una revocada con mismo:
+    - opportunity
+    - source_action
+- Filtro actualizado:
+  - `_existing_task` ignora tasks revocadas
 
-  `Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity`
+### Validated
+- analyze_open_opportunities funcionando correctamente
+- UI de tasks operativa
+- Revocación persistente y respetada
+- Sin regresiones en pipeline
 
-- Opportunity Intelligence V2 remains active:
-  - scoring
-  - priority buckets
-  - risk flags
-  - next actions
-  - execution status
-  - last_analyzed_at tracking
-- Autotasking V1 remains operational:
-  - threshold by priority
-  - dedupe / reuse
-  - source = auto/manual
-  - source_action tracking
-
-### Validation
-- `python manage.py check` → OK
-- `python manage.py runserver` → OK
-- Prioritized UI validated on:
-  - `/opportunities/prioritized/`
-  - `?autotasks=1`
-  - `?stage=new`
-  - `?stage=qualified`
-  - `?stage=proposal`
-- `python manage.py analyze_open_opportunities` validated:
-  - opportunities analyzed correctly
-  - tasks reused correctly
-  - monitor opportunities not auto-materialized below threshold
-
-### Notes
-This session focused on refinement, clarity, and control.
-No architectural rebuild was performed.
+### Result
+Sistema autónomo con control humano efectivo (Human-in-the-loop v1)

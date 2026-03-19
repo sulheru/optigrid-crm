@@ -17,7 +17,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", dashboard_view, name="dashboard"),
     path("emails/", include(("apps.emailing.urls", "emailing"), namespace="emailing")),
-
+    
     path("recommendations/", recommendations_list_view, name="recommendations"),
     path("recommendations/<int:pk>/create-task/", recommendation_create_task_view),
     path("recommendations/<int:pk>/dismiss/", recommendation_dismiss_view),
@@ -37,4 +37,6 @@ urlpatterns = [
         "opportunities/",
         include(("apps.opportunities.urls", "opportunities"), namespace="opportunities_ui"),
     ),
+    
+    path("tasks/", include("apps.tasks.urls")),
 ]

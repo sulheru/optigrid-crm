@@ -197,7 +197,7 @@ def _serialize_task(task: CRMTask) -> dict[str, Any]:
         "title": task.title,
         "task_type": task.task_type,
         "status": task.status,
-        "priority": task.priority,
+        "priority": getattr(task, "priority", None),
         "source": task.source,
         "source_action": task.source_action,
         "due_at": task.due_at.isoformat() if task.due_at else None,

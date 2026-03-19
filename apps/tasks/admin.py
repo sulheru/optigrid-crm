@@ -5,6 +5,32 @@ from .models import CRMTask
 
 @admin.register(CRMTask)
 class CRMTaskAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "task_type", "status", "priority", "created_at")
-    list_filter = ("task_type", "status", "priority")
-    search_fields = ("title", "description")
+    list_display = (
+        "id",
+        "title",
+        "task_type",
+        "status",
+        "priority",
+        "source",
+        "source_action",
+        "is_revoked",
+        "opportunity",
+        "source_recommendation",
+        "created_at",
+    )
+    list_filter = (
+        "task_type",
+        "status",
+        "priority",
+        "source",
+        "is_revoked",
+        "created_at",
+    )
+    search_fields = (
+        "title",
+        "description",
+        "source_action",
+        "opportunity__title",
+    )
+    readonly_fields = ("created_at", "updated_at")
+    list_select_related = ("opportunity", "source_recommendation")

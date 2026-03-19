@@ -54,9 +54,24 @@ class CRMTask(models.Model):
         default="manual",
     )
     source_action = models.CharField(max_length=100, blank=True)
+    is_revoked = models.BooleanField(default=False, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} [{self.status}]"
+
+    @property
+    def is_auto(self):
+        return self.source == "auto"
+
+    @property
+    def can_be_revoked(self):
+        return self.is_auto and not self.is_revoked and self.status not in {"done", "dismissed"}
+
+    @property
+    def effective_status_label(self):
+        if self.is_revoked:
+            return "Revoked"
+        return self.get_status_display()

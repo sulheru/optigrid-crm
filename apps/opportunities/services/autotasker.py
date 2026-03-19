@@ -120,8 +120,18 @@ def _existing_task(opportunity, task_type: str, action: str):
         task_type=task_type,
         source="auto",
         source_action=action,
+        is_revoked=False,
         status__in=["open", "in_progress"],
     ).order_by("id").first()
+
+
+def _has_revoked_task(opportunity, action: str) -> bool:
+    return CRMTask.objects.filter(
+        opportunity=opportunity,
+        source="auto",
+        source_action=action,
+        is_revoked=True,
+    ).exists()
 
 
 def auto_materialize_tasks(
@@ -155,6 +165,18 @@ def auto_materialize_tasks(
         mapping = ACTION_TO_TASK.get(action)
         if not mapping:
             skipped += 1
+            continue
+
+        if _has_revoked_task(opportunity, action):
+            skipped += 1
+            task_rows.append(
+                {
+                    "task_id": None,
+                    "status": "blocked_revoked",
+                    "task_type": mapping["task_type"],
+                    "source_action": action,
+                }
+            )
             continue
 
         existing = _existing_task(
@@ -191,6 +213,7 @@ def auto_materialize_tasks(
             due_at=timezone.now() + timedelta(days=due_days),
             source="auto",
             source_action=action,
+            is_revoked=False,
         )
         created += 1
         task_rows.append(

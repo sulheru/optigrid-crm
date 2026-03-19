@@ -1,132 +1,54 @@
-# HANDOFF_CURRENT
+# HANDOFF — CURRENT STATE
 
-## Project
-OptiGrid CRM — IA-First CRM System
+## Estado del sistema
 
-## Current state
-System is stable and functional.
+Pipeline completo funcional:
 
-Core pipeline remains:
+Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
 
-`Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity`
+## Opportunity Intelligence V2
 
-Active operational layers:
+Implementado:
 
-1. Opportunity Intelligence V2
-2. Prioritized Opportunities UI
-3. Autotasking V1
+- Scoring de oportunidades
+- Priorización (high, medium, monitor)
+- Generación de next_actions
+- Autotasking automático
 
-## What was completed in this session
+## Governance Layer (Tasks)
 
-### 1. Semantic refinement
-System semantics were clarified across:
-- next actions
-- task types
-- UI labels
-- execution states
+Activo:
 
-Human-readable mappings now exist for:
-- priority labels
-- risk flags
-- next actions
-- execution status
+- Revocación manual desde UI
+- Persistencia en DB (`is_revoked`)
+- Autotasker respeta decisiones humanas
 
-This removed raw internal slugs from the prioritized UI and task detail UI.
+## Garantías actuales
 
-### 2. Prioritized Opportunities UI refinement
-The prioritized view now supports operational filtering:
-- high only
-- with autotasks
-- no action
-- with risk
+- No loops de recreación
+- No duplicación de tareas automáticas
+- Sistema estable bajo múltiples ejecuciones
 
-It also displays clearer badges:
-- AUTO
-- BLOCKED
-- SUGGESTED
+## Limitaciones actuales
 
-### 3. Opportunity task detail refinement
-The opportunity task detail page now shows:
-- AUTO / MANUAL source badges
-- readable task type labels
-- readable source action labels
-- execution summary
-- risk and next action context
+- Revocación no cambia `status` (solo flag)
+- No hay audit log de decisiones
+- No hay explicación visible en UI del "por qué" de acciones
 
-### 4. Stability recovery
-A partial overwrite temporarily broke imports in `prioritization.py`.
-This was fixed by rewriting the full module cleanly.
-After recovery:
-- `python manage.py check` passed
-- `python manage.py runserver` passed
+## Estado técnico
 
-### 5. Functional validation
-`python manage.py analyze_open_opportunities` produced expected behavior:
+- Django 6.0.3
+- Sin errores en check
+- Sin errores en analyzer
+- UI funcional
 
-- high-priority opportunities reused existing tasks correctly
-- monitor opportunity with `no_open_task` did not create an autotask due to threshold
-- task dedupe/reuse remained correct
+## Riesgos
 
-## Important architectural status
-The system is no longer only “analytical”.
-It is now clearly operating in three layers:
+- Crecimiento sin observabilidad de decisiones
+- Falta de trazabilidad humana
 
-### Layer 1 — Cognition
-- facts
-- inferences
-- recommendations
+## Sistema listo para:
 
-### Layer 2 — Decision
-- prioritization
-- scoring
-- risk flags
-- next actions
-
-### Layer 3 — Partial execution
-- autotasking
-- execution status
-- task reuse / dedupe
-- operational UI visibility
-
-This is an important milestone.
-
-## Key files changed this session
-- `apps/opportunities/services/prioritization.py`
-- `apps/opportunities/views_prioritized.py`
-- `templates/opportunities/prioritized.html`
-- `templates/opportunities/opportunity_tasks.html`
-
-## What is intentionally NOT done yet
-Not implemented yet:
-- autotask revocation
-- no-recreate protection for revoked autotasks
-- opportunity execution lock
-- governance feedback loop
-- recommendation-origin navigation
-- full governance layer
-
-These are the next logical step, but were intentionally deferred.
-
-## Recommended next step
-Implement Governance V3 baseline:
-
-### Primary goal
-**Revoke autotask + prevent recreation**
-
-### Why
-This is the first real governance control needed now that the system can partially execute automatically.
-
-### Suggested minimum scope
-- add revocation flag or equivalent state
-- add UI action to revoke autotask
-- ensure revoked autotask is not recreated by autotasker
-- preserve auditability and source tracing
-
-## Operational assessment
-Session outcome is successful.
-
-The system is stable, coherent, and measurably more mature:
-- better semantics
-- better visual clarity
-- better operational control
-- no pipeline regression
+- Escalar automatización
+- Añadir capa de estrategia
+- Integración externa (email / CRM real)

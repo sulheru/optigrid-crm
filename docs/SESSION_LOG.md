@@ -1,192 +1,96 @@
+# SESSION LOG — 2026-03-19
 
-SESSION_LOG
-Session date
+## Contexto
 
-2026-03-19
+Evolución del sistema hacia un CRM autónomo IA-first con control humano.
 
-Session focus
+---
 
-Refinement, semantic clarity, operational control.
+## Cambios realizados
 
-Starting point
+### 1. Refactor de Tasks
 
-System already had:
+- Simplificación del modelo CRMTask
+- Eliminación de campos legacy
+- Introducción de estructura más coherente
 
-Opportunity Intelligence V2
+### 2. Implementación de Revocación
 
-Prioritized Opportunities UI
+- Endpoint POST /tasks/<id>/revoke/
+- Flag `is_revoked`
+- UI integrada
 
-Autotasking V1
+### 3. Problema crítico
 
-Goal of session:
+- ImportError en autotasker
+- Causa: overwrite incorrecto del servicio
 
-improve semantics
+### 4. Resolución
 
-improve readability
+- Restauración desde HEAD
+- Validación del analyzer
 
-improve operational filtering and visibility
+### 5. Implementación Governance
 
-prepare system for governance, without rebuilding architecture
+- Bloqueo por:
+  opportunity + source_action
+- Prevención de recreación automática
 
-Work completed
-A. Prioritization semantics
+### 6. Validación manual
 
-Reviewed and stabilized prioritization presentation layer:
+- Revocación de task ID 48
+- Múltiples ejecuciones de analyzer
+- Confirmación:
+  → no recreación
 
-added labels for priority buckets
+---
 
-added labels for risk flags
+## Estado emocional del sistema (metáfora útil)
 
-added labels for next actions
+Antes:
+- sistema insistente
+- sin memoria de decisiones humanas
 
-added labels for execution status
+Ahora:
+- sistema autónomo
+- pero escucha y recuerda
 
-B. Prioritized opportunities UI
+---
 
-Updated prioritized view to support:
+## Resultado
 
-high only filter
+Primera versión real de:
 
-with autotasks filter
+→ Human-in-the-loop AI Sales System
 
-no action filter
+---
 
-with risk filter
+## Calidad de la sesión
 
-Improved UI presentation:
+Muy alta:
 
-AUTO badge
+- Iteración rápida
+- Debugging limpio
+- Integración sin romper sistema
 
-BLOCKED badge
+---
 
-SUGGESTED badge
+## Insight clave
 
-cleaner semantic rendering
+No es suficiente con automatizar.
 
-C. Task detail UI
+El sistema necesita:
 
-Updated opportunity task detail page to improve governance readability:
+→ memoria de decisiones humanas
 
-AUTO / MANUAL badges
+---
 
-readable task type display
+## Próximo salto
 
-readable source action display
+Pasar de:
 
-execution summary
+IA que ejecuta
 
-risk and next action context blocks
+a:
 
-D. Stability incident and recovery
-
-A partial overwrite of prioritization.py caused import failure:
-
-build_opportunity_priority_row could not be imported
-
-Django runserver failed during URL loading
-
-Recovery action:
-
-rewrote apps/opportunities/services/prioritization.py completely
-
-restored full module behavior
-
-revalidated imports and runtime
-
-E. Validation
-
-Validation completed successfully:
-
-python manage.py check passed
-
-python manage.py runserver passed
-
-prioritized UI loaded correctly
-
-stage filters loaded correctly
-
-autotasks filter loaded correctly
-
-F. Analyzer validation
-
-Ran:
-
-python manage.py analyze_open_opportunities
-
-Observed:
-
-3 open opportunities analyzed
-
-high-priority opportunities reused existing tasks
-
-monitor opportunity showed no_open_task
-
-no unnecessary autotask creation
-
-task dedupe/reuse working correctly
-
-Summary observed:
-
-opportunities_total: 3
-
-opportunities_analyzed: 3
-
-opportunities_skipped: 0
-
-recommendations_created: 0
-
-recommendations_reused: 3
-
-tasks_created: 0
-
-tasks_reused: 3
-
-Architectural result
-
-The system now clearly supports:
-
-Analytical layer
-
-facts
-
-inferences
-
-recommendations
-
-Decision layer
-
-scoring
-
-priority buckets
-
-risk flags
-
-next actions
-
-Partial execution layer
-
-autotasking
-
-execution state
-
-source tracing
-
-operational UI visibility
-
-This session successfully improved the system from a recommendation engine into a more governable operational CRM core.
-
-Files updated
-
-apps/opportunities/services/prioritization.py
-
-apps/opportunities/views_prioritized.py
-
-templates/opportunities/prioritized.html
-
-templates/opportunities/opportunity_tasks.html
-
-End state
-
-Stable.
-Working.
-Ready for Governance V3 baseline in the next session.
+IA que colabora estratégicamente
