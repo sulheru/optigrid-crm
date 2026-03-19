@@ -1,75 +1,123 @@
-# NEXT SESSION — PRIORITIES
-
-## Objetivo principal
-
-Convertir el sistema en un "AI Sales Operator"
+# NEXT SESSION — OptiGrid CRM
 
 ---
 
-## OPCIÓN A — Strategic Chat (Jarvis Layer)
+## CONTEXTO
 
-Implementar chat interno conectado a:
+Sistema evolucionando hacia:
 
-- oportunidades
-- tasks
-- recomendaciones
+AI Commercial Operating System
 
-Capacidad:
+Base ya implementada:
 
-- "¿Qué hago con esta oportunidad?"
-- "¿Qué pipeline está en riesgo?"
-- "¿Dónde debo enfocar mi tiempo?"
-
----
-
-## OPCIÓN B — First Contact Automation
-
-- Generación automática de emails outbound
-- Control:
-  - cuántos emails/día
-  - aprobación manual
-- Bandeja dedicada
+- CRM Core
+- Opportunity Intelligence
+- Governance base
+- Strategy Chat V1
 
 ---
 
-## OPCIÓN C — Audit Layer
+## OBJETIVO DE LA SESIÓN
 
-- Registrar decisiones humanas:
-  - revoked
-  - approved
-  - ignored
-- Base para aprendizaje futuro
+Iniciar FASE 4:
+
+TARGET INTELLIGENCE LAYER
 
 ---
 
-## OPCIÓN D — Email Integration
+## BLOQUE 1 — MODELOS
 
-- Lectura automática de inbox
-- Clasificación
-- Extracción a facts/inferences
+Crear:
 
----
+- LeadSuggestion
+- LeadSignal
+- LeadResearchSnapshot
 
-## Recomendación
-
-Siguiente paso óptimo:
-
-→ Strategic Chat (Jarvis)
-
-Porque:
-
-- desbloquea control de alto nivel
-- permite dirigir el sistema
-- evita automatización ciega
+Ubicación:
+apps/lead_research/models.py
 
 ---
 
-## Nota
+## BLOQUE 2 — SCHEMAS
 
-NO tocar:
+Crear:
 
-- pipeline actual
-- analyzer core
-- autotasker base
+- lead discovery schema
+- enrichment schema
+- hypothesis schema
 
-Trabajar en capas superiores.
+Ubicación:
+apps/lead_research/schemas.py
+
+---
+
+## BLOQUE 3 — DISCOVERY ENGINE
+
+Crear servicio:
+
+apps/lead_research/services/signal_discovery.py
+
+Responsable de:
+
+- generar queries dinámicas
+- llamar a Gemini
+- validar output
+- deduplicar
+- persistir sugerencias
+
+---
+
+## BLOQUE 4 — MEMORY
+
+Evitar repetición de:
+
+- companies existentes
+- suggestions previas
+- dismissed
+
+---
+
+## BLOQUE 5 — BACKGROUND TASK
+
+Celery task:
+
+- ejecutar discovery periódicamente
+
+---
+
+## BLOQUE 6 — UI
+
+Vista mínima:
+
+- lista de sugerencias
+- acciones:
+  - approve
+  - dismiss
+  - reopen
+
+---
+
+## REGLAS
+
+- todo estructurado (no texto libre)
+- usar Pydantic
+- logs claros
+- no romper pipeline actual
+
+---
+
+## RESULTADO ESPERADO
+
+Sistema capaz de:
+
+- descubrir nuevas empresas automáticamente
+- evitar duplicados
+- generar contexto útil
+- preparar base para pipeline automático
+
+---
+
+## NOTA
+
+Esto es el punto de entrada del sistema autónomo completo.
+

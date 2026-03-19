@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "apps.tasks",
     "apps.opportunities",
     "apps.events",
+    'apps.strategy',
 ]
 
 MIDDLEWARE = [

@@ -1,54 +1,127 @@
 # HANDOFF — CURRENT STATE
 
-## Estado del sistema
+---
 
-Pipeline completo funcional:
+## 🧠 CONTEXTO GENERAL
 
-Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
+Proyecto:
 
-## Opportunity Intelligence V2
+OptiGrid CRM → evolucionando a AI Commercial Operating System
 
-Implementado:
+Objetivo:
 
-- Scoring de oportunidades
-- Priorización (high, medium, monitor)
-- Generación de next_actions
-- Autotasking automático
+Construir un sistema donde la IA ejecuta funciones comerciales completas y el usuario actúa como supervisor.
 
-## Governance Layer (Tasks)
+---
 
-Activo:
+## ✅ ESTADO ACTUAL
 
-- Revocación manual desde UI
-- Persistencia en DB (`is_revoked`)
-- Autotasker respeta decisiones humanas
+### CORE
 
-## Garantías actuales
+- Pipeline completo operativo:
+  Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
 
-- No loops de recreación
-- No duplicación de tareas automáticas
-- Sistema estable bajo múltiples ejecuciones
+- UI funcional:
+  - oportunidades
+  - tareas
+  - recomendaciones
 
-## Limitaciones actuales
+---
 
-- Revocación no cambia `status` (solo flag)
-- No hay audit log de decisiones
-- No hay explicación visible en UI del "por qué" de acciones
+### OPPORTUNITY INTELLIGENCE V2
 
-## Estado técnico
+- scoring
+- priority
+- risk flags
+- next actions
+- análisis batch
+- reuse de recommendations/tasks
 
-- Django 6.0.3
-- Sin errores en check
-- Sin errores en analyzer
-- UI funcional
+Comando:
+python manage.py analyze_open_opportunities
 
-## Riesgos
+---
 
-- Crecimiento sin observabilidad de decisiones
-- Falta de trazabilidad humana
+### AUTOTASKER
 
-## Sistema listo para:
+- generación automática de tareas
+- integración con recommendations
 
-- Escalar automatización
-- Añadir capa de estrategia
-- Integración externa (email / CRM real)
+---
+
+### GOVERNANCE BASE
+
+- tasks pueden ser revocadas
+- persistencia de decisiones humanas
+- sistema respeta `is_revoked`
+
+---
+
+### STRATEGY LAYER
+
+Estado:
+
+- Strategy Chat V1 funcional
+- Strategy Chat V2 iniciado
+
+Fix aplicado:
+
+- eliminación de referencia a `StrategyChatView` inexistente
+- sistema estable (`python manage.py check` OK)
+
+---
+
+## ⚠️ LIMITACIONES ACTUALES
+
+- No hay discovery autónomo de empresas
+- No hay enrichment estructurado
+- No hay hipótesis comerciales automáticas
+- No hay outbound automatizado
+- Jarvis no ejecuta acciones aún
+
+---
+
+## 🎯 SIGUIENTE OBJETIVO
+
+FASE 4 — Target Intelligence Layer
+
+---
+
+## 🧩 BLOQUES A IMPLEMENTAR
+
+1. LeadSuggestion model
+2. LeadSignal model
+3. LeadResearchSnapshot
+4. Signal Discovery Engine (Gemini)
+5. Memory / dedupe system
+6. Celery task
+7. Inbox UI
+
+---
+
+## 🔁 FLUJO OBJETIVO INMEDIATO
+
+Gemini → discovery → dedupe → store → inbox → approve → CRM
+
+---
+
+## 🧠 PRINCIPIO CLAVE
+
+El sistema debe pasar de:
+
+- reaccionar a emails
+
+A:
+
+- generar oportunidades activamente
+
+---
+
+## 📍 SIGUIENTE SESIÓN
+
+Arrancar:
+
+apps/lead_research/
+
+---
+

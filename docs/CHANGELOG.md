@@ -1,34 +1,96 @@
 # CHANGELOG — OptiGrid CRM
 
-## [2026-03-19] — Governance Base (Tasks)
+---
 
-### Added
-- Campo `is_revoked` en CRMTask
-- Endpoint para revocar tasks desde UI
-- Propiedades:
-  - `is_auto`
-  - `can_be_revoked`
-  - `effective_status_label`
+## [2026-03-19] — Roadmap V2 + Strategy Chat V2 Kickoff
 
-### Changed
-- Refactor de modelo CRMTask:
-  - Simplificación de task types
-  - Nuevos estados: scheduled, blocked, cancelled
-  - Eliminación de priority y source_recommendation
+### 🚀 MAJOR UPDATE — AI Commercial Operating System
 
-### Autotasker
-- Añadido control de governance:
-  - No recrear tasks si existe una revocada con mismo:
-    - opportunity
-    - source_action
-- Filtro actualizado:
-  - `_existing_task` ignora tasks revocadas
+Se redefine completamente la visión del sistema:
 
-### Validated
-- analyze_open_opportunities funcionando correctamente
-- UI de tasks operativa
-- Revocación persistente y respetada
-- Sin regresiones en pipeline
+Antes:
+- CRM con automatizaciones IA
 
-### Result
-Sistema autónomo con control humano efectivo (Human-in-the-loop v1)
+Ahora:
+- Sistema comercial autónomo IA-first
+
+---
+
+## ✨ NUEVO ROADMAP
+
+Se introduce:
+
+- ROADMAP_V2_AI_COMMERCIAL_OS.md
+
+Incluye:
+
+- Arquitectura por capas completa
+- Loop autónomo end-to-end
+- Separación clara entre:
+  - Intelligence
+  - Strategy
+  - Execution
+  - Governance
+
+Nuevas fases clave:
+
+- Target Intelligence Layer
+- CRM Injection Bridge
+- Governed Action Layer
+- Outbound Engine
+- Full Autonomy Loop
+
+---
+
+## 🧠 STRATEGY LAYER
+
+Estado:
+
+- Strategy Chat V1 estable
+- Strategy Chat V2 iniciado
+
+Cambios:
+
+- Se elimina dependencia hard de vista inexistente
+- Fallback funcional asegurado
+- Base preparada para integración LLM real
+
+---
+
+## 🧱 ARQUITECTURA
+
+Consolidación de:
+
+- Pipeline CRM estable
+- Opportunity Intelligence V2
+- Autotasker V1
+- Governance base (revocaciones persistentes)
+
+---
+
+## 🔜 SIGUIENTE BLOQUE
+
+FASE 4 — Target Intelligence Layer
+
+Incluye:
+
+- Lead discovery con Gemini
+- Enrichment
+- Hypothesis engine
+- Ranking
+- Inbox operativa
+
+---
+
+## 🧭 DIRECCIÓN DEL PROYECTO
+
+Cambio de paradigma:
+
+De:
+- herramientas
+
+A:
+- sistema autónomo dirigido por IA
+
+---
+

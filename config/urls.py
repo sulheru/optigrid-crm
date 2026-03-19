@@ -14,6 +14,7 @@ from apps.emailing.views import (
 )
 
 urlpatterns = [
+    path('strategy/', include('apps.strategy.urls')),
     path("admin/", admin.site.urls),
     path("", dashboard_view, name="dashboard"),
     path("emails/", include(("apps.emailing.urls", "emailing"), namespace="emailing")),
