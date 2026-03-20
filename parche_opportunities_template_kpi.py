@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/parche_opportunities_template_kpi.py
 from pathlib import Path
 
 path = Path("/home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/opportunities/list.html")

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/management/commands/detect_opportunity_signals.py
 from __future__ import annotations
 
 from django.core.management.base import BaseCommand

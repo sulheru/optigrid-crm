@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/urls.py
 from django.urls import path
 
 from .views import revoke_task, tasks_list_view

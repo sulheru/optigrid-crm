@@ -1,153 +1,103 @@
-# OptiGrid CRM — AI Commercial Operating System
-## ROADMAP V3 (Post Conversation Loop)
+# ROADMAP V3 — AI Commercial Operating System
 
 ---
 
-## 🧠 VISIÓN
-
-Construir un **AI Sales Operator** donde:
-
-- La IA gestiona conversaciones comerciales completas
-- El usuario actúa como CEO (aprueba / supervisa)
-- El sistema evoluciona desde ejecución → decisión → autonomía
-
----
-
-## 🧱 ESTADO ACTUAL (FASE COMPLETADA)
-
-### ✅ CORE PIPELINE
+## FASE 0 — CORE PIPELINE ✅
 
 Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
 
----
-
-### ✅ OUTBOUND SYSTEM (V2)
-
-- Draft emails (first_contact)
-- Aprobación manual
-- Envío (mock)
-- Separación por tipo:
-  - first_contact
-  - followup
-- Bulk actions (approve/send)
+✔ COMPLETADO
 
 ---
 
-### ✅ INBOX SYSTEM (V1)
+## FASE 1 — OPPORTUNITY INTELLIGENCE ✅
 
-- InboundEmail model
-- Simulación automática tras envío
-- Tipos de respuesta:
-  - interested
-  - needs_info
-  - not_now
-  - not_interested
-  - unclear
-- Vista `/inbox/`
-- Estados:
-  - new
-  - reviewed
-  - linked
+- scoring
+- prioritization
+- risk detection
+- next actions
+
+✔ COMPLETADO
 
 ---
 
-### ✅ FOLLOW-UP ENGINE (V1)
+## FASE 2 — AUTOTASKER ✅
 
-- Generación de drafts desde inbound
-- Context-aware por `reply_type`
-- Relación inbound → outbound (trazabilidad)
-- Evita duplicados
+- generación automática de tasks
+- integración con recommendations
 
----
-
-## 🔥 ESTADO ACTUAL REAL
-
-Sistema ya capaz de:
-
-Lead → Conversation → Continuation
-
-Esto NO es ya un CRM.
-Es un **motor de conversación comercial asistido por IA**.
+✔ COMPLETADO
 
 ---
 
-# 🚀 SIGUIENTES FASES
+## FASE 3 — OUTBOX V1 ✅
+
+- drafts
+- approve/send
+- bulk actions
+
+✔ COMPLETADO
 
 ---
 
-## 🧩 FASE 3 — Conversation Intelligence V1
+## FASE 4 — INBOX INTELLIGENCE
 
-### Objetivo:
-Convertir replies en decisiones operativas.
+### V1 (ACTUAL) ✅
 
-### Componentes:
-
-- Clasificación operativa:
-  - interested → avanzar
-  - needs_info → explicar
-  - not_now → reactivar luego
-  - not_interested → cerrar
-  - unclear → clarificar
-
-- Motor de decisiones:
-  - generar acciones automáticamente
-  - sugerir next steps
+- interpretación automática
+- decisiones sugeridas
+- UI visible
 
 ---
 
-## 🧠 FASE 4 — AI Reply Automation
+### V2 (SIGUIENTE)
 
-- Auto-generación de follow-ups
-- Configuración:
-  - auto vs manual approval
-- Ajuste de tono / estrategia
-
----
-
-## 📊 FASE 5 — Opportunity Intelligence V3
-
-- scoring dinámico basado en conversación
-- prioridad real (no estática)
-- señales:
-  - engagement
-  - timing
-  - intención
+- apply decision
+- ejecución controlada
+- cambio de estado decision
 
 ---
 
-## 📡 FASE 6 — Real Email Integration
+### V3 (FUTURO)
 
-- integración con Outlook
-- sync inbox/outbox real
-- threading real
-
----
-
-## 🧭 FASE 7 — Strategic Layer (Jarvis)
-
-- chat estratégico
-- decisiones de pipeline
-- planificación comercial
+- auto-apply basado en reglas
+- learning loop
 
 ---
 
-## 🧱 PRINCIPIO ARQUITECTÓNICO CLAVE
+## FASE 5 — CLOSED LOOP SYSTEM
 
-NO construir automatismos sin señal.
+OUTBOUND → RESPONSE → UNDERSTAND → ACT → NEW OUTBOUND
 
-Siempre:
-
-Signal → Interpretation → Action
-
-Nunca:
-
-Timer → Acción
+🚧 EN PROGRESO
 
 ---
 
-## 🧭 ESTADO ACTUAL DEL SISTEMA
+## FASE 6 — GOVERNANCE ADVANCED
 
-👉 Ya existe un loop conversacional completo
+- approval layers
+- audit logs
+- undo actions
 
-Siguiente salto:
-👉 inteligencia sobre ese loop
+---
+
+## FASE 7 — STRATEGIC CHAT (JARVIS)
+
+- chat con contexto completo CRM
+- decisiones estratégicas
+- simulaciones
+
+---
+
+## FASE 8 — FULL AUTONOMY
+
+- sistema comercial autónomo
+- intervención humana mínima
+
+---
+
+## VISIÓN FINAL
+
+👉 CEO aprueba  
+👉 IA ejecuta  
+

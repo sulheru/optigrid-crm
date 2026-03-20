@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/migrations/0004_opportunity_last_analyzed_at.py
 from django.db import migrations, models
 
 

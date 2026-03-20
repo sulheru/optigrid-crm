@@ -1,89 +1,82 @@
-# NEXT SESSION — Conversation Intelligence V1
+# NEXT SESSION — Inbox Intelligence V2
+
+## CONTEXTO
+
+Inbox Intelligence V1 está implementado:
+
+InboundEmail → Interpretation → Decision (suggested)
+
+Actualmente:
+- Interpretación automática
+- Decisión sugerida visible
+- Sin ejecución automática
 
 ---
 
-## 🎯 Objective
+## OBJETIVO DE LA SESIÓN
 
-Convert inbound replies into structured decisions.
+Convertir inbox en motor de acción:
 
----
-
-## 🧩 Tasks
-
-### 1. Reply Interpretation Layer
-
-Create service:
-
-- interpret_reply(inbound)
-
-Output:
-
-- intent
-- urgency
-- recommended_action
+👉 Implementar APPLY DECISION
 
 ---
 
-### 2. Decision Engine
+## FEATURES A IMPLEMENTAR
 
-Map reply_type → actions:
+### 1. Apply Inbound Decision
 
-- interested → create next step
-- needs_info → generate detailed reply
-- not_now → create follow-up task
-- not_interested → mark opportunity inactive
-- unclear → clarification reply
+Nueva acción:
 
----
+apply_inbound_decision(decision)
 
-### 3. Opportunity Update
+Debe permitir:
 
-Enhance:
-
-- stage transitions
-- priority updates
-- engagement scoring
+- crear task (follow-up)
+- generar draft de respuesta
+- avanzar opportunity stage
+- marcar como lost
+- solicitar más info
 
 ---
 
-### 4. UI Enhancements
+### 2. Endpoint
 
-- show "AI Suggested Action"
-- one-click apply
-
----
-
-## 🧠 Key Principle
-
-From:
-
-Inbox = messages
-
-To:
-
-Inbox = decisions
+POST /inbox/<id>/apply-decision/
 
 ---
 
-## ⚠️ Constraint
+### 3. UI
 
-NO full automation yet.
+Botón en inbox:
 
-Keep:
+[Apply Decision]
 
-AI suggests → User approves
+Estados:
 
----
-
-## 🚀 Stretch Goal
-
-Auto-generate follow-ups without clicking "generate"
-(but still require approval)
+- suggested → applied
+- suggested → dismissed
 
 ---
 
-## 🧭 Expected Outcome
+### 4. Seguridad
 
-System becomes:
+- requires_approval flag respetado
+- logging de acciones
 
-AI Sales Assistant → AI Sales Operator
+---
+
+### 5. Opcional (stretch)
+
+- auto-apply si confidence > threshold
+- configuración por tipo de email
+
+---
+
+## RESULTADO ESPERADO
+
+Sistema cerrado:
+
+OUTBOUND → INBOUND → UNDERSTAND → DECIDE → ACT → OUTBOUND
+
+👉 Loop comercial autónomo
+

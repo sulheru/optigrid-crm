@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/migrations/0004_crmtask_is_revoked.py
 from django.db import migrations, models
 
 

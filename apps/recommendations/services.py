@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/services.py
 from apps.inferences.models import InferenceRecord
 from apps.recommendations.models import AIRecommendation
 

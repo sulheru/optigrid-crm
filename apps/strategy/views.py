@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/strategy/views.py
 from __future__ import annotations
 
 from django.shortcuts import redirect, render

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/models.py
 from django.db import models
 
 
@@ -132,3 +133,160 @@ class InboundEmail(models.Model):
 
     def __str__(self):
         return f"{self.subject} [{self.reply_type}]"
+
+
+class InboundInterpretation(models.Model):
+    INTENT_INTERESTED = "interested"
+    INTENT_OBJECTION = "objection"
+    INTENT_DELAY = "delay"
+    INTENT_REJECTION = "rejection"
+    INTENT_UNCLEAR = "unclear"
+
+    INTENT_CHOICES = [
+        (INTENT_INTERESTED, "Interested"),
+        (INTENT_OBJECTION, "Objection / Needs info"),
+        (INTENT_DELAY, "Delay / Not now"),
+        (INTENT_REJECTION, "Rejection"),
+        (INTENT_UNCLEAR, "Unclear"),
+    ]
+
+    URGENCY_LOW = "low"
+    URGENCY_MEDIUM = "medium"
+    URGENCY_HIGH = "high"
+
+    URGENCY_CHOICES = [
+        (URGENCY_LOW, "Low"),
+        (URGENCY_MEDIUM, "Medium"),
+        (URGENCY_HIGH, "High"),
+    ]
+
+    SENTIMENT_POSITIVE = "positive"
+    SENTIMENT_NEUTRAL = "neutral"
+    SENTIMENT_NEGATIVE = "negative"
+
+    SENTIMENT_CHOICES = [
+        (SENTIMENT_POSITIVE, "Positive"),
+        (SENTIMENT_NEUTRAL, "Neutral"),
+        (SENTIMENT_NEGATIVE, "Negative"),
+    ]
+
+    ACTION_ADVANCE_OPPORTUNITY = "advance_opportunity"
+    ACTION_SEND_INFORMATION = "send_information"
+    ACTION_SCHEDULE_FOLLOWUP = "schedule_followup"
+    ACTION_MARK_LOST = "mark_lost"
+    ACTION_SEND_CLARIFICATION = "send_clarification"
+
+    ACTION_CHOICES = [
+        (ACTION_ADVANCE_OPPORTUNITY, "Advance opportunity"),
+        (ACTION_SEND_INFORMATION, "Send information"),
+        (ACTION_SCHEDULE_FOLLOWUP, "Schedule follow-up"),
+        (ACTION_MARK_LOST, "Mark lost"),
+        (ACTION_SEND_CLARIFICATION, "Send clarification"),
+    ]
+
+    inbound_email = models.OneToOneField(
+        "emailing.InboundEmail",
+        on_delete=models.CASCADE,
+        related_name="ai_interpretation",
+    )
+
+    intent = models.CharField(
+        max_length=32,
+        choices=INTENT_CHOICES,
+        default=INTENT_UNCLEAR,
+    )
+    urgency = models.CharField(
+        max_length=16,
+        choices=URGENCY_CHOICES,
+        default=URGENCY_MEDIUM,
+    )
+    sentiment = models.CharField(
+        max_length=16,
+        choices=SENTIMENT_CHOICES,
+        default=SENTIMENT_NEUTRAL,
+    )
+    recommended_action = models.CharField(
+        max_length=32,
+        choices=ACTION_CHOICES,
+        default=ACTION_SEND_CLARIFICATION,
+    )
+
+    confidence = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
+    rationale = models.TextField(blank=True, default="")
+    signals_json = models.JSONField(default=dict, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"InboundInterpretation("
+            f"inbound_id={self.inbound_email_id}, "
+            f"intent={self.intent}, "
+            f"action={self.recommended_action}"
+            f")"
+        )
+
+
+class InboundDecision(models.Model):
+    STATUS_SUGGESTED = "suggested"
+    STATUS_APPLIED = "applied"
+    STATUS_DISMISSED = "dismissed"
+
+    STATUS_CHOICES = [
+        (STATUS_SUGGESTED, "Suggested"),
+        (STATUS_APPLIED, "Applied"),
+        (STATUS_DISMISSED, "Dismissed"),
+    ]
+
+    ACTION_ADVANCE_OPPORTUNITY = InboundInterpretation.ACTION_ADVANCE_OPPORTUNITY
+    ACTION_SEND_INFORMATION = InboundInterpretation.ACTION_SEND_INFORMATION
+    ACTION_SCHEDULE_FOLLOWUP = InboundInterpretation.ACTION_SCHEDULE_FOLLOWUP
+    ACTION_MARK_LOST = InboundInterpretation.ACTION_MARK_LOST
+    ACTION_SEND_CLARIFICATION = InboundInterpretation.ACTION_SEND_CLARIFICATION
+
+    ACTION_CHOICES = InboundInterpretation.ACTION_CHOICES
+
+    inbound_email = models.ForeignKey(
+        "emailing.InboundEmail",
+        on_delete=models.CASCADE,
+        related_name="ai_decisions",
+    )
+
+    interpretation = models.ForeignKey(
+        "emailing.InboundInterpretation",
+        on_delete=models.CASCADE,
+        related_name="decisions",
+    )
+
+    action_type = models.CharField(
+        max_length=32,
+        choices=ACTION_CHOICES,
+    )
+    status = models.CharField(
+        max_length=16,
+        choices=STATUS_CHOICES,
+        default=STATUS_SUGGESTED,
+    )
+
+    summary = models.CharField(max_length=255, blank=True, default="")
+    payload_json = models.JSONField(default=dict, blank=True)
+    requires_approval = models.BooleanField(default=True)
+
+    applied_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"InboundDecision("
+            f"inbound_id={self.inbound_email_id}, "
+            f"action={self.action_type}, "
+            f"status={self.status}"
+            f")"
+        )

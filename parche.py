@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/parche.py
 from pathlib import Path
 
 path = Path("/home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/views.py")

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/models.py
 from django.db import models
 from django.utils import timezone
 

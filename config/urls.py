@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic import RedirectView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Home temporal estable
-    path("", RedirectView.as_view(url="/leads/", permanent=False)),
+    # Dashboard mock en raíz
+    path("", TemplateView.as_view(template_name="dashboard/home.html"), name="home"),
 
     # Lead research
     path("", include("apps.lead_research.urls")),
@@ -14,10 +14,13 @@ urlpatterns = [
     # Strategy
     path("strategy/", include("apps.strategy.urls")),
 
-    # Outbox nuevo
+    # Emailing
     path("", include("apps.emailing.urls")),
 
-    # Módulos ya existentes con sus propias URLs
+    # Recommendations
+    path("recommendations/", include("apps.recommendations.urls")),
+
+    # Otros módulos
     path("tasks/", include("apps.tasks.urls")),
     path("opportunities/", include("apps.opportunities.urls")),
 ]

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 

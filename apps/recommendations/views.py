@@ -1,16 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.recommendations.models import AIRecommendation
-from apps.recommendations.services import (
-    dismiss_recommendation,
-    materialize_recommendation,
-)
 
 
 def recommendation_list(request):
-
     qs = AIRecommendation.objects.all().order_by("-id")
 
     status = request.GET.get("status")
@@ -24,7 +19,8 @@ def recommendation_list(request):
 
     recommendation_types = (
         AIRecommendation.objects.values_list(
-            "recommendation_type", flat=True
+            "recommendation_type",
+            flat=True,
         ).distinct()
     )
 
@@ -35,35 +31,33 @@ def recommendation_list(request):
         "recommendation_types": recommendation_types,
         "status_choices": AIRecommendation.STATUS_CHOICES,
     }
-
     return render(request, "recommendations/recommendation_list.html", context)
 
 
 @require_POST
 def recommendation_create_task(request, pk):
-
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
-    task, created = materialize_recommendation(recommendation)
-
-    if created:
-        messages.success(request, f"Task #{task.id} created.")
-    else:
-        messages.info(request, f"Task #{task.id} reused.")
-
+    messages.warning(
+        request,
+        (
+            f"Recommendation #{recommendation.id} found, but task materialization "
+            "is not implemented yet in this module."
+        ),
+    )
     return redirect("/recommendations/")
 
 
 @require_POST
 def recommendation_dismiss(request, pk):
-
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
-    _, changed = dismiss_recommendation(recommendation)
-
-    if changed:
-        messages.success(request, "Recommendation dismissed.")
-    else:
+    if recommendation.status == "dismissed":
         messages.info(request, "Already dismissed.")
+        return redirect("/recommendations/")
 
+    recommendation.status = "dismissed"
+    recommendation.save(update_fields=["status"])
+
+    messages.success(request, "Recommendation dismissed.")
     return redirect("/recommendations/")

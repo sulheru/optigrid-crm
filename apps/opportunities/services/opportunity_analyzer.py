@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/services/opportunity_analyzer.py
 from __future__ import annotations
 
 from dataclasses import dataclass

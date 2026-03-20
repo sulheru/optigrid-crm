@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/views_prioritized.py
 from django.shortcuts import get_object_or_404, render
 
 from apps.opportunities.models import Opportunity
@@ -84,3 +85,36 @@ def opportunity_tasks_view(request, pk: int):
             "auto_tasks_count": len(auto_tasks),
         },
     )
+
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+
+from apps.opportunities.models import Opportunity
+
+
+@require_POST
+def opportunity_set_stage_view(request, pk):
+    opportunity = get_object_or_404(Opportunity, pk=pk)
+
+    target_stage = (request.POST.get("stage") or "").strip()
+    next_url = (request.POST.get("next") or "").strip() or "/opportunities/prioritized/"
+
+    valid_stages = {choice[0] for choice in Opportunity.STAGE_CHOICES}
+    if target_stage not in valid_stages:
+        messages.error(request, f"Invalid stage: {target_stage}")
+        return redirect(next_url)
+
+    current_stage = opportunity.stage
+    if current_stage == target_stage:
+        messages.info(request, f"Opportunity already in stage '{target_stage}'.")
+        return redirect(next_url)
+
+    opportunity.stage = target_stage
+    opportunity.save(update_fields=["stage", "updated_at"])
+
+    messages.success(
+        request,
+        f"Opportunity #{opportunity.id} stage changed: {current_stage} → {target_stage}.",
+    )
+    return redirect(next_url)

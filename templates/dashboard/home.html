@@ -221,11 +221,13 @@
         <p>Dashboard operativo del pipeline IA-first</p>
       </div>
       <div class="nav">
-        <a href="/">Dashboard</a>
-        <a href="/emails/">Emails</a>
+        <a href="/strategy/chat/">Dashboard</a>
+        <a href="/outbox/">Outbox</a>
+        <a href="/inbox/">Inbox</a>
         <a href="/recommendations/">Recommendations</a>
         <a href="/tasks/">Tasks</a>
-        <a href="/opportunities/">Opportunities</a>
+        <a href="/opportunities/prioritized/">Opportunities</a>
+        <a href="/leads/">Leads</a>
       </div>
     </div>
 
@@ -252,7 +254,7 @@
       <div class="card">
         <div class="card-header">
           <h2>Emails recientes</h2>
-          <a href="/emails/">Ver todos</a>
+          <a href="/outbox/">Ver todos</a>
         </div>
         <div class="card-body">
           {% if recent_emails %}
@@ -260,9 +262,7 @@
               {% for email in recent_emails %}
                 <div class="row">
                   <div class="row-title">
-                    <a href="{% url 'emailing:email_detail' email.id %}">
-                      {{ email.subject|default:"(sin asunto)" }}
-                    </a>
+                    {{ email.subject|default:"(sin asunto)" }}
                   </div>
                   <div class="row-meta">
                     De: {{ email.sender|default:"—" }} ·
@@ -357,8 +357,8 @@
             <span>Vista futura para acciones operativas derivadas del motor.</span>
           </div>
           <div class="placeholder">
-            <strong>/opportunities/</strong>
-            <span>Vista futura para oportunidades CRM consolidadas.</span>
+            <strong>/opportunities/prioritized/</strong>
+            <span>Vista consolidada del pipeline de oportunidades.</span>
           </div>
         </div>
       </div>

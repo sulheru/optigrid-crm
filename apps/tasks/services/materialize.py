@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/services/materialize.py
 from apps.recommendations.models import AIRecommendation
 from apps.tasks.models import CRMTask
 

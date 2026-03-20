@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/management/commands/reclassify_manual_tasks.py
 from django.core.management.base import BaseCommand
 
 from apps.tasks.models import CRMTask

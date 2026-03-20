@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/management/commands/crm_pipeline_report.py
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/management/commands/demo_email_flow.py
 from __future__ import annotations
 
 from django.core.management.base import BaseCommand

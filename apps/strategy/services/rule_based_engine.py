@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/strategy/services/rule_based_engine.py
 from __future__ import annotations
 
 from typing import Any

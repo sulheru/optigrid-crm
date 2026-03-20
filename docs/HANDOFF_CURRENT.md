@@ -1,71 +1,90 @@
-# HANDOFF — CURRENT SYSTEM STATE
+# HANDOFF — CURRENT STATE
+
+## PROYECTO
+
+OptiGrid CRM — AI Commercial Operating System
 
 ---
 
-## 🧠 System Type
+## ESTADO ACTUAL
 
-AI Commercial Operating System (early stage)
+Sistema funcional end-to-end:
 
----
-
-## 🔄 Core Loop (WORKING)
-
-Lead → Approve → Opportunity → Draft Email → Send → Inbound → Follow-up Draft
+Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
 
 ---
 
-## 🧩 Key Components
+## CAPAS ACTIVAS
 
-### OutboundEmail
-- types: first_contact, followup
-- statuses: draft, approved, sent
+### 1. Opportunity Intelligence V2
+- scoring
+- priority
+- risk flags
+- next actions
 
-### InboundEmail
-- reply_type classification
-- linked to opportunity
-- linked to source outbound
+### 2. Autotasker V1
+- creación automática de tasks
 
----
+### 3. Outbox V1
+- drafts
+- approve
+- send
 
-## ⚙️ Services
+### 4. Inbox Intelligence V1 (NEW)
+- interpretación automática
+- decisiones sugeridas
+- UI integrada
 
-- outbound_sender
-- inbound_simulator
-- reply_generator
-
----
-
-## 🧠 Current Capability
-
-System can:
-
-- initiate outreach
-- simulate replies
-- generate contextual follow-ups
+### 5. Governance
+- revoke tasks
+- control manual
 
 ---
 
-## ⚠️ Limitations
+## MODELOS CLAVE
 
-- no real email integration
-- no true AI classification (rule-based)
-- no decision engine
-- no opportunity state transitions
+Inbound:
+- InboundEmail
+- InboundInterpretation
+- InboundDecision
+
+Outbound:
+- OutboundEmail
+
+Core:
+- Opportunity
+- AIRecommendation
+- CRMTask
 
 ---
 
-## 🎯 Immediate Next Step
+## FLUJO ACTUAL
 
-Conversation Intelligence Layer
+OUTBOUND → INBOUND → INTERPRET → SUGGEST
+
+🚫 Falta: APPLY
 
 ---
 
-## 🧭 Strategic Direction
+## PROBLEMAS RESUELTOS EN ESTA SESIÓN
 
-Move from:
+- error EmailMessage legacy
+- namespace opportunities_ui
+- routing inconsistencies
+- dashboard root roto
 
-Tooling
+---
 
-To:
+## DEUDA TÉCNICA
 
-Autonomous decision system
+- inbox analysis en view (debe moverse a servicio/async)
+- falta apply_decision
+- falta automatización configurable
+
+---
+
+## ESTADO
+
+✅ ESTABLE  
+✅ LISTO PARA EVOLUCIÓN  
+

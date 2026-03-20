@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/patch_views_recommendations.py
 from django.shortcuts import render
 from apps.recommendations.models import AIRecommendation
 

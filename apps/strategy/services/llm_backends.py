@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/strategy/services/llm_backends.py
 from __future__ import annotations
 
 import os

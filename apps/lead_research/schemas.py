@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/schemas.py
 from __future__ import annotations
 
 from typing import Any, List, Optional

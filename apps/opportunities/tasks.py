@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/tasks.py
 from __future__ import annotations
 
 from celery import shared_task

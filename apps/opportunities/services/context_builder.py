@@ -102,7 +102,8 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
     CRMUpdateProposal = _model("updates", "CRMUpdateProposal")
     InferenceRecord = _model("inferences", "InferenceRecord")
     FactRecord = _model("facts", "FactRecord")
-    EmailMessage = _model("emailing", "EmailMessage")
+    OutboundEmail = _model("emailing", "OutboundEmail")
+    InboundEmail = _model("emailing", "InboundEmail")
 
     CRMTask = _optional_model(
         ("tasks", "CRMTask"),
@@ -167,8 +168,6 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
     proposal = None
     seed_inferences: list[Any] = []
     seed_facts: list[Any] = []
-    seed_email_ids: set[int] = set()
-    seed_thread_ids: set[int] = set()
 
     if source_recommendation is not None:
         scope_type = _normalize_scope_type(_safe_attr(source_recommendation, "scope_type"))
@@ -191,18 +190,6 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
             try:
                 fact = FactRecord.objects.filter(pk=scope_id).first()
                 _append_unique_model(seed_facts, fact)
-            except Exception:
-                pass
-
-        elif scope_type == "email_message" and scope_id:
-            try:
-                seed_email_ids.add(int(scope_id))
-            except Exception:
-                pass
-
-        elif scope_type == "thread" and scope_id:
-            try:
-                seed_thread_ids.add(int(scope_id))
             except Exception:
                 pass
 
@@ -247,7 +234,6 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
     for item in inferred_from_proposal:
         _append_unique_model(inference_models, item)
 
-    # Retrotrazabilidad: inference -> fact_record / email_message / thread
     for inference in inference_models:
         inf_source_type = _normalize_scope_type(_safe_attr(inference, "source_type"))
         inf_source_id = _coerce_text(_safe_attr(inference, "source_id"))
@@ -259,53 +245,65 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
             except Exception:
                 pass
 
-        elif inf_source_type == "email_message" and inf_source_id:
-            try:
-                seed_email_ids.add(int(inf_source_id))
-            except Exception:
-                pass
-
-        elif inf_source_type == "thread" and inf_source_id:
-            try:
-                seed_thread_ids.add(int(inf_source_id))
-            except Exception:
-                pass
-
     fact_models: list[Any] = []
     for item in seed_facts:
         _append_unique_model(fact_models, item)
 
-    for fact in fact_models:
-        fact_source_type = _normalize_scope_type(_safe_attr(fact, "source_type"))
-        fact_source_id = _coerce_text(_safe_attr(fact, "source_id"))
+    outbound_emails = list(
+        OutboundEmail.objects.filter(opportunity=opportunity)
+        .select_related("source_inbound")
+        .order_by("-created_at")[:20]
+    )
+    inbound_emails = list(
+        InboundEmail.objects.filter(opportunity=opportunity)
+        .select_related("source_outbound")
+        .order_by("-received_at", "-created_at")[:20]
+    )
 
-        if fact_source_type == "email_message" and fact_source_id:
-            try:
-                seed_email_ids.add(int(fact_source_id))
-            except Exception:
-                pass
+    emails_data: list[dict[str, Any]] = []
 
-        elif fact_source_type == "thread" and fact_source_id:
-            try:
-                seed_thread_ids.add(int(fact_source_id))
-            except Exception:
-                pass
+    for email in outbound_emails:
+        emails_data.append(
+            {
+                "id": email.id,
+                "direction": "outbound",
+                "email_type": email.email_type,
+                "counterparty": email.to_email,
+                "subject": email.subject,
+                "body_text": email.body,
+                "status": email.status,
+                "sent_at": _serialize_datetime(email.sent_at),
+                "received_at": None,
+                "created_at": _serialize_datetime(email.created_at),
+            }
+        )
 
-    email_models: list[Any] = []
+    for email in inbound_emails:
+        emails_data.append(
+            {
+                "id": email.id,
+                "direction": "inbound",
+                "email_type": "reply",
+                "counterparty": email.from_email,
+                "subject": email.subject,
+                "body_text": email.body,
+                "status": email.status,
+                "reply_type": email.reply_type,
+                "sent_at": None,
+                "received_at": _serialize_datetime(email.received_at),
+                "created_at": _serialize_datetime(email.created_at),
+            }
+        )
 
-    if seed_email_ids:
-        try:
-            for email in EmailMessage.objects.filter(id__in=sorted(seed_email_ids)).order_by("id"):
-                _append_unique_model(email_models, email)
-        except Exception:
-            pass
-
-    if seed_thread_ids:
-        try:
-            for email in EmailMessage.objects.filter(thread_id__in=sorted(seed_thread_ids)).order_by("id"):
-                _append_unique_model(email_models, email)
-        except Exception:
-            pass
+    emails_data.sort(
+        key=lambda item: (
+            item.get("received_at")
+            or item.get("sent_at")
+            or item.get("created_at")
+            or ""
+        ),
+        reverse=True,
+    )
 
     inferences_data = [
         _serialize_model(
@@ -339,25 +337,6 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
             ],
         )
         for fact in fact_models
-    ]
-
-    emails_data = [
-        _serialize_model(
-            email,
-            [
-                "id",
-                "thread_id",
-                "external_message_ref",
-                "direction",
-                "sender",
-                "subject",
-                "body_text",
-                "sent_at",
-                "message_status",
-                "created_at",
-            ],
-        )
-        for email in email_models
     ]
 
     active_recommendations_qs = AIRecommendation.objects.filter(
@@ -453,9 +432,13 @@ def build_opportunity_analysis_context(opportunity) -> OpportunityAnalysisContex
 
     if emails_data:
         summary_parts.append("Emails:")
-        for item in emails_data[:5]:
+        for item in emails_data[:8]:
             body = _coerce_text(item.get("body_text"))
-            summary_parts.append(f"- [{item.get('direction')}] {item.get('subject')} :: {body[:280]}")
+            when = item.get("received_at") or item.get("sent_at") or item.get("created_at")
+            summary_parts.append(
+                f"- [{item.get('direction')}] {item.get('subject')} | "
+                f"{item.get('counterparty')} | {when} :: {body[:280]}"
+            )
 
     return OpportunityAnalysisContext(
         opportunity=opportunity_data,

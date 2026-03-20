@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/views.py
 from django.contrib import messages
 from django.db.models import F
 from django.http import HttpResponseNotAllowed

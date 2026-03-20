@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/opportunity_intelligence.py
 from __future__ import annotations
 
 from dataclasses import dataclass, field

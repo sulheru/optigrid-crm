@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/services/lead_promotion.py
 from django.db import transaction
 
 from apps.opportunities.models import Opportunity

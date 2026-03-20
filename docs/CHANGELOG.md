@@ -1,46 +1,63 @@
 # CHANGELOG
 
-## [Session — Conversation Loop Completed]
+## 2026-03-20 — Inbox Intelligence V1 + System Stabilization
 
-### 🚀 Added
+### 🧠 Inbox Intelligence V1 (NEW)
 
-#### Outbox Improvements
-- email_type separation (first_contact / followup)
-- bulk actions (approve, send, draft)
-- UI filters and controls
+- Añadido `InboundInterpretation`
+- Añadido `InboundDecision`
+- Servicio `analyze_inbound_email` integrado en inbox_view
+- Interpretación automática en tiempo de lectura (lazy execution)
+- UI actualizada con:
+  - intent
+  - urgency
+  - sentiment
+  - confidence
+  - recommended_action
+  - rationale
+  - signals
+  - suggested decision
 
-#### Inbox V1
-- InboundEmail model
-- reply_type classification (simulated)
-- inbox view
-- status tracking (new, reviewed, linked)
+### 📥 Inbox UI
 
-#### Inbound Simulation
-- automatic reply generation after send
-- deterministic pattern system
+- Panel de inteligencia IA añadido por email
+- Visualización clara de decisiones sugeridas
+- Mantiene control humano (no auto-apply aún)
 
-#### Follow-up Engine V1
-- reply-based draft generation
-- contextual messaging per reply_type
-- inbound → outbound linking
-- duplicate prevention
+### 📤 Outbox
+
+- Sin cambios funcionales
+- Base estable para follow-ups desde inbound
+
+### 🧠 Opportunities
+
+- Fix completo de `context_builder`
+- Eliminada dependencia de modelo legacy `EmailMessage`
+- Integración con:
+  - OutboundEmail
+  - InboundEmail
+
+### 🧭 Routing / URLs
+
+- Eliminado namespace inconsistente `opportunities_ui`
+- Corrección de templates:
+  - prioritized.html
+  - opportunity_tasks.html
+
+### 🏠 Dashboard
+
+- Restaurado `/` con TemplateView (mock estable)
+
+### 🧪 Tests
+
+- Tests emailing OK
+- Sistema sin errores runtime
 
 ---
 
-### 🧠 Architectural Shift
+## Estado general
 
-System evolved from:
+Sistema estable ✅  
+Pipeline completo operativo ✅  
+Inbox Intelligence V1 activo ✅  
 
-Outbound automation
-
-→ to:
-
-Conversation loop system
-
----
-
-### 🔥 Result
-
-First working version of:
-
-AI-driven commercial conversation engine

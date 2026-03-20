@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/config/wsgi.py
 """
 WSGI config for config project.
 

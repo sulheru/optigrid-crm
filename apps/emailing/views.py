@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.emailing.models import InboundEmail, OutboundEmail
+from apps.emailing.services.inbound_analysis_service import analyze_inbound_email
 from apps.emailing.services.outbound_sender import (
     send_all_approved_outbound_emails,
     send_outbound_email,
@@ -107,7 +108,11 @@ def inbox_view(request):
     status = request.GET.get("status", "all")
     reply_type = request.GET.get("reply_type", "all")
 
-    emails = InboundEmail.objects.all().select_related("opportunity", "source_outbound")
+    emails = InboundEmail.objects.all().select_related(
+        "opportunity",
+        "source_outbound",
+        "ai_interpretation",
+    ).prefetch_related("ai_decisions")
 
     if status != "all":
         emails = emails.filter(status=status)
@@ -115,7 +120,29 @@ def inbox_view(request):
     if reply_type != "all":
         emails = emails.filter(reply_type=reply_type)
 
-    emails = emails.order_by("-received_at", "-created_at")[:200]
+    emails = list(emails.order_by("-received_at", "-created_at")[:200])
+
+    for email in emails:
+        if not hasattr(email, "ai_interpretation"):
+            analyze_inbound_email(email)
+        elif not email.ai_decisions.filter(status="suggested").exists():
+            analyze_inbound_email(email)
+
+    emails = list(
+        InboundEmail.objects.all()
+        .select_related("opportunity", "source_outbound", "ai_interpretation")
+        .prefetch_related("ai_decisions")
+        .filter(id__in=[e.id for e in emails])
+        .order_by("-received_at", "-created_at")
+    )
+
+    for email in emails:
+        suggested_decision = None
+        for decision in email.ai_decisions.all():
+            if decision.status == "suggested":
+                suggested_decision = decision
+                break
+        email.suggested_decision = suggested_decision
 
     base_qs = InboundEmail.objects.all()
 

@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/services/reply_generator.py
 from apps.emailing.models import InboundEmail, OutboundEmail
 
 

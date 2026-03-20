@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/management/commands/materialize_open_recommendations.py
 from django.core.management.base import BaseCommand
 
 from apps.recommendations.models import AIRecommendation

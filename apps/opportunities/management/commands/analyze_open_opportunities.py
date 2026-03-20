@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/management/commands/analyze_open_opportunities.py
 from django.core.management.base import BaseCommand
 
 from apps.opportunities.models import Opportunity

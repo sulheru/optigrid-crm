@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/services/outbound_sender.py
 from django.utils import timezone
 
 from apps.emailing.models import OutboundEmail

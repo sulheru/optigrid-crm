@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/strategy/urls.py
 from django.urls import path
 
 from .views import StrategyChatView

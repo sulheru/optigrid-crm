@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/services/promote.py
 from apps.opportunities.models import Opportunity
 from apps.tasks.models import CRMTask
 

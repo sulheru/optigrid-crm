@@ -1,3 +1,4 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/services/signal_discovery.py
 from __future__ import annotations
 
 import json
