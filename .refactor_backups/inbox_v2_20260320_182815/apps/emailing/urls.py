@@ -1,4 +1,5 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/urls.py
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/.refactor_backups/inbox_v2_20260320_182815/apps/emailing/urls.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.urls import path
 
 from .views import (

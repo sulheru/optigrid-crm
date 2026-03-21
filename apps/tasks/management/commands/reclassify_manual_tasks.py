@@ -1,4 +1,5 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/management/commands/reclassify_manual_tasks.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.core.management.base import BaseCommand
 
 from apps.tasks.models import CRMTask

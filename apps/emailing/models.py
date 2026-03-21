@@ -1,4 +1,3 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/models.py
 from django.db import models
 
 
@@ -242,6 +241,16 @@ class InboundDecision(models.Model):
         (STATUS_DISMISSED, "Dismissed"),
     ]
 
+    PRIORITY_LOW = "low"
+    PRIORITY_MEDIUM = "medium"
+    PRIORITY_HIGH = "high"
+
+    PRIORITY_CHOICES = [
+        (PRIORITY_LOW, "Low"),
+        (PRIORITY_MEDIUM, "Medium"),
+        (PRIORITY_HIGH, "High"),
+    ]
+
     ACTION_ADVANCE_OPPORTUNITY = InboundInterpretation.ACTION_ADVANCE_OPPORTUNITY
     ACTION_SEND_INFORMATION = InboundInterpretation.ACTION_SEND_INFORMATION
     ACTION_SCHEDULE_FOLLOWUP = InboundInterpretation.ACTION_SCHEDULE_FOLLOWUP
@@ -275,6 +284,17 @@ class InboundDecision(models.Model):
     summary = models.CharField(max_length=255, blank=True, default="")
     payload_json = models.JSONField(default=dict, blank=True)
     requires_approval = models.BooleanField(default=True)
+
+    score = models.FloatField(default=0.0)
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default=PRIORITY_MEDIUM,
+    )
+    risk_flags = models.JSONField(default=list, blank=True)
+
+    applied_automatically = models.BooleanField(default=False)
+    automation_reason = models.CharField(max_length=255, blank=True, default="")
 
     applied_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

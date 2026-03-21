@@ -6,93 +6,124 @@ PROYECTO: OptiGrid CRM — AI Commercial Operating System
 
 ## CONTEXTO
 
-Sistema IA-first donde:
+Estamos construyendo un sistema IA-first donde:
 
-- IA ejecuta funciones comerciales
-- Usuario supervisa (CEO mode)
-- Sistema gestiona:
-  - inbox
-  - outbox
-  - oportunidades
-  - tareas
+- la IA ejecuta funciones comerciales completas
+- el usuario actúa como CEO / supervisor
+- el sistema ya gestiona:
+  - Dashboard
+  - Strategic Chat
+  - Mailing
+    - Outbox
+    - Inbox
+  - Recommendations
+  - Tasks
+  - Opportunities
+  - Leads
 
-Pipeline actual:
+Pipeline comercial operativo actual:
 
-Inbound → AI → Decision → Apply → Draft → Edit → Approve → Send
-
----
-
-## ESTADO ACTUAL
-
-✔ Inbox Intelligence V2 completo  
-✔ Outbox editable  
-✔ Apply/Dismiss funcionando  
-✔ Tests OK  
-
-Sistema funcional end-to-end
+Inbound → AI Interpretation → Decision → Auto/Manual Apply → Action → Draft/Task/Opportunity Update → Approve → Send
 
 ---
 
-## OBJETIVO DE LA SESIÓN
+## ESTADO ACTUAL DEL SISTEMA
 
-Implementar AUTOMATION LAYER (V3)
+### Backend
+✔ Automation Layer V3 implantado  
+✔ scoring / priority / risk flags persistidos  
+✔ auto-apply seguro validado  
+✔ blocked actions respetadas  
+✔ tests OK  
+
+### UI
+✔ Inbox Supervisor UI  
+✔ Tasks Supervisor UI  
+✔ Inbox Supervisor Filters  
+⚠ aún no existe layout común compartido  
+⚠ navegación duplicada entre templates  
+
+---
+
+## OBJETIVO DE LA SIGUIENTE SESIÓN
+
+Implementar **UI FOUNDATION V1**
+
+Crear un layout compartido y un menú global reutilizable para toda la aplicación.
 
 ---
 
 ## REQUISITOS
 
-### 1. Auto Apply Decisions
+### 1. Shared Base Layout
+Crear:
 
-- aplicar automáticamente si:
-  - requires_approval = False
-  - confidence > threshold
+- `templates/base.html`
+- estructura común de app shell
+- bloque principal de contenido
+- estilos globales mínimos y reutilizables
 
-### 2. Decision Scoring
+### 2. Global Navigation
+Crear un menú único compartido con estas secciones:
 
-Añadir a InboundDecision:
+- Dashboard
+- Strategic Chat
+- Mailing
+  - Outbox
+  - Inbox
+- Recommendations
+- Tasks
+- Opportunities
+- Leads
 
-- score
-- risk_flags
-- priority
+### 3. Primera migración de vistas
+Migrar primero estas vistas a `base.html`:
 
----
+- Inbox
+- Outbox
+- Tasks
 
-### 3. Deduplication
+### 4. Active section highlighting
+Resaltar en navegación la vista o sección activa.
 
-- evitar generar múltiples decisiones iguales
-- hash por:
-  - inbound_id
-  - action_type
+### 5. No romper funcionalidad
+Mantener intacto:
 
----
-
-### 4. Logging / Audit
-
-- registrar:
-  - decisiones aplicadas automáticamente
-  - origen
+- filtros actuales
+- forms POST
+- apply / dismiss
+- outbox actions
+- revoke task
 
 ---
 
 ## RESTRICCIONES
 
-- No romper V2
-- Mantener control manual
-- Todo reversible
+- no rehacer toda la UI
+- no introducir complejidad innecesaria
+- no meter JS complejo
+- no hacer design system completo todavía
+- mantener compatibilidad con templates existentes
 
 ---
 
 ## OUTPUT ESPERADO
 
-- servicios nuevos
-- cambios en modelo (si necesario)
-- integración limpia
-- tests básicos
+- `base.html`
+- parcial o bloque reutilizable de navegación
+- Inbox / Outbox / Tasks migrados al shell común
+- estilos comunes básicos
+- validación visual funcional
 
 ---
 
-## NOTA
+## OBJETIVO ESTRATÉGICO
 
-Sistema ya funciona.
-Ahora el objetivo es reducir intervención humana sin perder control.
+Pasar de múltiples pantallas aisladas
+→ a una aplicación coherente con shell de producto
 
+Preparar el terreno para:
+- settings operables
+- dashboard real
+- strategy cockpit
+- governance layer visual

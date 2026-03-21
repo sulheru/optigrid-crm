@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/manage.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

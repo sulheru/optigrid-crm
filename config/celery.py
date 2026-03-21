@@ -1,4 +1,5 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/config/celery.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 import os
 
 from celery import Celery

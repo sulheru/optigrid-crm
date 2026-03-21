@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from apps.emailing.models import (
@@ -7,6 +7,7 @@ from apps.emailing.models import (
     InboundInterpretation,
     OutboundEmail,
 )
+from apps.emailing.services.inbound_analysis_service import analyze_inbound_email
 from apps.emailing.services.inbound_decision_apply_service import (
     apply_inbound_decision,
     dismiss_inbound_decision,
@@ -119,6 +120,9 @@ class ApplyInboundDecisionServiceTest(TestCase):
             summary="Schedule a follow-up in a few days",
             payload_json={},
             requires_approval=False,
+            score=72,
+            priority="medium",
+            risk_flags=[],
         )
 
         result = apply_inbound_decision(decision)
@@ -127,6 +131,7 @@ class ApplyInboundDecisionServiceTest(TestCase):
 
         self.assertEqual(decision.status, InboundDecision.STATUS_APPLIED)
         self.assertIsNotNone(decision.applied_at)
+        self.assertFalse(decision.applied_automatically)
         self.assertEqual(CRMTask.objects.count(), 1)
         self.assertIsNotNone(result["task_id"])
 
@@ -139,6 +144,9 @@ class ApplyInboundDecisionServiceTest(TestCase):
             summary="Send company overview and next steps",
             payload_json={},
             requires_approval=True,
+            score=70,
+            priority="medium",
+            risk_flags=["requires_approval"],
         )
 
         result = apply_inbound_decision(decision)
@@ -161,6 +169,9 @@ class ApplyInboundDecisionServiceTest(TestCase):
             summary="Advance opportunity to next stage",
             payload_json={},
             requires_approval=True,
+            score=88,
+            priority="high",
+            risk_flags=["requires_approval", "sensitive_stage_change"],
         )
 
         result = apply_inbound_decision(decision)
@@ -181,6 +192,9 @@ class ApplyInboundDecisionServiceTest(TestCase):
             summary="Mark opportunity as lost",
             payload_json={},
             requires_approval=True,
+            score=25,
+            priority="low",
+            risk_flags=["requires_approval", "negative_sentiment", "blocked_action"],
         )
 
         apply_inbound_decision(decision)
@@ -200,9 +214,101 @@ class ApplyInboundDecisionServiceTest(TestCase):
             summary="Ask for clarification",
             payload_json={},
             requires_approval=True,
+            score=45,
+            priority="medium",
+            risk_flags=["requires_approval"],
         )
 
         dismiss_inbound_decision(decision)
         decision.refresh_from_db()
 
         self.assertEqual(decision.status, InboundDecision.STATUS_DISMISSED)
+
+
+@override_settings(
+    INBOX_AUTO_APPLY_ENABLED=True,
+    INBOX_AUTO_APPLY_SCORE_THRESHOLD=60,
+    INBOX_AUTO_BLOCKED_ACTIONS=["mark_lost", "advance_opportunity"],
+    INBOX_AUTO_BLOCK_ON_RISK_FLAGS=[
+        "low_confidence",
+        "unclear_intent",
+        "negative_sentiment",
+        "contradictory_signals",
+        "requires_approval",
+        "blocked_action",
+        "sensitive_stage_change",
+    ],
+)
+class AutomationLayerV3Test(TestCase):
+    def setUp(self):
+        self.opportunity = Opportunity.objects.create(
+            title="Automation Opportunity",
+            company_name="ACME",
+            stage="new",
+        )
+
+    def test_analyze_inbound_email_auto_applies_safe_decision(self):
+        inbound = InboundEmail.objects.create(
+            opportunity=self.opportunity,
+            from_email="lead@example.com",
+            subject="Need more details",
+            body="Please send more information about your services.",
+            status=InboundEmail.STATUS_NEW,
+            reply_type=InboundEmail.REPLY_NEEDS_INFO,
+            received_at=timezone.now(),
+        )
+
+        result = analyze_inbound_email(inbound)
+
+        decision = InboundDecision.objects.get(id=result["decision_id"])
+        outbound = OutboundEmail.objects.get(source_inbound=inbound)
+
+        self.assertEqual(decision.status, InboundDecision.STATUS_APPLIED)
+        self.assertTrue(decision.applied_automatically)
+        self.assertGreaterEqual(decision.score, 60)
+        self.assertEqual(outbound.status, OutboundEmail.STATUS_DRAFT)
+
+    def test_analyze_inbound_email_dedupes_existing_applied_decision(self):
+        inbound = InboundEmail.objects.create(
+            opportunity=self.opportunity,
+            from_email="lead@example.com",
+            subject="Need more details",
+            body="Please send more information about your services.",
+            status=InboundEmail.STATUS_NEW,
+            reply_type=InboundEmail.REPLY_NEEDS_INFO,
+            received_at=timezone.now(),
+        )
+
+        first = analyze_inbound_email(inbound)
+        second = analyze_inbound_email(inbound)
+
+        self.assertEqual(first["decision_id"], second["decision_id"])
+        self.assertEqual(
+            InboundDecision.objects.filter(
+                inbound_email=inbound,
+                action_type=InboundDecision.ACTION_SEND_INFORMATION,
+            ).count(),
+            1,
+        )
+        self.assertEqual(
+            OutboundEmail.objects.filter(source_inbound=inbound).count(),
+            1,
+        )
+
+    def test_blocked_action_remains_manual(self):
+        inbound = InboundEmail.objects.create(
+            opportunity=self.opportunity,
+            from_email="lead@example.com",
+            subject="We are interested",
+            body="We are interested and would like to move forward.",
+            status=InboundEmail.STATUS_NEW,
+            reply_type=InboundEmail.REPLY_INTERESTED,
+            received_at=timezone.now(),
+        )
+
+        result = analyze_inbound_email(inbound)
+        decision = InboundDecision.objects.get(id=result["decision_id"])
+
+        self.assertEqual(decision.action_type, InboundDecision.ACTION_ADVANCE_OPPORTUNITY)
+        self.assertEqual(decision.status, InboundDecision.STATUS_SUGGESTED)
+        self.assertFalse(decision.applied_automatically)

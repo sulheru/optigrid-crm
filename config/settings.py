@@ -1,4 +1,5 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/config/settings.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 """
 Django settings for config project.
 
@@ -133,3 +134,21 @@ CELERY_BEAT_SCHEDULE["lead-signal-discovery-every-6-hours"] = {
     "task": "apps.lead_research.tasks.run_lead_signal_discovery",
     "schedule": 60 * 60 * 6,
 }
+
+INBOX_AUTO_APPLY_ENABLED = True
+INBOX_AUTO_APPLY_SCORE_THRESHOLD = 60
+
+INBOX_AUTO_BLOCKED_ACTIONS = [
+    "mark_lost",
+    "advance_opportunity",
+]
+
+INBOX_AUTO_BLOCK_ON_RISK_FLAGS = [
+    "low_confidence",
+    "unclear_intent",
+    "negative_sentiment",
+    "contradictory_signals",
+    "requires_approval",
+    "blocked_action",
+    "sensitive_stage_change",
+]

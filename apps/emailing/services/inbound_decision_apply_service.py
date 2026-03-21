@@ -97,7 +97,11 @@ def _create_reply_draft(inbound, decision):
 
 
 @transaction.atomic
-def apply_inbound_decision(decision: InboundDecision):
+def apply_inbound_decision(
+    decision: InboundDecision,
+    automatic: bool = False,
+    automation_reason: str = "",
+):
     if decision.status != InboundDecision.STATUS_SUGGESTED:
         raise ValueError("Decision is not in suggested state")
 
@@ -109,10 +113,11 @@ def apply_inbound_decision(decision: InboundDecision):
     opportunity_stage = None
 
     logger.info(
-        "Applying inbound decision %s for inbound %s with action %s",
+        "Applying inbound decision %s for inbound %s with action %s (automatic=%s)",
         decision.id,
         inbound.id,
         action,
+        automatic,
     )
 
     if action == InboundDecision.ACTION_ADVANCE_OPPORTUNITY:
@@ -136,13 +141,26 @@ def apply_inbound_decision(decision: InboundDecision):
 
     decision.status = InboundDecision.STATUS_APPLIED
     decision.applied_at = timezone.now()
-    decision.save(update_fields=["status", "applied_at"])
+    decision.applied_automatically = automatic
+
+    update_fields = [
+        "status",
+        "applied_at",
+        "applied_automatically",
+    ]
+
+    if automatic:
+        decision.automation_reason = automation_reason or "auto_apply"
+        update_fields.append("automation_reason")
+
+    decision.save(update_fields=update_fields)
 
     return {
         "decision_id": decision.id,
         "task_id": getattr(task, "id", None),
         "outbound_id": getattr(outbound, "id", None),
         "opportunity_stage": opportunity_stage,
+        "automatic": automatic,
     }
 
 

@@ -1,4 +1,5 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/views_prioritized.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.shortcuts import get_object_or_404, render
 
 from apps.opportunities.models import Opportunity

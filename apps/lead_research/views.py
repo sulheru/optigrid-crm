@@ -1,4 +1,5 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/lead_research/views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
