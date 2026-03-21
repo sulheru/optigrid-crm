@@ -1,0 +1,266 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/strategy/chat.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Strategy Chat · OptiGrid CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --line: #dbe2ea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --soft: #eef4ff;
+      --user: #111827;
+      --assistant: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .header {
+      margin-bottom: 18px;
+    }
+    .header h1 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+    }
+    .header p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.35fr 0.75fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    }
+    .chat-history {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 420px;
+    }
+    .message {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .message.user {
+      background: #fff;
+      border-left: 4px solid var(--user);
+    }
+    .message.assistant {
+      background: var(--assistant);
+      border-left: 4px solid var(--accent);
+    }
+    .message .role {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .message .meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .message pre,
+    .message p {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+      font-family: inherit;
+    }
+    form {
+      margin-top: 18px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .secondary {
+      background: #eef2f7;
+      color: var(--text);
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .metric .value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .metric .label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .suggested {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .prompt-chip {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--soft);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .empty {
+      padding: 18px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      background: #fff;
+    }
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Strategic Chat</h1>
+      <p>Jarvis V2 · capa estratégica con backend LLM opcional</p>
+    </div>
+
+    <div class="layout">
+      <section class="card">
+        <div class="chat-history">
+          {% if history %}
+            {% for item in history %}
+              <div class="message {{ item.role }}">
+                <div class="role">
+                  {% if item.role == "user" %}CEO{% else %}Jarvis{% endif %}
+                </div>
+                {% if item.role == "assistant" %}
+                  <pre>{{ item.content }}</pre>
+                  {% if item.meta %}
+                    <div class="meta">{{ item.meta }}</div>
+                  {% endif %}
+                {% else %}
+                  <p>{{ item.content }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty">
+              No hay historial todavía. Haz una pregunta como:
+              “¿Qué hago hoy?” o “¿Qué oportunidades están en riesgo?”
+            </div>
+          {% endif %}
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <textarea
+            name="message"
+            placeholder="Escribe una pregunta estratégica sobre el CRM..."
+            required
+          ></textarea>
+          <div class="actions">
+            <button type="submit" class="primary">Enviar</button>
+          </div>
+        </form>
+
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="clear_history" value="1">
+          <div class="actions">
+            <button type="submit" class="secondary">Limpiar historial</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="card">
+        <h2 style="margin-top: 0;">Resumen ejecutivo</h2>
+        <div class="summary-grid">
+          <div class="metric">
+            <div class="value">{{ context_summary.prioritized_opportunities_count }}</div>
+            <div class="label">Oportunidades priorizadas</div>
+          </div>
+          <div class="metric">
+            <div class="value">{{ context_summary.at_risk_opportunities_count }}</div>
+            <div class="label">Oportunidades en riesgo</div>
+          </div>
+          <div class="metric">
+            <div class="value">{{ context_summary.opportunities_without_open_tasks_count }}</div>
+            <div class="label">Sin tasks abiertas</div>
+          </div>
+          <div class="metric">
+            <div class="value">{{ context_summary.open_tasks_count }}</div>
+            <div class="label">Tasks abiertas</div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 22px;">Preguntas sugeridas</h2>
+        <div class="suggested">
+          {% for prompt in suggested_prompts %}
+            <div class="prompt-chip">{{ prompt }}</div>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

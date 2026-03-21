@@ -1,0 +1,7 @@
+templates/base.html
+templates/emailing/email_detail.html
+templates/emailing/email_list.html
+templates/opportunities/list.html
+templates/opportunities/opportunity_tasks.html
+templates/placeholders/simple_page.html
+templates/recommendations/recommendation_list.html

@@ -1,0 +1,42 @@
+<div class="panel">
+    <h3>AI interpretation</h3>
+
+    {% if email.ai_interpretation %}
+        <div class="chips" style="margin-bottom: 10px;">
+            <span class="badge badge-intent">Intent: {{ email.ai_interpretation.intent }}</span>
+
+            {% if email.ai_interpretation.urgency == "high" %}
+                <span class="badge badge-urgency-high">Urgency: high</span>
+            {% elif email.ai_interpretation.urgency == "low" %}
+                <span class="badge badge-urgency-low">Urgency: low</span>
+            {% else %}
+                <span class="badge badge-urgency-medium">Urgency: medium</span>
+            {% endif %}
+
+            {% if email.ai_interpretation.sentiment == "positive" %}
+                <span class="badge badge-sentiment-positive">Sentiment: positive</span>
+            {% elif email.ai_interpretation.sentiment == "negative" %}
+                <span class="badge badge-sentiment-negative">Sentiment: negative</span>
+            {% else %}
+                <span class="badge badge-sentiment-neutral">Sentiment: neutral</span>
+            {% endif %}
+        </div>
+
+        <div class="meta-list">
+            <div class="meta-row">
+                <strong>Recommended action</strong>
+                <span>{{ email.ai_interpretation.recommended_action }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Confidence</strong>
+                <span>{{ email.ai_interpretation.confidence }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Rationale</strong>
+                <span>{{ email.ai_interpretation.rationale|default:"-" }}</span>
+            </div>
+        </div>
+    {% else %}
+        <p class="small">No interpretation available yet.</p>
+    {% endif %}
+</div>

@@ -1,0 +1,626 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/opportunities/list.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Opportunities · OptiGrid CRM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      background: #f6f7f9;
+      color: #1f2937;
+    }
+    .page {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .title-block h1 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+    }
+    .title-block p {
+      margin: 0;
+      color: #6b7280;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .button-link, button, .stage-btn {
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #fff;
+      color: #111827;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button.primary {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+    .filters {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 12px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 180px;
+    }
+    label {
+      font-size: 13px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    select {
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #fff;
+      color: #111827;
+    }
+    .stats {
+      margin-bottom: 14px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+    .messages {
+      margin-bottom: 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .message {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid;
+      font-size: 14px;
+    }
+    .message.success {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+    .message.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .list-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pipeline-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(260px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .pipeline-column {
+      background: #eef2f7;
+      border: 1px solid #dbe3ee;
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 300px;
+    }
+    .pipeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #dbe3ee;
+    }
+    .pipeline-title {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+    .pipeline-count {
+      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .pipeline-items {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .card-top h2,
+    .card-top h3 {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 12px 0;
+    }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      text-transform: uppercase;
+    }
+    .stage-new { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+    .stage-qualified { background: #ecfeff; color: #0f766e; border-color: #a5f3fc; }
+    .stage-proposal { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+    .stage-won { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .stage-lost { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+    .column-new .pipeline-title { color: #1d4ed8; }
+    .column-qualified .pipeline-title { color: #0f766e; }
+    .column-proposal .pipeline-title { color: #92400e; }
+    .column-won .pipeline-title { color: #166534; }
+    .column-lost .pipeline-title { color: #991b1b; }
+
+    .value-boxes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .value-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 8px 10px;
+      min-width: 110px;
+      flex: 1 1 110px;
+    }
+    .value-box .label {
+      color: #6b7280;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .value-box .value {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .summary {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .actions form {
+      margin: 0;
+    }
+    .stage-btn {
+      font-weight: 600;
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+    .stage-btn-primary {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+    .stage-btn-qualified {
+      background: #ecfeff;
+      color: #155e75;
+      border-color: #a5f3fc;
+    }
+    .stage-btn-proposal {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    .stage-btn-won {
+      background: #ecfdf5;
+      color: #166534;
+      border-color: #86efac;
+    }
+    .stage-btn-lost {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    .flow-hint {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+    .empty {
+      background: #fff;
+      border: 1px dashed #d1d5db;
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      color: #6b7280;
+    }
+    .column-empty {
+      background: rgba(255,255,255,.55);
+      border: 1px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1280px) {
+      .pipeline-board {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .pipeline-board {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .kpi-label {
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    @media (max-width: 1280px) {
+      .kpi-row {
+        grid-template-columns: repeat(4, minmax(140px, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .kpi-row {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
+    }
+
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="title-block">
+        <h1>Opportunities</h1>
+        <p>Pipeline comercial IA-first</p>
+      </div>
+      <div class="toolbar">
+        <a class="button-link" href="/recommendations/">Recommendations</a>
+        <a class="button-link" href="/tasks/">Tasks</a>
+      </div>
+    </div>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {% if 'error' in message.tags %}error{% else %}success{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="get" class="filters">
+      <div class="field">
+        <label for="stage">Filter by stage</label>
+        <select id="stage" name="stage">
+          <option value="">All stages</option>
+          {% for s in stage_choices %}
+            <option value="{{ s }}" {% if current_stage == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sort">Sort</label>
+        <select id="sort" name="sort">
+          <option value="-updated_at" {% if current_sort == '-updated_at' %}selected{% endif %}>Updated desc</option>
+          <option value="updated_at" {% if current_sort == 'updated_at' %}selected{% endif %}>Updated asc</option>
+          <option value="-created_at" {% if current_sort == '-created_at' %}selected{% endif %}>Created desc</option>
+          <option value="created_at" {% if current_sort == 'created_at' %}selected{% endif %}>Created asc</option>
+          <option value="-estimated_value" {% if current_sort == '-estimated_value' %}selected{% endif %}>Estimated value desc</option>
+          <option value="estimated_value" {% if current_sort == 'estimated_value' %}selected{% endif %}>Estimated value asc</option>
+          <option value="-confidence" {% if current_sort == '-confidence' %}selected{% endif %}>Confidence desc</option>
+          <option value="confidence" {% if current_sort == 'confidence' %}selected{% endif %}>Confidence asc</option>
+          <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title A-Z</option>
+          <option value="-title" {% if current_sort == '-title' %}selected{% endif %}>Title Z-A</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>&nbsp;</label>
+        <div class="toolbar">
+          <button type="submit" class="primary">Apply</button>
+          <a class="button-link" href="/opportunities/prioritized/">Reset</a>
+        </div>
+      </div>
+    </form>
+
+    <div class="stats">
+      Results: <strong>{{ total_results }}</strong>
+      {% if current_stage %}
+        · stage=<strong>{{ current_stage }}</strong>
+        · view=<strong>filtered list</strong>
+      {% else %}
+        · view=<strong>pipeline board</strong>
+      {% endif %}
+      · sort=<strong>{{ current_sort }}</strong>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Total</div>
+        <div class="kpi-value">{{ metrics.total_opportunities }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Estimated value</div>
+        <div class="kpi-value">
+          {% if metrics.estimated_value_count %}
+            {{ metrics.total_estimated_value }}
+          {% else %}
+            —
+          {% endif %}
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg confidence</div>
+        <div class="kpi-value">
+          {% if metrics.average_confidence != None %}
+            {{ metrics.average_confidence }}
+          {% else %}
+            —
+          {% endif %}
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">New</div>
+        <div class="kpi-value">{{ metrics.new_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Qualified</div>
+        <div class="kpi-value">{{ metrics.qualified_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Proposal</div>
+        <div class="kpi-value">{{ metrics.proposal_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Won</div>
+        <div class="kpi-value">{{ metrics.won_count }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Lost</div>
+        <div class="kpi-value">{{ metrics.lost_count }}</div>
+      </div>
+    </div>
+
+
+    {% if current_stage %}
+      {% if opportunities %}
+        <div class="list-grid">
+          {% for opportunity in opportunities %}
+            <div class="card">
+              <div class="card-top">
+                <div>
+                  <h2>{{ opportunity.title }}</h2>
+                  <div class="muted">
+                    {% if opportunity.company_name %}{{ opportunity.company_name }}{% else %}No company_name{% endif %}
+                  </div>
+                </div>
+                <div class="meta">
+                  <span class="badge stage-{{ opportunity.stage }}">{{ opportunity.stage }}</span>
+                </div>
+              </div>
+
+              <div class="value-boxes">
+                <div class="value-box">
+                  <div class="label">Confidence</div>
+                  <div class="value">{% if opportunity.confidence != None %}{{ opportunity.confidence }}{% else %}—{% endif %}</div>
+                </div>
+                <div class="value-box">
+                  <div class="label">Estimated value</div>
+                  <div class="value">{% if opportunity.estimated_value != None %}{{ opportunity.estimated_value }}{% else %}—{% endif %}</div>
+                </div>
+                <div class="value-box">
+                  <div class="label">Updated</div>
+                  <div class="value">{{ opportunity.updated_at|date:"Y-m-d H:i" }}</div>
+                </div>
+              </div>
+
+              <div class="summary">
+                {% if opportunity.summary %}
+                  {{ opportunity.summary }}
+                {% else %}
+                  No summary available.
+                {% endif %}
+              </div>
+
+              <div class="actions">
+                {% for next_stage in opportunity.available_next_stages %}
+                  <form method="post" action="{% url 'opportunity_set_stage' opportunity.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="stage" value="{{ next_stage }}">
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    {% if next_stage == 'qualified' %}
+                      <button type="submit" class="stage-btn stage-btn-primary stage-btn-qualified">Qualify</button>
+                    {% elif next_stage == 'proposal' %}
+                      <button type="submit" class="stage-btn stage-btn-primary stage-btn-proposal">Move to Proposal</button>
+                    {% elif next_stage == 'won' %}
+                      <button type="submit" class="stage-btn stage-btn-primary stage-btn-won">Mark Won</button>
+                    {% elif next_stage == 'lost' %}
+                      <button type="submit" class="stage-btn stage-btn-lost">Mark Lost</button>
+                    {% else %}
+                      <button type="submit" class="stage-btn">{{ next_stage }}</button>
+                    {% endif %}
+                  </form>
+                {% empty %}
+                  <span class="muted">Sin transiciones disponibles</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">
+          No opportunities found for the current filters.
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="pipeline-board">
+        {% for column in opportunity_columns %}
+          <div class="pipeline-column column-{{ column.key }}">
+            <div class="pipeline-header">
+              <div class="pipeline-title">{{ column.label }}</div>
+              <div class="pipeline-count">{{ column.count }}</div>
+            </div>
+
+            <div class="pipeline-items">
+              {% for opportunity in column.items %}
+                <div class="card">
+                  <div class="card-top">
+                    <div>
+                      <h3>{{ opportunity.title }}</h3>
+                      <div class="muted">
+                        {% if opportunity.company_name %}{{ opportunity.company_name }}{% else %}No company_name{% endif %}
+                      </div>
+                    </div>
+                    <div class="meta">
+                      <span class="badge stage-{{ opportunity.stage }}">{{ opportunity.stage }}</span>
+                    </div>
+                  </div>
+
+                  <div class="value-boxes">
+                    <div class="value-box">
+                      <div class="label">Confidence</div>
+                      <div class="value">{% if opportunity.confidence != None %}{{ opportunity.confidence }}{% else %}—{% endif %}</div>
+                    </div>
+                    <div class="value-box">
+                      <div class="label">Value</div>
+                      <div class="value">{% if opportunity.estimated_value != None %}{{ opportunity.estimated_value }}{% else %}—{% endif %}</div>
+                    </div>
+                  </div>
+
+                  <div class="summary">
+                    {% if opportunity.summary %}
+                      {{ opportunity.summary|truncatechars:180 }}
+                    {% else %}
+                      No summary available.
+                    {% endif %}
+                  </div>
+
+                  <div class="actions">
+                    {% for next_stage in opportunity.available_next_stages %}
+                      <form method="post" action="{% url 'opportunity_set_stage' opportunity.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="stage" value="{{ next_stage }}">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        {% if next_stage == 'qualified' %}
+                          <button type="submit" class="stage-btn stage-btn-primary stage-btn-qualified">Qualify</button>
+                        {% elif next_stage == 'proposal' %}
+                          <button type="submit" class="stage-btn stage-btn-primary stage-btn-proposal">Proposal</button>
+                        {% elif next_stage == 'won' %}
+                          <button type="submit" class="stage-btn stage-btn-primary stage-btn-won">Won</button>
+                        {% elif next_stage == 'lost' %}
+                          <button type="submit" class="stage-btn stage-btn-lost">Lost</button>
+                        {% else %}
+                          <button type="submit" class="stage-btn">{{ next_stage }}</button>
+                        {% endif %}
+                      </form>
+                    {% empty %}
+                      <span class="muted">Sin transiciones</span>
+                    {% endfor %}
+                  </div>
+
+                  <div class="flow-hint">
+                    Updated: {{ opportunity.updated_at|date:"Y-m-d H:i" }}
+                  </div>
+                </div>
+              {% empty %}
+                <div class="column-empty">
+                  No opportunities in this stage.
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

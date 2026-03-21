@@ -1,5 +1,3 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/views.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -11,13 +9,13 @@ def recommendation_list(request):
     qs = AIRecommendation.objects.all().order_by("-id")
 
     status = request.GET.get("status")
-    rtype = request.GET.get("recommendation_type")
+    recommendation_type = request.GET.get("recommendation_type")
 
     if status:
         qs = qs.filter(status=status)
 
-    if rtype:
-        qs = qs.filter(recommendation_type=rtype)
+    if recommendation_type:
+        qs = qs.filter(recommendation_type=recommendation_type)
 
     recommendation_types = (
         AIRecommendation.objects.values_list(
@@ -28,12 +26,12 @@ def recommendation_list(request):
 
     context = {
         "recommendations": qs[:200],
-        "status": status,
-        "rtype": rtype,
+        "selected_status": status,
+        "selected_recommendation_type": recommendation_type,
         "recommendation_types": recommendation_types,
         "status_choices": AIRecommendation.STATUS_CHOICES,
     }
-    return render(request, "recommendations/recommendation_list.html", context)
+    return render(request, "recommendations/list.html", context)
 
 
 @require_POST

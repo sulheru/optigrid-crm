@@ -1,14 +1,25 @@
-{% extends "base.html" %}
-{% block title %}OptiGrid CRM · Dashboard{% endblock %}
-{% block content %}
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/dashboard/home.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>OptiGrid CRM · Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f6f7f9;
+      color: #1f2937;
+    }
 
-<style>
-.page {
+    .page {
       max-width: 1280px;
       margin: 0 auto;
     }
 
-    .page-header {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -16,16 +27,33 @@
       margin-bottom: 24px;
     }
 
-    .page-header h1 {
+    .header h1 {
       margin: 0 0 6px 0;
       font-size: 30px;
     }
 
-    .page-header p {
+    .header p {
       margin: 0;
       color: #6b7280;
     }
-.stats {
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
@@ -87,8 +115,11 @@
       font-size: 14px;
     }
 
-    .card-
-.list {
+    .card-body {
+      padding: 16px;
+    }
+
+    .list {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -182,16 +213,25 @@
         grid-template-columns: 1fr;
       }
     }
-
-</style>
-
-<div class="page">
+  </style>
+</head>
+<body>
+  <div class="page">
     <div class="header">
       <div>
         <h1>OptiGrid CRM</h1>
         <p>Dashboard operativo del pipeline IA-first</p>
       </div>
+      <div class="nav">
+        <a href="/strategy/chat/">Dashboard</a>
+        <a href="/outbox/">Outbox</a>
+        <a href="/inbox/">Inbox</a>
+        <a href="/recommendations/">Recommendations</a>
+        <a href="/tasks/">Tasks</a>
+        <a href="/opportunities/prioritized/">Opportunities</a>
+        <a href="/leads/">Leads</a>
       </div>
+    </div>
 
     <div class="stats">
       <div class="stat-card">
@@ -326,5 +366,5 @@
       </div>
     </div>
   </div>
-
-{% endblock %}
+</body>
+</html>

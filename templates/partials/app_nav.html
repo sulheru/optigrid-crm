@@ -1,0 +1,42 @@
+<div class="sidebar">
+    <h2>OptiGrid</h2>
+
+    <div class="nav">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Dashboard</a>
+
+        <a href="/strategy/chat/"
+           class="{% if '/strategy/' in request.path %}active{% endif %}">
+           Strategic Chat
+        </a>
+
+        <a href="/outbox/"
+           class="{% if '/outbox/' in request.path %}active{% endif %}">
+           Outbox
+        </a>
+
+        <a href="/inbox/"
+           class="{% if '/inbox/' in request.path %}active{% endif %}">
+           Inbox
+        </a>
+
+        <a href="/recommendations/"
+           class="{% if '/recommendations/' in request.path %}active{% endif %}">
+           Recommendations
+        </a>
+
+        <a href="/tasks/"
+           class="{% if '/tasks/' in request.path %}active{% endif %}">
+           Tasks
+        </a>
+
+        <a href="/opportunities/prioritized/"
+           class="{% if '/opportunities/' in request.path %}active{% endif %}">
+           Opportunities
+        </a>
+
+        <a href="/leads/"
+           class="{% if '/leads/' in request.path %}active{% endif %}">
+           Leads
+        </a>
+    </div>
+</div>

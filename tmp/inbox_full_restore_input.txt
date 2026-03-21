@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox Intelligence</title>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #dbe2ea;
+            --primary: #2563eb;
+            --primary-soft: #dbeafe;
+            --success: #15803d;
+            --success-soft: #dcfce7;
+            --warning: #b45309;
+            --warning-soft: #fef3c7;
+            --danger: #b91c1c;
+            --danger-soft: #fee2e2;
+            --neutral: #475569;
+            --neutral-soft: #e2e8f0;
+            --purple: #7c3aed;
+            --purple-soft: #ede9fe;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .title-block h1 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+        }
+
+        .title-block p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .stat .label {
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .stat .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .filters {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .filters form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        .emails {
+            display: grid;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .subject {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+
+        .submeta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-content: flex-start;
+            justify-content: flex-end;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .badge-new { background: var(--primary-soft); color: var(--primary); }
+        .badge-reviewed { background: var(--neutral-soft); color: var(--neutral); }
+        .badge-linked { background: var(--success-soft); color: var(--success); }
+
+        .badge-intent { background: #eef2ff; color: #4338ca; }
+        .badge-urgency-low { background: var(--neutral-soft); color: var(--neutral); }
+        .badge-urgency-medium { background: var(--warning-soft); color: var(--warning); }
+        .badge-urgency-high { background: var(--danger-soft); color: var(--danger); }
+
+        .badge-sentiment-positive { background: var(--success-soft); color: var(--success); }
+        .badge-sentiment-neutral { background: var(--neutral-soft); color: var(--neutral); }
+        .badge-sentiment-negative { background: var(--danger-soft); color: var(--danger); }
+
+        .badge-priority-low { background: var(--neutral-soft); color: var(--neutral); }
+        .badge-priority-medium { background: var(--warning-soft); color: var(--warning); }
+        .badge-priority-high { background: var(--danger-soft); color: var(--danger); }
+
+        .badge-auto { background: var(--purple-soft); color: var(--purple); }
+        .badge-manual { background: var(--neutral-soft); color: var(--neutral); }
+        .badge-applied { background: var(--success-soft); color: var(--success); }
+        .badge-suggested { background: var(--warning-soft); color: var(--warning); }
+        .badge-dismissed { background: var(--danger-soft); color: var(--danger); }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            background: #fcfdff;
+        }
+
+        .panel h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+        }
+
+        .panel p {
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        .meta-list {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .meta-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+        }
+
+        .meta-row strong {
+            color: var(--muted);
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--danger-soft);
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .actions form,
+        .actions a {
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .empty {
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 900px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .meta-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="topbar">
+        <div class="title-block">
+            <h1>Inbox Intelligence</h1>
+            <p>Supervisión operativa de emails entrantes, interpretación IA y decisiones sugeridas o auto-aplicadas.</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="/inbox/">Inbox</a>
+            <a href="/outbox/">Outbox</a>
+            <a href="/tasks/">Tasks</a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat"><div class="label">All emails</div><div class="value">{{ counts.all }}</div></div>
+        <div class="stat"><div class="label">New</div><div class="value">{{ counts.new }}</div></div>
+        <div class="stat"><div class="label">Reviewed</div><div class="value">{{ counts.reviewed }}</div></div>
+        <div class="stat"><div class="label">Linked</div><div class="value">{{ counts.linked }}</div></div>
+        <div class="stat"><div class="label">Auto applied</div><div class="value">{{ counts.auto_applied }}</div></div>
+        <div class="stat"><div class="label">Suggested</div><div class="value">{{ counts.suggested }}</div></div>
+        <div class="stat"><div class="label">Applied</div><div class="value">{{ counts.applied }}</div></div>
+        <div class="stat"><div class="label">Dismissed</div><div class="value">{{ counts.dismissed }}</div></div>
+        <div class="stat"><div class="label">High priority</div><div class="value">{{ counts.high_priority }}</div></div>
+        <div class="stat"><div class="label">With risk</div><div class="value">{{ counts.with_risk }}</div></div>
+    </div>
+
+    <div class="filters">
+        <form method="get">
+            <div>
+                <label for="status">Inbound status</label>
+                <select name="status" id="status">
+                    <option value="all" {% if status == "all" %}selected{% endif %}>All</option>
+                    <option value="new" {% if status == "new" %}selected{% endif %}>New</option>
+                    <option value="reviewed" {% if status == "reviewed" %}selected{% endif %}>Reviewed</option>
+                    <option value="linked" {% if status == "linked" %}selected{% endif %}>Linked</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="reply_type">Reply type</label>
+                <select name="reply_type" id="reply_type">
+                    <option value="all" {% if reply_type == "all" %}selected{% endif %}>All</option>
+                    <option value="interested" {% if reply_type == "interested" %}selected{% endif %}>Interested</option>
+                    <option value="needs_info" {% if reply_type == "needs_info" %}selected{% endif %}>Needs info</option>
+                    <option value="not_now" {% if reply_type == "not_now" %}selected{% endif %}>Not now</option>
+                    <option value="not_interested" {% if reply_type == "not_interested" %}selected{% endif %}>Not interested</option>
+                    <option value="unclear" {% if reply_type == "unclear" %}selected{% endif %}>Unclear</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="decision_status">Decision status</label>
+                <select name="decision_status" id="decision_status">
+                    <option value="all" {% if decision_status == "all" %}selected{% endif %}>All</option>
+                    <option value="suggested" {% if decision_status == "suggested" %}selected{% endif %}>Suggested</option>
+                    <option value="applied" {% if decision_status == "applied" %}selected{% endif %}>Applied</option>
+                    <option value="dismissed" {% if decision_status == "dismissed" %}selected{% endif %}>Dismissed</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="automation">Automation</label>
+                <select name="automation" id="automation">
+                    <option value="all" {% if automation == "all" %}selected{% endif %}>All</option>
+                    <option value="auto" {% if automation == "auto" %}selected{% endif %}>Auto only</option>
+                    <option value="manual" {% if automation == "manual" %}selected{% endif %}>Manual only</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="priority">Priority</label>
+                <select name="priority" id="priority">
+                    <option value="all" {% if priority == "all" %}selected{% endif %}>All</option>
+                    <option value="high" {% if priority == "high" %}selected{% endif %}>High</option>
+                    <option value="medium" {% if priority == "medium" %}selected{% endif %}>Medium</option>
+                    <option value="low" {% if priority == "low" %}selected{% endif %}>Low</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="risk">Risk flags</label>
+                <select name="risk" id="risk">
+                    <option value="all" {% if risk == "all" %}selected{% endif %}>All</option>
+                    <option value="with_risk" {% if risk == "with_risk" %}selected{% endif %}>With risk</option>
+                    <option value="without_risk" {% if risk == "without_risk" %}selected{% endif %}>Without risk</option>
+                </select>
+            </div>
+
+            <div>
+                <label>&nbsp;</label>
+                <button type="submit">Apply filters</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="emails">
+        {% for email in emails %}
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="subject">{{ email.subject }}</div>
+                        <div class="submeta">
+                            <span><strong>From:</strong> {{ email.from_email|default:"-" }}</span>
+                            <span><strong>Received:</strong> {{ email.received_at }}</span>
+                            <span><strong>Opportunity:</strong> {{ email.opportunity.title }}</span>
+                            <span><strong>Stage:</strong> {{ email.opportunity.stage }}</span>
+                        </div>
+                    </div>
+
+                    <div class="badges">
+                        {% if email.status == "new" %}
+                            <span class="badge badge-new">NEW</span>
+                        {% elif email.status == "reviewed" %}
+                            <span class="badge badge-reviewed">REVIEWED</span>
+                        {% elif email.status == "linked" %}
+                            <span class="badge badge-linked">LINKED</span>
+                        {% endif %}
+
+                        {% if email.latest_decision %}
+                            {% if email.latest_decision.status == "applied" %}
+                                <span class="badge badge-applied">APPLIED</span>
+                            {% elif email.latest_decision.status == "dismissed" %}
+                                <span class="badge badge-dismissed">DISMISSED</span>
+                            {% else %}
+                                <span class="badge badge-suggested">SUGGESTED</span>
+                            {% endif %}
+
+                            {% if email.latest_decision.applied_automatically %}
+                                <span class="badge badge-auto">AUTO</span>
+                            {% else %}
+                                <span class="badge badge-manual">MANUAL</span>
+                            {% endif %}
+
+                            {% if email.latest_decision.priority == "high" %}
+                                <span class="badge badge-priority-high">PRIORITY HIGH</span>
+                            {% elif email.latest_decision.priority == "low" %}
+                                <span class="badge badge-priority-low">PRIORITY LOW</span>
+                            {% else %}
+                                <span class="badge badge-priority-medium">PRIORITY MEDIUM</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom: 14px;">
+                    <h3>Email body</h3>
+                    <p>{{ email.body|linebreaksbr }}</p>
+                </div>
+
+                <div class="section-grid">
+                    <div class="panel">
+                        <h3>AI interpretation</h3>
+
+                        {% if email.ai_interpretation %}
+                            <div class="chips" style="margin-bottom: 10px;">
+                                <span class="badge badge-intent">Intent: {{ email.ai_interpretation.intent }}</span>
+
+                                {% if email.ai_interpretation.urgency == "high" %}
+                                    <span class="badge badge-urgency-high">Urgency: high</span>
+                                {% elif email.ai_interpretation.urgency == "low" %}
+                                    <span class="badge badge-urgency-low">Urgency: low</span>
+                                {% else %}
+                                    <span class="badge badge-urgency-medium">Urgency: medium</span>
+                                {% endif %}
+
+                                {% if email.ai_interpretation.sentiment == "positive" %}
+                                    <span class="badge badge-sentiment-positive">Sentiment: positive</span>
+                                {% elif email.ai_interpretation.sentiment == "negative" %}
+                                    <span class="badge badge-sentiment-negative">Sentiment: negative</span>
+                                {% else %}
+                                    <span class="badge badge-sentiment-neutral">Sentiment: neutral</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="meta-list">
+                                <div class="meta-row">
+                                    <strong>Recommended action</strong>
+                                    <span>{{ email.ai_interpretation.recommended_action }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Confidence</strong>
+                                    <span>{{ email.ai_interpretation.confidence }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Rationale</strong>
+                                    <span>{{ email.ai_interpretation.rationale|default:"-" }}</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="small">No interpretation available yet.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="panel">
+                        <h3>Decision layer</h3>
+
+                        {% if email.latest_decision %}
+                            <div class="meta-list">
+                                <div class="meta-row">
+                                    <strong>Action type</strong>
+                                    <span>{{ email.latest_decision.action_type }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Summary</strong>
+                                    <span>{{ email.latest_decision.summary|default:"-" }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Score</strong>
+                                    <span>{{ email.latest_decision.score }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Priority</strong>
+                                    <span>{{ email.latest_decision.priority }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Requires approval</strong>
+                                    <span>{{ email.latest_decision.requires_approval|yesno:"Yes,No" }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Applied automatically</strong>
+                                    <span>{{ email.latest_decision.applied_automatically|yesno:"Yes,No" }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Automation reason</strong>
+                                    <span>{{ email.latest_decision.automation_reason|default:"-" }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <strong>Applied at</strong>
+                                    <span>{{ email.latest_decision.applied_at|default:"-" }}</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 12px;">
+                                <strong class="small">Risk flags</strong>
+                                <div class="chips" style="margin-top: 8px;">
+                                    {% if email.latest_decision.risk_flags %}
+                                        {% for flag in email.latest_decision.risk_flags %}
+                                            <span class="chip">{{ flag }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="badge badge-linked">No active risk flags</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="small">No decision available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="actions">
+                    {% if email.suggested_decision %}
+                        <form method="post" action="{% url 'apply_decision' email.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Apply decision</button>
+                        </form>
+
+                        <form method="post" action="{% url 'dismiss_decision' email.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Dismiss</button>
+                        </form>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'mark_inbound_reviewed' email.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-light">Mark reviewed</button>
+                    </form>
+
+                    <form method="post" action="{% url 'mark_inbound_linked' email.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-light">Mark linked</button>
+                    </form>
+
+                    <a class="btn btn-primary" href="{% url 'generate_reply_draft' email.id %}">
+                        Generate reply draft
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty">
+                No inbound emails found with the current filters.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

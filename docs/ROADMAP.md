@@ -1,101 +1,65 @@
 # ROADMAP — OptiGrid CRM
 
-## FASE ACTUAL: V3 COMPLETE
+## VISIÓN
 
-✔ Inbox Intelligence V2  
-✔ Outbox editable  
-✔ Automation Layer V3  
-✔ Supervisor UI para Inbox  
-✔ Supervisor UI para Tasks  
-✔ Inbox filters de supervisor  
+AI Commercial Operating System
 
 ---
 
-## FASE 3.5 — UI FOUNDATION V1
+## FASE ACTUAL
 
-### 1. Shared Layout
-- `base.html`
-- navegación global reutilizable
-- estilos comunes mínimos
-- estructura shell de aplicación
+### UI FOUNDATION V1 ✅ COMPLETADO
 
-### 2. Global Navigation
-- Dashboard
-- Strategic Chat
-- Mailing
-  - Outbox
-  - Inbox
-- Recommendations
-- Tasks
-- Opportunities
-- Leads
-
-### 3. Progressive Migration
-- migrar primero:
-  - Inbox
-  - Outbox
-  - Tasks
-- después:
-  - Dashboard
-  - Recommendations
-  - Opportunities
-  - Leads
-  - Strategic Chat
+- layout global
+- navegación unificada
+- integración de módulos
 
 ---
 
-## FASE 4 — Governance & Control
+## SIGUIENTE FASE
 
-### 1. Automation Settings en BD
-- auto apply enabled
-- score threshold
-- blocked actions
-- blocked risk flags
-- fallback a settings.py
+### UI FOUNDATION V2
 
-### 2. Reversibilidad ampliada
-- revocar drafts auto-generados
-- revertir cambios de stage
-- mayor trazabilidad de acciones automáticas
+- consistencia visual total
+- eliminación de deuda UI
+- reglas estrictas de templates
 
 ---
 
-## FASE 5 — Strategic Layer (Jarvis)
+## FASE 3
 
-### Chat estratégico
-- "¿qué oportunidades priorizo?"
-- "¿qué leads son más prometedores?"
-- "¿qué follow-ups enviar hoy?"
-- "¿qué automatizaciones debería ajustar?"
+### OPERATIONAL DASHBOARD
 
----
-
-## FASE 6 — Communication Layer
-
-- integración Outlook real
-- IMAP sync
-- envío real emails
-- mailbox orchestration
+- métricas en tiempo real
+- control central
+- visión ejecutiva
 
 ---
 
-## FASE 7 — AI Memory
+## FASE 4
 
-- vector DB
-- contexto histórico
-- aprendizaje continuo
-- memoria operativa comercial
+### STRATEGIC LAYER (JARVIS)
+
+- decisiones sugeridas
+- interacción natural
+- ejecución guiada
 
 ---
 
-## FASE FINAL
+## FASE 5
 
-AI Commercial Team semiautónomo y gobernable:
+### FULL AUTONOMOUS LOOP
 
-- lead gen
-- outreach
-- follow-up
-- pipeline supervision
-- closing support
+- AI ejecuta operaciones completas
+- usuario supervisa
+- governance activa
 
-Usuario = CEO / Supervisor
+---
+
+## PRINCIPIO CLAVE
+
+Sistema diseñado para IA, no para humanos.
+
+El humano supervisa.
+La IA opera.
+

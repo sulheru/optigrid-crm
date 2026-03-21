@@ -1,129 +1,76 @@
-# NEXT SESSION PROMPT
-
-PROYECTO: OptiGrid CRM — AI Commercial Operating System
-
----
+# NEXT SESSION — OptiGrid CRM
 
 ## CONTEXTO
 
-Estamos construyendo un sistema IA-first donde:
+Sistema IA-first con pipeline operativo completo:
 
-- la IA ejecuta funciones comerciales completas
-- el usuario actúa como CEO / supervisor
-- el sistema ya gestiona:
-  - Dashboard
-  - Strategic Chat
-  - Mailing
-    - Outbox
-    - Inbox
-  - Recommendations
-  - Tasks
-  - Opportunities
-  - Leads
+Inbound → AI → Decision → Action → Draft → Approve → Send
 
-Pipeline comercial operativo actual:
-
-Inbound → AI Interpretation → Decision → Auto/Manual Apply → Action → Draft/Task/Opportunity Update → Approve → Send
+UI FOUNDATION V1 completado:
+- layout global
+- navegación unificada
+- vistas integradas
 
 ---
 
-## ESTADO ACTUAL DEL SISTEMA
+## OBJETIVO PRINCIPAL
 
-### Backend
-✔ Automation Layer V3 implantado  
-✔ scoring / priority / risk flags persistidos  
-✔ auto-apply seguro validado  
-✔ blocked actions respetadas  
-✔ tests OK  
-
-### UI
-✔ Inbox Supervisor UI  
-✔ Tasks Supervisor UI  
-✔ Inbox Supervisor Filters  
-⚠ aún no existe layout común compartido  
-⚠ navegación duplicada entre templates  
+### UI FOUNDATION V2 — CONSISTENCY & CONTROL
 
 ---
 
-## OBJETIVO DE LA SIGUIENTE SESIÓN
+## PRIORIDADES
 
-Implementar **UI FOUNDATION V1**
+### 1. UI CONSISTENCY RULES
 
-Crear un layout compartido y un menú global reutilizable para toda la aplicación.
-
----
-
-## REQUISITOS
-
-### 1. Shared Base Layout
-Crear:
-
-- `templates/base.html`
-- estructura común de app shell
-- bloque principal de contenido
-- estilos globales mínimos y reutilizables
-
-### 2. Global Navigation
-Crear un menú único compartido con estas secciones:
-
-- Dashboard
-- Strategic Chat
-- Mailing
-  - Outbox
-  - Inbox
-- Recommendations
-- Tasks
-- Opportunities
-- Leads
-
-### 3. Primera migración de vistas
-Migrar primero estas vistas a `base.html`:
-
-- Inbox
-- Outbox
-- Tasks
-
-### 4. Active section highlighting
-Resaltar en navegación la vista o sección activa.
-
-### 5. No romper funcionalidad
-Mantener intacto:
-
-- filtros actuales
-- forms POST
-- apply / dismiss
-- outbox actions
-- revoke task
+- prohibir templates standalone
+- todo debe extender base.html
+- eliminar CSS duplicado
+- unificar:
+  - .page
+  - .page-header
+  - cards
+  - botones
 
 ---
 
-## RESTRICCIONES
+### 2. DASHBOARD REAL
 
-- no rehacer toda la UI
-- no introducir complejidad innecesaria
-- no meter JS complejo
-- no hacer design system completo todavía
-- mantener compatibilidad con templates existentes
+Construir dashboard operativo:
 
----
-
-## OUTPUT ESPERADO
-
-- `base.html`
-- parcial o bloque reutilizable de navegación
-- Inbox / Outbox / Tasks migrados al shell común
-- estilos comunes básicos
-- validación visual funcional
+- métricas clave:
+  - opportunities
+  - tasks
+  - recommendations
+  - risk
+- quick actions
+- vista tipo cockpit
 
 ---
 
-## OBJETIVO ESTRATÉGICO
+### 3. STRATEGIC CHAT V2
 
-Pasar de múltiples pantallas aisladas
-→ a una aplicación coherente con shell de producto
+- integrar contexto real del sistema
+- acciones sugeridas ejecutables
+- conexión con:
+  - recommendations
+  - opportunities
+  - tasks
 
-Preparar el terreno para:
-- settings operables
-- dashboard real
-- strategy cockpit
-- governance layer visual
+---
+
+### 4. GOVERNANCE UI
+
+- visibilidad de decisiones:
+  - auto vs manual
+- trazabilidad
+- revocación centralizada
+
+---
+
+## NOTAS
+
+- no añadir complejidad innecesaria
+- mantener velocidad alta
+- priorizar coherencia visual y operativa
+

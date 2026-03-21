@@ -1,0 +1,68 @@
+<div class="filters">
+    <form method="get">
+        <div>
+            <label for="status">Inbound status</label>
+            <select name="status" id="status">
+                <option value="all" {% if status == "all" %}selected{% endif %}>All</option>
+                <option value="new" {% if status == "new" %}selected{% endif %}>New</option>
+                <option value="reviewed" {% if status == "reviewed" %}selected{% endif %}>Reviewed</option>
+                <option value="linked" {% if status == "linked" %}selected{% endif %}>Linked</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="reply_type">Reply type</label>
+            <select name="reply_type" id="reply_type">
+                <option value="all" {% if reply_type == "all" %}selected{% endif %}>All</option>
+                <option value="interested" {% if reply_type == "interested" %}selected{% endif %}>Interested</option>
+                <option value="needs_info" {% if reply_type == "needs_info" %}selected{% endif %}>Needs info</option>
+                <option value="not_now" {% if reply_type == "not_now" %}selected{% endif %}>Not now</option>
+                <option value="not_interested" {% if reply_type == "not_interested" %}selected{% endif %}>Not interested</option>
+                <option value="unclear" {% if reply_type == "unclear" %}selected{% endif %}>Unclear</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="decision_status">Decision status</label>
+            <select name="decision_status" id="decision_status">
+                <option value="all" {% if decision_status == "all" %}selected{% endif %}>All</option>
+                <option value="suggested" {% if decision_status == "suggested" %}selected{% endif %}>Suggested</option>
+                <option value="applied" {% if decision_status == "applied" %}selected{% endif %}>Applied</option>
+                <option value="dismissed" {% if decision_status == "dismissed" %}selected{% endif %}>Dismissed</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="automation">Automation</label>
+            <select name="automation" id="automation">
+                <option value="all" {% if automation == "all" %}selected{% endif %}>All</option>
+                <option value="auto" {% if automation == "auto" %}selected{% endif %}>Auto only</option>
+                <option value="manual" {% if automation == "manual" %}selected{% endif %}>Manual only</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="priority">Priority</label>
+            <select name="priority" id="priority">
+                <option value="all" {% if priority == "all" %}selected{% endif %}>All</option>
+                <option value="high" {% if priority == "high" %}selected{% endif %}>High</option>
+                <option value="medium" {% if priority == "medium" %}selected{% endif %}>Medium</option>
+                <option value="low" {% if priority == "low" %}selected{% endif %}>Low</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="risk">Risk flags</label>
+            <select name="risk" id="risk">
+                <option value="all" {% if risk == "all" %}selected{% endif %}>All</option>
+                <option value="with_risk" {% if risk == "with_risk" %}selected{% endif %}>With risk</option>
+                <option value="without_risk" {% if risk == "without_risk" %}selected{% endif %}>Without risk</option>
+            </select>
+        </div>
+
+        <div>
+            <label>&nbsp;</label>
+            <button type="submit">Apply filters</button>
+        </div>
+    </form>
+</div>

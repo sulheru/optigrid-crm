@@ -1,67 +1,34 @@
-# CHANGELOG
+# CHANGELOG — OptiGrid CRM
 
-## 2026-03-21 — Automation Layer V3 + Supervisor UX
+## UI FOUNDATION V1 (2026-03-21)
 
 ### Added
-- `InboundDecision` extendido con:
-  - `score`
-  - `priority`
-  - `risk_flags`
-  - `applied_automatically`
-  - `automation_reason`
-- migración `0008_inbounddecision_automation_fields`
-- servicio `decision_automation.py`
-- scoring heurístico de decisiones inbound
-- auto-apply seguro para decisiones permitidas
-- policy basada en:
-  - threshold
-  - blocked actions
-  - blocked risk flags
-- settings de automatización:
-  - `INBOX_AUTO_APPLY_ENABLED`
-  - `INBOX_AUTO_APPLY_SCORE_THRESHOLD`
-  - `INBOX_AUTO_BLOCKED_ACTIONS`
-  - `INBOX_AUTO_BLOCK_ON_RISK_FLAGS`
+- base.html como layout global de la aplicación
+- partial reutilizable: partials/app_nav.html
+- navegación global consistente (sidebar)
 
-### Improved
-- `analyze_inbound_email()` ahora:
-  - calcula score
-  - asigna priority
-  - genera risk flags
-  - intenta auto-apply
-- `apply_inbound_decision()` soporta aplicación automática auditada
-- dedupe lógico de decisiones por inbound + action existente
-- Inbox UI modernizada con:
-  - score
-  - priority
-  - risk flags
-  - automation reason
-  - applied automatically
-- Tasks UI modernizada con:
-  - filtros
-  - badges
-  - revocation visibility
-- Inbox supervisor filters:
-  - decision status
-  - auto/manual
-  - priority
-  - with/without risk
+### Updated
+- Inbox → migrado a base.html
+- Outbox → migrado a base.html
+- Tasks → migrado a base.html
+- Recommendations → migrado correctamente (fix en views.py)
+- Strategic Chat → migrado a base.html
+- Dashboard → adaptado a layout común
+- Leads → adaptado a layout común
 
 ### Fixed
-- conflicto de resolución de templates:
-  - Django estaba usando `templates/...` en vez de `apps/.../templates/...`
-- alineación de template raíz para Inbox
-- modernización de template raíz para Tasks
+- navegación duplicada en múltiples templates
+- uso incorrecto de templates legacy en recommendations
+- desaparición del sidebar en Strategic Chat
+- desalineación visual en Tasks (body padding conflict)
+- inconsistencias de variables en filtros (status / type)
 
-### Validated
-- migración aplicada correctamente
-- tests de `apps.emailing` pasando
-- auto-apply validado desde navegador
-- casos manuales bloqueados correctamente
-- no duplicación validada en flujo observado
+### Refactor
+- eliminación de templates standalone con `<html>` / `<body>`
+- normalización de `.page` y `.page-header`
+- limpieza de CSS redundante
 
-### Result
-Sistema pasa de:
-AI-assisted CRM  
-→ AI-driven commercial loop supervisable  
-→ Semi-autonomous commercial agent foundation
+### Notes
+- el sistema ahora funciona como una aplicación unificada (no pantallas aisladas)
+- base sólida para dashboard real, settings y strategy layer
+

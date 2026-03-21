@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+{% block title %}Outbox · OptiGrid CRM{% endblock %}
+
+{% block content %}
+
+<div class="page">
+
+<!-- TODO: contenido existente sin <html> ni <body> -->
+
+
+===== inbox =====
+
+{% extends "base.html" %}
+
+{% block title %}Inbox · OptiGrid CRM{% endblock %}
+
+{% block content %}
+
+<div class="page">
+
+<!-- contenido existente -->
+
+
+===== tasks =====
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Tasks · OptiGrid CRM</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe2ea;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --success: #15803d;
+      --success-soft: #dcfce7;
+      --warning: #b45309;
+      --warning-soft: #fef3c7;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
+      --neutral: #475569;
+      --neutral-soft: #e2e8f0;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title-block h1 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+    }
+
+    .title-block p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .filters {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .filters form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+
+    .messages { margin-bottom: 16px; }
+    .message {
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .tasks {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .revoked-card {
+      background: #fff7f7;
+      border-color: #fecaca;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .task-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0 0 8px 0;
+    }
+
+    .task-title.revoked {
+      text-decoration: line-through;
+      color: #991b1b;
+    }
+
+    .submeta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-content: flex-start;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .badge-auto { background: var(--purple-soft); color: var(--purple); }
+    .badge-manual { background: var(--neutral-soft); color: var(--neutral); }
+    .badge-revoked { background: var(--danger-soft); color: var(--danger); }
+    .badge-open { background: var(--success-soft); color: var(--success); }
+    .badge-in-progress { background: var(--warning-soft); color: var(--warning); }
+    .badge-done { background: var(--primary-soft); color: var(--primary); }
+    .badge-dismissed { background: var(--neutral-soft); color: var(--neutral); }
+
+===== base =====
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}OptiGrid CRM{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            background: #1f2937;
+        }
+
+        .nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        {% include "partials/app_nav.html" %}
+
+        <div class="content">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+===== partial nav =====
+
+<div class="sidebar">
+    <h2>OptiGrid</h2>
+
+    <div class="nav">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Dashboard</a>
+
+        <a href="/strategy/chat/"
+           class="{% if '/strategy/' in request.path %}active{% endif %}">
+           Strategic Chat
+        </a>
+
+        <a href="/outbox/"
+           class="{% if '/outbox/' in request.path %}active{% endif %}">
+           Outbox
+        </a>
+
+        <a href="/inbox/"
+           class="{% if '/inbox/' in request.path %}active{% endif %}">
+           Inbox
+        </a>
+
+        <a href="/recommendations/"
+           class="{% if '/recommendations/' in request.path %}active{% endif %}">
+           Recommendations
+        </a>
+
+        <a href="/tasks/"
+           class="{% if '/tasks/' in request.path %}active{% endif %}">
+           Tasks
+        </a>
+
+        <a href="/opportunities/prioritized/"
+           class="{% if '/opportunities/' in request.path %}active{% endif %}">
+           Opportunities
+        </a>
+
+        <a href="/leads/"
+           class="{% if '/leads/' in request.path %}active{% endif %}">
+           Leads
+        </a>
+    </div>
+</div>
+
+===== extends / include / standalone html =====
+
+templates/recommendations/list.html:3:<!doctype html>
+templates/recommendations/list.html:4:<html lang="es">
+templates/recommendations/recommendation_list.html:3:<!DOCTYPE html>
+templates/recommendations/recommendation_list.html:4:<html>
+templates/tasks/list.html:1:<!doctype html>
+templates/tasks/list.html:2:<html lang="es">
+templates/placeholders/simple_page.html:3:<!doctype html>
+templates/placeholders/simple_page.html:4:<html lang="es">
+templates/dashboard/home.html:3:<!doctype html>
+templates/dashboard/home.html:4:<html lang="es">
+templates/lead_research/list.html:3:<!doctype html>
+templates/lead_research/list.html:4:<html lang="es">
+templates/strategy/chat.html:3:<!doctype html>
+templates/strategy/chat.html:4:<html lang="es">
+templates/opportunities/opportunity_tasks.html:3:<!doctype html>
+templates/opportunities/opportunity_tasks.html:4:<html lang="en">
+templates/opportunities/list.html:3:<!doctype html>
+templates/opportunities/list.html:4:<html lang="es">
+templates/opportunities/prioritized.html:3:<!doctype html>
+templates/opportunities/prioritized.html:4:<html lang="en">
+templates/emailing/inbox.html.bak:3:<!doctype html>
+templates/emailing/inbox.html.bak:4:<html lang="es">
+templates/emailing/email_list.html:3:<!doctype html>
+templates/emailing/email_list.html:4:<html lang="es">
+templates/emailing/email_detail.html:3:<!doctype html>
+templates/emailing/email_detail.html:4:<html lang="es">
+templates/emailing/outbox.html:1:{% extends "base.html" %}
+templates/emailing/outbox.html:9:<!-- TODO: contenido existente sin <html> ni <body> -->
+templates/emailing/inbox.html.bak_v33:1:<!DOCTYPE html>
+templates/emailing/inbox.html.bak_v33:2:<html lang="en">
+templates/emailing/inbox.html:1:{% extends "base.html" %}
+templates/base.html:1:<!DOCTYPE html>
+templates/base.html:2:<html lang="es">
+templates/base.html:74:        {% include "partials/app_nav.html" %}

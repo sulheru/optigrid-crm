@@ -1,122 +1,76 @@
-# HANDOFF — CURRENT STATE
+# HANDOFF CURRENT — OptiGrid CRM
 
-## Sistema: OptiGrid CRM — AI Commercial Operating System
+## ESTADO GLOBAL
 
----
+El sistema ha pasado de:
 
-## Estado actual
-
-El sistema ya opera como un bucle comercial semiautónomo supervisable.
-
-Pipeline operativo actual:
-
-Inbound → AI Interpretation → Decision → Auto/Manual Apply → Action → Draft/Task/Opportunity Update → Approve → Send
+pantallas independientes  
+→ aplicación unificada tipo cockpit IA
 
 ---
 
-## Componentes activos
+## BACKEND
 
-### Inbox Intelligence V3
-- análisis automático de inbound emails
-- `InboundInterpretation` persistente
-- `InboundDecision` persistente
-- scoring
-- priority
-- risk flags
-- auto-apply seguro
-- auditoría básica de automatización
-
-### Outbox V1.1
-- drafts automáticos
-- edición manual de subject y body
-- approve / send
-- bulk actions
-
-### Tasks Supervisor Layer
-- tareas auto y manuales visibles
-- source / source_action visibles
-- revocación operativa de tasks auto
-- filtros de supervisor
-
-### Opportunity System
-- evolución por decisiones
-- stage transitions manuales o derivadas del apply flow
+✔ Automation Layer V3  
+✔ scoring / priority / risk_flags persistidos  
+✔ auto-apply con policy  
+✔ decisiones auditadas  
+✔ dedupe funcional  
+✔ pipeline completo operativo  
 
 ---
 
-## Lo validado en esta sesión
+## UI
 
-### Automation Layer V3
-Validado desde navegador:
-
-- caso seguro:
-  - `send_information` → auto-apply OK
-  - draft generado OK
-
-- caso sensible:
-  - `advance_opportunity` → manual OK
-
-- caso rechazo:
-  - `mark_lost` → manual OK
-
-- dedupe observado sin duplicación inesperada en flujo probado
-
-### Supervisor UX
-- Inbox con visibilidad completa de decisión
-- Tasks con visibilidad operativa mejorada
-- filtros de supervisor en Inbox funcionando
+✔ base.html implementado  
+✔ navegación global funcional  
+✔ Inbox / Outbox / Tasks integrados  
+✔ Recommendations corregido (view fix)  
+✔ Strategic Chat integrado en layout  
+✔ Dashboard / Leads adaptados  
 
 ---
 
-## Estado de autonomía actual
+## ARQUITECTURA UI
 
-### Auto-aplicable
-- `send_information`
-- `send_clarification`
-- `schedule_followup` (si policy lo permite)
+- shell común
+- sidebar global
+- contenido dinámico por módulo
+- patrón consistente:
 
-### Bloqueado para auto-apply
-- `mark_lost`
-- `advance_opportunity`
-
----
-
-## Configuración actual
-
-En `settings.py` existen flags activas para automatización inbound:
-
-- `INBOX_AUTO_APPLY_ENABLED`
-- `INBOX_AUTO_APPLY_SCORE_THRESHOLD`
-- `INBOX_AUTO_BLOCKED_ACTIONS`
-- `INBOX_AUTO_BLOCK_ON_RISK_FLAGS`
+.page  
+.page-header  
+.card  
 
 ---
 
-## Riesgos / limitaciones actuales
+## PROBLEMAS RESUELTOS CLAVE
 
-- policy sigue en `settings.py`, no en BD
-- reversibilidad profunda aún incompleta
-- layout UI global todavía no unificado
-- persiste duplicación visual entre templates mientras no exista `base.html`
-- dedupe es lógico, no por constraint SQL
-
----
-
-## Estado general
-
-✔ Estable  
-✔ Funcional  
-✔ Supervisable  
-✔ Semiautónomo  
-⚠ Aún sin shell UI común  
-⚠ Aún sin settings operables desde BD  
+- templates legacy activos sin saberlo
+- vistas apuntando a templates incorrectos
+- pérdida de navegación global
+- CSS local rompiendo layout global
 
 ---
 
-## Ready for next phase
+## ESTADO ACTUAL
 
-Sistema listo para:
+Sistema estable  
+UI coherente  
+Base preparada para escalar
 
-👉 UI Foundation V1 (layout compartido + menú único)  
-👉 Automation settings en BD  
-👉 Governance / reversibility ampliada
+---
+
+## RIESGOS
+
+- CSS aún parcialmente duplicado
+- falta de reglas estrictas UI (pendiente V2)
+- dashboard aún no operativo real
+
+---
+
+## SIGUIENTE NIVEL
+
+Convertir UI en:
+→ interfaz de control del sistema IA
+

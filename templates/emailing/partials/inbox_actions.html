@@ -1,0 +1,27 @@
+<div class="actions">
+    {% if email.suggested_decision %}
+        <form method="post" action="{% url 'apply_decision' email.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Apply decision</button>
+        </form>
+
+        <form method="post" action="{% url 'dismiss_decision' email.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Dismiss</button>
+        </form>
+    {% endif %}
+
+    <form method="post" action="{% url 'mark_inbound_reviewed' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light">Mark reviewed</button>
+    </form>
+
+    <form method="post" action="{% url 'mark_inbound_linked' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light">Mark linked</button>
+    </form>
+
+    <a class="btn btn-primary" href="{% url 'generate_reply_draft' email.id %}">
+        Generate reply draft
+    </a>
+</div>

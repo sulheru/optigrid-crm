@@ -25,6 +25,30 @@
 
   * { box-sizing: border-box; }
 
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 600;
+  }  .messages { margin-bottom: 16px; }
+
+  .message {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #eef2ff;
+    color: #3730a3;
+  }
+
   .tasks {
     display: grid;
     gap: 18px;

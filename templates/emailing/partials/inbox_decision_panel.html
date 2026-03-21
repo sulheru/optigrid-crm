@@ -1,0 +1,55 @@
+<div class="panel">
+    <h3>Decision layer</h3>
+
+    {% if email.latest_decision %}
+        <div class="meta-list">
+            <div class="meta-row">
+                <strong>Action type</strong>
+                <span>{{ email.latest_decision.action_type }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Summary</strong>
+                <span>{{ email.latest_decision.summary|default:"-" }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Score</strong>
+                <span>{{ email.latest_decision.score }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Priority</strong>
+                <span>{{ email.latest_decision.priority }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Requires approval</strong>
+                <span>{{ email.latest_decision.requires_approval|yesno:"Yes,No" }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Applied automatically</strong>
+                <span>{{ email.latest_decision.applied_automatically|yesno:"Yes,No" }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Automation reason</strong>
+                <span>{{ email.latest_decision.automation_reason|default:"-" }}</span>
+            </div>
+            <div class="meta-row">
+                <strong>Applied at</strong>
+                <span>{{ email.latest_decision.applied_at|default:"-" }}</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+            <strong class="small">Risk flags</strong>
+            <div class="chips" style="margin-top: 8px;">
+                {% if email.latest_decision.risk_flags %}
+                    {% for flag in email.latest_decision.risk_flags %}
+                        <span class="chip">{{ flag }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="badge badge-linked">No active risk flags</span>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p class="small">No decision available yet.</p>
+    {% endif %}
+</div>

@@ -2,7 +2,26 @@
 {% block title %}Outbox · OptiGrid CRM{% endblock %}
 {% block content %}
 
-<style>  .header-actions a {
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 24px;
+    background: #f6f7f9;
+    color: #1f2937;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header-actions a {
     text-decoration: none;
     color: white;
     padding: 10px 14px;
@@ -16,6 +35,9 @@
   }
   .go-leads {
     background: #4b5563;
+  }
+  .filters {
+    margin-bottom: 12px;
   }
   .filters a {
     margin-right: 10px;
@@ -128,15 +150,24 @@
   .draft {
     background: #6b7280;
     color: white;
-  }  .checkbox-col {
+  }
+  .empty {
+    background: white;
+    border: 1px dashed #d1d5db;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    color: #6b7280;
+  }
+  .checkbox-col {
     padding-top: 4px;
   }
 </style>
 
 <div class="page">
-  <div class="page-header">
+  <div class="header">
     <h1>Outbox</h1>
-    <div class="toolbar header-actions">
+    <div class="header-actions">
       <a class="go-leads" href="/leads/">Lead Inbox</a>
       <a class="send-all" href="/outbox/send/?type={{ email_type }}">Send All Approved</a>
     </div>

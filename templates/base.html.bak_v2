@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}OptiGrid CRM{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #111827;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            background: #1f2937;
+        }
+
+        .nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        {% include "partials/app_nav.html" %}
+
+        <div class="content">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

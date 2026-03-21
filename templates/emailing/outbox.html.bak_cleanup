@@ -17,6 +17,9 @@
   .go-leads {
     background: #4b5563;
   }
+  .filters {
+    margin-bottom: 12px;
+  }
   .filters a {
     margin-right: 10px;
     text-decoration: none;
