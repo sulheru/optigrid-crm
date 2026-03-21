@@ -1,76 +1,13 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/recommendations/list.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 {% block title %}Recommendations · OptiGrid CRM{% endblock %}
 {% block content %}
 
 <style>
-  .page { max-width: 1100px; margin: 0 auto; }
-
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .page-header a {
-    text-decoration: none;
-    color: #2563eb;
-    font-weight: 600;
-  }
-
-  .card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    overflow: hidden;
-  }
-
-  .filters {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-
-  .filters form {
-    display: flex;
-    gap: 12px;
-    align-items: end;
-    flex-wrap: wrap;
-  }
-
-  .filters label {
-    display: block;
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 6px;
-  }
-
-  .filters select,
-  .filters button,
-  .filters a {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-
-  .filters select,
-  .filters button {
-    border: 1px solid #d1d5db;
-    background: #fff;
-  }
-
-  .filters a {
-    text-decoration: none;
-    color: #2563eb;
-  }
-
   .item {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--app-border);
   }
 
   .item:last-child {
@@ -98,10 +35,10 @@
     flex-wrap: wrap;
   }
 
-  .type-badge,
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
@@ -143,7 +80,7 @@
   .status-executed { background: #fef3c7; color: #92400e; }
 
   .meta {
-    color: #6b7280;
+    color: var(--app-muted);
     font-size: 13px;
     margin: 6px 0 10px 0;
     display: flex;
@@ -166,20 +103,6 @@
     margin: 0;
   }
 
-  button {
-    border: 1px solid #d1d5db;
-    background: #ffffff;
-    color: #111827;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  button:hover {
-    background: #f9fafb;
-  }
-
   .btn-opportunity {
     border-color: #c4b5fd;
     background: #f5f3ff;
@@ -190,10 +113,9 @@
     background: #ede9fe;
   }
 
-  .muted {
-    color: #6b7280;
-    font-size: 13px;
-    margin-top: 10px;
+  .back-link {
+    text-decoration: none;
+    font-weight: 600;
   }
 </style>
 
@@ -203,7 +125,7 @@
       <h1>Recommendations</h1>
       <p>Supervisión operativa de recomendaciones generadas por el sistema.</p>
     </div>
-    <a href="/">← Dashboard</a>
+    <a href="/" class="back-link">← Dashboard</a>
   </div>
 
   <div class="filters">
@@ -229,8 +151,11 @@
       </div>
 
       <div>
-        <button type="submit">Aplicar filtros</button>
-        <a href="/recommendations/">Limpiar</a>
+        <label>&nbsp;</label>
+        <div class="toolbar">
+          <button type="submit">Aplicar filtros</button>
+          <a href="/recommendations/" class="btn btn-secondary">Limpiar</a>
+        </div>
       </div>
     </form>
   </div>
@@ -256,7 +181,7 @@
               </span>
             {% endif %}
 
-            <span class="badge status-{{ recommendation.status|default:'new' }}">
+            <span class="chip status-{{ recommendation.status|default:'new' }}">
               {{ recommendation.status|default:"—" }}
             </span>
           </div>
@@ -271,17 +196,24 @@
         <div class="rec-text">{{ recommendation.recommendation_text }}</div>
 
         {% if recommendation.recommendation_type == "opportunity_review" %}
-          <div class="muted">
+          <div class="muted mt-8">
             Señal comercial detectada. Puede promoverse a oportunidad.
           </div>
         {% endif %}
 
         {% if recommendation.status == "new" %}
           <div class="actions">
+            {% if recommendation.recommendation_type == "followup" %}
+              <form method="post" action="{% url 'execute_followup' recommendation.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Execute</button>
+              </form>
+            {% endif %}
+
             {% if recommendation.recommendation_type == "opportunity_review" or recommendation.recommendation_type == "prepare_proposal" or recommendation.recommendation_type == "schedule_call" or recommendation.recommendation_type == "pricing_strategy" or recommendation.recommendation_type == "qualification" %}
               <form method="post" action="/recommendations/{{ recommendation.id }}/promote-opportunity/">
                 {% csrf_token %}
-                <button type="submit" class="btn-opportunity">Promote to Opportunity</button>
+                <button type="submit" class="btn btn-opportunity">Promote to Opportunity</button>
               </form>
             {% endif %}
 
@@ -292,15 +224,17 @@
 
             <form method="post" action="/recommendations/{{ recommendation.id }}/dismiss/">
               {% csrf_token %}
-              <button type="submit">Dismiss</button>
+              <button type="submit" class="btn btn-secondary">Dismiss</button>
             </form>
           </div>
         {% else %}
-          <div class="muted">Sin acciones disponibles para este estado.</div>
+          <div class="muted mt-8">Sin acciones disponibles para este estado.</div>
         {% endif %}
       </div>
     {% empty %}
-      <div class="item">No hay recommendations.</div>
+      <div class="card-body">
+        <div class="empty">No hay recommendations.</div>
+      </div>
     {% endfor %}
   </div>
 </div>

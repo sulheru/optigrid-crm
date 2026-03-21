@@ -1,76 +1,72 @@
-# NEXT SESSION — OptiGrid CRM
+# NEXT SESSION
 
-## CONTEXTO
+## Objetivo recomendado
+Pasar de **Execute V1** a **Execute fiable y escalable**.
 
-Sistema IA-first con pipeline operativo completo:
+## Prioridad 1 — Robustez operativa
+### 1. Evitar duplicados en execute_followup
+Antes de crear un nuevo draft follow-up:
+- comprobar si ya existe draft follow-up abierto para la misma oportunidad
+- si existe, reutilizarlo o redirigir a Outbox sin crear otro
 
-Inbound → AI → Decision → Action → Draft → Approve → Send
-
-UI FOUNDATION V1 completado:
-- layout global
-- navegación unificada
-- vistas integradas
-
----
-
-## OBJETIVO PRINCIPAL
-
-### UI FOUNDATION V2 — CONSISTENCY & CONTROL
+### 2. Marcar recommendation como executed
+Cuando `execute_followup` cree o reutilice draft:
+- actualizar recommendation status a `executed` si procede
+- evitar que siga apareciendo como acción pendiente
 
 ---
 
-## PRIORIDADES
-
-### 1. UI CONSISTENCY RULES
-
-- prohibir templates standalone
-- todo debe extender base.html
-- eliminar CSS duplicado
-- unificar:
-  - .page
-  - .page-header
-  - cards
-  - botones
+## Prioridad 2 — Extender Execute real
+Añadir ejecución real para:
+- `reply_strategy`
+- `contact_strategy`
+- `next_action`
+- `risk_flag` (al menos como task/alerta)
+- `pricing_strategy` / `timing_strategy` (task estructurada)
 
 ---
 
-### 2. DASHBOARD REAL
-
-Construir dashboard operativo:
-
-- métricas clave:
-  - opportunities
-  - tasks
-  - recommendations
-  - risk
-- quick actions
-- vista tipo cockpit
+## Prioridad 3 — Cockpit V2B phase 2
+Una vez estabilizado Execute:
+- urgency panel
+- activity feed
+- quick actions globales
+- strategic chat más accionable
 
 ---
 
-### 3. STRATEGIC CHAT V2
+## Contexto importante
+### Ya hecho
+- UI FOUNDATION V2A cerrada
+- Dashboard con `AI Recommended Actions`
+- mapping semántico por `recommendation_type`
+- recommendations app estable
+- execute_followup funcional
 
-- integrar contexto real del sistema
-- acciones sugeridas ejecutables
-- conexión con:
-  - recommendations
-  - opportunities
-  - tasks
-
----
-
-### 4. GOVERNANCE UI
-
-- visibilidad de decisiones:
-  - auto vs manual
-- trazabilidad
-- revocación centralizada
+### No rehacer
+No repetir limpieza general de UI.
+La fase siguiente es de fiabilidad y capacidad operativa.
 
 ---
 
-## NOTAS
+## Ficheros que probablemente habrá que inspeccionar primero
+Volcar a `tmp/` antes de tocar nada:
+- `apps/recommendations/views.py`
+- `apps/recommendations/models.py`
+- `apps/emailing/models.py`
+- `apps/emailing/views.py`
+- `templates/dashboard/home.html`
+- `templates/recommendations/list.html`
 
-- no añadir complejidad innecesaria
-- mantener velocidad alta
-- priorizar coherencia visual y operativa
+---
 
+## Meta de la próxima sesión
+Conseguir esto:
+
+Recommendation (followup)
+→ Execute
+→ no duplicar draft
+→ marcar executed
+→ mostrar estado coherente en dashboard y recommendations
+
+Eso dejará el primer loop operativo realmente fiable.

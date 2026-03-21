@@ -1,18 +1,109 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/lead_research/list.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 {% block title %}Leads · OptiGrid{% endblock %}
 {% block content %}
 
 <style>
-.page { max-width: 1100px; margin: 0 auto; }
-.card { background:white; padding:16px; border-radius:12px; margin-bottom:12px; }
-    .row { display:flex; justify-content:space-between; }
-    .scores { font-size:12px; color:#666; }
-    .btn { padding:6px 10px; border-radius:8px; text-decoration:none; margin-left:6px; }
-    .approve { background:#16a34a; color:white; }
-    .dismiss { background:#dc2626; color:white; }
-    .reopen { background:#2563eb; color:white; }
-    .filters a { margin-right:10px; }
+  .filter-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
+  .filter-link {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .lead-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead-card {
+    overflow: hidden;
+  }
+
+  .lead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .lead-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .lead-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .scores {
+    font-size: 13px;
+    color: var(--app-muted);
+  }
+
+  .lead-meta {
+    color: var(--app-text);
+    line-height: 1.5;
+  }
+
+  .signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .signal-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: var(--app-text);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .btn-approve {
+    background: #16a34a;
+    color: white;
+    border-color: #16a34a;
+  }
+
+  .btn-approve:hover {
+    background: #15803d;
+    border-color: #15803d;
+  }
+
+  .btn-dismiss {
+    background: #dc2626;
+    color: white;
+    border-color: #dc2626;
+  }
+
+  .btn-dismiss:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+  }
+
+  .btn-reopen {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+  }
+
+  .btn-reopen:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+  }
 </style>
 
 <div class="page">
@@ -24,51 +115,61 @@
   </div>
 
   <div class="filters">
-    <a href="?status=new">New ({{ counts.new }})</a>
-    <a href="?status=approved">Approved ({{ counts.approved }})</a>
-    <a href="?status=dismissed">Dismissed ({{ counts.dismissed }})</a>
-    <a href="?status=all">All</a>
-  </div>
-
-  <hr>
-
-  {% for lead in leads %}
-<div class="card">
-  <div class="row">
-    <strong>{{ lead.company_name }}</strong>
-    <div>
-      {% if lead.status == "new" %}
-        <a class="btn approve" href="/leads/{{ lead.id }}/approve/">Approve</a>
-        <a class="btn dismiss" href="/leads/{{ lead.id }}/dismiss/">Dismiss</a>
-      {% elif lead.status == "approved" %}
-        <a class="btn dismiss" href="/leads/{{ lead.id }}/dismiss/">Dismiss</a>
-      {% elif lead.status == "dismissed" %}
-        <a class="btn reopen" href="/leads/{{ lead.id }}/reopen/">Reopen</a>
-      {% endif %}
+    <div class="filter-links">
+      <a class="filter-link" href="?status=new">New ({{ counts.new }})</a>
+      <a class="filter-link" href="?status=approved">Approved ({{ counts.approved }})</a>
+      <a class="filter-link" href="?status=dismissed">Dismissed ({{ counts.dismissed }})</a>
+      <a class="filter-link" href="?status=all">All</a>
     </div>
   </div>
 
-  <div class="scores">
-    Fit: {{ lead.fit_score }} |
-    Timing: {{ lead.timing_score }} |
-    Novelty: {{ lead.novelty_score }}
-  </div>
+  {% if leads %}
+    <div class="lead-list">
+      {% for lead in leads %}
+        <div class="card lead-card">
+          <div class="card-body stack-md">
+            <div class="lead-top">
+              <div class="stack-sm">
+                <h2 class="lead-title">{{ lead.company_name }}</h2>
+                <div class="scores">
+                  Fit: {{ lead.fit_score }} ·
+                  Timing: {{ lead.timing_score }} ·
+                  Novelty: {{ lead.novelty_score }}
+                </div>
+              </div>
 
-  <div>
-    {{ lead.industry }} · {{ lead.country }} · {{ lead.employee_range }}
-  </div>
+              <div class="lead-actions">
+                {% if lead.status == "new" %}
+                  <a class="btn btn-approve" href="/leads/{{ lead.id }}/approve/">Approve</a>
+                  <a class="btn btn-dismiss" href="/leads/{{ lead.id }}/dismiss/">Dismiss</a>
+                {% elif lead.status == "approved" %}
+                  <a class="btn btn-dismiss" href="/leads/{{ lead.id }}/dismiss/">Dismiss</a>
+                {% elif lead.status == "dismissed" %}
+                  <a class="btn btn-reopen" href="/leads/{{ lead.id }}/reopen/">Reopen</a>
+                {% endif %}
+              </div>
+            </div>
 
-  <div style="margin-top:8px;">
-    {% for s in lead.signals.all %}
-      <span style="font-size:12px; background:#eee; padding:4px 6px; border-radius:6px;">
-        {{ s.signal_type }}: {{ s.signal_value }}
-      </span>
-    {% endfor %}
-  </div>
+            <div class="lead-meta">
+              {{ lead.industry|default:"—" }} ·
+              {{ lead.country|default:"—" }} ·
+              {{ lead.employee_range|default:"—" }}
+            </div>
 
+            {% if lead.signals.all %}
+              <div class="signals">
+                {% for s in lead.signals.all %}
+                  <span class="signal-chip">{{ s.signal_type }}: {{ s.signal_value }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">No hay leads para los filtros actuales.</div>
+  {% endif %}
 </div>
-{% endfor %}
-</div>
-
 
 {% endblock %}

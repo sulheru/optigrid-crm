@@ -1,76 +1,82 @@
-# HANDOFF CURRENT — OptiGrid CRM
+# HANDOFF CURRENT
 
-## ESTADO GLOBAL
+## Estado general
+OptiGrid CRM ha pasado de UI funcional dispersa a cockpit unificado con primeras acciones operativas reales.
 
-El sistema ha pasado de:
+## Punto exacto del proyecto
+### Completado
+- UI FOUNDATION V2A cerrada.
+- Dashboard con bloque `AI Recommended Actions`.
+- Mapping semántico en dashboard para recomendaciones.
+- Recommendations app refactorizada y estable.
+- Execute real implementado para recomendaciones tipo `followup`.
 
-pantallas independientes  
-→ aplicación unificada tipo cockpit IA
-
----
-
-## BACKEND
-
-✔ Automation Layer V3  
-✔ scoring / priority / risk_flags persistidos  
-✔ auto-apply con policy  
-✔ decisiones auditadas  
-✔ dedupe funcional  
-✔ pipeline completo operativo  
-
----
-
-## UI
-
-✔ base.html implementado  
-✔ navegación global funcional  
-✔ Inbox / Outbox / Tasks integrados  
-✔ Recommendations corregido (view fix)  
-✔ Strategic Chat integrado en layout  
-✔ Dashboard / Leads adaptados  
+### Estado técnico estable
+- `python manage.py check` limpio en validación final.
+- URLs críticas de recommendations definidas.
+- Template `recommendations/list.html` con botón `Execute`.
+- `dashboard_views.py` usando `top_actions`.
 
 ---
 
-## ARQUITECTURA UI
-
-- shell común
-- sidebar global
-- contenido dinámico por módulo
-- patrón consistente:
-
-.page  
-.page-header  
-.card  
-
----
-
-## PROBLEMAS RESUELTOS CLAVE
-
-- templates legacy activos sin saberlo
-- vistas apuntando a templates incorrectos
-- pérdida de navegación global
-- CSS local rompiendo layout global
+## Ficheros clave tocados en esta sesión
+- `templates/base.html`
+- `templates/dashboard/home.html`
+- `templates/strategy/chat.html`
+- `templates/recommendations/list.html`
+- `templates/tasks/list.html`
+- `templates/emailing/inbox.html`
+- `templates/emailing/outbox.html`
+- `templates/lead_research/list.html`
+- `apps/dashboard_views.py`
+- `apps/recommendations/views.py`
+- `apps/recommendations/urls.py`
 
 ---
 
-## ESTADO ACTUAL
+## Estado funcional actual
+### Dashboard
+- Muestra métricas
+- Muestra AI Recommended Actions
+- Expone Execute / Inspect / Dismiss en cockpit
 
-Sistema estable  
-UI coherente  
-Base preparada para escalar
+### Recommendations
+- Lista operativa
+- Execute disponible para `followup`
+- create-task / dismiss / promote-opportunity disponibles
+
+### Outbox
+- Recibe drafts derivados del flujo de execute followup
 
 ---
 
-## RIESGOS
+## Qué NO tocar a ciegas
+- `apps/recommendations/views.py`
+- `apps/recommendations/urls.py`
+- `templates/dashboard/home.html`
 
-- CSS aún parcialmente duplicado
-- falta de reglas estrictas UI (pendiente V2)
-- dashboard aún no operativo real
+Cualquier cambio aquí debe hacerse con refactor completo, no con reemplazos parciales improvisados.
 
 ---
 
-## SIGUIENTE NIVEL
+## Riesgos actuales
+1. `execute_followup` puede crear duplicados si se pulsa varias veces.
+2. No se está marcando la recommendation como `executed`.
+3. El mapping semántico ya existe en dashboard, pero no todos los recommendation types tienen ejecución real.
+4. Dashboard ya es cockpit inicial, pero aún no muestra urgency ni activity feed.
 
-Convertir UI en:
-→ interfaz de control del sistema IA
+---
 
+## Recomendación para la próxima sesión
+Ir a fiabilidad operativa, no a estética:
+1. deduplicación de followup drafts
+2. executed state
+3. execute real para más recommendation types
+4. luego cockpit refinement visual/funcional
+
+---
+
+## Principio activo
+NO hacer suposiciones.
+Validar contexto antes de implementar.
+Trabajar con outputs a `tmp/` para inspección y checks.

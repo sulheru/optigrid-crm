@@ -1,14 +1,13 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/config/urls.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic import TemplateView
+
+from apps.dashboard_views import dashboard_home_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Dashboard mock en raíz
-    path("", TemplateView.as_view(template_name="dashboard/home.html"), name="home"),
+    # Dashboard real en raíz
+    path("", dashboard_home_view, name="home"),
 
     # Lead research
     path("", include("apps.lead_research.urls")),

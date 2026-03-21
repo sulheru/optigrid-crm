@@ -411,14 +411,17 @@
 │   ├── urls.py
 │   └── wsgi.py
 ├── db.sqlite3
+├── debug_ui_foundation.txt
 ├── docker
 ├── docker-compose.yml
 ├── Dockerfile
 ├── docs
+│   ├── BEHAVIOR_PROMPT.md
 │   ├── CHANGELOG.md
 │   ├── CURRENT_TREE.txt
 │   ├── HANDOFF_CURRENT.md
 │   ├── NEXT_SESSION.md
+│   ├── PROJECT_HEALTH_REPORT.md
 │   ├── ROADMAP_AI_COMMERCIAL_OS.md
 │   ├── ROADMAP.md
 │   ├── ROADMAP_V2_AI_COMMERCIAL_OS.md
@@ -432,16 +435,26 @@
 ├── dump_llm_context.sh
 ├── fcheck.sh
 ├── fix_django_app_names.sh
+├── flog.sh
 ├── frun.sh
+├── inbox_full_restore_input.txt
+├── inbox_migration_input.txt
+├── legacy_templates_audit.txt
+├── legacy_templates_report.txt
+├── legacy_templates_strict.txt
 ├── llm_context_optigrid_crm.txt
 ├── manage.py
+├── outbox_migration_input.txt
+├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
 ├── patch_views_recommendations.py
+├── recommendations_trace.txt
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
 │   └── base.txt
+├── runserver.log
 ├── scripts
 ├── services
 │   ├── ai
@@ -467,32 +480,80 @@
 │   ├── update_proposals.py
 │   └── workflows
 │       └── __init__.py
+├── strategy_trace.txt
+├── task_migration_input.txt
 ├── templates
 │   ├── base.html
+│   ├── base.html.bak_cleanup
+│   ├── base.html.bak_v2
 │   ├── dashboard
-│   │   └── home.html
+│   │   ├── home.html
+│   │   ├── home.html.bak_shell
+│   │   └── home.html.bak_ui_foundation_v1
 │   ├── emailing
 │   │   ├── email_detail.html
 │   │   ├── email_list.html
 │   │   ├── inbox.html
 │   │   ├── inbox.html.bak
+│   │   ├── inbox.html.bak_cleanup
+│   │   ├── inbox.html.bak_v2
 │   │   ├── inbox.html.bak_v33
-│   │   └── outbox.html
+│   │   ├── outbox.html
+│   │   ├── outbox.html.bak_cleanup
+│   │   ├── outbox.html.bak_v2
+│   │   └── partials
+│   │       ├── inbox_actions.html
+│   │       ├── inbox_ai_panel.html
+│   │       ├── inbox_decision_panel.html
+│   │       ├── inbox_email_card.html
+│   │       ├── inbox_empty.html
+│   │       ├── inbox_filters.html
+│   │       ├── inbox_header.html
+│   │       └── inbox_stats.html
 │   ├── lead_research
-│   │   └── list.html
+│   │   ├── list.html
+│   │   ├── list.html.bak_shell
+│   │   └── list.html.bak_ui_foundation_v1
 │   ├── opportunities
 │   │   ├── list.html
+│   │   ├── list.html.bak_shell
 │   │   ├── opportunity_tasks.html
 │   │   └── prioritized.html
+│   ├── partials
+│   │   └── app_nav.html
 │   ├── placeholders
 │   │   └── simple_page.html
 │   ├── recommendations
 │   │   ├── list.html
+│   │   ├── list.html.bak_shell
+│   │   ├── list.html.bak_ui_foundation_v1
 │   │   └── recommendation_list.html
 │   ├── strategy
-│   │   └── chat.html
+│   │   ├── chat.html
+│   │   └── chat.html.bak_shell
 │   └── tasks
-│       └── list.html
-└── tests
+│       ├── list.html
+│       ├── list.html.bak_cleanup
+│       └── list.html.bak_v2
+├── tests
+├── tmp
+│   ├── debug_ui_foundation.txt
+│   ├── inbox_full_restore_input.txt
+│   ├── inbox_migration_input.txt
+│   ├── legacy_templates_audit.txt
+│   ├── legacy_templates_report.txt
+│   ├── legacy_templates_strict.txt
+│   ├── llm_context_optigrid_crm.txt
+│   ├── outbox_migration_input.txt
+│   ├── output.txt
+│   ├── project_gap_scan.txt
+│   ├── project_health.txt
+│   ├── project_key_code.txt
+│   ├── recommendations_trace.txt
+│   ├── runserver.log
+│   ├── strategy_trace.txt
+│   ├── task_migration_input.txt
+│   └── ui_repair_input.txt
+└── ui_repair_input.txt
 
-104 directories, 392 files
+107 directories, 450 files

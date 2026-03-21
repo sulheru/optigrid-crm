@@ -1,3 +1,5 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_actions.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 <div class="actions">
     {% if email.suggested_decision %}
         <form method="post" action="{% url 'apply_decision' email.id %}">

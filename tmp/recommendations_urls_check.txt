@@ -1,0 +1,4 @@
+7:    path("<int:pk>/create-task/", views.recommendation_create_task),
+8:    path("<int:pk>/dismiss/", views.recommendation_dismiss),
+9:    path("<int:pk>/promote-opportunity/", views.recommendation_promote_opportunity),
+10:    path("<int:pk>/execute-followup/", views.execute_followup, name="execute_followup"),

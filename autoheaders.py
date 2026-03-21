@@ -1,12 +1,11 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/autoheaders.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 import os
-import sys
 from pathlib import Path
 
-# Configuración de metadatos para LLMs
-
 def process_file(path):
+    # Definimos las constantes aquí para evitar errores de Scope
+    LLM_HINT_PY = "# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.\n"
+    LLM_HINT_HTML = "{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}\n"
+    
     ext = path.suffix.lower()
     abs_path = str(path.resolve())
     
@@ -14,9 +13,10 @@ def process_file(path):
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
         
-        # 1. Limpieza de metadatos previos (evita duplicados)
+        # 1. Limpieza de metadatos previos (evita duplicados y permite actualizar rutas)
         lines = [l for l in lines if not (
             l.startswith("# Ruta:") or 
+            "LLM INFO:" in l or 
             (l.startswith("{# Ruta:") and l.strip().endswith("#}"))
         )]
 
@@ -40,28 +40,27 @@ def process_file(path):
 def main():
     root_dir = Path.cwd()
     count = 0
-    # Extensiones a procesar
     extensions = {'.py', '.html'}
-    # Carpetas a ignorar para evitar tocar librerías o git
     ignored_dirs = {'.git', '__pycache__', 'venv', '.venv', 'node_modules'}
 
     print(f"--- Iniciando actualización de cabeceras en: {root_dir} ---")
 
     for path in root_dir.rglob('*'):
-        # Filtrar por carpetas ignoradas
+        # Ignorar directorios conflictivos
         if any(part in path.parts for part in ignored_dirs):
             continue
             
         if path.is_file() and path.suffix.lower() in extensions:
-            # No procesar este propio script
-            if path.name == 'headers.py':
+            # Evitar que el script se modifique a sí mismo
+            if path.name == 'headers.py' or path.name == 'autoheaders.py':
                 continue
             
             if process_file(path):
                 count += 1
                 print(f"[OK] {path.relative_to(root_dir)}")
 
-    print(f"--- Proceso finalizado. Archivos modificados: {count} ---")
+    print(f"\n--- Proceso finalizado ---")
+    print(f"Archivos modificados exitosamente: {count}")
 
 if __name__ == "__main__":
     main()

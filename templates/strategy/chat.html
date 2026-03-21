@@ -3,37 +3,10 @@
 {% block content %}
 
 <style>
-  .page {
-    max-width: 1240px;
-    margin: 0 auto;
-  }
-
-  .page-header {
-    margin-bottom: 18px;
-  }
-
-  .page-header h1 {
-    margin: 0 0 6px 0;
-    font-size: 28px;
-  }
-
-  .page-header p {
-    margin: 0;
-    color: #6b7280;
-  }
-
   .layout {
     display: grid;
     grid-template-columns: 1.35fr 0.75fr;
     gap: 20px;
-    align-items: start;
-  }
-
-  .card {
-    background: #ffffff;
-    border: 1px solid #dbe2ea;
-    border-radius: 16px;
-    padding: 18px;
   }
 
   .chat-history {
@@ -44,74 +17,29 @@
   }
 
   .message {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--app-border);
     border-radius: 14px;
     padding: 14px;
   }
 
-  .message.user {
-    border-left: 4px solid #111827;
-  }
+  .message.user { border-left: 4px solid #111827; }
+  .message.assistant { background: #f8fafc; border-left: 4px solid var(--app-primary); }
 
-  .message.assistant {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-  }
-
-  .message .role {
+  .role {
     font-size: 12px;
     font-weight: 700;
-    text-transform: uppercase;
-    color: #6b7280;
+    color: var(--app-muted);
     margin-bottom: 8px;
-  }
-
-  .message pre,
-  .message p {
-    margin: 0;
-    white-space: pre-wrap;
-    line-height: 1.5;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 110px;
-    border: 1px solid #dbe2ea;
-    border-radius: 12px;
-    padding: 12px;
-  }
-
-  .actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  button {
-    border: 0;
-    border-radius: 10px;
-    padding: 10px 14px;
-    cursor: pointer;
-  }
-
-  .primary {
-    background: #2563eb;
-    color: #fff;
-  }
-
-  .secondary {
-    background: #eef2f7;
   }
 
   .summary-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 12px;
   }
 
   .metric {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--app-border);
     border-radius: 12px;
     padding: 12px;
   }
@@ -121,30 +49,15 @@
     font-weight: 700;
   }
 
-  .metric .label {
-    font-size: 13px;
-    color: #6b7280;
-  }
-
-  .suggested {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
   .prompt-chip {
-    border: 1px solid #dbe2ea;
+    border: 1px solid var(--app-border);
     border-radius: 10px;
-    padding: 10px 12px;
+    padding: 10px;
     background: #eef4ff;
-    font-size: 14px;
   }
 
   @media (max-width: 980px) {
-    .layout {
-      grid-template-columns: 1fr;
-    }
+    .layout { grid-template-columns: 1fr; }
   }
 </style>
 
@@ -156,67 +69,51 @@
 
   <div class="layout">
     <section class="card">
+      <div class="card-body">
 
-      <div class="chat-history">
-        {% if history %}
+        <div class="chat-history">
           {% for item in history %}
             <div class="message {{ item.role }}">
-              <div class="role">
-                {% if item.role == "user" %}CEO{% else %}Jarvis{% endif %}
-              </div>
-
+              <div class="role">{% if item.role == "user" %}CEO{% else %}Jarvis{% endif %}</div>
               {% if item.role == "assistant" %}
                 <pre>{{ item.content }}</pre>
-                {% if item.meta %}
-                  <div class="meta">{{ item.meta }}</div>
-                {% endif %}
               {% else %}
                 <p>{{ item.content }}</p>
               {% endif %}
             </div>
+          {% empty %}
+            <div>No hay historial todavía.</div>
           {% endfor %}
-        {% else %}
-          <div>No hay historial todavía.</div>
-        {% endif %}
-      </div>
-
-      <form method="post">
-        {% csrf_token %}
-        <textarea name="message" required></textarea>
-        <div class="actions">
-          <button type="submit" class="primary">Enviar</button>
         </div>
-      </form>
 
+        <form method="post" class="mt-12">
+          {% csrf_token %}
+          <textarea name="message" required></textarea>
+          <div class="mt-8">
+            <button type="submit" class="btn-primary">Enviar</button>
+          </div>
+        </form>
+
+      </div>
     </section>
 
     <aside class="card">
-      <h2>Resumen</h2>
+      <div class="card-body">
+        <h2>Resumen</h2>
 
-      <div class="summary-grid">
-        <div class="metric">
-          <div class="value">{{ context_summary.prioritized_opportunities_count }}</div>
-          <div class="label">Prioritized</div>
+        <div class="summary-grid mt-12">
+          <div class="metric"><div class="value">{{ context_summary.prioritized_opportunities_count }}</div><div class="label">Prioritized</div></div>
+          <div class="metric"><div class="value">{{ context_summary.at_risk_opportunities_count }}</div><div class="label">At Risk</div></div>
+          <div class="metric"><div class="value">{{ context_summary.open_tasks_count }}</div><div class="label">Tasks</div></div>
         </div>
 
-        <div class="metric">
-          <div class="value">{{ context_summary.at_risk_opportunities_count }}</div>
-          <div class="label">At Risk</div>
-        </div>
-
-        <div class="metric">
-          <div class="value">{{ context_summary.open_tasks_count }}</div>
-          <div class="label">Tasks</div>
+        <h2 class="mt-20">Prompts</h2>
+        <div class="stack-sm mt-12">
+          {% for prompt in suggested_prompts %}
+            <div class="prompt-chip">{{ prompt }}</div>
+          {% endfor %}
         </div>
       </div>
-
-      <h2 style="margin-top: 20px;">Prompts</h2>
-      <div class="suggested">
-        {% for prompt in suggested_prompts %}
-          <div class="prompt-chip">{{ prompt }}</div>
-        {% endfor %}
-      </div>
-
     </aside>
   </div>
 </div>
