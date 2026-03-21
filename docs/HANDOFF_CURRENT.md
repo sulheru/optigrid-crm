@@ -1,90 +1,88 @@
 # HANDOFF — CURRENT STATE
 
-## PROYECTO
-
-OptiGrid CRM — AI Commercial Operating System
+## Sistema: OptiGrid CRM — AI Commercial OS
 
 ---
 
-## ESTADO ACTUAL
+## Estado actual
 
-Sistema funcional end-to-end:
+El sistema es capaz de ejecutar:
 
-Email → Fact → Inference → Proposal → Recommendation → Task → Opportunity
+### 1. Pipeline completo
 
----
-
-## CAPAS ACTIVAS
-
-### 1. Opportunity Intelligence V2
-- scoring
-- priority
-- risk flags
-- next actions
-
-### 2. Autotasker V1
-- creación automática de tasks
-
-### 3. Outbox V1
-- drafts
-- approve
-- send
-
-### 4. Inbox Intelligence V1 (NEW)
-- interpretación automática
-- decisiones sugeridas
-- UI integrada
-
-### 5. Governance
-- revoke tasks
-- control manual
+Email → Interpretation → Decision → Apply → Action → Draft → Send
 
 ---
 
-## MODELOS CLAVE
+## Componentes activos
 
-Inbound:
-- InboundEmail
-- InboundInterpretation
-- InboundDecision
+### Inbox Intelligence V2
+- análisis automático
+- decisiones persistentes
+- UI accionable
 
-Outbound:
-- OutboundEmail
+### Outbox V1.1
+- drafts editables
+- approve / send
+- bulk actions
 
-Core:
-- Opportunity
-- AIRecommendation
-- CRMTask
+### Opportunity System
+- creación automática
+- evolución por decisiones
 
----
-
-## FLUJO ACTUAL
-
-OUTBOUND → INBOUND → INTERPRET → SUGGEST
-
-🚫 Falta: APPLY
+### Task System
+- generación automática (parcial validación)
 
 ---
 
-## PROBLEMAS RESUELTOS EN ESTA SESIÓN
+## Flujo operativo actual
 
-- error EmailMessage legacy
-- namespace opportunities_ui
-- routing inconsistencies
-- dashboard root roto
+1. Llega inbound email
+2. AI analiza
+3. Se genera decisión
+4. Usuario:
+   - Apply
+   - Dismiss
+5. Sistema:
+   - crea draft / task / cambia opportunity
+6. Usuario:
+   - edita draft
+   - approve
+   - send
 
 ---
 
-## DEUDA TÉCNICA
+## Limitaciones actuales
 
-- inbox analysis en view (debe moverse a servicio/async)
-- falta apply_decision
-- falta automatización configurable
+- No hay auto-apply
+- No hay scoring de decisiones
+- No hay priorización avanzada
+- No hay auditoría visual completa
+- No hay control estratégico (Jarvis)
 
 ---
 
-## ESTADO
+## Riesgos
 
-✅ ESTABLE  
-✅ LISTO PARA EVOLUCIÓN  
+- duplicación de decisiones si análisis se dispara múltiples veces
+- falta de control de calidad en AI decisions
+- ausencia de feedback loop
 
+---
+
+## Estado general
+
+✔ Estable  
+✔ Funcional  
+✔ Usable  
+⚠ No autónomo todavía  
+
+---
+
+## Ready for next phase
+
+Sistema listo para:
+
+👉 Automation layer
+👉 Strategic layer (Jarvis)
+👉 Decision scoring

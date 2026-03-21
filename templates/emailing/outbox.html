@@ -250,7 +250,24 @@
                   {% if e.failure_reason %}<br>Failure: {{ e.failure_reason }}{% endif %}
                 </div>
 
-                <pre>{{ e.body }}</pre>
+                {% if e.status == "draft" %}
+  <form method="post" action="/outbox/{{ e.id }}/update/">
+    {% csrf_token %}
+
+    <div style="margin-bottom:8px;">
+      <input type="text" name="subject" value="{{ e.subject }}" style="width:100%; padding:8px; border-radius:8px; border:1px solid #d1d5db; font-size:14px;">
+    </div>
+
+    <div style="margin-bottom:8px;">
+      <textarea name="body" rows="6" style="width:100%; padding:10px; border-radius:10px; border:1px solid #d1d5db; font-size:14px;">{{ e.body }}</textarea>
+    </div>
+
+    <button type="submit" class="draft">Save Draft</button>
+  </form>
+{% else %}
+  <pre>{{ e.body }}</pre>
+{% endif %}
+
 
                 <div class="actions">
                   {% if e.status == "draft" %}

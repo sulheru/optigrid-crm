@@ -225,7 +225,7 @@
                   <br>
                   <strong>Status:</strong> {{ e.latest_decision.status }}
 
-                  {% if e.latest_decision.status == "suggested" %}
+                  {% if e.suggested_decision %}
                     <div>
                       <form method="post" action="/inbox/{{ e.id }}/apply-decision/" class="decision-form">
                         {% csrf_token %}

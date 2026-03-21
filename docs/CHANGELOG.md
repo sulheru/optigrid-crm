@@ -1,63 +1,33 @@
 # CHANGELOG
 
-## 2026-03-20 — Inbox Intelligence V1 + System Stabilization
+## 2026-03-20 — Inbox Intelligence V2 + Editable Outbox
 
-### 🧠 Inbox Intelligence V1 (NEW)
+### Added
+- InboundDecision model + lifecycle
+- Apply / Dismiss decision endpoints
+- AI decision UI in inbox
+- Outbox draft editing (subject + body)
+- update_outbound_email endpoint
 
-- Añadido `InboundInterpretation`
-- Añadido `InboundDecision`
-- Servicio `analyze_inbound_email` integrado en inbox_view
-- Interpretación automática en tiempo de lectura (lazy execution)
-- UI actualizada con:
-  - intent
-  - urgency
-  - sentiment
-  - confidence
-  - recommended_action
-  - rationale
-  - signals
-  - suggested decision
+### Improved
+- End-to-end commercial flow
+- Human-in-the-loop control
+- UX en inbox y outbox
 
-### 📥 Inbox UI
+### Fixed
+- Template resolution conflict (Django precedence)
+- Missing import in urls.py
 
-- Panel de inteligencia IA añadido por email
-- Visualización clara de decisiones sugeridas
-- Mantiene control humano (no auto-apply aún)
-
-### 📤 Outbox
-
-- Sin cambios funcionales
-- Base estable para follow-ups desde inbound
-
-### 🧠 Opportunities
-
-- Fix completo de `context_builder`
-- Eliminada dependencia de modelo legacy `EmailMessage`
-- Integración con:
-  - OutboundEmail
-  - InboundEmail
-
-### 🧭 Routing / URLs
-
-- Eliminado namespace inconsistente `opportunities_ui`
-- Corrección de templates:
-  - prioritized.html
-  - opportunity_tasks.html
-
-### 🏠 Dashboard
-
-- Restaurado `/` con TemplateView (mock estable)
-
-### 🧪 Tests
-
-- Tests emailing OK
-- Sistema sin errores runtime
+### Result
+Sistema pasa de:
+CRM asistido → AI-driven commercial engine
 
 ---
 
-## Estado general
+## System Capabilities
 
-Sistema estable ✅  
-Pipeline completo operativo ✅  
-Inbox Intelligence V1 activo ✅  
-
+- AI analiza inbound emails
+- Genera decisiones accionables
+- Ejecuta acciones automáticamente
+- Genera drafts
+- Usuario revisa y controla envío

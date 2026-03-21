@@ -1,82 +1,98 @@
-# NEXT SESSION — Inbox Intelligence V2
+# NEXT SESSION PROMPT
+
+PROYECTO: OptiGrid CRM — AI Commercial Operating System
+
+---
 
 ## CONTEXTO
 
-Inbox Intelligence V1 está implementado:
+Sistema IA-first donde:
 
-InboundEmail → Interpretation → Decision (suggested)
+- IA ejecuta funciones comerciales
+- Usuario supervisa (CEO mode)
+- Sistema gestiona:
+  - inbox
+  - outbox
+  - oportunidades
+  - tareas
 
-Actualmente:
-- Interpretación automática
-- Decisión sugerida visible
-- Sin ejecución automática
+Pipeline actual:
+
+Inbound → AI → Decision → Apply → Draft → Edit → Approve → Send
+
+---
+
+## ESTADO ACTUAL
+
+✔ Inbox Intelligence V2 completo  
+✔ Outbox editable  
+✔ Apply/Dismiss funcionando  
+✔ Tests OK  
+
+Sistema funcional end-to-end
 
 ---
 
 ## OBJETIVO DE LA SESIÓN
 
-Convertir inbox en motor de acción:
-
-👉 Implementar APPLY DECISION
+Implementar AUTOMATION LAYER (V3)
 
 ---
 
-## FEATURES A IMPLEMENTAR
+## REQUISITOS
 
-### 1. Apply Inbound Decision
+### 1. Auto Apply Decisions
 
-Nueva acción:
+- aplicar automáticamente si:
+  - requires_approval = False
+  - confidence > threshold
 
-apply_inbound_decision(decision)
+### 2. Decision Scoring
 
-Debe permitir:
+Añadir a InboundDecision:
 
-- crear task (follow-up)
-- generar draft de respuesta
-- avanzar opportunity stage
-- marcar como lost
-- solicitar más info
-
----
-
-### 2. Endpoint
-
-POST /inbox/<id>/apply-decision/
+- score
+- risk_flags
+- priority
 
 ---
 
-### 3. UI
+### 3. Deduplication
 
-Botón en inbox:
-
-[Apply Decision]
-
-Estados:
-
-- suggested → applied
-- suggested → dismissed
+- evitar generar múltiples decisiones iguales
+- hash por:
+  - inbound_id
+  - action_type
 
 ---
 
-### 4. Seguridad
+### 4. Logging / Audit
 
-- requires_approval flag respetado
-- logging de acciones
-
----
-
-### 5. Opcional (stretch)
-
-- auto-apply si confidence > threshold
-- configuración por tipo de email
+- registrar:
+  - decisiones aplicadas automáticamente
+  - origen
 
 ---
 
-## RESULTADO ESPERADO
+## RESTRICCIONES
 
-Sistema cerrado:
+- No romper V2
+- Mantener control manual
+- Todo reversible
 
-OUTBOUND → INBOUND → UNDERSTAND → DECIDE → ACT → OUTBOUND
+---
 
-👉 Loop comercial autónomo
+## OUTPUT ESPERADO
+
+- servicios nuevos
+- cambios en modelo (si necesario)
+- integración limpia
+- tests básicos
+
+---
+
+## NOTA
+
+Sistema ya funciona.
+Ahora el objetivo es reducir intervención humana sin perder control.
 

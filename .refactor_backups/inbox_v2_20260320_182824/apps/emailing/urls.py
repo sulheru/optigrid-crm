@@ -13,7 +13,6 @@ from .views import (
     outbox_view,
     send_all,
     send_email,
-    update_outbound_email,
 )
 
 urlpatterns = [
@@ -21,7 +20,6 @@ urlpatterns = [
     path("outbox/<int:pk>/approve/", approve_email, name="approve_email"),
     path("outbox/<int:pk>/draft/", back_to_draft, name="back_to_draft"),
     path("outbox/<int:pk>/send/", send_email, name="send_email"),
-    path("outbox/<int:pk>/update/", update_outbound_email, name="update_outbound_email"),
     path("outbox/send/", send_all, name="send_all_emails"),
     path("outbox/bulk-action/", bulk_action, name="bulk_outbox_action"),
 

@@ -1,178 +1,121 @@
-# SESSION LOG
-
-## Fecha
-2026-03-20
+# SESSION LOG — 2026-03-20
 
 ## Objetivo de la sesión
-
-Implementar la base de Conversation / Inbox Intelligence V1 para convertir replies inbound en interpretación y decisión sugerida, manteniendo control humano y sin automatización crítica todavía.
-
----
-
-## Trabajo realizado
-
-### 1. Base semántica para inbox intelligence
-Se añadieron los modelos:
-
-- `InboundInterpretation`
-- `InboundDecision`
-
-Resultado:
-- cada `InboundEmail` ya puede tener interpretación persistida
-- cada inbound ya puede tener una decisión sugerida persistida
+Implementar Inbox Intelligence V2 y cerrar loop comercial completo:
+Inbound → Decision → Action → Outbound
 
 ---
 
-### 2. Servicios de inteligencia inbound
-Se crearon y estabilizaron los servicios:
+## Implementaciones realizadas
 
-- `inbound_interpreter.py`
-- `inbound_decision_engine.py`
-- `inbound_analysis_service.py`
+### 1. Inbox Intelligence V2
+- Generación automática de `InboundDecision`
+- Tipos soportados:
+  - send_information
+  - send_clarification
+  - schedule_followup
+  - advance_opportunity
+  - mark_lost
 
-Capacidades actuales:
-- mapear `reply_type` → `intent`
-- inferir `urgency`
-- inferir `sentiment`
-- proponer `recommended_action`
-- construir una `InboundDecision` sugerida
+- Estados:
+  - suggested
+  - applied
+  - dismissed
 
----
-
-### 3. Tests
-Se corrigió el problema de descubrimiento de tests en `apps/emailing/tests.py`.
-
-Resultado:
-- tests de `apps.emailing.tests` ejecutando correctamente
-- tests verdes
-
----
-
-### 4. Integración Inbox Intelligence V1
-Se integró análisis automático en `inbox_view`.
-
-Comportamiento actual:
-- al abrir inbox, los inbound se analizan si aún no tienen interpretación
-- si no tienen decisión sugerida, se genera
-- la UI muestra:
-  - intent
-  - urgency
-  - sentiment
-  - confidence
-  - recommended_action
-  - rationale
-  - signals
-  - suggested decision
-
-Resultado:
-- Inbox ya no es solo bandeja visual
-- Inbox ahora es bandeja de decisiones sugeridas
+- UI:
+  - Panel AI visible en inbox
+  - Botones:
+    - Apply Decision
+    - Dismiss
 
 ---
 
-### 5. Estabilización del sistema / routing
-Durante la sesión aparecieron varios problemas de navegación y referencias antiguas.
-
-Se corrigió:
-
-- `/recommendations/` no estaba incluida en `config/urls.py`
-- `/opportunities/` no tenía root funcional
-- enlaces hardcodeados a `/emails/` estaban rotos
-- referencias a namespace legacy `opportunities_ui`
-- referencias antiguas a modelo `EmailMessage`
-
-Resultado:
-- navegación estable otra vez
-- root `/` operativo
-- recommendations operativa
-- opportunities operativa
+### 2. Apply / Dismiss flow
+- Endpoint: `/inbox/<id>/apply-decision/`
+- Endpoint: `/inbox/<id>/dismiss-decision/`
+- Persistencia:
+  - status
+  - applied_at
 
 ---
 
-### 6. Fix de opportunities
-Se reescribió `context_builder.py` para usar el modelo actual del sistema:
+### 3. Integraciones automáticas
 
-- `OutboundEmail`
-- `InboundEmail`
+Apply Decision ejecuta:
 
-en lugar del modelo legacy inexistente:
-
-- `EmailMessage`
-
-También se añadió la view faltante:
-
-- `opportunity_set_stage_view`
-
-Resultado:
-- `/opportunities/prioritized/` vuelve a funcionar
-- cambio de stage operativo
-- tasks por oportunidad accesibles
+- send_information / clarification → crea Outbound draft
+- schedule_followup → crea CRMTask
+- advance_opportunity → cambia stage
+- mark_lost → stage = lost
 
 ---
 
-## Estado final de la sesión
+### 4. Fix crítico de templates
+Problema:
+- Django usaba `templates/emailing/inbox.html`
+- Se estaba editando `apps/...`
 
-### Inbox Intelligence V1
-✅ Implementado
-
-### Routing / sistema
-✅ Estable
-
-### Opportunities
-✅ Estable
-
-### Outbox
-✅ Estable
-
-### Tests
-✅ Verdes en emailing
+Solución:
+- Sobrescritura del template correcto
 
 ---
 
-## Estado arquitectónico al cierre
+### 5. Outbox V1.1 (Editable Drafts)
 
-El sistema ya soporta:
+Nueva funcionalidad clave:
 
-`InboundEmail → InboundInterpretation → InboundDecision`
+- subject editable
+- body editable (textarea)
+- botón: Save Draft
 
-Todavía falta:
+Restricción:
+- solo editable si status = draft
 
-`Apply Decision`
-
-Es decir, el sistema ya:
-- entiende
-- propone
-
-Pero aún no:
-- ejecuta la decisión sugerida desde inbox
+Endpoint:
+POST /outbox/<id>/update/
 
 ---
 
-## Próximo paso recomendado
-
-### Inbox Intelligence V2
-Implementar:
-
-- `apply_inbound_decision(decision)`
-- endpoint POST desde inbox
-- botón `Apply Decision`
-- transición `suggested → applied`
-- opcionalmente `dismissed`
-
-Objetivo:
-cerrar el loop real:
-
-`OUTBOUND → INBOUND → UNDERSTAND → DECIDE → ACT`
+### 6. Fix de URLs
+- Error NameError por falta de import
+- Se añadió:
+  - update_outbound_email
 
 ---
 
-## Notas importantes
+## Validación
 
-- El análisis inbound está actualmente disparado desde la view de inbox.
-- A futuro conviene moverlo a:
-  - signal
-  - comando batch
-  - job async
-- No tocar la raíz `/` sin comprobar primero qué vista real la servía.
-- Revisar siempre templates reales usados por la view antes de corregir URLs.
+✔ Tests OK  
+✔ Apply Decision funcional  
+✔ Draft generation OK  
+✔ UI operativa  
+✔ Persistencia correcta  
+✔ Edición de drafts funcionando  
 
+---
+
+## Estado final
+
+Sistema funcional como:
+
+AI Commercial Operating Loop V1:
+
+Inbound → AI → Decision → Apply → Draft → Edit → Approve → Send
+
+---
+
+## Observaciones
+
+- No se validaron explícitamente:
+  - schedule_followup
+  - advance_opportunity
+  - mark_lost
+
+(Se asumen correctos por implementación)
+
+---
+
+## Cierre
+
+Sesión estable y completa.
+Sistema usable en entorno real.

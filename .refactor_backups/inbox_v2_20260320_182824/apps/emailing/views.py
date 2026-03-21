@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from apps.emailing.models import InboundDecision, InboundEmail, OutboundEmail
+from apps.emailing.models import InboundEmail, OutboundEmail
 from apps.emailing.services.inbound_analysis_service import analyze_inbound_email
 from apps.emailing.services.inbound_decision_apply_service import (
     apply_inbound_decision,
@@ -129,7 +129,7 @@ def inbox_view(request):
     for email in emails:
         if not hasattr(email, "ai_interpretation"):
             analyze_inbound_email(email)
-        elif not email.ai_decisions.filter(status=InboundDecision.STATUS_SUGGESTED).exists():
+        elif not email.ai_decisions.filter(status=InboundEmail.ai_decisions.rel.related_model.STATUS_SUGGESTED).exists():
             analyze_inbound_email(email)
 
     emails = list(
@@ -145,7 +145,7 @@ def inbox_view(request):
         latest_non_suggested_decision = None
 
         for decision in email.ai_decisions.all():
-            if decision.status == InboundDecision.STATUS_SUGGESTED:
+            if decision.status == "suggested":
                 suggested_decision = decision
                 break
 
@@ -199,7 +199,7 @@ def generate_reply_draft(request, pk):
 @require_POST
 def apply_decision(request, pk):
     email = get_object_or_404(InboundEmail, pk=pk)
-    decision = email.ai_decisions.filter(status=InboundDecision.STATUS_SUGGESTED).first()
+    decision = email.ai_decisions.filter(status="suggested").first()
 
     if decision:
         apply_inbound_decision(decision)
@@ -210,27 +210,9 @@ def apply_decision(request, pk):
 @require_POST
 def dismiss_decision(request, pk):
     email = get_object_or_404(InboundEmail, pk=pk)
-    decision = email.ai_decisions.filter(status=InboundDecision.STATUS_SUGGESTED).first()
+    decision = email.ai_decisions.filter(status="suggested").first()
 
     if decision:
         dismiss_inbound_decision(decision)
 
     return redirect(request.META.get("HTTP_REFERER", "/inbox/"))
-
-@require_POST
-def update_outbound_email(request, pk):
-    email = get_object_or_404(OutboundEmail, pk=pk)
-
-    # Solo editable si es draft
-    if email.status != OutboundEmail.STATUS_DRAFT:
-        return redirect(request.META.get("HTTP_REFERER", "/outbox/"))
-
-    subject = request.POST.get("subject", "").strip()
-    body = request.POST.get("body", "").strip()
-
-    email.subject = subject
-    email.body = body
-    email.save(update_fields=["subject", "body", "updated_at"])
-
-    return redirect(request.META.get("HTTP_REFERER", "/outbox/"))
-
