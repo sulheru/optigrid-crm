@@ -1,0 +1,90 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/partials/app_sidebar.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+{% load static %}
+
+<nav class="app-sidebar">
+  <div class="app-sidebar-brand">
+    <a href="/" class="app-brand-link">
+      <span class="app-brand-logo">
+        <img src="{% static 'app_ui/images/logo.png' %}" alt="OptiGrid">
+      </span>
+      <span class="app-brand-text">OptiGrid CRM</span>
+    </a>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Main</div>
+    <ul class="app-nav">
+      <li class="app-nav-item {% if request.path == '/' %}active{% endif %}">
+        <a href="/">
+          <i class="fa fa-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item {% if '/strategy/chat/' in request.path %}active{% endif %}">
+        <a href="/strategy/chat/">
+          <i class="fa fa-comments-o"></i>
+          <span>Strategic Chat</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Mailing</div>
+    <ul class="app-nav">
+      <li class="app-nav-item {% if '/inbox/' in request.path %}active{% endif %}">
+        <a href="/inbox/">
+          <i class="fa fa-inbox"></i>
+          <span>Inbox</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item {% if '/outbox/' in request.path %}active{% endif %}">
+        <a href="/outbox/">
+          <i class="fa fa-send"></i>
+          <span>Outbox</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Execution</div>
+    <ul class="app-nav">
+      <li class="app-nav-item {% if '/recommendations/' in request.path %}active{% endif %}">
+        <a href="/recommendations/">
+          <i class="fa fa-bolt"></i>
+          <span>Recommendations</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item {% if '/tasks/' in request.path %}active{% endif %}">
+        <a href="/tasks/">
+          <i class="fa fa-check-square-o"></i>
+          <span>Tasks</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item {% if '/opportunities/' in request.path %}active{% endif %}">
+        <a href="/opportunities/prioritized/">
+          <i class="fa fa-briefcase"></i>
+          <span>Opportunities</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Intelligence</div>
+    <ul class="app-nav">
+      <li class="app-nav-item {% if '/leads/' in request.path %}active{% endif %}">
+        <a href="/leads/">
+          <i class="fa fa-lightbulb-o"></i>
+          <span>Leads</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

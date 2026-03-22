@@ -1,63 +1,31 @@
-# NEXT_SESSION
+# NEXT SESSION
 
 ## Objetivo
-Cockpit V2C — Observabilidad y Prioridad
+Cerrar la capa visual y semántica de la UI empezando por Recommendations.
 
-## Contexto de partida
-El backend ya tiene execute unificado operativo y validado para:
-- followup
-- contact_strategy
-- reply_strategy
+## Prioridad 1 — Recommendations UI
+Inspeccionar y refactorizar:
+- `templates/recommendations/list.html`
 
-El siguiente trabajo debe centrarse en cockpit, no en lógica core adicional.
+Objetivos:
+- alinear con `base.html`
+- usar el design system V2
+- eliminar labels internas visibles
+- usar `label_filters`
 
-## Prioridad 1 — Dashboard sin mapping manual
-Analizar y modificar:
-- `apps/dashboard_views.py`
-- `templates/dashboard/home.html`
+## Prioridad 2 — Semántica visual
+Definir si conviene introducir:
+- icono por `recommendation_type`
+- color por prioridad
+- color por estado
 
-Objetivo:
-- eliminar lógica manual de `primary_action_url`
-- usar únicamente:
-  `/recommendations/<id>/execute/`
+## Prioridad 3 — Cleanup
+Buscar y eliminar:
+- `|title` sobre campos semánticos
+- strings internas expuestas en UI
+- restos de layout legacy
 
-## Prioridad 2 — Urgency Panel
-Fuentes:
-- `InboundInterpretation.urgency`
-- `AIRecommendation.status = new`
-- `AIRecommendation.confidence`
-
-Salida esperada:
-- bloque visible en dashboard
-- agrupación high / medium / low
-- CTA claros hacia execute o inspect
-
-## Prioridad 3 — Activity Feed
-Diseñar e implementar un modelo mínimo tipo:
-- `ActivityEvent`
-  - `event_type`
-  - `aggregate_type`
-  - `aggregate_id`
-  - `summary`
-  - `payload_json`
-  - `triggered_by_type`
-  - `triggered_by_id`
-  - `created_at`
-
-Primeros eventos a registrar:
-- `recommendation_executed`
-- `outbound_draft_created`
-- `outbound_draft_reused`
-- `task_created_from_recommendation`
-- `opportunity_promoted_from_recommendation`
-
-Mostrar últimos eventos en dashboard.
-
-## Regla de trabajo
-- no hacer suposiciones
-- inspección antes de tocar código
-- outputs en `tmp/`
-- siempre usar:
-  `&> tmp/archivo.txt`
-  y después:
-  `cat tmp/archivo.txt`
+## Restricción operativa
+No asumir contexto.
+Verificar primero el fichero real antes de modificar.
+Entregar siempre ficheros completos con `cat > ...`.

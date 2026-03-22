@@ -1,14 +1,40 @@
 {# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_stats.html #}
 {# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div class="stats-grid">
-    <div class="stat"><div class="label">All emails</div><div class="value">{{ counts.all }}</div></div>
-    <div class="stat"><div class="label">New</div><div class="value">{{ counts.new }}</div></div>
-    <div class="stat"><div class="label">Reviewed</div><div class="value">{{ counts.reviewed }}</div></div>
-    <div class="stat"><div class="label">Linked</div><div class="value">{{ counts.linked }}</div></div>
-    <div class="stat"><div class="label">Auto applied</div><div class="value">{{ counts.auto_applied }}</div></div>
-    <div class="stat"><div class="label">Suggested</div><div class="value">{{ counts.suggested }}</div></div>
-    <div class="stat"><div class="label">Applied</div><div class="value">{{ counts.applied }}</div></div>
-    <div class="stat"><div class="label">Dismissed</div><div class="value">{{ counts.dismissed }}</div></div>
-    <div class="stat"><div class="label">High priority</div><div class="value">{{ counts.high_priority }}</div></div>
-    <div class="stat"><div class="label">With risk</div><div class="value">{{ counts.with_risk }}</div></div>
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+
+  <div class="card"><div class="card-body">
+    <div class="meta">All</div>
+    <div class="subject">{{ counts.all }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">New</div>
+    <div class="subject">{{ counts.new }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">Reviewed</div>
+    <div class="subject">{{ counts.reviewed }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">Linked</div>
+    <div class="subject">{{ counts.linked }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">Suggested</div>
+    <div class="subject">{{ counts.suggested }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">Applied</div>
+    <div class="subject">{{ counts.applied }}</div>
+  </div></div>
+
+  <div class="card"><div class="card-body">
+    <div class="meta">Dismissed</div>
+    <div class="subject">{{ counts.dismissed }}</div>
+  </div></div>
+
 </div>

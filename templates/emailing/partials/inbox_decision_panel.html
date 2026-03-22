@@ -1,57 +1,65 @@
 {# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_decision_panel.html #}
 {# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div class="panel">
-    <h3>Decision layer</h3>
+<div>
 
-    {% if email.latest_decision %}
-        <div class="meta-list">
-            <div class="meta-row">
-                <strong>Action type</strong>
-                <span>{{ email.latest_decision.action_type }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Summary</strong>
-                <span>{{ email.latest_decision.summary|default:"-" }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Score</strong>
-                <span>{{ email.latest_decision.score }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Priority</strong>
-                <span>{{ email.latest_decision.priority }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Requires approval</strong>
-                <span>{{ email.latest_decision.requires_approval|yesno:"Yes,No" }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Applied automatically</strong>
-                <span>{{ email.latest_decision.applied_automatically|yesno:"Yes,No" }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Automation reason</strong>
-                <span>{{ email.latest_decision.automation_reason|default:"-" }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Applied at</strong>
-                <span>{{ email.latest_decision.applied_at|default:"-" }}</span>
-            </div>
-        </div>
+  {% if email.latest_decision %}
 
-        <div style="margin-top: 12px;">
-            <strong class="small">Risk flags</strong>
-            <div class="chips" style="margin-top: 8px;">
-                {% if email.latest_decision.risk_flags %}
-                    {% for flag in email.latest_decision.risk_flags %}
-                        <span class="chip">{{ flag }}</span>
-                    {% endfor %}
-                {% else %}
-                    <span class="badge badge-linked">No active risk flags</span>
-                {% endif %}
-            </div>
-        </div>
-    {% else %}
-        <p class="small">No decision available yet.</p>
+    <!-- PRIMARY DECISION -->
+    <div style="margin-bottom: 10px;">
+      <strong>Decision</strong>
+      <div style="margin-top: 6px;">
+        {{ email.latest_decision.action_type }}
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    {% if email.latest_decision.summary %}
+      <div class="small" style="margin-bottom: 10px;">
+        {{ email.latest_decision.summary }}
+      </div>
     {% endif %}
+
+    <!-- SCORE -->
+    <div style="margin-bottom: 10px;">
+      <strong>Score</strong>
+      <div>{{ email.latest_decision.score }}</div>
+    </div>
+
+    <!-- EXECUTION MODE -->
+    <div style="margin-bottom: 10px;">
+      <strong>Execution</strong>
+      <div>
+        {% if email.latest_decision.applied_automatically %}
+          <span class="badge badge-auto">Automatic</span>
+        {% else %}
+          <span class="badge badge-manual">Manual</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- APPROVAL -->
+    <div style="margin-bottom: 10px;">
+      <strong>Requires approval</strong>
+      <div>{{ email.latest_decision.requires_approval|yesno:"Yes,No" }}</div>
+    </div>
+
+    <!-- RISK FLAGS -->
+    <div style="margin-top: 12px;">
+      <strong class="small">Risk</strong>
+
+      <div class="chips" style="margin-top: 6px;">
+        {% if email.latest_decision.risk_flags %}
+          {% for flag in email.latest_decision.risk_flags %}
+            <span class="chip-risk">{{ flag }}</span>
+          {% endfor %}
+        {% else %}
+          <span class="badge badge-linked">No risk</span>
+        {% endif %}
+      </div>
+    </div>
+
+  {% else %}
+    <p class="small">No decision available.</p>
+  {% endif %}
+
 </div>

@@ -63,6 +63,8 @@
 │   │   │   ├── 0006_outboundemail_source_inbound.py
 │   │   │   ├── 0007_inboundinterpretation_inbounddecision.py
 │   │   │   ├── 0008_inbounddecision_automation_fields.py
+│   │   │   ├── 0008_outboundemail_source_recommendation.py
+│   │   │   ├── 0009_merge_0008_emailing_branches.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── 0001_initial.cpython-312.pyc
@@ -73,6 +75,8 @@
 │   │   │       ├── 0006_outboundemail_source_inbound.cpython-312.pyc
 │   │   │       ├── 0007_inboundinterpretation_inbounddecision.cpython-312.pyc
 │   │   │       ├── 0008_inbounddecision_automation_fields.cpython-312.pyc
+│   │   │       ├── 0008_outboundemail_source_recommendation.cpython-312.pyc
+│   │   │       ├── 0009_merge_0008_emailing_branches.cpython-312.pyc
 │   │   │       ├── 00XX_inbounddecision_apply_fields.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
@@ -396,6 +400,7 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
+├── cleartmp.sh
 ├── config
 │   ├── asgi.py
 │   ├── celery.py
@@ -411,6 +416,10 @@
 │   └── wsgi.py
 ├── db.sqlite3
 ├── debug_ui_foundation.txt
+├── dev_verify_execute_contact_strategy.py
+├── dev_verify_execute_followup.py
+├── dev_verify_execute_reply_strategy.py
+├── dev_verify_execute_unified.py
 ├── docker
 ├── docker-compose.yml
 ├── Dockerfile
@@ -485,7 +494,8 @@
 ├── templates
 │   ├── base.html
 │   ├── dashboard
-│   │   └── home.html
+│   │   ├── home.html
+│   │   └── index.html
 │   ├── emailing
 │   │   ├── email_detail.html.legacy
 │   │   ├── email_list.html.legacy
@@ -518,10 +528,19 @@
 │       └── list.html
 ├── tests
 ├── tmp
-│   ├── manage_check_recommendations_refactor.txt
-│   ├── recommendations_urls_check.txt
-│   ├── recommendations_views_functions_check.txt
-│   └── runserver_recommendations_refactor.log
+│   ├── cockpit_inspect.txt
+│   ├── cockpit_routes.txt
+│   ├── CURRENT_TREE.md
+│   ├── dev_verify_execute_contact_strategy.txt
+│   ├── dev_verify_execute_followup.txt
+│   ├── dev_verify_execute_reply_strategy.txt
+│   ├── dev_verify_execute_unified.txt
+│   ├── final_check.txt
+│   ├── final_check_v2.txt
+│   ├── quick_check.txt
+│   ├── runserver.log
+│   ├── verify_execute_followup_phase2_direct.py
+│   └── views_recovered_preview.py
 └── ui_repair_input.txt
 
-107 directories, 418 files
+107 directories, 437 files

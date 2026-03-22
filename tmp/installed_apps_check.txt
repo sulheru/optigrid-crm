@@ -1,0 +1,81 @@
+23:INSTALLED_APPS = [
+24-    "apps.lead_research",
+25-    "django.contrib.admin",
+26-    "django.contrib.auth",
+27-    "django.contrib.contenttypes",
+28-    "django.contrib.sessions",
+29-    "django.contrib.messages",
+30-    "django.contrib.staticfiles",
+31-    "rest_framework",
+32-    "apps.companies",
+33-    "apps.contacts",
+34-    "apps.emailing",
+35-    "apps.facts",
+36-    "apps.inferences",
+37-    "apps.updates",
+38-    "apps.recommendations",
+39-    "apps.tasks",
+40-    "apps.opportunities",
+41-    "apps.events",
+42-    'apps.strategy',
+43-]
+44-
+45-MIDDLEWARE = [
+46-    "django.middleware.security.SecurityMiddleware",
+47-    "django.contrib.sessions.middleware.SessionMiddleware",
+48-    "django.middleware.common.CommonMiddleware",
+49-    "django.middleware.csrf.CsrfViewMiddleware",
+50-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+51-    "django.contrib.messages.middleware.MessageMiddleware",
+52-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+53-]
+54-
+55-ROOT_URLCONF = "config.urls"
+56-
+57-TEMPLATES = [
+58-    {
+59-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+60-        "DIRS": [BASE_DIR / "templates"],
+61-        "APP_DIRS": True,
+62-        "OPTIONS": {
+63-            "context_processors": [
+64-                "django.template.context_processors.request",
+65-                "django.contrib.auth.context_processors.auth",
+66-                "django.contrib.messages.context_processors.messages",
+67-            ],
+68-        },
+69-    },
+70-]
+71-
+72-WSGI_APPLICATION = "config.wsgi.application"
+73-
+74-DATABASES = {
+75-    "default": {
+76-        "ENGINE": "django.db.backends.sqlite3",
+77-        "NAME": BASE_DIR / "db.sqlite3",
+78-    }
+79-}
+80-
+81-AUTH_PASSWORD_VALIDATORS = [
+82-    {
+83-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+84-    },
+85-    {
+86-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+87-    },
+88-    {
+89-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+90-    },
+91-    {
+92-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+93-    },
+94-]
+95-
+96-LANGUAGE_CODE = "en-us"
+97-TIME_ZONE = "UTC"
+98-USE_I18N = True
+99-USE_TZ = True
+100-
+101-STATIC_URL = "/static/"
+102-
+103-STATICFILES_DIRS = [

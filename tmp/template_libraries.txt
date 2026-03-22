@@ -1,0 +1,3 @@
+28 objects imported automatically (use -v 2 for details).
+
+['admin_list', 'admin_modify', 'admin_urls', 'auth', 'cache', 'i18n', 'l10n', 'label_filters', 'log', 'rest_framework', 'static', 'tz']

@@ -1,177 +1,321 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/inbox.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
-{% block title %}Inbox Intelligence · OptiGrid CRM{% endblock %}
-{% block content %}
+{% load label_filters %}
 
+{% block title %}Inbox · OptiGrid CRM{% endblock %}
+{% block page_title %}Inbox{% endblock %}
+{% block page_subtitle %}Inbound email intelligence and decision workflow{% endblock %}
+
+{% block extra_head %}
 <style>
-  .emails {
-    display: grid;
-    gap: 18px;
-  }
-
-  .subject {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-  }
-
-  .submeta {
+  .inbox-stack {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    color: var(--app-muted);
-    font-size: 14px;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .badges {
+  .inbox-hero {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-content: flex-start;
-    justify-content: flex-end;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid transparent;
-  }
-
-  .badge-new { background: #dbeafe; color: #2563eb; }
-  .badge-reviewed { background: #e2e8f0; color: #475569; }
-  .badge-linked { background: #dcfce7; color: #15803d; }
-
-  .badge-intent { background: #eef2ff; color: #4338ca; }
-  .badge-urgency-low { background: #e2e8f0; color: #475569; }
-  .badge-urgency-medium { background: #fef3c7; color: #b45309; }
-  .badge-urgency-high { background: #fee2e2; color: #b91c1c; }
-
-  .badge-sentiment-positive { background: #dcfce7; color: #15803d; }
-  .badge-sentiment-neutral { background: #e2e8f0; color: #475569; }
-  .badge-sentiment-negative { background: #fee2e2; color: #b91c1c; }
-
-  .badge-priority-low { background: #e2e8f0; color: #475569; }
-  .badge-priority-medium { background: #fef3c7; color: #b45309; }
-  .badge-priority-high { background: #fee2e2; color: #b91c1c; }
-
-  .badge-auto { background: #ede9fe; color: #7c3aed; }
-  .badge-manual { background: #e2e8f0; color: #475569; }
-  .badge-applied { background: #dcfce7; color: #15803d; }
-  .badge-suggested { background: #fef3c7; color: #b45309; }
-  .badge-dismissed { background: #fee2e2; color: #b91c1c; }
-
-  .section-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 16px;
-    margin-top: 14px;
+    flex-wrap: wrap;
   }
 
-  .meta-list {
+  .inbox-hero-text h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .inbox-hero-text p {
+    margin: 6px 0 0 0;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .inbox-summary {
     display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .inbox-stat {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  }
+
+  .inbox-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .inbox-stat-label {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .inbox-toolbar {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .inbox-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .inbox-tab {
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .inbox-tab:hover {
+    text-decoration: none;
+    background: #f1f5f9;
+    color: #111827;
+  }
+
+  .inbox-tab.active {
+    background: rgb(6, 217, 149);
+    border-color: rgb(6, 217, 149);
+    color: #fff;
+  }
+
+  .inbox-tab-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .inbox-tab:not(.active) .inbox-tab-count {
+    background: #e2e8f0;
+    color: #334155;
+  }
+
+  .inbox-filters {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
+    gap: 12px;
+    align-items: end;
+  }
+
+  .inbox-filter label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .inbox-filter select {
+    width: 100%;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .inbox-empty {
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    color: #6b7280;
     font-size: 14px;
   }
 
-  .meta-row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 10px;
-  }
-
-  .meta-row strong {
-    color: var(--app-muted);
-  }
-
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .chip-risk {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: #fee2e2;
-    color: #b91c1c;
-    font-size: 12px;
-    font-weight: 700;
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .actions form,
-  .actions a {
-    margin: 0;
-  }
-
-  .btn-success {
-    background: #15803d;
-    color: white;
-    border-color: #15803d;
-  }
-
-  .btn-success:hover {
-    background: #166534;
-    border-color: #166534;
-  }
-
-  .btn-danger {
-    background: #b91c1c;
-    color: white;
-    border-color: #b91c1c;
-  }
-
-  .btn-danger:hover {
-    background: #991b1b;
-    border-color: #991b1b;
-  }
-
-  .btn-light {
-    background: white;
-    color: var(--app-text);
-    border-color: var(--app-border);
-  }
-
-  .btn-light:hover {
-    background: #f9fafb;
-  }
-
-  @media (max-width: 900px) {
-    .section-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 1200px) {
+    .inbox-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .meta-row {
+    .inbox-filters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .inbox-summary,
+    .inbox-filters {
       grid-template-columns: 1fr;
     }
   }
 </style>
+{% endblock %}
 
-<div class="page">
-  {% include "emailing/partials/inbox_header.html" %}
-  {% include "emailing/partials/inbox_stats.html" %}
-  {% include "emailing/partials/inbox_filters.html" %}
+{% block content %}
+<div class="inbox-stack">
 
-  <div class="emails">
+  <section class="inbox-hero">
+    <div class="inbox-hero-text">
+      <h2>Inbox Intelligence</h2>
+      <p>Review inbound emails, understand AI interpretation, and execute the next best action.</p>
+    </div>
+
+    <div>
+      <a class="app-btn-secondary" href="/outbox/">
+        <i class="fa fa-send"></i>
+        <span>Open Outbox</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="inbox-summary">
+    <div class="inbox-stat">
+      <div class="inbox-stat-value">{{ counts.all }}</div>
+      <div class="inbox-stat-label">All emails</div>
+    </div>
+    <div class="inbox-stat">
+      <div class="inbox-stat-value">{{ counts.new }}</div>
+      <div class="inbox-stat-label">New</div>
+    </div>
+    <div class="inbox-stat">
+      <div class="inbox-stat-value">{{ counts.applied }}</div>
+      <div class="inbox-stat-label">Applied decisions</div>
+    </div>
+    <div class="inbox-stat">
+      <div class="inbox-stat-value">{{ counts.high_priority }}</div>
+      <div class="inbox-stat-label">High priority</div>
+    </div>
+    <div class="inbox-stat">
+      <div class="inbox-stat-value">{{ counts.with_risk }}</div>
+      <div class="inbox-stat-label">With risk</div>
+    </div>
+  </section>
+
+  <section class="inbox-toolbar">
+    <div class="inbox-tabs">
+      <a class="inbox-tab {% if status == 'all' %}active{% endif %}" href="/inbox/?status=all&reply_type={{ reply_type }}&decision_status={{ decision_status }}&automation={{ automation }}&priority={{ priority }}&risk={{ risk }}">
+        <span>All</span>
+        <span class="inbox-tab-count">{{ counts.all }}</span>
+      </a>
+      <a class="inbox-tab {% if status == 'new' %}active{% endif %}" href="/inbox/?status=new&reply_type={{ reply_type }}&decision_status={{ decision_status }}&automation={{ automation }}&priority={{ priority }}&risk={{ risk }}">
+        <span>New</span>
+        <span class="inbox-tab-count">{{ counts.new }}</span>
+      </a>
+      <a class="inbox-tab {% if status == 'reviewed' %}active{% endif %}" href="/inbox/?status=reviewed&reply_type={{ reply_type }}&decision_status={{ decision_status }}&automation={{ automation }}&priority={{ priority }}&risk={{ risk }}">
+        <span>Reviewed</span>
+        <span class="inbox-tab-count">{{ counts.reviewed }}</span>
+      </a>
+      <a class="inbox-tab {% if status == 'linked' %}active{% endif %}" href="/inbox/?status=linked&reply_type={{ reply_type }}&decision_status={{ decision_status }}&automation={{ automation }}&priority={{ priority }}&risk={{ risk }}">
+        <span>Linked</span>
+        <span class="inbox-tab-count">{{ counts.linked }}</span>
+      </a>
+    </div>
+
+    <form method="get" class="inbox-filters">
+      <input type="hidden" name="status" value="{{ status }}">
+
+      <div class="inbox-filter">
+        <label for="reply_type">Reply type</label>
+        <select name="reply_type" id="reply_type">
+          <option value="all" {% if reply_type == "all" %}selected{% endif %}>All</option>
+          <option value="interested" {% if reply_type == "interested" %}selected{% endif %}>{{ "interested"|reply_label }}</option>
+          <option value="needs_info" {% if reply_type == "needs_info" %}selected{% endif %}>{{ "needs_info"|reply_label }}</option>
+          <option value="not_now" {% if reply_type == "not_now" %}selected{% endif %}>{{ "not_now"|reply_label }}</option>
+          <option value="not_interested" {% if reply_type == "not_interested" %}selected{% endif %}>{{ "not_interested"|reply_label }}</option>
+          <option value="unclear" {% if reply_type == "unclear" %}selected{% endif %}>{{ "unclear"|reply_label }}</option>
+        </select>
+      </div>
+
+      <div class="inbox-filter">
+        <label for="decision_status">Decision</label>
+        <select name="decision_status" id="decision_status">
+          <option value="all" {% if decision_status == "all" %}selected{% endif %}>All</option>
+          <option value="suggested" {% if decision_status == "suggested" %}selected{% endif %}>{{ "suggested"|status_label }}</option>
+          <option value="applied" {% if decision_status == "applied" %}selected{% endif %}>{{ "applied"|status_label }}</option>
+          <option value="dismissed" {% if decision_status == "dismissed" %}selected{% endif %}>{{ "dismissed"|status_label }}</option>
+        </select>
+      </div>
+
+      <div class="inbox-filter">
+        <label for="automation">Automation</label>
+        <select name="automation" id="automation">
+          <option value="all" {% if automation == "all" %}selected{% endif %}>All</option>
+          <option value="auto" {% if automation == "auto" %}selected{% endif %}>Auto only</option>
+          <option value="manual" {% if automation == "manual" %}selected{% endif %}>Manual only</option>
+        </select>
+      </div>
+
+      <div class="inbox-filter">
+        <label for="priority">Priority</label>
+        <select name="priority" id="priority">
+          <option value="all" {% if priority == "all" %}selected{% endif %}>All</option>
+          <option value="high" {% if priority == "high" %}selected{% endif %}>High</option>
+          <option value="medium" {% if priority == "medium" %}selected{% endif %}>Medium</option>
+          <option value="low" {% if priority == "low" %}selected{% endif %}>Low</option>
+        </select>
+      </div>
+
+      <div class="inbox-filter">
+        <label for="risk">Risk</label>
+        <select name="risk" id="risk">
+          <option value="all" {% if risk == "all" %}selected{% endif %}>All</option>
+          <option value="with_risk" {% if risk == "with_risk" %}selected{% endif %}>With risk</option>
+          <option value="without_risk" {% if risk == "without_risk" %}selected{% endif %}>Without risk</option>
+        </select>
+      </div>
+
+      <div class="inbox-filter">
+        <button type="submit" class="app-btn-primary" style="height:42px; width:100%;">
+          <i class="fa fa-filter"></i>
+          <span>Apply</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="inbox-list">
     {% for email in emails %}
       {% include "emailing/partials/inbox_email_card.html" with email=email %}
     {% empty %}
-      {% include "emailing/partials/inbox_empty.html" %}
+      <div class="inbox-empty">
+        No inbound emails found with the current filters.
+      </div>
     {% endfor %}
-  </div>
-</div>
+  </section>
 
+</div>
 {% endblock %}

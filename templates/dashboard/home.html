@@ -1,243 +1,590 @@
 {% extends "base.html" %}
-{% block title %}OptiGrid CRM · Dashboard{% endblock %}
-{% block content %}
+{% load label_filters %}
 
+{% block title %}Dashboard · OptiGrid CRM{% endblock %}
+{% block page_title %}AI Command Center{% endblock %}
+{% block page_subtitle %}Centro de mando operativo para decisiones, señales y ejecución comercial{% endblock %}
+
+{% block extra_head %}
 <style>
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
-
-  .stat-card {
-    padding: 18px;
-  }
-
-  .stat-value {
-    font-size: 30px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .stat-label {
-    font-size: 14px;
-    color: var(--app-muted);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
+  .command-stack {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
   }
 
-  .list {
+  .command-grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+  }
+
+  .command-side {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
   }
 
-  .row {
-    border: 1px solid var(--app-border);
-    border-radius: 12px;
-    padding: 14px;
-    background: #fcfcfd;
-  }
-
-  .row-title {
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .row-meta {
-    color: var(--app-muted);
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-
-  .row-text {
-    margin-bottom: 10px;
-  }
-
-  .row-note {
-    font-size: 12px;
-    color: var(--app-muted);
-    margin-bottom: 10px;
-  }
-
-  .actions {
+  .section-toolbar {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .section-toolbar .app-section-title {
+    margin-bottom: 0;
+  }
+
+  .section-toolbar a {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(6, 217, 149);
+    text-decoration: none;
+  }
+
+  .section-toolbar a:hover {
+    text-decoration: underline;
+  }
+
+  .command-list,
+  .signal-list,
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .command-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  }
+
+  .command-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .command-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.35;
+  }
+
+  .command-subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .command-text {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #374151;
+  }
+
+  .command-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
-  .stack {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  .command-actions form {
+    margin: 0;
   }
 
-  @media (max-width: 980px) {
-    .stats { grid-template-columns: 1fr 1fr; }
-    .grid { grid-template-columns: 1fr; }
+  .priority-badge,
+  .signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .priority-high {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+
+  .priority-medium {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fdba74;
+  }
+
+  .priority-low {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #bbf7d0;
+  }
+
+  .signal-shell {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .signal-column {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+  }
+
+  .signal-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .signal-column-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .signal-count {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #111827;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .signal-item {
+    border-top: 1px solid #eef2f7;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .signal-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .signal-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+  }
+
+  .signal-item-meta {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .mini-card,
+  .activity-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .mini-card-title,
+  .activity-card-title {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .mini-card-meta,
+  .activity-card-meta {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .mini-card-text,
+  .activity-card-note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+
+  .queue-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 16px;
+  }
+
+  .queue-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid #eef2f7;
+  }
+
+  .queue-row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .queue-label {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .queue-value {
+    font-size: 18px;
+    color: #111827;
+    font-weight: 700;
+  }
+
+  .empty-panel {
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    background: #fff;
+    padding: 24px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  @media (max-width: 1200px) {
+    .command-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .signal-shell {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
+{% endblock %}
 
-<div class="page">
-  <div class="page-header">
-    <div class="title-block">
-      <h1>OptiGrid CRM</h1>
-      <p>Dashboard operativo del pipeline IA-first</p>
+{% block content %}
+<div class="command-stack">
+
+  <section class="app-kpi-grid">
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">{{ total_inbound_emails }}</div>
+      <div class="app-kpi-label">Inbound emails</div>
     </div>
-  </div>
-
-  <div class="stats">
-    <div class="card stat-card"><div class="stat-value">{{ total_inbound_emails }}</div><div class="stat-label">Inbound emails</div></div>
-    <div class="card stat-card"><div class="stat-value">{{ total_outbound_emails }}</div><div class="stat-label">Outbound emails</div></div>
-    <div class="card stat-card"><div class="stat-value">{{ total_recommendations }}</div><div class="stat-label">Recommendations</div></div>
-    <div class="card stat-card"><div class="stat-value">{{ total_opportunities }}</div><div class="stat-label">Opportunities</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h2>AI Recommended Actions</h2>
-      <a href="/recommendations/">Ver recommendations</a>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">{{ total_outbound_emails }}</div>
+      <div class="app-kpi-label">Outbound emails</div>
     </div>
-    <div class="card-body">
-      {% if top_actions %}
-        <div class="list">
-          {% for action in top_actions %}
-            <div class="row">
-              <div class="row-title">{{ action.recommendation_type }}</div>
-              <div class="row-meta">
-                confidence: {{ action.confidence }} · status: {{ action.status }}
-              </div>
-              <div class="row-text">
-                {{ action.recommendation_text|truncatechars:180 }}
-              </div>
-              <div class="row-note">
-                Acción real: {{ action.primary_action_label }}
-              </div>
-              <div class="actions">
-                <a href="{{ action.inspect_url }}" class="btn btn-secondary">Inspect</a>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">{{ total_recommendations }}</div>
+      <div class="app-kpi-label">Recommendations</div>
+    </div>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">{{ total_opportunities }}</div>
+      <div class="app-kpi-label">Active opportunities</div>
+    </div>
+  </section>
 
-                {% if action.action_enabled %}
-                  <form method="post" action="{{ action.primary_action_url }}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Execute</button>
-                  </form>
-                {% else %}
-                  <button type="button" class="btn btn-secondary" disabled>No Action</button>
-                {% endif %}
+  <section class="command-grid">
+    <div class="command-stack">
 
-                <form method="post" action="{{ action.dismiss_url }}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-secondary">Dismiss</button>
-                </form>
-              </div>
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Act Now</h2>
+              <div class="app-section-subtitle">Acciones IA más relevantes para ejecutar en este momento</div>
             </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="empty">No AI actions available.</div>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="card-header">
-        <h2>Inbound recientes</h2>
-        <a href="/inbox/">Ver inbox</a>
-      </div>
-      <div class="card-body">
-        {% if recent_inbound_emails %}
-          <div class="list">
-            {% for email in recent_inbound_emails %}
-              <div class="row">
-                <div class="row-title">{{ email.subject|default:"(sin asunto)" }}</div>
-                <div class="row-meta">
-                  From: {{ email.from_email|default:"—" }} ·
-                  {{ email.received_at|default:email.created_at|date:"Y-m-d H:i" }}
-                </div>
-                <div>{{ email.body|truncatechars:160 }}</div>
-              </div>
-            {% endfor %}
+            <a href="/recommendations/">Open recommendations</a>
           </div>
-        {% else %}
-          <div class="empty">No hay inbound emails todavía.</div>
-        {% endif %}
-      </div>
-    </div>
 
-    <div class="stack">
-      <div class="card">
-        <div class="card-header">
-          <h2>Outbound recientes</h2>
-          <a href="/outbox/">Ver outbox</a>
-        </div>
-        <div class="card-body">
-          {% if recent_outbound_emails %}
-            <div class="list">
-              {% for email in recent_outbound_emails %}
-                <div class="row">
-                  <div class="row-title">{{ email.subject|default:"(sin asunto)" }}</div>
-                  <div class="row-meta">
-                    To: {{ email.to_email|default:"—" }} · {{ email.status }}
+          {% if top_actions %}
+            <div class="command-list">
+              {% for action in top_actions %}
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">{{ action.recommendation_type|recommendation_label }}</h3>
+                      <div class="command-subtitle">
+                        Score: {{ action.priority_score|default:"—" }} ·
+                        Confidence: {{ action.confidence|default:"—" }} ·
+                        Status: {{ action.status|status_label }}
+                      </div>
+                    </div>
+
+                    {% if action.priority_score >= 70 %}
+                      <span class="priority-badge priority-high">Act now</span>
+                    {% elif action.priority_score >= 40 %}
+                      <span class="priority-badge priority-medium">Review soon</span>
+                    {% else %}
+                      <span class="priority-badge priority-low">Backlog</span>
+                    {% endif %}
                   </div>
-                  <div>{{ email.body|truncatechars:140 }}</div>
-                </div>
+
+                  <div class="command-text">
+                    {{ action.recommendation_text|default:"No description available."|truncatechars:220 }}
+                  </div>
+
+                  <div class="command-actions">
+                    <form method="post" action="/recommendations/{{ action.id }}/execute/">
+                      {% csrf_token %}
+                      <button type="submit" class="app-btn-primary">
+                        <i class="fa fa-play"></i>
+                        <span>Execute</span>
+                      </button>
+                    </form>
+
+                    <a href="/recommendations/" class="app-btn-secondary">
+                      <i class="fa fa-search"></i>
+                      <span>Inspect</span>
+                    </a>
+
+                    <form method="post" action="/recommendations/{{ action.id }}/dismiss/">
+                      {% csrf_token %}
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
               {% endfor %}
             </div>
           {% else %}
-            <div class="empty">No hay outbound emails todavía.</div>
+            <div class="empty-panel">No hay acciones IA pendientes.</div>
           {% endif %}
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h2>Recommendations recientes</h2>
-          <a href="/recommendations/">Ver recommendations</a>
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Operational Signals</h2>
+              <div class="app-section-subtitle">Prioridad viva del sistema por nivel de urgencia</div>
+            </div>
+          </div>
+
+          <div class="signal-shell">
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">🔥 High</h3>
+                <span class="signal-count">{{ urgency_high|length }}</span>
+              </div>
+
+              {% if urgency_high %}
+                {% for r in urgency_high %}
+                  <div class="signal-item">
+                    <div class="signal-item-title">{{ r.recommendation_type|recommendation_label }}</div>
+                    <div class="signal-item-meta">
+                      Score: {{ r.priority_score|default:"—" }} · Confidence: {{ r.confidence|default:"—" }}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="signal-item-meta">No high urgency signals.</div>
+              {% endif %}
+            </div>
+
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">⚠️ Medium</h3>
+                <span class="signal-count">{{ urgency_medium|length }}</span>
+              </div>
+
+              {% if urgency_medium %}
+                {% for r in urgency_medium %}
+                  <div class="signal-item">
+                    <div class="signal-item-title">{{ r.recommendation_type|recommendation_label }}</div>
+                    <div class="signal-item-meta">
+                      Score: {{ r.priority_score|default:"—" }} · Confidence: {{ r.confidence|default:"—" }}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="signal-item-meta">No medium urgency signals.</div>
+              {% endif %}
+            </div>
+
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">🟢 Low</h3>
+                <span class="signal-count">{{ urgency_low|length }}</span>
+              </div>
+
+              {% if urgency_low %}
+                {% for r in urgency_low %}
+                  <div class="signal-item">
+                    <div class="signal-item-title">{{ r.recommendation_type|recommendation_label }}</div>
+                    <div class="signal-item-meta">
+                      Score: {{ r.priority_score|default:"—" }} · Confidence: {{ r.confidence|default:"—" }}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="signal-item-meta">No low urgency signals.</div>
+              {% endif %}
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          {% if recent_recommendations %}
-            <div class="list">
-              {% for r in recent_recommendations %}
-                <div class="row">
-                  <div class="row-title">{{ r.recommendation_type }}</div>
-                  <div class="row-meta">{{ r.status }} · {{ r.confidence }}</div>
-                  <div>{{ r.recommendation_text|truncatechars:160 }}</div>
-                </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">System Activity</h2>
+              <div class="app-section-subtitle">Eventos recientes del motor comercial</div>
+            </div>
+          </div>
+
+          {% if recent_activity %}
+            <div class="activity-list">
+              {% for event in recent_activity %}
+                <article class="activity-card">
+                  <h3 class="activity-card-title">{{ event.event_type|default:"activity_event" }}</h3>
+                  <div class="activity-card-meta">
+                    {{ event.entity_type|default:"entity" }} #{{ event.entity_id|default:"—" }} ·
+                    {{ event.created_at|date:"Y-m-d H:i" }}
+                  </div>
+                  {% if event.metadata %}
+                    <div class="activity-card-note">{{ event.metadata }}</div>
+                  {% endif %}
+                </article>
               {% endfor %}
             </div>
           {% else %}
-            <div class="empty">No hay recommendations recientes.</div>
+            <div class="empty-panel">No hay actividad reciente todavía.</div>
           {% endif %}
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h2>Opportunities recientes</h2>
-          <a href="/opportunities/prioritized/">Ver opportunities</a>
-        </div>
-        <div class="card-body">
-          {% if recent_opportunities %}
-            <div class="list">
-              {% for o in recent_opportunities %}
-                <div class="row">
-                  <div class="row-title">{{ o.title }}</div>
-                  <div class="row-meta">{{ o.company_name }} · {{ o.stage }}</div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="empty">No hay opportunities recientes.</div>
-          {% endif %}
-        </div>
-      </div>
     </div>
-  </div>
-</div>
 
+    <div class="command-side">
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Inbound Signals</h2>
+              <div class="app-section-subtitle">Últimos correos entrantes que pueden requerir acción</div>
+            </div>
+            <a href="/inbox/">Open inbox</a>
+          </div>
+
+          {% if recent_inbound_emails %}
+            <div class="signal-list">
+              {% for email in recent_inbound_emails %}
+                <article class="mini-card">
+                  <h3 class="mini-card-title">{{ email.subject|default:"(sin asunto)" }}</h3>
+                  <div class="mini-card-meta">
+                    From: {{ email.from_email|default:"—" }} ·
+                    {{ email.received_at|default:email.created_at|date:"Y-m-d H:i" }}
+                  </div>
+                  <div class="mini-card-text">
+                    {{ email.body|default:""|truncatechars:140 }}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-panel">No inbound signals yet.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Outbound Queue</h2>
+              <div class="app-section-subtitle">Cola reciente de borradores y envíos</div>
+            </div>
+            <a href="/outbox/">Open outbox</a>
+          </div>
+
+          {% if recent_outbound_emails %}
+            <div class="signal-list">
+              {% for email in recent_outbound_emails %}
+                <article class="mini-card">
+                  <h3 class="mini-card-title">{{ email.subject|default:"(sin asunto)" }}</h3>
+                  <div class="mini-card-meta">
+                    To: {{ email.to_email|default:"—" }} · Status: {{ email.status|status_label }}
+                  </div>
+                  <div class="mini-card-text">
+                    {{ email.body|default:""|truncatechars:140 }}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-panel">No outbound queue yet.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Execution Queue</h2>
+              <div class="app-section-subtitle">Resumen rápido de presión operativa actual</div>
+            </div>
+          </div>
+
+          <div class="queue-card">
+            <div class="queue-row">
+              <div class="queue-label">High urgency actions</div>
+              <div class="queue-value">{{ urgency_high|length }}</div>
+            </div>
+            <div class="queue-row">
+              <div class="queue-label">Medium urgency actions</div>
+              <div class="queue-value">{{ urgency_medium|length }}</div>
+            </div>
+            <div class="queue-row">
+              <div class="queue-label">Low urgency actions</div>
+              <div class="queue-value">{{ urgency_low|length }}</div>
+            </div>
+            <div class="queue-row">
+              <div class="queue-label">Recent inbound tracked</div>
+              <div class="queue-value">{{ recent_inbound_emails|length }}</div>
+            </div>
+            <div class="queue-row">
+              <div class="queue-label">Recent outbound tracked</div>
+              <div class="queue-value">{{ recent_outbound_emails|length }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
 {% endblock %}

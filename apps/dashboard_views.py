@@ -1,8 +1,12 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/dashboard_views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.shortcuts import render
 
 from apps.emailing.models import InboundEmail, OutboundEmail
+from apps.events.models import ActivityEvent
 from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.priority import compute_priority_score
 
 
 def dashboard_home_view(request):
@@ -19,73 +23,26 @@ def dashboard_home_view(request):
         Opportunity.objects.order_by("-updated_at", "-id")[:5]
     )
 
-    top_actions_raw = list(
-        AIRecommendation.objects.order_by("-confidence", "-id")[:5]
+    recommendations = list(
+        AIRecommendation.objects.filter(status="new")
     )
 
-    top_actions = []
-    for recommendation in top_actions_raw:
-        recommendation_type = recommendation.recommendation_type or "recommendation"
+    scored = []
+    for recommendation in recommendations:
+        recommendation.priority_score = compute_priority_score(recommendation)
+        scored.append(recommendation)
 
-        if recommendation_type == "followup":
-            primary_action_label = "Send Follow-up"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
+    scored.sort(key=lambda x: x.priority_score, reverse=True)
 
-        elif recommendation_type == "reply_strategy":
-            primary_action_label = "Prepare Reply"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
+    top_actions = scored[:5]
 
-        elif recommendation_type == "contact_strategy":
-            primary_action_label = "Start Contact"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
+    high_urgency = [r for r in scored if r.priority_score >= 70][:5]
+    medium_urgency = [r for r in scored if 40 <= r.priority_score < 70][:5]
+    low_urgency = [r for r in scored if r.priority_score < 40][:5]
 
-        elif recommendation_type in ["next_action", "qualification"]:
-            primary_action_label = "Create Task"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
-
-        elif recommendation_type == "opportunity_review":
-            primary_action_label = "Promote to Opportunity"
-            primary_action_url = f"/recommendations/{recommendation.id}/promote-opportunity/"
-            action_enabled = True
-
-        elif recommendation_type in ["pricing_strategy", "timing_strategy"]:
-            primary_action_label = "Review Strategy"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
-
-        elif recommendation_type == "risk_flag":
-            primary_action_label = "Review Risk"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
-
-        elif recommendation_type == "hold":
-            primary_action_label = "No Action"
-            primary_action_url = ""
-            action_enabled = False
-
-        else:
-            primary_action_label = "Create Task"
-            primary_action_url = f"/recommendations/{recommendation.id}/create-task/"
-            action_enabled = True
-
-        top_actions.append(
-            {
-                "id": recommendation.id,
-                "recommendation_type": recommendation_type,
-                "status": recommendation.status or "—",
-                "confidence": recommendation.confidence if recommendation.confidence is not None else "—",
-                "recommendation_text": recommendation.recommendation_text,
-                "inspect_url": "/recommendations/",
-                "primary_action_label": primary_action_label,
-                "primary_action_url": primary_action_url,
-                "action_enabled": action_enabled,
-                "dismiss_url": f"/recommendations/{recommendation.id}/dismiss/",
-            }
-        )
+    recent_activity = list(
+        ActivityEvent.objects.order_by("-created_at")[:10]
+    )
 
     context = {
         "total_inbound_emails": InboundEmail.objects.count(),
@@ -97,5 +54,10 @@ def dashboard_home_view(request):
         "recent_recommendations": recent_recommendations,
         "recent_opportunities": recent_opportunities,
         "top_actions": top_actions,
+        "urgency_high": high_urgency,
+        "urgency_medium": medium_urgency,
+        "urgency_low": low_urgency,
+        "recent_activity": recent_activity,
     }
+
     return render(request, "dashboard/home.html", context)

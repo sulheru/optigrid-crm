@@ -1,50 +1,46 @@
-# HANDOFF_CURRENT
+# HANDOFF CURRENT
 
-## Proyecto
-OptiGrid CRM — AI Commercial Operating System
+## Estado actual
+OptiGrid CRM ya tiene una capa visual V2 funcional y coherente para las vistas principales de operación.
 
-## Estado operativo actual
-El sistema ya dispone de una capa de ejecución funcional sobre recommendations.
+## Vistas estabilizadas
+- Dashboard
+- Inbox
+- Outbox
 
-### Ejecutables reales confirmados
+## Base visual
+- `templates/base.html` actúa como shell compartido
+- Sidebar y topbar ya consolidados
+- Design system ligero aplicado sobre el shell
+- Assets servidos desde `static/app_ui/`
+
+## Capa semántica
+Se ha introducido una capa de labels desacoplada del backend:
+
+- `apps/core/labels.py`
+- `apps/core/templatetags/label_filters.py`
+
+Esto evita exponer directamente strings internos como:
 - `followup`
-- `contact_strategy`
 - `reply_strategy`
+- `contact_strategy`
+- `advance_opportunity`
 
-### Endpoint unificado
-Existe y funciona:
+## Punto técnico importante
+`label_filters` ya está reconocido por Django. La librería aparece registrada en template libraries, por lo que el problema de carga de filtros quedó resuelto.
 
-`/recommendations/<id>/execute/`
+## Deuda principal restante
+La sección con más deuda ahora mismo es:
+- `templates/recommendations/list.html`
 
-Su responsabilidad actual es delegar según `recommendation_type`.
+Ahí todavía quedan:
+- lógica visual hardcodeada
+- labels internas
+- estilo no totalmente alineado con V2
 
-## Lo importante que queda estable
-- `AIRecommendation.status` incluye y usa `executed`
-- `execute_followup` evita re-ejecuciones y reutiliza drafts
-- `contact_strategy` crea o reutiliza `first_contact`
-- `reply_strategy` crea o reutiliza `followup`
-- la segunda ejecución no genera duplicados en los flujos ya validados
-
-## Decisiones tomadas en esta sesión
-1. No forzar todavía una trazabilidad completa multi-origen sobre `OutboundEmail.source_recommendation`.
-2. Mantener `source_recommendation` en modelo, pero no basar toda la lógica en ese campo.
-3. Priorizar estabilidad operativa e idempotencia antes que una capa completa de event sourcing.
-4. Pasar el siguiente foco al cockpit:
-   - quitar mapping manual del dashboard
-   - usar execute unificado como source of truth
-   - añadir urgency panel
-   - añadir activity feed
-
-## Riesgos / cautelas
-- No sobrescribir `apps/recommendations/views.py` sin inspeccionar primero el fichero completo.
-- En sesiones futuras, cualquier output de verificación debe ir a:
-  `~/OptiGrid_Project/og_pilot/optigrid_crm/tmp/`
-  y mostrarse con `cat` inmediatamente después.
-- El dashboard actual aún no está totalmente desacoplado del mapping manual.
-
-## Siguiente foco recomendado
-Cockpit V2C:
-1. simplificar dashboard para usar solo `/recommendations/<id>/execute/`
-2. urgency panel basado en `InboundInterpretation.urgency` + recommendations nuevas
-3. modelo mínimo `ActivityEvent`
-4. activity feed visible en dashboard
+## Recomendación para siguiente sesión
+Entrar directamente a:
+1. inspección de `templates/recommendations/list.html`
+2. refactor visual completo
+3. integración con `label_filters`
+4. opcional: iconografía y colores por tipo

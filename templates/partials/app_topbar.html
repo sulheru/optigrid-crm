@@ -1,0 +1,25 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/partials/app_topbar.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+<header class="app-topbar">
+  <div class="app-topbar-left">
+    <button type="button" class="app-nav-toggle js-nav-toggle" aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="app-topbar-titles">
+      <h1 class="app-page-title">
+        {% block page_title %}OptiGrid CRM{% endblock %}
+      </h1>
+      <div class="app-page-subtitle">
+        {% block page_subtitle %}AI Commercial Operating System{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  <div class="app-topbar-right">
+    <div class="app-topbar-status">
+      <span class="status-dot"></span>
+      <span>System active</span>
+    </div>
+  </div>
+</header>

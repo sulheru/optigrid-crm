@@ -3,19 +3,14 @@
 from django.db import models
 
 
-class Event(models.Model):
-
+class ActivityEvent(models.Model):
     event_type = models.CharField(max_length=100)
+    entity_type = models.CharField(max_length=100, null=True, blank=True)
+    entity_id = models.IntegerField(null=True, blank=True)
 
-    aggregate_type = models.CharField(max_length=100)
-
-    aggregate_id = models.CharField(max_length=100)
-
-    payload = models.JSONField()
-
-    triggered_by_type = models.CharField(max_length=50)
-
-    triggered_by_id = models.CharField(max_length=100, null=True, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.event_type} ({self.entity_type}:{self.entity_id})"

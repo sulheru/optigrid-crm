@@ -1,44 +1,63 @@
 {# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_ai_panel.html #}
 {# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div class="panel">
-    <h3>AI interpretation</h3>
+<div>
 
-    {% if email.ai_interpretation %}
-        <div class="chips" style="margin-bottom: 10px;">
-            <span class="badge badge-intent">Intent: {{ email.ai_interpretation.intent }}</span>
+  {% if email.ai_interpretation %}
 
-            {% if email.ai_interpretation.urgency == "high" %}
-                <span class="badge badge-urgency-high">Urgency: high</span>
-            {% elif email.ai_interpretation.urgency == "low" %}
-                <span class="badge badge-urgency-low">Urgency: low</span>
-            {% else %}
-                <span class="badge badge-urgency-medium">Urgency: medium</span>
-            {% endif %}
+    <!-- SIGNALS -->
+    <div class="chips" style="margin-bottom: 10px;">
+      <span class="badge badge-intent">{{ email.ai_interpretation.intent }}</span>
 
-            {% if email.ai_interpretation.sentiment == "positive" %}
-                <span class="badge badge-sentiment-positive">Sentiment: positive</span>
-            {% elif email.ai_interpretation.sentiment == "negative" %}
-                <span class="badge badge-sentiment-negative">Sentiment: negative</span>
-            {% else %}
-                <span class="badge badge-sentiment-neutral">Sentiment: neutral</span>
-            {% endif %}
-        </div>
+      {% if email.ai_interpretation.urgency == "high" %}
+        <span class="badge badge-urgency-high">High urgency</span>
+      {% elif email.ai_interpretation.urgency == "low" %}
+        <span class="badge badge-urgency-low">Low urgency</span>
+      {% else %}
+        <span class="badge badge-urgency-medium">Medium urgency</span>
+      {% endif %}
 
-        <div class="meta-list">
-            <div class="meta-row">
-                <strong>Recommended action</strong>
-                <span>{{ email.ai_interpretation.recommended_action }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Confidence</strong>
-                <span>{{ email.ai_interpretation.confidence }}</span>
-            </div>
-            <div class="meta-row">
-                <strong>Rationale</strong>
-                <span>{{ email.ai_interpretation.rationale|default:"-" }}</span>
-            </div>
-        </div>
-    {% else %}
-        <p class="small">No interpretation available yet.</p>
+      {% if email.ai_interpretation.sentiment == "positive" %}
+        <span class="badge badge-sentiment-positive">Positive</span>
+      {% elif email.ai_interpretation.sentiment == "negative" %}
+        <span class="badge badge-sentiment-negative">Negative</span>
+      {% else %}
+        <span class="badge badge-sentiment-neutral">Neutral</span>
+      {% endif %}
+    </div>
+
+    <!-- MAIN RECOMMENDATION -->
+    <div style="margin-bottom: 10px;">
+      <strong>Recommended action</strong>
+      <div style="margin-top: 6px; font-size: 14px;">
+        {{ email.ai_interpretation.recommended_action }}
+      </div>
+    </div>
+
+    <!-- CONFIDENCE BAR -->
+    <div style="margin-bottom: 10px;">
+      <strong>Confidence</strong>
+      <div style="margin-top: 6px; background: #f1f5f9; border-radius: 6px; height: 8px;">
+        <div style="
+          width: {{ email.ai_interpretation.confidence|default:0 }}%;
+          background: var(--app-primary);
+          height: 100%;
+          border-radius: 6px;
+        "></div>
+      </div>
+      <div class="small" style="margin-top: 4px;">
+        {{ email.ai_interpretation.confidence }}%
+      </div>
+    </div>
+
+    <!-- RATIONALE -->
+    {% if email.ai_interpretation.rationale %}
+      <div class="small" style="color: var(--app-muted);">
+        {{ email.ai_interpretation.rationale }}
+      </div>
     {% endif %}
+
+  {% else %}
+    <p class="small">No AI interpretation available.</p>
+  {% endif %}
+
 </div>

@@ -1,52 +1,47 @@
-# SESSION_LOG
-
-## Fecha
-2026-03-22
+# SESSION LOG — 2026-03-22
 
 ## Resumen
-Sesión centrada en robustez de ejecución de recommendations y consolidación de la capa execute.
+Sesión centrada en la reconstrucción completa de la capa visual compartida del sistema.
 
 ## Trabajo realizado
 
-### 1. Diagnóstico real del flujo
-- Se inspeccionaron:
-  - `apps/recommendations/views.py`
-  - `apps/emailing/models.py`
-  - `apps/emailing/views.py`
-- Se confirmó:
-  - existencia de `executed` en `AIRecommendation`
-  - existencia de duplicados históricos en followups
-  - necesidad de idempotencia real en execute
+### 1. App shell
+- creación/consolidación de `templates/base.html`
+- sidebar compartida
+- topbar compartida
+- integración de assets visuales
 
-### 2. Fase 1 — Robustez
-- Se estabilizó `execute_followup`
-- Se evitó duplicación en re-ejecución
-- Se consolidó el estado `executed`
+### 2. Static
+- reorganización de assets bajo `static/app_ui/`
+- resolución de problemas de serving static
+- validación de carga de CSS/JS/logo
 
-### 3. Fase 2 — Extensión de execute
-- Se añadió soporte real para `contact_strategy`
-- Se añadió soporte real para `reply_strategy`
+### 3. Dashboard
+- refactor visual
+- integración con shell
+- mejora de presentación de acciones, señales y actividad
 
-### 4. Execute unificado
-- Se creó endpoint `/recommendations/<id>/execute/`
-- Se mantuvieron endpoints específicos por compatibilidad
-- Se validó routing correcto del execute unificado
+### 4. Outbox
+- refactor completo
+- filtros por estado y tipo
+- bulk actions
+- diseño coherente con shell
 
-### 5. Verificaciones
-- Se corrigieron varios problemas de proceso durante la sesión:
-  - tests con `testserver`
-  - pérdida accidental de imports
-  - sobrescritura accidental de `views.py`
-  - restauración desde git
-- Se cerró la sesión con el sistema estable otra vez
+### 5. Inbox
+- refactor completo
+- simplificación estructural
+- mejora de cards operativas
+- integración del flujo:
+  Email → AI Interpretation → Decision Engine → Actions
 
-### 6. Cockpit
-- Se inspeccionó dashboard actual
-- Se confirmó que todavía usa mapping manual de acciones
-- Se definió como siguiente objetivo:
-  - urgency panel
-  - activity feed
-  - integración completa con execute unificado
+### 6. Label system
+- creación de capa centralizada de labels
+- creación de template filters
+- integración en templates principales
+- corrección de carga de `label_filters`
 
-## Resultado final
-El sistema termina la sesión con una capa execute backend mucho más sólida y ya preparada para dar el salto al cockpit operativo real.
+## Resultado
+El sistema ya presenta una UI coherente en las áreas principales y ha dejado de exponer gran parte del lenguaje interno del motor en Dashboard, Inbox y Outbox.
+
+## Estado al cierre
+Estable. Buen punto de parada.

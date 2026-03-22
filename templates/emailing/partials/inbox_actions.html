@@ -1,29 +1,58 @@
 {# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_actions.html #}
 {# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div class="actions">
-    {% if email.suggested_decision %}
-        <form method="post" action="{% url 'apply_decision' email.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Apply decision</button>
-        </form>
+<div class="actions" style="align-items: center; justify-content: space-between;">
 
-        <form method="post" action="{% url 'dismiss_decision' email.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Dismiss</button>
-        </form>
+  <!-- LEFT: PRIMARY ACTIONS -->
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+    {% if email.suggested_decision %}
+
+      <!-- APPLY (PRIMARY) -->
+      <form method="post" action="{% url 'apply_decision' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">
+          Apply decision
+        </button>
+      </form>
+
+      <!-- DISMISS -->
+      <form method="post" action="{% url 'dismiss_decision' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          Dismiss
+        </button>
+      </form>
+
     {% endif %}
 
-    <form method="post" action="{% url 'mark_inbound_reviewed' email.id %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-light">Mark reviewed</button>
-    </form>
-
-    <form method="post" action="{% url 'mark_inbound_linked' email.id %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-light">Mark linked</button>
-    </form>
-
+    <!-- GENERATE REPLY (HIGH VALUE ACTION) -->
     <a class="btn btn-primary" href="{% url 'generate_reply_draft' email.id %}">
-        Generate reply draft
+      Generate reply
     </a>
+
+  </div>
+
+  <!-- RIGHT: SECONDARY ACTIONS -->
+  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+
+    {% if email.status != "reviewed" %}
+      <form method="post" action="{% url 'mark_inbound_reviewed' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light">
+          Mark reviewed
+        </button>
+      </form>
+    {% endif %}
+
+    {% if email.status != "linked" %}
+      <form method="post" action="{% url 'mark_inbound_linked' email.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light">
+          Link to opportunity
+        </button>
+      </form>
+    {% endif %}
+
+  </div>
+
 </div>

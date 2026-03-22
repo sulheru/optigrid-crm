@@ -1,136 +1,552 @@
 {% extends "base.html" %}
-{% block title %}Outbox · OptiGrid CRM{% endblock %}
-{% block content %}
+{% load label_filters %}
 
+{% block title %}Outbox · OptiGrid CRM{% endblock %}
+{% block page_title %}Outbox{% endblock %}
+{% block page_subtitle %}Drafts, approvals and outbound execution queue{% endblock %}
+
+{% block extra_head %}
 <style>
-  .header-actions a {
-    text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-weight: 600;
+  .outbox-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .send-all { background: var(--app-primary); color: white; }
-  .go-leads { background: #374151; color: white; }
+  .outbox-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
 
-  .bulkbar {
+  .outbox-hero-text h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .outbox-hero-text p {
+    margin: 6px 0 0 0;
+    font-size: 14px;
+    color: var(--color-muted);
+  }
+
+  .outbox-summary {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .outbox-toolbar {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .outbox-tabs {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    padding: 14px;
-    border: 1px solid var(--app-border);
-    border-radius: 12px;
-    background: white;
   }
 
-  .row-top {
+  .outbox-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .outbox-tab:hover {
+    text-decoration: none;
+    background: #f1f5f9;
+    color: #111827;
+  }
+
+  .outbox-tab.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+  }
+
+  .outbox-tab-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .outbox-tab:not(.active) .outbox-tab-count {
+    background: #e2e8f0;
+    color: #334155;
+  }
+
+  .bulkbar {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  }
+
+  .bulkbar-left,
+  .bulkbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .bulkbar select {
+    min-width: 180px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .bulk-note {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+
+  .outbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .email-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+  }
+
+  .email-card-body {
+    padding: 18px;
+  }
+
+  .email-card-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .email-check {
+    padding-top: 4px;
+  }
+
+  .email-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
   }
 
   .email-main {
-    flex: 1;
+    min-width: 0;
   }
 
-  .subject {
-    font-size: 18px;
+  .email-subject {
+    margin: 0 0 6px 0;
+    font-size: 17px;
     font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.35;
+    word-break: break-word;
   }
 
-  .meta {
+  .email-meta {
     font-size: 13px;
-    color: var(--app-muted);
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .email-preview {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .email-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    min-width: 140px;
+  }
+
+  .email-actions {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .email-actions form {
+    margin: 0;
+  }
+
+  .editor-wrap {
+    margin-top: 14px;
+    border-top: 1px solid #eef2f7;
+    padding-top: 14px;
+  }
+
+  .editor-toggle {
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .editor-toggle:hover {
+    text-decoration: underline;
+  }
+
+  .editor-panel {
+    display: grid;
+    gap: 12px;
   }
 
   .form-field {
     width: 100%;
-    padding: 10px;
+    padding: 11px 12px;
     border-radius: 10px;
-    border: 1px solid var(--app-border);
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    color: #111827;
+    background: #fff;
+  }
+
+  textarea.form-field {
+    min-height: 180px;
+    resize: vertical;
+    white-space: pre-wrap;
+  }
+
+  .outbox-empty {
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    color: #6b7280;
     font-size: 14px;
   }
 
-  .actions {
-    margin-top: 12px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+  @media (max-width: 1200px) {
+    .outbox-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 920px) {
+    .email-card-top {
+      grid-template-columns: auto 1fr;
+    }
+
+    .email-side {
+      grid-column: 2;
+      align-items: flex-start;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .outbox-summary {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
+{% endblock %}
 
-<div class="page">
+{% block content %}
+<div class="outbox-stack">
 
-  <div class="page-header">
-    <h1>Outbox</h1>
-    <div class="toolbar header-actions">
-      <a class="go-leads" href="/leads/">Lead Inbox</a>
-      <a class="send-all" href="/outbox/send/?type={{ email_type }}">Send All Approved</a>
+  <section class="outbox-hero">
+    <div class="outbox-hero-text">
+      <h2>Outbound Queue</h2>
+      <p>Manage draft creation, approval workflow and final sending from one place.</p>
     </div>
-  </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="app-btn-secondary" href="/leads/">
+        <i class="fa fa-lightbulb-o"></i>
+        <span>Lead Inbox</span>
+      </a>
+
+      <a class="app-btn-primary" href="/outbox/send/?type={{ email_type }}">
+        <i class="fa fa-send"></i>
+        <span>Send All Approved</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="outbox-summary">
+    <div class="app-card app-stat">
+      <div class="app-stat-value">{{ counts.all }}</div>
+      <div class="app-stat-label">All emails</div>
+    </div>
+    <div class="app-card app-stat">
+      <div class="app-stat-value">{{ counts.draft }}</div>
+      <div class="app-stat-label">Drafts</div>
+    </div>
+    <div class="app-card app-stat">
+      <div class="app-stat-value">{{ counts.approved }}</div>
+      <div class="app-stat-label">Approved</div>
+    </div>
+    <div class="app-card app-stat">
+      <div class="app-stat-value">{{ counts.sent }}</div>
+      <div class="app-stat-label">Sent</div>
+    </div>
+    <div class="app-card app-stat">
+      <div class="app-stat-value">{{ counts.failed }}</div>
+      <div class="app-stat-label">Failed</div>
+    </div>
+  </section>
+
+  <section class="outbox-toolbar">
+    <div class="outbox-tabs">
+      <a class="outbox-tab {% if status == 'all' %}active{% endif %}" href="/outbox/?status=all&type={{ email_type }}">
+        <span>All</span>
+        <span class="outbox-tab-count">{{ counts.all }}</span>
+      </a>
+      <a class="outbox-tab {% if status == 'draft' %}active{% endif %}" href="/outbox/?status=draft&type={{ email_type }}">
+        <span>Draft</span>
+        <span class="outbox-tab-count">{{ counts.draft }}</span>
+      </a>
+      <a class="outbox-tab {% if status == 'approved' %}active{% endif %}" href="/outbox/?status=approved&type={{ email_type }}">
+        <span>Approved</span>
+        <span class="outbox-tab-count">{{ counts.approved }}</span>
+      </a>
+      <a class="outbox-tab {% if status == 'sent' %}active{% endif %}" href="/outbox/?status=sent&type={{ email_type }}">
+        <span>Sent</span>
+        <span class="outbox-tab-count">{{ counts.sent }}</span>
+      </a>
+      <a class="outbox-tab {% if status == 'failed' %}active{% endif %}" href="/outbox/?status=failed&type={{ email_type }}">
+        <span>Failed</span>
+        <span class="outbox-tab-count">{{ counts.failed }}</span>
+      </a>
+    </div>
+
+    <div class="outbox-tabs">
+      <a class="outbox-tab {% if email_type == 'all' %}active{% endif %}" href="/outbox/?status={{ status }}&type=all">
+        <span>All types</span>
+        <span class="outbox-tab-count">{{ counts.all }}</span>
+      </a>
+      <a class="outbox-tab {% if email_type == 'first_contact' %}active{% endif %}" href="/outbox/?status={{ status }}&type=first_contact">
+        <span>{{ "first_contact"|email_type_label }}</span>
+        <span class="outbox-tab-count">{{ counts.first_contact }}</span>
+      </a>
+      <a class="outbox-tab {% if email_type == 'followup' %}active{% endif %}" href="/outbox/?status={{ status }}&type=followup">
+        <span>{{ "followup"|email_type_label }}</span>
+        <span class="outbox-tab-count">{{ counts.followup }}</span>
+      </a>
+    </div>
+  </section>
 
   {% if emails %}
     <form method="post" action="/outbox/bulk-action/">
       {% csrf_token %}
+      <input type="hidden" name="status" value="{{ status }}">
+      <input type="hidden" name="type" value="{{ email_type }}">
 
       <div class="bulkbar">
-        <button type="button" onclick="selectAllEmails()">Select All</button>
-        <button type="button" onclick="selectNoEmails()">Select None</button>
+        <div class="bulkbar-left">
+          <button type="button" class="app-btn-secondary" onclick="selectAllEmails()">
+            <i class="fa fa-check-square-o"></i>
+            <span>Select All</span>
+          </button>
 
-        <select name="action" required>
-          <option value="">Apply action...</option>
-          <option value="approve">Approve</option>
-          <option value="send">Send</option>
-        </select>
+          <button type="button" class="app-btn-secondary" onclick="selectNoEmails()">
+            <i class="fa fa-square-o"></i>
+            <span>Select None</span>
+          </button>
 
-        <button class="btn-primary">Apply</button>
+          <span class="bulk-note">Apply a bulk action to selected emails</span>
+        </div>
+
+        <div class="bulkbar-right">
+          <select name="action" required>
+            <option value="">Apply action...</option>
+            <option value="approve">Approve</option>
+            <option value="back_to_draft">Back to draft</option>
+            <option value="send">Send</option>
+          </select>
+
+          <button type="submit" class="app-btn-primary">
+            <i class="fa fa-bolt"></i>
+            <span>Apply</span>
+          </button>
+        </div>
       </div>
 
-      {% for e in emails %}
-        <div class="card">
-          <div class="card-body">
-
-            <div class="row-top">
-              <input type="checkbox" class="email-checkbox" name="selected_ids" value="{{ e.id }}">
-
-              <div class="email-main">
-                <div class="subject">{{ e.subject }}</div>
-
-                <div class="meta">
-                  To: {{ e.to_email }} · Status: {{ e.status }}
+      <div class="outbox-list" style="margin-top:16px;">
+        {% for e in emails %}
+          <article class="email-card">
+            <div class="email-card-body">
+              <div class="email-card-top">
+                <div class="email-check">
+                  <input type="checkbox" class="email-checkbox" name="selected_ids" value="{{ e.id }}">
                 </div>
 
-                {% if e.status == "draft" %}
-                  <input class="form-field" type="text" name="subject" value="{{ e.subject }}">
-                  <textarea class="form-field" rows="6">{{ e.body }}</textarea>
-                {% else %}
-                  <pre>{{ e.body }}</pre>
-                {% endif %}
+                <div class="email-main">
+                  <h3 class="email-subject">{{ e.subject|default:"(sin asunto)" }}</h3>
 
-                <div class="actions">
+                  <div class="email-meta">
+                    <strong>To:</strong> {{ e.to_email|default:"—" }}
+                    {% if e.opportunity %}
+                      · <strong>Opportunity:</strong> {{ e.opportunity }}
+                    {% endif %}
+                    {% if e.source_inbound %}
+                      · <strong>Source inbound:</strong> #{{ e.source_inbound.id }}
+                    {% endif %}
+                    · <strong>Created:</strong> {{ e.created_at|date:"Y-m-d H:i" }}
+                  </div>
+
+                  <div class="email-preview">{{ e.body|default:""|truncatechars:300 }}</div>
+
+                  <div class="email-actions">
+                    {% if e.status == "draft" %}
+                      <a class="app-btn-secondary" href="#edit-{{ e.id }}">
+                        <i class="fa fa-pencil"></i>
+                        <span>Edit below</span>
+                      </a>
+
+                      <a class="app-btn-primary" href="/outbox/{{ e.id }}/approve/">
+                        <i class="fa fa-check"></i>
+                        <span>Approve</span>
+                      </a>
+                    {% elif e.status == "approved" %}
+                      <a class="app-btn-secondary" href="/outbox/{{ e.id }}/draft/">
+                        <i class="fa fa-undo"></i>
+                        <span>Back to draft</span>
+                      </a>
+
+                      <a class="app-btn-primary" href="/outbox/{{ e.id }}/send/">
+                        <i class="fa fa-send"></i>
+                        <span>Send</span>
+                      </a>
+                    {% elif e.status == "sent" %}
+                      <span class="app-btn-secondary" style="cursor:default;">
+                        <i class="fa fa-check-circle"></i>
+                        <span>Already sent</span>
+                      </span>
+                    {% elif e.status == "failed" %}
+                      <a class="app-btn-secondary" href="/outbox/{{ e.id }}/draft/">
+                        <i class="fa fa-undo"></i>
+                        <span>Back to draft</span>
+                      </a>
+                    {% endif %}
+                  </div>
+
                   {% if e.status == "draft" %}
-                    <a class="btn-primary" href="/outbox/{{ e.id }}/approve/">Approve</a>
-                  {% elif e.status == "approved" %}
-                    <a class="btn-primary" href="/outbox/{{ e.id }}/send/">Send</a>
+                    <div class="editor-wrap" id="edit-{{ e.id }}">
+                      <details>
+                        <summary class="editor-toggle">Open editor</summary>
+
+                        <form method="post" action="/outbox/{{ e.id }}/update/" class="editor-panel">
+                          {% csrf_token %}
+                          <input class="form-field" type="text" name="subject" value="{{ e.subject|default:'' }}" placeholder="Subject">
+                          <textarea class="form-field" name="body" placeholder="Email body">{{ e.body|default:'' }}</textarea>
+
+                          <div class="email-actions">
+                            <button type="submit" class="app-btn-primary">
+                              <i class="fa fa-save"></i>
+                              <span>Save draft</span>
+                            </button>
+
+                            <a class="app-btn-secondary" href="/outbox/{{ e.id }}/approve/">
+                              <i class="fa fa-check"></i>
+                              <span>Save and approve</span>
+                            </a>
+                          </div>
+                        </form>
+                      </details>
+                    </div>
                   {% endif %}
                 </div>
 
+                <div class="email-side">
+                  {% if e.status == "draft" %}
+                    <span class="app-badge app-badge-warning">{{ e.status|status_label }}</span>
+                  {% elif e.status == "approved" %}
+                    <span class="app-badge app-badge-info">{{ e.status|status_label }}</span>
+                  {% elif e.status == "sent" %}
+                    <span class="app-badge app-badge-success">{{ e.status|status_label }}</span>
+                  {% elif e.status == "failed" %}
+                    <span class="app-badge app-badge-danger">{{ e.status|status_label }}</span>
+                  {% else %}
+                    <span class="app-badge app-badge-neutral">{{ e.status|status_label }}</span>
+                  {% endif %}
+
+                  <span class="app-badge app-badge-neutral">{{ e.email_type|email_type_label }}</span>
+                </div>
               </div>
             </div>
-
-          </div>
-        </div>
-      {% endfor %}
+          </article>
+        {% endfor %}
+      </div>
     </form>
+  {% else %}
+    <div class="outbox-empty">
+      No emails found for the current filters.
+    </div>
   {% endif %}
 </div>
 
 <script>
 function selectAllEmails() {
-  document.querySelectorAll('.email-checkbox').forEach(cb => cb.checked = true);
+  document.querySelectorAll('.email-checkbox').forEach(function(cb) {
+    cb.checked = true;
+  });
 }
+
 function selectNoEmails() {
-  document.querySelectorAll('.email-checkbox').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.email-checkbox').forEach(function(cb) {
+    cb.checked = false;
+  });
 }
 </script>
-
 {% endblock %}

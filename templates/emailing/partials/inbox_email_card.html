@@ -1,61 +1,189 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_email_card.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div class="card">
-    <div class="card-header">
-        <div>
-            <div class="subject">{{ email.subject }}</div>
-            <div class="submeta">
-                <span><strong>From:</strong> {{ email.from_email|default:"-" }}</span>
-                <span><strong>Received:</strong> {{ email.received_at }}</span>
-                <span><strong>Opportunity:</strong> {{ email.opportunity.title }}</span>
-                <span><strong>Stage:</strong> {{ email.opportunity.stage }}</span>
+{% load label_filters %}
+
+<div style="background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 1px 3px rgba(15,23,42,0.05); overflow:hidden;">
+  <div style="padding:18px 18px 0 18px; display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="min-width:0; flex:1;">
+      <h3 style="margin:0 0 8px 0; font-size:18px; font-weight:700; color:#111827; line-height:1.35;">
+        {{ email.subject|default:"(no subject)" }}
+      </h3>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; font-size:13px; color:#6b7280; line-height:1.5;">
+        <span><strong>From:</strong> {{ email.from_email|default:"-" }}</span>
+        <span><strong>Received:</strong> {{ email.received_at }}</span>
+        <span><strong>Opportunity:</strong> {{ email.opportunity.title|default:"-" }}</span>
+        <span><strong>Stage:</strong> {{ email.opportunity.stage|stage_label }}</span>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;">
+      {% if email.status == "new" %}
+        <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#dbeafe; color:#2563eb; font-size:12px; font-weight:700;">{{ email.status|status_label }}</span>
+      {% elif email.status == "reviewed" %}
+        <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#e2e8f0; color:#475569; font-size:12px; font-weight:700;">{{ email.status|status_label }}</span>
+      {% elif email.status == "linked" %}
+        <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#dcfce7; color:#15803d; font-size:12px; font-weight:700;">{{ email.status|status_label }}</span>
+      {% endif %}
+
+      {% if email.latest_decision %}
+        {% if email.latest_decision.priority == "high" %}
+          <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:12px; font-weight:700;">HIGH</span>
+        {% elif email.latest_decision.priority == "low" %}
+          <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#e2e8f0; color:#475569; font-size:12px; font-weight:700;">LOW</span>
+        {% else %}
+          <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fef3c7; color:#b45309; font-size:12px; font-weight:700;">MEDIUM</span>
+        {% endif %}
+
+        {% if email.latest_decision.applied_automatically %}
+          <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#ede9fe; color:#7c3aed; font-size:12px; font-weight:700;">AUTO</span>
+        {% else %}
+          <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#f3f4f6; color:#4b5563; font-size:12px; font-weight:700;">MANUAL</span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="padding:14px 18px 18px 18px;">
+    <details>
+      <summary style="cursor:pointer; font-size:13px; font-weight:600; color:#111827;">View email</summary>
+      <div style="margin-top:12px; padding:14px; border:1px solid #eef2f7; border-radius:12px; background:#f8fafc; font-size:14px; line-height:1.6; color:#374151;">
+        {{ email.body|linebreaksbr }}
+      </div>
+    </details>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+      <div style="border:1px solid #e5e7eb; border-radius:14px; background:#fff; padding:14px;">
+        <h4 style="margin:0 0 10px 0; font-size:14px; font-weight:700; color:#111827;">AI Interpretation</h4>
+
+        {% if email.ai_interpretation %}
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#eef2ff; color:#4338ca; font-size:12px; font-weight:700;">
+              {{ email.ai_interpretation.intent|intent_label }}
+            </span>
+
+            {% if email.ai_interpretation.urgency == "high" %}
+              <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:12px; font-weight:700;">High urgency</span>
+            {% elif email.ai_interpretation.urgency == "low" %}
+              <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#e2e8f0; color:#475569; font-size:12px; font-weight:700;">Low urgency</span>
+            {% else %}
+              <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fef3c7; color:#b45309; font-size:12px; font-weight:700;">Medium urgency</span>
+            {% endif %}
+          </div>
+
+          <div style="font-size:14px; color:#111827; margin-bottom:10px;">
+            <strong>Recommended action:</strong> {{ email.ai_interpretation.recommended_action }}
+          </div>
+
+          <div style="font-size:13px; color:#6b7280; margin-bottom:6px;">
+            <strong>Confidence:</strong> {{ email.ai_interpretation.confidence }}
+          </div>
+
+          <div style="margin-top:6px; background:#e5e7eb; border-radius:999px; height:8px; overflow:hidden;">
+            <div style="height:8px; width:{% widthratio email.ai_interpretation.confidence 1 100 %}%; background:rgb(6, 217, 149);"></div>
+          </div>
+
+          {% if email.ai_interpretation.rationale %}
+            <div style="margin-top:10px; font-size:13px; line-height:1.5; color:#6b7280;">
+              {{ email.ai_interpretation.rationale }}
             </div>
-        </div>
+          {% endif %}
+        {% else %}
+          <div style="font-size:13px; color:#6b7280;">No AI interpretation available.</div>
+        {% endif %}
+      </div>
 
-        <div class="badges">
-            {% if email.status == "new" %}
-                <span class="badge badge-new">NEW</span>
-            {% elif email.status == "reviewed" %}
-                <span class="badge badge-reviewed">REVIEWED</span>
-            {% elif email.status == "linked" %}
-                <span class="badge badge-linked">LINKED</span>
+      <div style="border:1px solid #e5e7eb; border-radius:14px; background:#fff; padding:14px;">
+        <h4 style="margin:0 0 10px 0; font-size:14px; font-weight:700; color:#111827;">Decision Engine</h4>
+
+        {% if email.latest_decision %}
+          <div style="font-size:14px; color:#111827; margin-bottom:10px;">
+            <strong>Decision:</strong> {{ email.latest_decision.action_type|action_label }}
+          </div>
+
+          {% if email.latest_decision.summary %}
+            <div style="font-size:13px; color:#6b7280; line-height:1.5; margin-bottom:10px;">
+              {{ email.latest_decision.summary }}
+            </div>
+          {% endif %}
+
+          <div style="font-size:13px; color:#6b7280; margin-bottom:6px;">
+            <strong>Score:</strong> {{ email.latest_decision.score }}
+          </div>
+
+          <div style="font-size:13px; color:#6b7280; margin-bottom:6px;">
+            <strong>Requires approval:</strong> {{ email.latest_decision.requires_approval|yesno:"Yes,No" }}
+          </div>
+
+          <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">
+            <strong>Execution:</strong>
+            {% if email.latest_decision.applied_automatically %}Automatic{% else %}Manual{% endif %}
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            {% if email.latest_decision.risk_flags %}
+              {% for flag in email.latest_decision.risk_flags %}
+                <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:12px; font-weight:700;">
+                  {{ flag|risk_flag_label }}
+                </span>
+              {% endfor %}
+            {% else %}
+              <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#dcfce7; color:#15803d; font-size:12px; font-weight:700;">
+                No risk
+              </span>
             {% endif %}
-
-            {% if email.latest_decision %}
-                {% if email.latest_decision.status == "applied" %}
-                    <span class="badge badge-applied">APPLIED</span>
-                {% elif email.latest_decision.status == "dismissed" %}
-                    <span class="badge badge-dismissed">DISMISSED</span>
-                {% else %}
-                    <span class="badge badge-suggested">SUGGESTED</span>
-                {% endif %}
-
-                {% if email.latest_decision.applied_automatically %}
-                    <span class="badge badge-auto">AUTO</span>
-                {% else %}
-                    <span class="badge badge-manual">MANUAL</span>
-                {% endif %}
-
-                {% if email.latest_decision.priority == "high" %}
-                    <span class="badge badge-priority-high">PRIORITY HIGH</span>
-                {% elif email.latest_decision.priority == "low" %}
-                    <span class="badge badge-priority-low">PRIORITY LOW</span>
-                {% else %}
-                    <span class="badge badge-priority-medium">PRIORITY MEDIUM</span>
-                {% endif %}
-            {% endif %}
-        </div>
+          </div>
+        {% else %}
+          <div style="font-size:13px; color:#6b7280;">No decision available.</div>
+        {% endif %}
+      </div>
     </div>
 
-    <div class="panel" style="margin-bottom: 14px;">
-        <h3>Email body</h3>
-        <p>{{ email.body|linebreaksbr }}</p>
-    </div>
+    <div style="margin-top:16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        {% if email.suggested_decision %}
+          <form method="post" action="{% url 'apply_decision' email.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="app-btn-primary">
+              <i class="fa fa-check"></i>
+              <span>Apply decision</span>
+            </button>
+          </form>
 
-    <div class="section-grid">
-        {% include "emailing/partials/inbox_ai_panel.html" with email=email %}
-        {% include "emailing/partials/inbox_decision_panel.html" with email=email %}
-    </div>
+          <form method="post" action="{% url 'dismiss_decision' email.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="app-btn-secondary">
+              <i class="fa fa-times"></i>
+              <span>Dismiss</span>
+            </button>
+          </form>
+        {% endif %}
 
-    {% include "emailing/partials/inbox_actions.html" with email=email %}
+        <a class="app-btn-secondary" href="{% url 'generate_reply_draft' email.id %}">
+          <i class="fa fa-reply"></i>
+          <span>Generate reply</span>
+        </a>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        {% if email.status != "reviewed" %}
+          <form method="post" action="{% url 'mark_inbound_reviewed' email.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="app-btn-secondary">
+              <i class="fa fa-eye"></i>
+              <span>Mark reviewed</span>
+            </button>
+          </form>
+        {% endif %}
+
+        {% if email.status != "linked" %}
+          <form method="post" action="{% url 'mark_inbound_linked' email.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="app-btn-secondary">
+              <i class="fa fa-link"></i>
+              <span>Link to opportunity</span>
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
