@@ -38,6 +38,14 @@ class OutboundEmail(models.Model):
         related_name="generated_followups",
     )
 
+    source_recommendation = models.ForeignKey(
+        "recommendations.AIRecommendation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="generated_outbound_emails",
+    )
+
     email_type = models.CharField(
         max_length=30,
         choices=TYPE_CHOICES,

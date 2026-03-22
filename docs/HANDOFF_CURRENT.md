@@ -1,82 +1,50 @@
-# HANDOFF CURRENT
+# HANDOFF_CURRENT
 
-## Estado general
-OptiGrid CRM ha pasado de UI funcional dispersa a cockpit unificado con primeras acciones operativas reales.
+## Proyecto
+OptiGrid CRM — AI Commercial Operating System
 
-## Punto exacto del proyecto
-### Completado
-- UI FOUNDATION V2A cerrada.
-- Dashboard con bloque `AI Recommended Actions`.
-- Mapping semántico en dashboard para recomendaciones.
-- Recommendations app refactorizada y estable.
-- Execute real implementado para recomendaciones tipo `followup`.
+## Estado operativo actual
+El sistema ya dispone de una capa de ejecución funcional sobre recommendations.
 
-### Estado técnico estable
-- `python manage.py check` limpio en validación final.
-- URLs críticas de recommendations definidas.
-- Template `recommendations/list.html` con botón `Execute`.
-- `dashboard_views.py` usando `top_actions`.
+### Ejecutables reales confirmados
+- `followup`
+- `contact_strategy`
+- `reply_strategy`
 
----
+### Endpoint unificado
+Existe y funciona:
 
-## Ficheros clave tocados en esta sesión
-- `templates/base.html`
-- `templates/dashboard/home.html`
-- `templates/strategy/chat.html`
-- `templates/recommendations/list.html`
-- `templates/tasks/list.html`
-- `templates/emailing/inbox.html`
-- `templates/emailing/outbox.html`
-- `templates/lead_research/list.html`
-- `apps/dashboard_views.py`
-- `apps/recommendations/views.py`
-- `apps/recommendations/urls.py`
+`/recommendations/<id>/execute/`
 
----
+Su responsabilidad actual es delegar según `recommendation_type`.
 
-## Estado funcional actual
-### Dashboard
-- Muestra métricas
-- Muestra AI Recommended Actions
-- Expone Execute / Inspect / Dismiss en cockpit
+## Lo importante que queda estable
+- `AIRecommendation.status` incluye y usa `executed`
+- `execute_followup` evita re-ejecuciones y reutiliza drafts
+- `contact_strategy` crea o reutiliza `first_contact`
+- `reply_strategy` crea o reutiliza `followup`
+- la segunda ejecución no genera duplicados en los flujos ya validados
 
-### Recommendations
-- Lista operativa
-- Execute disponible para `followup`
-- create-task / dismiss / promote-opportunity disponibles
+## Decisiones tomadas en esta sesión
+1. No forzar todavía una trazabilidad completa multi-origen sobre `OutboundEmail.source_recommendation`.
+2. Mantener `source_recommendation` en modelo, pero no basar toda la lógica en ese campo.
+3. Priorizar estabilidad operativa e idempotencia antes que una capa completa de event sourcing.
+4. Pasar el siguiente foco al cockpit:
+   - quitar mapping manual del dashboard
+   - usar execute unificado como source of truth
+   - añadir urgency panel
+   - añadir activity feed
 
-### Outbox
-- Recibe drafts derivados del flujo de execute followup
+## Riesgos / cautelas
+- No sobrescribir `apps/recommendations/views.py` sin inspeccionar primero el fichero completo.
+- En sesiones futuras, cualquier output de verificación debe ir a:
+  `~/OptiGrid_Project/og_pilot/optigrid_crm/tmp/`
+  y mostrarse con `cat` inmediatamente después.
+- El dashboard actual aún no está totalmente desacoplado del mapping manual.
 
----
-
-## Qué NO tocar a ciegas
-- `apps/recommendations/views.py`
-- `apps/recommendations/urls.py`
-- `templates/dashboard/home.html`
-
-Cualquier cambio aquí debe hacerse con refactor completo, no con reemplazos parciales improvisados.
-
----
-
-## Riesgos actuales
-1. `execute_followup` puede crear duplicados si se pulsa varias veces.
-2. No se está marcando la recommendation como `executed`.
-3. El mapping semántico ya existe en dashboard, pero no todos los recommendation types tienen ejecución real.
-4. Dashboard ya es cockpit inicial, pero aún no muestra urgency ni activity feed.
-
----
-
-## Recomendación para la próxima sesión
-Ir a fiabilidad operativa, no a estética:
-1. deduplicación de followup drafts
-2. executed state
-3. execute real para más recommendation types
-4. luego cockpit refinement visual/funcional
-
----
-
-## Principio activo
-NO hacer suposiciones.
-Validar contexto antes de implementar.
-Trabajar con outputs a `tmp/` para inspección y checks.
+## Siguiente foco recomendado
+Cockpit V2C:
+1. simplificar dashboard para usar solo `/recommendations/<id>/execute/`
+2. urgency panel basado en `InboundInterpretation.urgency` + recommendations nuevas
+3. modelo mínimo `ActivityEvent`
+4. activity feed visible en dashboard

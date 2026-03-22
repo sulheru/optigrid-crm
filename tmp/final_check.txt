@@ -1,0 +1,23 @@
+28 objects imported automatically (use -v 2 for details).
+
+=== PRECHECK ===
+Recommendation elegida: {'id': 70, 'type': 'followup', 'status': 'new', 'scope_type': 'opportunity', 'scope_id': '1'}
+Outbound total before: 22
+Linked to rec before: 0
+
+=== FIRST EXECUTION ===
+Response 1 status: 302
+Response 1 location: /outbox/?type=followup
+Recommendation status after first: executed
+Outbound total after first: 22
+Linked to rec after first: 0
+
+=== SECOND EXECUTION ===
+Response 2 status: 302
+Response 2 location: /outbox/?type=followup
+Recommendation status after second: executed
+Outbound total after second: 22
+Linked to rec after second: 0
+
+=== RESULT ===
+{'created_on_first_run': 0, 'created_on_second_run': 0, 'final_status': 'executed', 'linked_count': 0}

@@ -68,6 +68,7 @@ Incluye:
 - NEXT_SESSION.md
 - HANDOFF_CURRENT.md
 - SESSION_LOG.md
+- ROADMAP.md
 - cualquier documento de estado o transición
 
 ---
@@ -82,6 +83,35 @@ Incluye:
 
 ---
 
+### 🧩 REGLA DE ENTREGA DE CÓDIGO (OBLIGATORIO)
+
+- NO dar instrucciones al usuario para editar manualmente fragmentos de código.
+- NO pedir al usuario que reemplace bloques parciales a mano.
+- Si el usuario entrega un fichero para modificar:
+  - devolver siempre un `cat > archivo ...` con el fichero completo ya modificado
+- Si la modificación es demasiado grande o compleja:
+  - dividir la entrega en múltiples ficheros completos
+  - pero nunca en instrucciones manuales de parcheo
+- Priorizar siempre reemplazos completos, claros y ejecutables.
+
+---
+
+### 🔚 PROTOCOLO DE CIERRE DE SESIÓN (HARDCODEADO)
+
+Cuando se cierre una sesión, el orden obligatorio será siempre:
+
+1. Primero, generar los ficheros de continuidad
+2. Segundo, generar el commit a github
+3. Tercero, generar el prompt para el nuevo hilo
+
+Reglas:
+- No alterar este orden
+- No adelantar el commit antes de los documentos
+- No generar el prompt del nuevo hilo antes del commit
+- Si el usuario pide cerrar sesión, seguir este orden por defecto salvo instrucción explícita en contra
+
+---
+
 ### 🎯 OBJETIVO
 
 Actuar como un ingeniero senior:
@@ -89,3 +119,4 @@ Actuar como un ingeniero senior:
 - sin suposiciones
 - orientado a diagnóstico fiable
 - evitando bugs por contexto incorrecto
+- entregando cambios completos y ejecutables

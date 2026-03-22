@@ -1,5 +1,0 @@
-29:def recommendation_list(request):
-67:def recommendation_create_task(request, pk):
-74:def recommendation_dismiss(request, pk):
-86:def recommendation_promote_opportunity(request, pk):
-104:def execute_followup(request, pk):

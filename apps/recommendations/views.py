@@ -26,6 +26,113 @@ def _resolve_opportunity_from_recommendation(recommendation: AIRecommendation):
     return None
 
 
+def _find_reusable_followup_for_inbound(inbound: InboundEmail):
+    if inbound is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            source_inbound=inbound,
+            email_type=OutboundEmail.TYPE_FOLLOWUP,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _find_reusable_followup_for_opportunity(opportunity: Opportunity):
+    if opportunity is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            opportunity=opportunity,
+            source_inbound__isnull=True,
+            email_type=OutboundEmail.TYPE_FOLLOWUP,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _build_manual_followup_draft(opportunity: Opportunity):
+    opportunity_name = (
+        getattr(opportunity, "title", None)
+        or getattr(opportunity, "company_name", None)
+        or "Opportunity"
+    )
+
+    return OutboundEmail.objects.create(
+        opportunity=opportunity,
+        email_type=OutboundEmail.TYPE_FOLLOWUP,
+        subject=f"Follow-up — {opportunity_name}",
+        body="Just checking in regarding our previous conversation.",
+        status=OutboundEmail.STATUS_DRAFT,
+    )
+
+
+def _find_reusable_first_contact_for_opportunity(opportunity: Opportunity):
+    if opportunity is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            opportunity=opportunity,
+            source_inbound__isnull=True,
+            email_type=OutboundEmail.TYPE_FIRST_CONTACT,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _build_first_contact_draft(opportunity: Opportunity):
+    opportunity_name = (
+        getattr(opportunity, "title", None)
+        or getattr(opportunity, "company_name", None)
+        or "Opportunity"
+    )
+
+    company_name = getattr(opportunity, "company_name", "") or opportunity_name
+
+    subject = f"Intro — {company_name}"
+    body = (
+        f"Hi {company_name} team,\n\n"
+        "I wanted to reach out briefly to introduce myself and explore whether "
+        "there could be a fit for a conversation.\n\n"
+        "If useful, I can share a short overview and suggest next steps.\n\n"
+        "Best regards,"
+    )
+
+    return OutboundEmail.objects.create(
+        opportunity=opportunity,
+        email_type=OutboundEmail.TYPE_FIRST_CONTACT,
+        subject=subject,
+        body=body,
+        status=OutboundEmail.STATUS_DRAFT,
+    )
+
+
+def _mark_recommendation_executed(recommendation: AIRecommendation):
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return
+
+    recommendation.status = AIRecommendation.STATUS_EXECUTED
+    recommendation.save(update_fields=["status"])
+
+
 def recommendation_list(request):
     status = request.GET.get("status", "").strip()
     recommendation_type = request.GET.get("recommendation_type", "").strip()
@@ -74,10 +181,10 @@ def recommendation_create_task(request, pk):
 def recommendation_dismiss(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
-    if recommendation.status == "dismissed":
+    if recommendation.status == AIRecommendation.STATUS_DISMISSED:
         return redirect("/recommendations/")
 
-    recommendation.status = "dismissed"
+    recommendation.status = AIRecommendation.STATUS_DISMISSED
     recommendation.save(update_fields=["status"])
     return redirect("/recommendations/")
 
@@ -104,29 +211,98 @@ def recommendation_promote_opportunity(request, pk):
 def execute_followup(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
 
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=followup")
+
     opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
 
-    inbound = None
-    if opportunity is not None:
-        inbound = (
-            InboundEmail.objects.filter(opportunity=opportunity)
-            .order_by("-received_at", "-created_at")
-            .first()
-        )
+    inbound = (
+        InboundEmail.objects.filter(opportunity=opportunity)
+        .order_by("-received_at", "-created_at")
+        .first()
+    )
 
-    if inbound:
-        generate_followup_draft_from_inbound(inbound)
-    elif opportunity is not None:
-        opportunity_name = (
-            getattr(opportunity, "title", None)
-            or getattr(opportunity, "company_name", None)
-            or "Opportunity"
-        )
-        OutboundEmail.objects.create(
-            opportunity=opportunity,
-            email_type=OutboundEmail.TYPE_FOLLOWUP,
-            subject=f"Follow-up — {opportunity_name}",
-            body="Just checking in regarding our previous conversation.",
-        )
+    outbound = None
+
+    if inbound is not None:
+        outbound = _find_reusable_followup_for_inbound(inbound)
+        if outbound is None:
+            outbound = generate_followup_draft_from_inbound(inbound)
+    else:
+        outbound = _find_reusable_followup_for_opportunity(opportunity)
+        if outbound is None:
+            outbound = _build_manual_followup_draft(opportunity)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
 
     return redirect("/outbox/?type=followup")
+
+
+@require_POST
+def execute_contact_strategy(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=first_contact")
+
+    opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
+
+    outbound = _find_reusable_first_contact_for_opportunity(opportunity)
+    if outbound is None:
+        outbound = _build_first_contact_draft(opportunity)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
+
+    return redirect("/outbox/?type=first_contact")
+
+
+@require_POST
+def execute_reply_strategy(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=followup")
+
+    opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
+
+    inbound = (
+        InboundEmail.objects.filter(opportunity=opportunity)
+        .order_by("-received_at", "-created_at")
+        .first()
+    )
+    if inbound is None:
+        return redirect("/recommendations/")
+
+    outbound = _find_reusable_followup_for_inbound(inbound)
+    if outbound is None:
+        outbound = generate_followup_draft_from_inbound(inbound)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
+
+    return redirect("/outbox/?type=followup")
+
+
+@require_POST
+def execute_recommendation(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+    recommendation_type = (recommendation.recommendation_type or "").strip().lower()
+
+    if recommendation_type == "followup":
+        return execute_followup(request, pk)
+
+    if recommendation_type == "contact_strategy":
+        return execute_contact_strategy(request, pk)
+
+    if recommendation_type == "reply_strategy":
+        return execute_reply_strategy(request, pk)
+
+    return redirect("/recommendations/")

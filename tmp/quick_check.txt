@@ -1,0 +1,12 @@
+28 objects imported automatically (use -v 2 for details).
+
+{'id': 22, 'source_recommendation_id': 50}
+{'id': 21, 'source_recommendation_id': None}
+{'id': 20, 'source_recommendation_id': None}
+{'id': 19, 'source_recommendation_id': None}
+{'id': 18, 'source_recommendation_id': None}
+{'id': 17, 'source_recommendation_id': None}
+{'id': 16, 'source_recommendation_id': None}
+{'id': 15, 'source_recommendation_id': None}
+{'id': 14, 'source_recommendation_id': None}
+{'id': 13, 'source_recommendation_id': None}

@@ -1,103 +1,52 @@
-# ROADMAP — OptiGrid CRM
+# ROADMAP
 
-## VISIÓN
-Construir un AI Commercial Operating System donde la IA:
-- interpreta señales
-- propone acciones
-- ejecuta trabajo comercial real
-- deja al usuario en rol de CEO / supervisor
+## Fase actual
+Cockpit V2C — Observabilidad y Prioridad
 
----
+## Completado
 
-## ESTADO ACTUAL
+### UI Foundation V2A
+- base.html consolidado
+- vistas normalizadas
+- sistema visual consistente
 
-### Backend
-- Automation Layer V3 completo
-- scoring / priority / risk_flags persistidos
-- auto-apply con policy
-- decisiones auditadas
-- dedupe funcional en partes previas del pipeline
-- pipeline end-to-end operativo
+### Cockpit V2B — base
+- Dashboard con "AI Recommended Actions"
+- priorización por confidence
+- botón unificado a nivel conceptual
 
-### UI
-- UI FOUNDATION V1 completado
-- UI FOUNDATION V2A completada
-- aplicación unificada sobre `base.html`
-- dashboard convertido en cockpit inicial
-- strategic chat integrado
-- inbox / outbox / recommendations / tasks / leads normalizados
+### Execute Reliability
+- `followup` ejecutable
+- deduplicación funcional
+- reuse de drafts
+- estado `executed`
 
-### Cockpit
-- V2B Phase 1 completada:
-  - AI Recommended Actions en dashboard
-  - priorización por confidence
-  - mapping semántico de recommendation_type
-  - Execute real para followup
+### Execute Extensions
+- `contact_strategy` ejecutable
+- `reply_strategy` ejecutable
 
----
+### Execute Unificado
+- endpoint único `/recommendations/<id>/execute/`
+- routing por `recommendation_type`
 
-## FASES
+## En curso / siguiente
+### Cockpit V2C
+1. Dashboard desacoplado del mapping manual
+2. Urgency panel
+3. Activity feed
+4. Preparación para auto-execute y Strategic Chat
 
-### Fase 1 — UI FOUNDATION V1
-✅ completada
+## Posterior
+### Extensiones de ejecución
+- `next_action`
+- `risk_flag`
+- `pricing_strategy`
+- `timing_strategy`
 
-### Fase 2 — UI FOUNDATION V2A
-✅ completada
-- consistencia visual
-- eliminación de deuda en pantallas activas
-- limpieza de templates legacy críticos
+### Governance avanzada
+- políticas de auto-apply
+- thresholds por confidence / urgency / risk
 
-### Fase 3 — UI FOUNDATION V2B
-🟡 en curso
-
-#### V2B Phase 1
-✅ completada
-- AI Recommended Actions
-- dashboard como centro de decisiones
-- primer execute real
-
-#### V2B Phase 2
-🔜 siguiente
-- evitar duplicados
-- executed state
-- execute real multi-tipo
-
-#### V2B Phase 3
-🔜 posterior
-- urgency panel
-- activity feed
-- quick actions
-- strategic chat accionable
-
----
-
-## SIGUIENTE HITO
-### Execute fiable
-- deduplicación
-- estado executed
-- trazabilidad
-
-### Después
-### Execute ampliado
-- reply_strategy
-- contact_strategy
-- pricing/timing strategy
-- risk flag handling
-
----
-
-## OBJETIVO ESTRATÉGICO INMEDIATO
-Evolucionar de:
-
-CRM con IA  
-→ cockpit con acciones  
-→ sistema que ejecuta trabajo comercial con supervisión humana
-
----
-
-## PRINCIPIO DE IMPLEMENTACIÓN
-- no hacer suposiciones
-- validar contexto antes de tocar código
-- usar `tmp/` para inspección y checks
-- evitar sobreescrituras ciegas de views complejas
-- priorizar cambios incrementales y seguros
+### Strategic Chat
+- integración directa con execute unificado
+- acciones desde consola estratégica
