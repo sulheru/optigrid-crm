@@ -1,25 +1,26 @@
-# CHANGELOG
+# CHANGELOG — OptiGrid CRM
 
-## [COCKPIT V3] - Decision Engine
+## 2026-03-23 — UI Foundation V2 Consolidation (Partial)
 
 ### Added
-- Next Best Action (NBA) engine
-- Global ranking engine (priority + confidence + urgency + weights)
-- Urgency scoring system
-- Action vs Insight split
-- Decision explainability layer
-- "Why this one / Why not the others"
-- Simulation endpoint (/recommendations/simulate/<id>/)
-- Simulation Panel V2 (UI)
+- Consolidated `design_system.html` with reusable UI components:
+  - buttons, badges, forms, tables, layout helpers, chat components
+- Unified visual language across:
+  - Tasks
+  - Leads
+  - Opportunities
+  - Strategic Chat
 
-### Improved
-- Dashboard upgraded to decision cockpit
-- Recommendations now ranked globally
-- UI consistency with card system
+### Changed
+- Refactor of legacy templates to use `app-*` design system
+- Removal of multiple inline styles (partial)
+- Alignment with app shell (sidebar + topbar)
 
-### Result
-System evolved from:
-"Recommendation display"
+### In Progress
+- `base.html` cleanup (separation of shell vs design system)
+- Full removal of duplicated styles
 
-To:
-"Interactive decision engine"
+### Pending
+- Final UI polish (remove remaining inline styles)
+- Full system audit (next session)
+- Validation of template consistency across all views

@@ -1,44 +1,44 @@
-PROYECTO: OptiGrid CRM — AI Commercial Operating System
+# NEXT SESSION — GLOBAL SYSTEM AUDIT
 
-FASE SIGUIENTE: UX POLISH V1 / DECISION INTELLIGENCE V2
+## Objective
 
-CONTEXTO
+Understand the REAL state of the system.
 
-Sistema ya capaz de:
-- seleccionar la mejor acción (NBA)
-- explicar decisiones
-- comparar alternativas
-- simular impacto
+## Tasks
 
-OBJETIVO
+1. Full codebase audit
+   - apps/*
+   - templates/*
+   - views
+   - models
+   - urls
 
-Refinar experiencia y claridad de decisión.
+2. Build system map
+   - real pipeline flow
+   - active vs unused components
 
-PRIORIDADES
+3. Detect issues
+   - duplication
+   - inconsistencies
+   - legacy code
 
-1. Copy ejecutivo
-- mejorar textos de explainability
-- lenguaje claro, directo y accionable
+4. Evaluate UI layer
+   - design system usage
+   - base.html duplication
+   - inline styles
 
-2. Simulation Panel V3
-- mejor layout visual (verde/rojo, jerarquía visual)
-- eliminar sensación de “debug panel”
+5. Produce:
+   - system map
+   - gap analysis
+   - technical debt list
+   - next phase plan
 
-3. Natural Explanation
-- “Esta opción es mejor porque…”
-- impacto en negocio, no solo métricas
+## Rules
 
-4. UI Consistency
-- revisar tamaños, spacing, jerarquía
+- No coding
+- No refactoring
+- No assumptions
 
-5. Opcional
-- persistencia de simulaciones
-- decision audit trail
+## Output
 
-OBJETIVO FINAL
-
-Pasar de:
-Sistema que permite comparar decisiones
-
-A:
-Sistema que explica decisiones como un consultor senior
+Clear, structured diagnosis of the system state

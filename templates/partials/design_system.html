@@ -1,30 +1,20 @@
 {# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/partials/design_system.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 <style>
-/* =========================
-   🎨 DESIGN TOKENS
-========================= */
-
 :root {
   --color-primary: rgb(6, 217, 149);
-
   --color-bg: #f5f7fb;
   --color-surface: #ffffff;
-
   --color-text: #111827;
   --color-muted: #6b7280;
-
   --color-border: #e5e7eb;
-
   --color-success: #16a34a;
   --color-warning: #d97706;
   --color-danger: #dc2626;
   --color-info: #2563eb;
 }
 
-
 /* =========================
-   📦 LAYOUT
+   BASE COMPONENTS
 ========================= */
 
 .app-card {
@@ -49,99 +39,81 @@
   gap: 16px;
 }
 
+.app-text-muted {
+  color: var(--color-muted);
+}
 
 /* =========================
-   🔘 BUTTONS
+   BUTTONS
 ========================= */
 
-.app-btn-primary {
+.app-btn-primary,
+.app-btn-secondary,
+.app-btn-danger {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
   padding: 10px 14px;
   border-radius: 10px;
-
-  background: var(--color-primary);
-  color: white;
-
-  border: none;
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.app-btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
 }
 
 .app-btn-primary:hover {
   opacity: 0.9;
-  text-decoration: none;
+  color: white;
 }
 
 .app-btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  padding: 10px 14px;
-  border-radius: 10px;
-
   background: #f1f5f9;
   color: var(--color-text);
-
   border: 1px solid var(--color-border);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
 }
 
 .app-btn-secondary:hover {
   background: #e5e7eb;
-  text-decoration: none;
 }
 
+.app-btn-danger {
+  background: #fff;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.app-btn-danger:hover {
+  background: #fff7f7;
+  color: #991b1b;
+}
 
 /* =========================
-   🏷️ BADGES
+   BADGES
 ========================= */
 
 .app-badge {
   display: inline-flex;
   align-items: center;
-
   padding: 6px 10px;
   border-radius: 999px;
-
   font-size: 12px;
   font-weight: 700;
 }
 
-.app-badge-success {
-  background: #dcfce7;
-  color: var(--color-success);
-}
-
-.app-badge-warning {
-  background: #fef3c7;
-  color: var(--color-warning);
-}
-
-.app-badge-danger {
-  background: #fee2e2;
-  color: var(--color-danger);
-}
-
-.app-badge-info {
-  background: #dbeafe;
-  color: var(--color-info);
-}
-
-.app-badge-neutral {
-  background: #e5e7eb;
-  color: #374151;
-}
-
+.app-badge-success { background: #dcfce7; color: var(--color-success); }
+.app-badge-warning { background: #fef3c7; color: var(--color-warning); }
+.app-badge-danger  { background: #fee2e2; color: var(--color-danger); }
+.app-badge-info    { background: #dbeafe; color: var(--color-info); }
+.app-badge-neutral { background: #e5e7eb; color: #374151; }
 
 /* =========================
-   📊 STAT CARDS
+   STATS
 ========================= */
 
 .app-stat {
@@ -151,7 +123,6 @@
 .app-stat-value {
   font-size: 26px;
   font-weight: 700;
-  color: var(--color-text);
 }
 
 .app-stat-label {
@@ -159,13 +130,190 @@
   color: var(--color-muted);
 }
 
-
 /* =========================
-   🧩 HELPERS
+   FORMS
 ========================= */
 
-.app-text-muted {
+.app-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+.app-form-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.app-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-input,
+.app-select,
+.app-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.app-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+.app-table-wrap {
+  overflow-x: auto;
+}
+
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.app-table th,
+.app-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+/* =========================
+   LAYOUT HELPERS
+========================= */
+
+.app-grid-auto-180 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.app-grid-auto-150 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.app-grid-auto-280 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+.app-grid-main-aside {
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
+}
+
+.app-row-between {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.app-badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.app-action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* =========================
+   DETAIL
+========================= */
+
+.app-detail-list {
+  display: grid;
+  gap: 10px;
+}
+
+.app-detail-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+}
+
+.app-detail-label {
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.app-chat-history {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 420px;
+}
+
+.app-message {
+  border-left: 4px solid #111827;
+}
+
+.app-message-assistant {
+  border-left-color: var(--color-primary);
+  background: #f8fafc;
+}
+
+.app-message-role {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.app-message-pre {
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.app-prompt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-prompt-item {
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+/* =========================
+   STATES
+========================= */
+
+.app-empty {
   color: var(--color-muted);
 }
 
+.app-card-danger-soft {
+  border-color: #fecaca;
+  background: #fff7f7;
+}
+
+.app-title-revoked {
+  text-decoration: line-through;
+  color: #991b1b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 980px) {
+  .app-grid-main-aside {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-detail-row {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

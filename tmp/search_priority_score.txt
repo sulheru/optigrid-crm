@@ -1,5 +1,0 @@
-apps/recommendations/priority.py:19:def compute_priority_score(recommendation):
-apps/dashboard_views.py:14:from apps.recommendations.priority import compute_priority_score
-apps/dashboard_views.py:37:        recommendation.priority_score = compute_priority_score(recommendation)
-apps/dashboard_views.py:40:            recommendation.priority_score
-apps/dashboard_views.py:54:    scored.sort(key=lambda x: x.priority_score, reverse=True)

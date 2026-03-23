@@ -1,119 +1,93 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/strategy/chat.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 {% block title %}Strategy Chat · OptiGrid CRM{% endblock %}
 {% block content %}
 
-<style>
-  .layout {
-    display: grid;
-    grid-template-columns: 1.35fr 0.75fr;
-    gap: 20px;
-  }
-
-  .chat-history {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 420px;
-  }
-
-  .message {
-    border: 1px solid var(--app-border);
-    border-radius: 14px;
-    padding: 14px;
-  }
-
-  .message.user { border-left: 4px solid #111827; }
-  .message.assistant { background: #f8fafc; border-left: 4px solid var(--app-primary); }
-
-  .role {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--app-muted);
-    margin-bottom: 8px;
-  }
-
-  .summary-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .metric {
-    border: 1px solid var(--app-border);
-    border-radius: 12px;
-    padding: 12px;
-  }
-
-  .metric .value {
-    font-size: 22px;
-    font-weight: 700;
-  }
-
-  .prompt-chip {
-    border: 1px solid var(--app-border);
-    border-radius: 10px;
-    padding: 10px;
-    background: #eef4ff;
-  }
-
-  @media (max-width: 980px) {
-    .layout { grid-template-columns: 1fr; }
-  }
-</style>
-
-<div class="page">
-  <div class="page-header">
-    <h1>Strategic Chat</h1>
-    <p>Jarvis V2 · capa estratégica</p>
+<div class="app-stack">
+  <div>
+    <h1 class="app-page-title">Strategic Chat</h1>
+    <p class="app-page-subtitle">Jarvis V2 · capa estratégica</p>
   </div>
 
-  <div class="layout">
-    <section class="card">
-      <div class="card-body">
-
-        <div class="chat-history">
+  <div class="app-grid app-grid-main-aside">
+    <section class="app-card">
+      <div class="app-card-body">
+        <div class="app-chat-history">
           {% for item in history %}
-            <div class="message {{ item.role }}">
-              <div class="role">{% if item.role == "user" %}CEO{% else %}Jarvis{% endif %}</div>
-              {% if item.role == "assistant" %}
-                <pre>{{ item.content }}</pre>
-              {% else %}
-                <p>{{ item.content }}</p>
-              {% endif %}
+            <div class="app-card app-message {% if item.role == 'assistant' %}app-message-assistant{% endif %}">
+              <div class="app-card-body app-message-card-body">
+                <div class="app-message-role app-text-muted">
+                  {% if item.role == "user" %}CEO{% else %}Jarvis{% endif %}
+                </div>
+
+                {% if item.role == "assistant" %}
+                  <pre class="app-message-pre">{{ item.content }}</pre>
+                {% else %}
+                  <p class="app-message-content">{{ item.content }}</p>
+                {% endif %}
+              </div>
             </div>
           {% empty %}
-            <div>No hay historial todavía.</div>
+            <div class="app-card">
+              <div class="app-card-body">
+                <div class="app-empty">No hay historial todavía.</div>
+              </div>
+            </div>
           {% endfor %}
         </div>
 
-        <form method="post" class="mt-12">
-          {% csrf_token %}
-          <textarea name="message" required></textarea>
-          <div class="mt-8">
-            <button type="submit" class="btn-primary">Enviar</button>
-          </div>
-        </form>
+        <div class="app-chat-form">
+          <form method="post" class="app-stack app-chat-form-stack">
+            {% csrf_token %}
+            <div class="app-field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" required rows="6" class="app-textarea"></textarea>
+            </div>
 
+            <div>
+              <button type="submit" class="app-btn-primary">Enviar</button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
 
-    <aside class="card">
-      <div class="card-body">
-        <h2>Resumen</h2>
+    <aside class="app-stack">
+      <div class="app-card">
+        <div class="app-card-body">
+          <h2 class="app-section-title">Resumen</h2>
+          <p class="app-section-subtitle">Contexto operativo actual para la conversación estratégica.</p>
 
-        <div class="summary-grid mt-12">
-          <div class="metric"><div class="value">{{ context_summary.prioritized_opportunities_count }}</div><div class="label">Prioritized</div></div>
-          <div class="metric"><div class="value">{{ context_summary.at_risk_opportunities_count }}</div><div class="label">At Risk</div></div>
-          <div class="metric"><div class="value">{{ context_summary.open_tasks_count }}</div><div class="label">Tasks</div></div>
+          <div class="app-grid app-summary-grid">
+            <div class="app-card app-stat">
+              <div class="app-stat-value">{{ context_summary.prioritized_opportunities_count }}</div>
+              <div class="app-stat-label">Prioritized</div>
+            </div>
+
+            <div class="app-card app-stat">
+              <div class="app-stat-value">{{ context_summary.at_risk_opportunities_count }}</div>
+              <div class="app-stat-label">At Risk</div>
+            </div>
+
+            <div class="app-card app-stat app-summary-grid-full">
+              <div class="app-stat-value">{{ context_summary.open_tasks_count }}</div>
+              <div class="app-stat-label">Tasks</div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <h2 class="mt-20">Prompts</h2>
-        <div class="stack-sm mt-12">
-          {% for prompt in suggested_prompts %}
-            <div class="prompt-chip">{{ prompt }}</div>
-          {% endfor %}
+      <div class="app-card">
+        <div class="app-card-body">
+          <h2 class="app-section-title">Prompts</h2>
+          <p class="app-section-subtitle">Puntos de partida sugeridos para el CEO view.</p>
+
+          <div class="app-prompt-list">
+            {% for prompt in suggested_prompts %}
+              <div class="app-badge app-badge-neutral app-prompt-item">{{ prompt }}</div>
+            {% empty %}
+              <div class="app-empty">No hay prompts sugeridos.</div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </aside>

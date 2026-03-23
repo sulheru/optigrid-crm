@@ -312,13 +312,19 @@
 │   │   │   ├── models.cpython-312.pyc
 │   │   │   ├── opportunity_intelligence.cpython-312.pyc
 │   │   │   ├── priority.cpython-312.pyc
+│   │   │   ├── ranking_engine.cpython-312.pyc
 │   │   │   ├── services.cpython-312.pyc
+│   │   │   ├── simulation.cpython-312.pyc
 │   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
+│   │   │   ├── views.cpython-312.pyc
+│   │   │   └── views_simulation.cpython-312.pyc
+│   │   ├── ranking_engine.py
 │   │   ├── services.py
+│   │   ├── simulation.py
 │   │   ├── tests.py
 │   │   ├── urls.py
-│   │   └── views.py
+│   │   ├── views.py
+│   │   └── views_simulation.py
 │   ├── strategy
 │   │   ├── apps.py
 │   │   ├── __init__.py
@@ -568,7 +574,11 @@
 │   ├── base.html
 │   ├── dashboard
 │   │   ├── home.html
-│   │   └── index.html
+│   │   ├── index.html
+│   │   └── partials
+│   │       ├── decision_transparency.html
+│   │       ├── insight_list.html
+│   │       └── next_best_action.html
 │   ├── emailing
 │   │   ├── email_detail.html.legacy
 │   │   ├── email_list.html.legacy
@@ -604,15 +614,39 @@
 │       └── list.html
 ├── tests
 ├── tmp
+│   ├── action_vs_insight_check.txt
+│   ├── action_vs_insight_compile.txt
+│   ├── action_vs_insight_dashboard.html
+│   ├── action_vs_insight_runserver.log
+│   ├── add_simulation_url.txt
 │   ├── check_label_filters_fix.txt
 │   ├── check_labels_cleanup.txt
+│   ├── cockpit_v3_compile_check.txt
+│   ├── cockpit_v3_nba_dashboard_fix.html
+│   ├── cockpit_v3_nba_runserver_fix.log
+│   ├── cockpit_v3_nba_runserver.log
+│   ├── cockpit_v3_ranking_check.txt
+│   ├── cockpit_v3_runserver.log
 │   ├── dashboard_action_semantics_check.txt
 │   ├── dashboard_data_audit.txt
+│   ├── dashboard_index.html
 │   ├── dashboard_next_best_action_check.txt
 │   ├── dashboard_panel_v2_audit.txt
 │   ├── dashboard_render_status.txt
 │   ├── dashboard_v2_render_check.txt
 │   ├── dashboard_views_fix_check.txt
+│   ├── dashboard_views.py
+│   ├── decision_explainability_check.txt
+│   ├── decision_explainability_compile.txt
+│   ├── decision_explainability_dashboard.html
+│   ├── decision_explainability_runserver.log
+│   ├── decision_quality_v1_compile.txt
+│   ├── decision_quality_v1_dashboard.html
+│   ├── decision_quality_v1_runserver.log
+│   ├── decision_transparency_check.txt
+│   ├── decision_transparency_compile.txt
+│   ├── decision_transparency_dashboard.html
+│   ├── decision_transparency_runserver.log
 │   ├── installed_apps_check.txt
 │   ├── OptiGrid CRM.html_files
 │   │   ├── bootstrap.min.css
@@ -624,6 +658,9 @@
 │   │   ├── metisMenu.min.js
 │   │   └── style.css
 │   ├── OptiGrid CRM.html.txt
+│   ├── patch_build_decision_explanation.py
+│   ├── patch_explanation.py
+│   ├── patch_why_not.py
 │   ├── Recommendations · OptiGrid CRM.html_files
 │   │   ├── bootstrap.min.css
 │   │   ├── bootstrap.min.js
@@ -637,13 +674,27 @@
 │   ├── recommendations_action_semantics_check.txt
 │   ├── recommendations_actions_patch.html
 │   ├── recommendations_cards_check.txt
+│   ├── recommendations_list.html
+│   ├── recommendations_models.py
 │   ├── recommendations_row_alignment_check.txt
+│   ├── recommendations_tree.txt
 │   ├── recommendations_v2_audit.txt
 │   ├── recommendations_views_cleanup_check.txt
+│   ├── recommendations_views.py
 │   ├── render_verification.txt
 │   ├── runserver.log
-│   └── template_libraries.txt
+│   ├── search_confidence.txt
+│   ├── search_priority_score.txt
+│   ├── search_recommendation_type.txt
+│   ├── search_status.txt
+│   ├── simulation_panel_v2_compile.txt
+│   ├── simulation_panel_v2_dashboard.html
+│   ├── simulation_panel_v2_runserver.log
+│   ├── template_libraries.txt
+│   ├── ux_polish_v1_compile.txt
+│   ├── ux_polish_v1_dashboard.html
+│   └── ux_polish_v1_runserver.log
 ├── ui_repair_input.txt
 └── verification.txt
 
-118 directories, 529 files
+119 directories, 579 files

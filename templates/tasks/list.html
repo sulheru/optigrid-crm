@@ -1,270 +1,180 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/tasks/list.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 {% block title %}Tasks · OptiGrid CRM{% endblock %}
 {% block content %}
 
-<style>
-  .tasks {
-    display: grid;
-    gap: 18px;
-  }
-
-  .task-card {
-    overflow: hidden;
-  }
-
-  .revoked-card {
-    background: #fff7f7;
-    border-color: #fecaca;
-  }
-
-  .task-header-main {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .task-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-  }
-
-  .task-title.revoked {
-    text-decoration: line-through;
-    color: #991b1b;
-  }
-
-  .submeta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    color: var(--app-muted);
-    font-size: 14px;
-  }
-
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-content: flex-start;
-    justify-content: flex-end;
-  }
-
-  .badge-auto { background: #ede9fe; color: #7c3aed; }
-  .badge-manual { background: #e2e8f0; color: #475569; }
-  .badge-revoked { background: #fee2e2; color: #b91c1c; }
-  .badge-open { background: #dcfce7; color: #15803d; }
-  .badge-in-progress { background: #fef3c7; color: #b45309; }
-  .badge-done { background: #dbeafe; color: #2563eb; }
-  .badge-dismissed { background: #e2e8f0; color: #475569; }
-
-  .panel-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 16px;
-  }
-
-  .meta-list {
-    display: grid;
-    gap: 8px;
-    font-size: 14px;
-  }
-
-  .meta-row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 10px;
-  }
-
-  .meta-row strong {
-    color: var(--app-muted);
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  @media (max-width: 900px) {
-    .panel-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .meta-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
-
-<div class="page">
-  <div class="page-header">
-    <div class="title-block">
-      <h1>Tasks</h1>
-      <p>Supervisión operativa de tareas manuales y automáticas materializadas por el sistema.</p>
-    </div>
+<div class="app-stack">
+  <div>
+    <h1 class="app-page-title">Tasks</h1>
+    <p class="app-page-subtitle">Supervisión operativa de tareas manuales y automáticas materializadas por el sistema.</p>
   </div>
 
   {% if messages %}
-    <div class="stack-sm">
+    <div class="app-stack" style="gap:12px;">
       {% for message in messages %}
-        <div class="panel">{{ message }}</div>
+        <div class="app-card">
+          <div class="app-card-body">{{ message }}</div>
+        </div>
       {% endfor %}
     </div>
   {% endif %}
 
-  <div class="stats-grid">
-    <div class="stat"><div class="label">All</div><div class="value">{{ counts.all }}</div></div>
-    <div class="stat"><div class="label">Auto</div><div class="value">{{ counts.auto }}</div></div>
-    <div class="stat"><div class="label">Manual</div><div class="value">{{ counts.manual }}</div></div>
-    <div class="stat"><div class="label">Open</div><div class="value">{{ counts.open }}</div></div>
-    <div class="stat"><div class="label">In progress</div><div class="value">{{ counts.in_progress }}</div></div>
-    <div class="stat"><div class="label">Done</div><div class="value">{{ counts.done }}</div></div>
-    <div class="stat"><div class="label">Dismissed</div><div class="value">{{ counts.dismissed }}</div></div>
-    <div class="stat"><div class="label">Revoked</div><div class="value">{{ counts.revoked }}</div></div>
+  <div class="app-grid app-grid-auto-150">
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.all }}</div><div class="app-stat-label">All</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.auto }}</div><div class="app-stat-label">Auto</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.manual }}</div><div class="app-stat-label">Manual</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.open }}</div><div class="app-stat-label">Open</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.in_progress }}</div><div class="app-stat-label">In progress</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.done }}</div><div class="app-stat-label">Done</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.dismissed }}</div><div class="app-stat-label">Dismissed</div></div>
+    <div class="app-card app-stat"><div class="app-stat-value">{{ counts.revoked }}</div><div class="app-stat-label">Revoked</div></div>
   </div>
 
-  <div class="filters">
-    <form method="get">
-      <div>
-        <label for="source">Origen</label>
-        <select name="source" id="source">
-          <option value="all" {% if filters.source == "all" %}selected{% endif %}>All</option>
-          <option value="auto" {% if filters.source == "auto" %}selected{% endif %}>Auto</option>
-          <option value="manual" {% if filters.source == "manual" %}selected{% endif %}>Manual</option>
-        </select>
-      </div>
+  <div class="app-card">
+    <div class="app-card-body">
+      <form method="get" class="app-form-grid">
+        <div class="app-field">
+          <label for="source">Origen</label>
+          <select name="source" id="source" class="app-select">
+            <option value="all" {% if filters.source == "all" %}selected{% endif %}>All</option>
+            <option value="auto" {% if filters.source == "auto" %}selected{% endif %}>Auto</option>
+            <option value="manual" {% if filters.source == "manual" %}selected{% endif %}>Manual</option>
+          </select>
+        </div>
 
-      <div>
-        <label for="status">Estado</label>
-        <select name="status" id="status">
-          <option value="all" {% if filters.status == "all" %}selected{% endif %}>All</option>
-          <option value="open" {% if filters.status == "open" %}selected{% endif %}>Open</option>
-          <option value="in_progress" {% if filters.status == "in_progress" %}selected{% endif %}>In progress</option>
-          <option value="done" {% if filters.status == "done" %}selected{% endif %}>Done</option>
-          <option value="dismissed" {% if filters.status == "dismissed" %}selected{% endif %}>Dismissed</option>
-        </select>
-      </div>
+        <div class="app-field">
+          <label for="status">Estado</label>
+          <select name="status" id="status" class="app-select">
+            <option value="all" {% if filters.status == "all" %}selected{% endif %}>All</option>
+            <option value="open" {% if filters.status == "open" %}selected{% endif %}>Open</option>
+            <option value="in_progress" {% if filters.status == "in_progress" %}selected{% endif %}>In progress</option>
+            <option value="done" {% if filters.status == "done" %}selected{% endif %}>Done</option>
+            <option value="dismissed" {% if filters.status == "dismissed" %}selected{% endif %}>Dismissed</option>
+          </select>
+        </div>
 
-      <div>
-        <label for="revoked">Revocación</label>
-        <select name="revoked" id="revoked">
-          <option value="active" {% if filters.revoked == "active" %}selected{% endif %}>Active only</option>
-          <option value="revoked" {% if filters.revoked == "revoked" %}selected{% endif %}>Revoked only</option>
-          <option value="all" {% if filters.revoked == "all" %}selected{% endif %}>All</option>
-        </select>
-      </div>
+        <div class="app-field">
+          <label for="revoked">Revocación</label>
+          <select name="revoked" id="revoked" class="app-select">
+            <option value="active" {% if filters.revoked == "active" %}selected{% endif %}>Active only</option>
+            <option value="revoked" {% if filters.revoked == "revoked" %}selected{% endif %}>Revoked only</option>
+            <option value="all" {% if filters.revoked == "all" %}selected{% endif %}>All</option>
+          </select>
+        </div>
 
-      <div>
-        <label for="source_action">Source action</label>
-        <select name="source_action" id="source_action">
-          <option value="all" {% if filters.source_action == "all" %}selected{% endif %}>All</option>
-          <option value="empty" {% if filters.source_action == "empty" %}selected{% endif %}>No source action</option>
-          {% for value in source_action_values %}
-            <option value="{{ value }}" {% if filters.source_action == value %}selected{% endif %}>{{ value }}</option>
-          {% endfor %}
-        </select>
-      </div>
+        <div class="app-field">
+          <label for="source_action">Source action</label>
+          <select name="source_action" id="source_action" class="app-select">
+            <option value="all" {% if filters.source_action == "all" %}selected{% endif %}>All</option>
+            <option value="empty" {% if filters.source_action == "empty" %}selected{% endif %}>No source action</option>
+            {% for value in source_action_values %}
+              <option value="{{ value }}" {% if filters.source_action == value %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+          </select>
+        </div>
 
-      <div>
-        <label>&nbsp;</label>
-        <button type="submit">Apply filters</button>
-      </div>
-    </form>
+        <div>
+          <button type="submit" class="app-btn-primary">Apply filters</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <div class="tasks">
-    {% for task in tasks %}
-      <div class="card task-card {% if task.is_revoked %}revoked-card{% endif %}">
-        <div class="card-body">
-          <div class="task-header-main">
-            <div>
-              <div class="task-title {% if task.is_revoked %}revoked{% endif %}">{{ task.title }}</div>
-              <div class="submeta">
-                <span><strong>Type:</strong> {{ task.get_task_type_display }}</span>
-                <span><strong>Created:</strong> {{ task.created_at }}</span>
-                <span><strong>Updated:</strong> {{ task.updated_at }}</span>
+  {% if tasks %}
+    <div class="app-stack">
+      {% for task in tasks %}
+        <div class="app-card {% if task.is_revoked %}app-card-danger-soft{% endif %}">
+          <div class="app-card-body">
+            <div class="app-row-between">
+              <div>
+                <h2 class="app-title-lg {% if task.is_revoked %}app-title-revoked{% endif %}">{{ task.title }}</h2>
+                <div class="app-submeta app-text-muted">
+                  <span><strong>Type:</strong> {{ task.get_task_type_display }}</span>
+                  <span><strong>Created:</strong> {{ task.created_at }}</span>
+                  <span><strong>Updated:</strong> {{ task.updated_at }}</span>
+                </div>
+              </div>
+
+              <div class="app-badge-row">
+                {% if task.source == "auto" %}
+                  <span class="app-badge app-badge-info">AUTO</span>
+                {% else %}
+                  <span class="app-badge app-badge-neutral">MANUAL</span>
+                {% endif %}
+
+                {% if task.is_revoked %}
+                  <span class="app-badge app-badge-danger">REVOKED</span>
+                {% elif task.status == "open" %}
+                  <span class="app-badge app-badge-success">OPEN</span>
+                {% elif task.status == "in_progress" %}
+                  <span class="app-badge app-badge-warning">IN PROGRESS</span>
+                {% elif task.status == "done" %}
+                  <span class="app-badge app-badge-info">DONE</span>
+                {% else %}
+                  <span class="app-badge app-badge-neutral">{{ task.effective_status_label|upper }}</span>
+                {% endif %}
               </div>
             </div>
 
-            <div class="badges">
-              {% if task.source == "auto" %}
-                <span class="chip badge-auto">AUTO</span>
-              {% else %}
-                <span class="chip badge-manual">MANUAL</span>
-              {% endif %}
-
-              {% if task.is_revoked %}
-                <span class="chip badge-revoked">REVOKED</span>
-              {% elif task.status == "open" %}
-                <span class="chip badge-open">OPEN</span>
-              {% elif task.status == "in_progress" %}
-                <span class="chip badge-in-progress">IN PROGRESS</span>
-              {% elif task.status == "done" %}
-                <span class="chip badge-done">DONE</span>
-              {% else %}
-                <span class="chip badge-dismissed">{{ task.effective_status_label|upper }}</span>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="panel-grid mt-16">
-            <div class="panel">
-              <h3>Description</h3>
-              <p>{{ task.description|default:"-" }}</p>
-            </div>
-
-            <div class="panel">
-              <h3>Task metadata</h3>
-              <div class="meta-list">
-                <div class="meta-row">
-                  <strong>Source action</strong>
-                  <span>{{ task.source_action|default:"-" }}</span>
+            <div class="app-grid app-grid-auto-280" style="margin-top:18px;">
+              <div class="app-card">
+                <div class="app-card-body">
+                  <h3 class="app-section-heading">Description</h3>
+                  <p class="app-message-content">{{ task.description|default:"-" }}</p>
                 </div>
-                <div class="meta-row">
-                  <strong>Priority</strong>
-                  <span>{{ task.priority|default:"-" }}</span>
-                </div>
-                <div class="meta-row">
-                  <strong>Due at</strong>
-                  <span>{{ task.due_at|default:"-" }}</span>
-                </div>
-                <div class="meta-row">
-                  <strong>Opportunity</strong>
-                  <span>
-                    {% if task.opportunity %}
-                      #{{ task.opportunity.id }} — {{ task.opportunity }}
-                    {% else %}
-                      -
-                    {% endif %}
-                  </span>
+              </div>
+
+              <div class="app-card">
+                <div class="app-card-body">
+                  <h3 class="app-section-heading">Task metadata</h3>
+                  <div class="app-detail-list">
+                    <div class="app-detail-row">
+                      <strong class="app-detail-label">Source action</strong>
+                      <span>{{ task.source_action|default:"-" }}</span>
+                    </div>
+                    <div class="app-detail-row">
+                      <strong class="app-detail-label">Priority</strong>
+                      <span>{{ task.priority|default:"-" }}</span>
+                    </div>
+                    <div class="app-detail-row">
+                      <strong class="app-detail-label">Due at</strong>
+                      <span>{{ task.due_at|default:"-" }}</span>
+                    </div>
+                    <div class="app-detail-row">
+                      <strong class="app-detail-label">Opportunity</strong>
+                      <span>
+                        {% if task.opportunity %}
+                          #{{ task.opportunity.id }} — {{ task.opportunity }}
+                        {% else %}
+                          -
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="actions">
-            {% if task.can_be_revoked %}
-              <form method="post" action="{% url 'tasks:revoke_task' task.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Revoke</button>
-              </form>
-            {% else %}
-              <span class="muted text-md">No reversible action available.</span>
-            {% endif %}
+            <div class="app-action-row">
+              {% if task.can_be_revoked %}
+                <form method="post" action="{% url 'tasks:revoke_task' task.id %}" style="margin:0;">
+                  {% csrf_token %}
+                  <button type="submit" class="app-btn-danger">Revoke</button>
+                </form>
+              {% else %}
+                <span class="app-text-muted">No reversible action available.</span>
+              {% endif %}
+            </div>
           </div>
         </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="app-card">
+      <div class="app-card-body">
+        <div class="app-empty">No hay tasks con los filtros actuales.</div>
       </div>
-    {% empty %}
-      <div class="empty">
-        No hay tasks con los filtros actuales.
-      </div>
-    {% endfor %}
-  </div>
+    </div>
+  {% endif %}
 </div>
 
 {% endblock %}

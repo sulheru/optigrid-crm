@@ -4,15 +4,15 @@
 {{AUTO}}
 
 ## Fase
-COCKPIT V3 — Next Best Action Engine
+COCKPIT V3 — Decision Engine
 
 ## Trabajo realizado
 
-- Diseño e implementación de ranking engine
+- Implementación de ranking engine
 - Introducción de urgency scoring
 - Definición de decision_quality_score
-- Implementación de NBA (Next Best Action)
-- Dashboard upgrade ("What should you do now")
+- Implementación de Next Best Action (NBA)
+- Dashboard upgrade
 - Action vs Insight split
 - Decision explainability:
   - Why this one
@@ -23,24 +23,31 @@ COCKPIT V3 — Next Best Action Engine
   - delta metrics
 - Simulation Panel V2 (UI interactiva)
 
+## UI
+
+Migradas a V2:
+- Dashboard
+- Inbox
+- Outbox
+- Recommendations
+
+Pendientes:
+- Chat
+- Tasks
+- Opportunities
+- Leads
+
 ## Resultado
 
-Sistema pasa a ser:
-Decision engine interactivo con capacidad de comparación
+Sistema convertido en decision cockpit interactivo
 
 ## Estado técnico
 
 - servidor OK
 - compilación OK
-- UI integrada
 - endpoints funcionales
-
-## Observaciones
-
-- arquitectura estable
-- base sólida para iteración UX
-- sistema listo para refinamiento
+- UI parcialmente consistente
 
 ## Próxima sesión
 
-UX Polish + Decision Intelligence V2
+UI Foundation V2 — Completion

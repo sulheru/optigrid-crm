@@ -1,7 +1,0 @@
-28 objects imported automatically (use -v 2 for details).
-
-NBA: 3 reply_strategy
-WHY_SELECTED: Seleccionada por una combinación de urgencia y ejecutabilidad. es directamente ejecutable desde el cockpit. presenta señales como reply overdue.
-ALT: 13 reply_strategy Quedó por detrás en el desempate del ranking.
-ALT: 4 contact_strategy Tiene menor decision score que la acción seleccionada; presenta menos urgencia.
-ALT: 14 contact_strategy Tiene menor decision score que la acción seleccionada; presenta menos urgencia.

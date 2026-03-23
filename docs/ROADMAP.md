@@ -15,13 +15,23 @@ Incluye:
 - Explainability
 - Simulation panel
 
-## FASE 3 — DECISION INTELLIGENCE V2 (NEXT)
+## FASE 3 — UI FOUNDATION V2 — COMPLETION (CURRENT)
+
+Objetivo:
+Unificar toda la interfaz bajo un único sistema visual
+
+Scope:
+- Strategic Chat
+- Tasks
+- Opportunities
+- Leads
+
+## FASE 4 — DECISION INTELLIGENCE V2
 
 Objetivo:
 Convertir el sistema en un asistente tipo consultor senior
 
 Foco:
-- UX polish
 - lenguaje natural
 - claridad de decisión
-- confianza del usuario
+- UX avanzada

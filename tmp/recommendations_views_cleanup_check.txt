@@ -1,6 +1,0 @@
-28 objects imported automatically (use -v 2 for details).
-
-EXECUTABLE: ['contact_strategy', 'followup', 'reply_strategy']
-PROMOTABLE: ['opportunity_review', 'prepare_proposal', 'pricing_strategy', 'qualification', 'schedule_call']
-STATUS_CHOICES: [('new', 'New'), ('materialized', 'Materialized'), ('dismissed', 'Dismissed'), ('executed', 'Executed')]
-RECOMMENDATION_TYPES: ['qualification', 'opportunity_review', 'reply_strategy', 'contact_strategy', 'next_action', 'followup', 'timing_strategy', 'pricing_strategy', 'hold', 'risk_flag']

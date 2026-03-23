@@ -1,8 +1,0 @@
-28 objects imported automatically (use -v 2 for details).
-
-NBA: 3 reply_strategy
-NBA_SUMMARY: Should be handled soon
-NBA_EXPLANATION: Seleccionada por combinación de urgencia media y buena ejecutabilidad. porque puede ejecutarse directamente desde el cockpit. y porque presenta señales como reply overdue.
---- INSIGHTS ---
-6 followup Insight only Se mantiene como insight. porque el texto sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como followup overdue.
-16 followup Insight only Se mantiene como insight. porque el texto sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como followup overdue.

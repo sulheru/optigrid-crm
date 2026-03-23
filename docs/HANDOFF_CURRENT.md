@@ -1,72 +1,49 @@
 # HANDOFF — CURRENT STATE
 
-## System: OptiGrid CRM
+## System Status
 
-### 🧩 Architecture
+OptiGrid CRM is currently in a **post-UI consolidation phase**.
 
-1. Communication Layer (Email)
-2. CRM Core
-3. Semantic Engine (LLM)
-4. Governance Layer
-5. Cockpit UI
+The system is:
+- Functionally complete at pipeline level
+- Visually unified at a high level
+- Not yet fully cleaned or audited
 
----
+## Key Achievements This Session
 
-## 🔁 Pipeline
+- Design system consolidated into `design_system.html`
+- Major templates refactored:
+  - tasks
+  - leads
+  - opportunities
+  - strategic chat
+- UI Foundation V2 mostly aligned with app shell
 
-Email → Fact → Inference → Proposal → Recommendation → Execute → Action
+## Known Issues
 
----
+- `base.html` still contains duplicated design system styles
+- Some templates may still contain inline styles
+- No global verification performed after refactor
+- Possible inconsistencies between templates
 
-## ⚙️ Current Capabilities
+## Risk
 
-### Recommendations
-- Generated automatically
-- Prioritized (priority_score, confidence)
-- Executable via UI
-- Status lifecycle:
-  - new
-  - executed
-  - dismissed
+Medium:
+- UI inconsistencies may exist
+- Hidden duplication may remain
+- System state partially assumed, not verified
 
-### Execution
-- Unified endpoint
-- Action types:
-  - followup
-  - contact_strategy
-  - reply_strategy
+## Strategic Position
 
-### Dashboard
-- AI Recommended Actions block
-- Sorted by priority/confidence
-- Partial semantic mapping
+The project is at a **critical transition point**:
 
----
+From:
+- iterative building
 
-## 🎨 UI
+To:
+- system-level understanding and control
 
-### Recommendations View
-- Card-based layout
-- Inline actions
-- Clean hierarchy
-- No table artifacts
+## Recommendation
 
----
-
-## ⚠️ Known Gaps
-
-- No global prioritization (Next Best Action)
-- No urgency system
-- No activity feed
-- No cross-recommendation reasoning
-
----
-
-## 🧠 System Nature
-
-Transitioning from:
-CRM → AI Operating System
-
-User role:
-Supervisor
-
+Next session MUST:
+- audit the entire system before further development
