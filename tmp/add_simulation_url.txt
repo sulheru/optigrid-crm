@@ -1,0 +1,7 @@
+Añadir en apps/recommendations/urls.py:
+
+from .views_simulation import simulate_recommendation
+
+y en urlpatterns:
+
+path("simulate/<int:recommendation_id>/", simulate_recommendation, name="simulate_recommendation"),

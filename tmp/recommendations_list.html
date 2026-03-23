@@ -1,0 +1,411 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/recommendations/list.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+{% extends "base.html" %}
+{% load label_filters %}
+
+{% block title %}Recommendations · OptiGrid CRM{% endblock %}
+
+{% block content %}
+<style>
+  .recommendations-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .recommendations-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .recommendations-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .recommendations-subtitle {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .recommendations-filters-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .recommendations-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .recommendations-field select {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0 12px;
+    background: #fff;
+    color: #111827;
+  }
+
+  .recommendations-filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 100%;
+    flex-wrap: wrap;
+  }
+
+  .recommendations-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .recommendation-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+  }
+
+  .recommendation-card--highlight {
+    border-left: 4px solid #7c3aed;
+    background: linear-gradient(135deg, #faf5ff 0%, #ffffff 22%);
+  }
+
+  .recommendation-card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .recommendation-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .recommendation-card-title-wrap {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .recommendation-card-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .recommendation-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-meta-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    color: #475569;
+  }
+
+  .recommendation-text {
+    color: #111827;
+    line-height: 1.7;
+    white-space: pre-line;
+    word-break: break-word;
+    font-size: 14px;
+  }
+
+  .recommendation-note {
+    margin-top: -4px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .recommendation-footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+  }
+
+  .recommendation-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-actions form {
+    margin: 0;
+  }
+
+  .recommendation-empty {
+    padding: 32px;
+    text-align: center;
+    color: #6b7280;
+  }
+
+  .recommendation-status-note {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .app-badge-status-new {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .app-badge-status-materialized {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .app-badge-status-dismissed {
+    background: #e5e7eb;
+    color: #4b5563;
+  }
+
+  .app-badge-status-executed {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .icon-chip {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef6ff;
+    color: #2563eb;
+    flex: 0 0 auto;
+    font-size: 15px;
+  }
+
+  @media (max-width: 992px) {
+    .recommendations-filters-form {
+      grid-template-columns: 1fr;
+    }
+
+    .recommendation-card-body {
+      padding: 18px;
+    }
+
+    .recommendation-card-top,
+    .recommendation-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>
+
+<div class="recommendations-page">
+  <div class="recommendations-header">
+    <div>
+      <h1 class="recommendations-title">Recommendations</h1>
+      <p class="recommendations-subtitle">
+        Supervisión operativa de recomendaciones generadas por el sistema.
+      </p>
+    </div>
+
+    <a href="/" class="app-btn-secondary">
+      <i class="fa fa-arrow-left"></i>
+      <span>Dashboard</span>
+    </a>
+  </div>
+
+  <div class="app-card">
+    <div class="app-card-body">
+      <form method="get" class="recommendations-filters-form">
+        <div class="recommendations-field">
+          <label for="status">Estado</label>
+          <select id="status" name="status">
+            <option value="">Todos</option>
+            {% for value, label in status_choices %}
+              <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>
+                {{ value|status_label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="recommendations-field">
+          <label for="recommendation_type">Tipo</label>
+          <select id="recommendation_type" name="recommendation_type">
+            <option value="">Todos</option>
+            {% for value in recommendation_types %}
+              <option value="{{ value }}" {% if selected_recommendation_type == value %}selected{% endif %}>
+                {{ value|recommendation_label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="recommendations-filter-actions">
+          <button type="submit" class="app-btn-primary">
+            <i class="fa fa-filter"></i>
+            <span>Aplicar filtros</span>
+          </button>
+
+          <a href="/recommendations/" class="app-btn-secondary">
+            <i class="fa fa-refresh"></i>
+            <span>Limpiar</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="recommendations-stack">
+    {% for recommendation in recommendations %}
+      <article class="recommendation-card {% if recommendation.recommendation_type == 'opportunity_review' %}recommendation-card--highlight{% endif %}">
+        <div class="recommendation-card-body">
+
+          <div class="recommendation-card-top">
+            <div class="recommendation-card-head">
+              <span class="icon-chip">
+                <i class="fa {{ recommendation.ui_icon }}"></i>
+              </span>
+
+              <div class="recommendation-card-title-wrap">
+                <h2 class="recommendation-card-title">
+                  {{ recommendation.recommendation_type|recommendation_label }}
+                </h2>
+
+                <div class="recommendation-badges">
+                  <span class="app-badge app-badge-neutral">
+                    Type
+                  </span>
+
+                  <span class="app-badge
+                    {% if recommendation.status == 'new' %}
+                      app-badge-status-new
+                    {% elif recommendation.status == 'materialized' %}
+                      app-badge-status-materialized
+                    {% elif recommendation.status == 'dismissed' %}
+                      app-badge-status-dismissed
+                    {% elif recommendation.status == 'executed' %}
+                      app-badge-status-executed
+                    {% else %}
+                      app-badge-neutral
+                    {% endif %}
+                  ">
+                    {{ recommendation.status|status_label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="recommendation-meta">
+              <span class="recommendation-meta-item">ID {{ recommendation.id }}</span>
+              <span class="recommendation-meta-item">Confidence {{ recommendation.confidence|default:"—" }}</span>
+              <span class="recommendation-meta-item">
+                Scope {{ recommendation.scope_type|default:"—" }}#{{ recommendation.scope_id|default:"—" }}
+              </span>
+            </div>
+          </div>
+
+          <div class="recommendation-text">{{ recommendation.recommendation_text }}</div>
+
+          {% if recommendation.recommendation_type == "opportunity_review" %}
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          {% endif %}
+
+          <div class="recommendation-footer">
+            <div class="recommendation-footer-left">
+              {% if recommendation.status != "new" %}
+                <div class="recommendation-status-note">
+                  Sin acciones disponibles para este estado.
+                </div>
+              {% endif %}
+            </div>
+
+            {% if recommendation.status == "new" %}
+              <div class="recommendation-actions">
+                {% for a in recommendation.available_actions %}
+                  <form method="post" action="{{ a.url }}">
+                    {% csrf_token %}
+                    <button type="submit" class="app-btn-{{ a.style }}">
+                      <i class="fa {{ a.icon }}"></i>
+                      <span>{{ a.label }}</span>
+                    </button>
+                  </form>
+                {% endfor %}
+
+                <form method="post" action="/recommendations/{{ recommendation.id }}/dismiss/">
+                  {% csrf_token %}
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-times"></i>
+                    <span>Dismiss</span>
+                  </button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+      </article>
+    {% empty %}
+      <div class="app-card">
+        <div class="recommendation-empty">
+          No hay recomendaciones disponibles.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

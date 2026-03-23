@@ -1,66 +1,44 @@
-# NEXT SESSION — Cockpit V3
+PROYECTO: OptiGrid CRM — AI Commercial Operating System
 
-## 🎯 Goal
+FASE SIGUIENTE: UX POLISH V1 / DECISION INTELLIGENCE V2
 
-Introduce intelligence layer on top of recommendations:
+CONTEXTO
 
-👉 NEXT BEST ACTION ENGINE
+Sistema ya capaz de:
+- seleccionar la mejor acción (NBA)
+- explicar decisiones
+- comparar alternativas
+- simular impacto
 
----
+OBJETIVO
 
-## 🔥 Objectives
+Refinar experiencia y claridad de decisión.
 
-### 1. Next Best Action (NBA)
-- Select single most important recommendation
-- Based on:
-  - priority_score
-  - confidence
-  - urgency signals
-  - type weighting
+PRIORIDADES
 
-### 2. Urgency Layer
-- Detect time-sensitive actions
-- Introduce:
-  - urgency_score
-  - overdue logic
-  - escalation flags
+1. Copy ejecutivo
+- mejorar textos de explainability
+- lenguaje claro, directo y accionable
 
-### 3. Dashboard Upgrade
-- New top block:
-  → "What should you do now"
-- Separate from list
+2. Simulation Panel V3
+- mejor layout visual (verde/rojo, jerarquía visual)
+- eliminar sensación de “debug panel”
 
-### 4. Recommendation Ranking Engine
-- Global scoring formula
-- Sort across types
+3. Natural Explanation
+- “Esta opción es mejor porque…”
+- impacto en negocio, no solo métricas
 
----
+4. UI Consistency
+- revisar tamaños, spacing, jerarquía
 
-## 🧠 Key Idea
+5. Opcional
+- persistencia de simulaciones
+- decision audit trail
 
-Move from:
+OBJETIVO FINAL
 
-List of actions → Decision system
+Pasar de:
+Sistema que permite comparar decisiones
 
----
-
-## ⚙️ Suggested Implementation
-
-- New module:
-  apps.recommendations.engine
-
-- Functions:
-  - compute_priority()
-  - compute_urgency()
-  - get_next_best_action()
-
----
-
-## 📌 Expected Outcome
-
-System starts behaving like:
-
-👉 Autonomous commercial brain
-
-Not just assistant
-
+A:
+Sistema que explica decisiones como un consultor senior

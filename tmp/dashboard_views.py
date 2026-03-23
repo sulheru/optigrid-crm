@@ -1,6 +1,9 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/dashboard_views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.shortcuts import render
 
 from apps.core.ui_semantics import (
+    build_available_actions,
     get_priority_level,
     get_recommendation_ui,
 )
@@ -8,11 +11,7 @@ from apps.emailing.models import InboundEmail, OutboundEmail
 from apps.events.models import ActivityEvent
 from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
-from apps.recommendations.ranking_engine import (
-    get_next_best_action,
-    rank_recommendations,
-    split_recommendations_by_kind,
-)
+from apps.recommendations.priority import compute_priority_score
 
 
 def dashboard_home_view(request):
@@ -33,10 +32,10 @@ def dashboard_home_view(request):
         AIRecommendation.objects.filter(status=AIRecommendation.STATUS_NEW)
     )
 
-    ranked = rank_recommendations(recommendations)
-    actionable_recommendations, insight_recommendations = split_recommendations_by_kind(ranked)
+    scored = []
+    for recommendation in recommendations:
+        recommendation.priority_score = compute_priority_score(recommendation)
 
-    for recommendation in ranked:
         priority_level, priority_config = get_priority_level(
             recommendation.priority_score
         )
@@ -48,14 +47,18 @@ def dashboard_home_view(request):
         ui_config = get_recommendation_ui(recommendation.recommendation_type)
         recommendation.ui_icon = ui_config["icon"]
         recommendation.ui_color = ui_config["color"]
+        recommendation.available_actions = build_available_actions(recommendation)
 
-    top_actions = actionable_recommendations[:10]
-    best_action = get_next_best_action(ranked)
-    alternatives = [r for r in actionable_recommendations if getattr(r, "id", None) != getattr(best_action, "id", None)][:3] if best_action else actionable_recommendations[:3]
+        scored.append(recommendation)
 
-    high_urgency = [r for r in actionable_recommendations if r.urgency_level == "high"][:5]
-    medium_urgency = [r for r in actionable_recommendations if r.urgency_level == "medium"][:5]
-    low_urgency = [r for r in actionable_recommendations if r.urgency_level == "low"][:5]
+    scored.sort(key=lambda x: x.priority_score, reverse=True)
+
+    top_actions = scored[:10]
+    best_action = top_actions[0] if top_actions else None
+
+    high_urgency = [r for r in scored if r.priority_level == "high"][:5]
+    medium_urgency = [r for r in scored if r.priority_level == "medium"][:5]
+    low_urgency = [r for r in scored if r.priority_level == "low"][:5]
 
     recent_activity = list(
         ActivityEvent.objects.order_by("-created_at")[:10]
@@ -72,8 +75,6 @@ def dashboard_home_view(request):
         "recent_opportunities": recent_opportunities,
         "top_actions": top_actions,
         "best_action": best_action,
-        "nba_alternatives": alternatives,
-        "insight_recommendations": insight_recommendations[:6],
         "urgency_high": high_urgency,
         "urgency_medium": medium_urgency,
         "urgency_low": low_urgency,

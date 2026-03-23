@@ -1,0 +1,71 @@
+{% load label_filters %}
+
+<div class="app-card" style="margin-bottom: 24px;">
+  <div class="app-card-body">
+    <div class="section-toolbar">
+      <div>
+        <h2 class="app-section-title">Por qué esta</h2>
+        <div class="app-section-subtitle">
+          Transparencia comparativa sobre la selección de la acción principal.
+        </div>
+      </div>
+    </div>
+
+    {% if best_action %}
+      <div style="margin-bottom:18px; padding:16px; border:1px solid #e5e7eb; border-radius:14px; background:#f8fafc;">
+        <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">
+          Seleccionada
+        </div>
+        <div style="font-size:15px; font-weight:700; color:#111827; margin-bottom:6px;">
+          {{ best_action.recommendation_type|recommendation_label }}
+        </div>
+        <div style="font-size:14px; line-height:1.6; color:#475569;">
+          {{ best_action.why_selected }}
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:10px;">
+          Por qué no las otras
+        </div>
+
+        {% if nba_alternatives %}
+          <div class="signal-list">
+            {% for recommendation in nba_alternatives %}
+              <article class="mini-card">
+                <div class="mini-card-title">
+                  {{ recommendation.recommendation_type|recommendation_label }}
+                </div>
+                <div class="mini-card-meta">
+                  ID {{ recommendation.id }} · Decisión {{ recommendation.decision_quality_score }} · Urgencia {{ recommendation.urgency_score }}
+                </div>
+                <div class="mini-card-text">
+                  {{ recommendation.why_not_selected }}
+                </div>
+                <div style="margin-top:10px;">
+                  <button
+                    type="button"
+                    onclick="simulateRecommendation({{ recommendation.id }}, '{{ recommendation.recommendation_type|recommendation_label|escapejs }}')"
+                    class="app-btn-secondary"
+                    style="font-size:12px; padding:6px 10px;"
+                  >
+                    <i class="fa fa-random"></i>
+                    ¿Y si elijo esta?
+                  </button>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-panel">
+            No hay alternativas relevantes para comparar.
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="empty-panel">
+        No hay una acción principal seleccionada en este momento.
+      </div>
+    {% endif %}
+  </div>
+</div>

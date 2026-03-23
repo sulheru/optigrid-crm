@@ -1,0 +1,17 @@
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/dashboard/index.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>AI Recommended Actions</h2>
+
+<div class="reco-list">
+  {% for r in recommendations %}
+    {% include "dashboard/partials/recommendation_card.html" %}
+  {% empty %}
+    <p>No recommendations available</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

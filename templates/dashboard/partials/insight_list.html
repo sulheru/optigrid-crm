@@ -1,0 +1,53 @@
+{% load label_filters %}
+
+<div class="app-card">
+  <div class="app-card-body">
+    <div class="section-toolbar">
+      <div>
+        <h2 class="app-section-title">Things to keep in mind</h2>
+        <div class="app-section-subtitle">
+          Señales relevantes del sistema que conviene tener presentes, aunque no impliquen acción inmediata.
+        </div>
+      </div>
+    </div>
+
+    {% if insight_recommendations %}
+      <div class="signal-list">
+        {% for recommendation in insight_recommendations %}
+          <article class="mini-card">
+            <h3 class="mini-card-title">
+              <span class="icon-chip">
+                <i class="fa {{ recommendation.ui_icon }}"></i>
+              </span>
+              {{ recommendation.recommendation_type|recommendation_label }}
+            </h3>
+
+            <div class="mini-card-meta">
+              ID {{ recommendation.id }} · {{ recommendation.decision_summary }} · Urgency {{ recommendation.urgency_score }}
+            </div>
+
+            <div class="mini-card-text">
+              {{ recommendation.recommendation_text }}
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; line-height:1.55; color:#475569;">
+              {{ recommendation.decision_explanation }}
+            </div>
+
+            {% if recommendation.urgency_flags %}
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                {% for flag in recommendation.urgency_flags %}
+                  <span class="app-badge app-badge-neutral">{{ flag }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-panel">
+        No hay insights destacados en este momento.
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,125 @@
+{% load label_filters %}
+
+<div class="app-card" style="margin-bottom: 24px;">
+  <div class="app-card-body">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+          <span class="app-badge app-badge-neutral">What should you do now</span>
+
+          {% if best_action %}
+            <span class="app-badge
+              {% if best_action.urgency_level == 'high' %}
+                app-badge-danger
+              {% elif best_action.urgency_level == 'medium' %}
+                app-badge-warning
+              {% else %}
+                app-badge-success
+              {% endif %}
+            ">
+              Urgency {{ best_action.urgency_level|title }}
+            </span>
+
+            <span class="app-badge
+              {% if best_action.priority_level == 'high' %}
+                app-badge-danger
+              {% elif best_action.priority_level == 'medium' %}
+                app-badge-warning
+              {% else %}
+                app-badge-neutral
+              {% endif %}
+            ">
+              Priority {{ best_action.priority_label }}
+            </span>
+
+            <span class="app-badge app-badge-info">
+              {{ best_action.decision_summary }}
+            </span>
+          {% endif %}
+        </div>
+
+        <h2 style="margin:0 0 8px 0; font-size:28px; line-height:1.2;">
+          Next Best Action
+        </h2>
+
+        <p style="margin:0; color:#6b7280;">
+          La recomendación más importante del sistema en este momento.
+        </p>
+      </div>
+    </div>
+
+    {% if best_action %}
+      <div style="margin-top:22px; border:1px solid #e5e7eb; border-radius:18px; padding:22px; background:linear-gradient(135deg, #faf5ff 0%, #ffffff 26%);">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:280px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <span class="icon-chip">
+                <i class="fa {{ best_action.ui_icon }}"></i>
+              </span>
+
+              <div>
+                <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#6b7280;">
+                  {{ best_action.recommendation_type|default:"Recommendation" }}
+                </div>
+                <div style="font-size:22px; font-weight:700; color:#111827; line-height:1.25;">
+                  {{ best_action.recommendation_type|recommendation_label }}
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:15px; line-height:1.7; color:#111827; white-space:pre-line; margin-bottom:14px;">
+              {{ best_action.recommendation_text }}
+            </div>
+
+            <div style="font-size:14px; line-height:1.6; color:#475569; margin-bottom:16px;">
+              {{ best_action.decision_explanation }}
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+              <span class="recommendation-meta-item">ID {{ best_action.id }}</span>
+              <span class="recommendation-meta-item">Global {{ best_action.global_score }}</span>
+              <span class="recommendation-meta-item">Decision {{ best_action.decision_quality_score }}</span>
+              <span class="recommendation-meta-item">Urgency {{ best_action.urgency_score }}</span>
+            </div>
+
+            {% if best_action.urgency_flags %}
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                {% for flag in best_action.urgency_flags %}
+                  <span class="app-badge app-badge-neutral">{{ flag }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; min-width:220px;">
+            {% if best_action.available_actions %}
+              {% for a in best_action.available_actions %}
+                <form method="post" action="{{ a.url }}" style="margin:0;">
+                  {% csrf_token %}
+                  <button type="submit" class="app-btn-{{ a.style }}" style="width:100%; justify-content:center;">
+                    <i class="fa {{ a.icon }}"></i>
+                    <span>{{ a.label }}</span>
+                  </button>
+                </form>
+              {% endfor %}
+            {% endif %}
+
+            <a href="/recommendations/" class="app-btn-secondary" style="text-align:center;">
+              <i class="fa fa-list"></i>
+              <span>View all recommendations</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div style="margin-top:22px; border:1px dashed #d1d5db; border-radius:18px; padding:22px; background:#fff;">
+        <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:8px;">
+          No clear next action
+        </div>
+        <div style="color:#6b7280; line-height:1.6;">
+          No hay recomendaciones elegibles para mostrarse como decisión principal.
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

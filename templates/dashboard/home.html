@@ -406,6 +406,158 @@
     flex: 0 0 auto;
   }
 
+  .simulation-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.42);
+    z-index: 1200;
+    display: none;
+  }
+
+  .simulation-overlay.is-open {
+    display: block;
+  }
+
+  .simulation-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    max-width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 1300;
+    box-shadow: -10px 0 30px rgba(15, 23, 42, 0.16);
+    border-left: 1px solid #e5e7eb;
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .simulation-panel.is-open {
+    transform: translateX(0);
+  }
+
+  .simulation-panel-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .simulation-panel-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .simulation-panel-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .simulation-panel-close {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #111827;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+
+  .simulation-panel-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .simulation-state {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    background: #f8fafc;
+  }
+
+  .simulation-state-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .simulation-state-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+  }
+
+  .simulation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .simulation-metric {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+  }
+
+  .simulation-metric-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  .simulation-metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+  }
+
+  .simulation-metric-value.delta-positive {
+    color: #15803d;
+  }
+
+  .simulation-metric-value.delta-negative {
+    color: #b91c1c;
+  }
+
+  .simulation-metric-value.delta-neutral {
+    color: #475569;
+  }
+
+  .simulation-summary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .simulation-summary-badge.is-better {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .simulation-summary-badge.is-worse {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+
   @media (max-width: 1200px) {
     .command-grid,
     .next-best-shell {
@@ -427,6 +579,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% include "dashboard/partials/next_best_action.html" %}
 <div class="command-stack">
 
   <section class="app-kpi-grid">
@@ -539,6 +693,8 @@
 
   <section class="command-grid">
     <div class="command-stack">
+
+{% include "dashboard/partials/decision_transparency.html" %}
 
       <div class="app-card">
         <div class="app-card-body">
@@ -784,7 +940,202 @@
           {% endif %}
         </div>
       </div>
+
+      {% include "dashboard/partials/insight_list.html" %}
     </aside>
   </section>
 </div>
+
+<div id="simulation-overlay" class="simulation-overlay" onclick="closeSimulationPanel()"></div>
+
+<aside id="simulation-panel" class="simulation-panel" aria-hidden="true">
+  <div class="simulation-panel-header">
+    <div>
+      <h3 class="simulation-panel-title">Simulación</h3>
+      <div id="simulation-panel-subtitle" class="simulation-panel-subtitle">
+        Comparativa frente a la acción principal actual.
+      </div>
+    </div>
+    <button type="button" class="simulation-panel-close" onclick="closeSimulationPanel()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div class="simulation-panel-body">
+    <div class="simulation-state">
+      <div class="simulation-state-title">Resumen</div>
+      <div class="simulation-state-text">
+        <span id="simulation-summary-badge" class="simulation-summary-badge is-worse">Esperando selección</span>
+      </div>
+    </div>
+
+    <div class="simulation-state">
+      <div class="simulation-state-title">Alternativa</div>
+      <div id="simulation-candidate-label" class="simulation-state-text">—</div>
+    </div>
+
+    <div class="simulation-grid">
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Decisión</div>
+        <div id="simulation-delta-decision" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Urgencia</div>
+        <div id="simulation-delta-urgency" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Confianza</div>
+        <div id="simulation-delta-confidence" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Ejecutabilidad</div>
+        <div id="simulation-delta-actionability" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+    </div>
+
+    <div class="simulation-state">
+      <div class="simulation-state-title">Interpretación</div>
+      <div id="simulation-interpretation" class="simulation-state-text">
+        Selecciona una alternativa para comparar.
+      </div>
+    </div>
+  </div>
+</aside>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  const overlay = document.getElementById("simulation-overlay");
+  const panel = document.getElementById("simulation-panel");
+
+  function formatDelta(value) {
+    if (value > 0) {
+      return `+${value}`;
+    }
+    return `${value}`;
+  }
+
+  function getDeltaClass(value) {
+    if (value > 0) return "delta-positive";
+    if (value < 0) return "delta-negative";
+    return "delta-neutral";
+  }
+
+  function setMetric(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = formatDelta(value);
+    el.classList.remove("delta-positive", "delta-negative", "delta-neutral");
+    el.classList.add(getDeltaClass(value));
+  }
+
+  function buildInterpretation(sim) {
+    const parts = [];
+
+    if (sim.better_choice) {
+      parts.push("Esta alternativa superaría a la acción actual en score de decisión.");
+    } else {
+      parts.push("La acción actual sigue siendo la mejor opción disponible.");
+    }
+
+    if (sim.delta_urgency > 0) {
+      parts.push("Aporta más urgencia.");
+    } else if (sim.delta_urgency < 0) {
+      parts.push("Pierde urgencia frente a la seleccionada.");
+    }
+
+    if (sim.delta_confidence > 0) {
+      parts.push("Tiene mayor confianza.");
+    } else if (sim.delta_confidence < 0) {
+      parts.push("Tiene menor confianza.");
+    }
+
+    if (sim.delta_actionability > 0) {
+      parts.push("Es más fácil de ejecutar directamente.");
+    } else if (sim.delta_actionability < 0) {
+      parts.push("Tiene menor ejecutabilidad directa.");
+    }
+
+    return parts.join(" ");
+  }
+
+  window.closeSimulationPanel = function () {
+    if (overlay) overlay.classList.remove("is-open");
+    if (panel) {
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+  };
+
+  window.simulateRecommendation = function (id, label) {
+    fetch(`/recommendations/simulate/${id}/`)
+      .then(res => res.json())
+      .then(data => {
+        const sim = data.simulation;
+        if (!sim) {
+          return;
+        }
+
+        const subtitle = document.getElementById("simulation-panel-subtitle");
+        const candidate = document.getElementById("simulation-candidate-label");
+        const summaryBadge = document.getElementById("simulation-summary-badge");
+        const interpretation = document.getElementById("simulation-interpretation");
+
+        if (subtitle) {
+          subtitle.textContent = `Comparativa de ${label} frente a la NBA actual.`;
+        }
+
+        if (candidate) {
+          candidate.textContent = `${label} · Recomendación #${data.candidate_id}`;
+        }
+
+        if (summaryBadge) {
+          summaryBadge.classList.remove("is-better", "is-worse");
+          if (sim.better_choice) {
+            summaryBadge.classList.add("is-better");
+            summaryBadge.textContent = "La alternativa sería más fuerte";
+          } else {
+            summaryBadge.classList.add("is-worse");
+            summaryBadge.textContent = "La NBA actual sigue siendo más fuerte";
+          }
+        }
+
+        setMetric("simulation-delta-decision", sim.delta_decision);
+        setMetric("simulation-delta-urgency", sim.delta_urgency);
+        setMetric("simulation-delta-confidence", sim.delta_confidence);
+        setMetric("simulation-delta-actionability", sim.delta_actionability);
+
+        if (interpretation) {
+          interpretation.textContent = buildInterpretation(sim);
+        }
+
+        if (overlay) overlay.classList.add("is-open");
+        if (panel) {
+          panel.classList.add("is-open");
+          panel.setAttribute("aria-hidden", "false");
+        }
+      })
+      .catch(() => {
+        const subtitle = document.getElementById("simulation-panel-subtitle");
+        const interpretation = document.getElementById("simulation-interpretation");
+        const summaryBadge = document.getElementById("simulation-summary-badge");
+
+        if (subtitle) subtitle.textContent = "No se pudo cargar la simulación.";
+        if (interpretation) interpretation.textContent = "Ha ocurrido un error consultando el endpoint de simulación.";
+        if (summaryBadge) {
+          summaryBadge.classList.remove("is-better");
+          summaryBadge.classList.add("is-worse");
+          summaryBadge.textContent = "Error de simulación";
+        }
+
+        if (overlay) overlay.classList.add("is-open");
+        if (panel) {
+          panel.classList.add("is-open");
+          panel.setAttribute("aria-hidden", "false");
+        }
+      });
+  };
+})();
+</script>
 {% endblock %}

@@ -1,52 +1,25 @@
-# CHANGELOG — OptiGrid CRM
+# CHANGELOG
 
-## [Cockpit V2] — AI Recommendations UX & Execution Layer
+## [COCKPIT V3] - Decision Engine
 
-### ✨ Added
-- AI Recommended Actions panel fully integrated into Dashboard
-- Unified execute endpoint:
-  - /recommendations/<id>/execute/
-  - Supports followup, contact_strategy, reply_strategy
-- Dynamic available_actions system
-- Semantic UI mapping via ui_semantics.py
+### Added
+- Next Best Action (NBA) engine
+- Global ranking engine (priority + confidence + urgency + weights)
+- Urgency scoring system
+- Action vs Insight split
+- Decision explainability layer
+- "Why this one / Why not the others"
+- Simulation endpoint (/recommendations/simulate/<id>/)
+- Simulation Panel V2 (UI)
 
-### 🔧 Refactored
-- recommendations/views.py cleanup
-  - Removed duplicated logic
-  - Standardized action handling
-- dashboard_views.py
-  - Centralized recommendation fetching
-  - Introduced get_dashboard_data()
+### Improved
+- Dashboard upgraded to decision cockpit
+- Recommendations now ranked globally
+- UI consistency with card system
 
-### 🎨 UI Improvements
-- Replaced table layout with card-based design in recommendations
-- Improved readability and hierarchy
-- Consistent spacing, badges and actions
-- Responsive layout fixes
+### Result
+System evolved from:
+"Recommendation display"
 
-### 🧠 System Behavior
-- Recommendations now:
-  - Have status lifecycle: new → executed / dismissed
-  - Are deduplicated
-  - Can trigger real actions (email drafts, tasks, etc.)
-
-### 🐛 Fixed
-- Import issues (apps.ai_recommendations)
-- Broken dashboard rendering
-- Inconsistent template references
-- Action execution inconsistencies
-
----
-
-## Current State
-
-System behaves as:
-
-AI → Recommendation → Execute → Action → CRM Update
-
-User role:
-Supervisor / CEO
-
-System role:
-Autonomous commercial operator (guided)
-
+To:
+"Interactive decision engine"

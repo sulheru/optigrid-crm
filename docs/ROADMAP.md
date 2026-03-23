@@ -1,32 +1,27 @@
 # ROADMAP
 
-## Estado global
-### UI FOUNDATION V2
-- [x] App shell compartido
-- [x] Static organizado y funcionando
-- [x] Dashboard V2
-- [x] Inbox V2
-- [x] Outbox V2
-- [x] Design system ligero
-- [x] Label system semántico inicial
+## FASE 1 — CORE CRM + AI PIPELINE
+✔ COMPLETADA
 
-## Siguiente bloque
-### RECOMMENDATIONS V2
-- [ ] Inspección del template actual
-- [ ] Refactor visual completo
-- [ ] Integración con `label_filters`
-- [ ] Limpieza de lógica visual hardcodeada
+## FASE 2 — COCKPIT V1–V3
+✔ COMPLETADA
 
-## Después
-### SEMANTIC UI POLISH
-- [ ] Iconos por tipo
-- [ ] Colores por prioridad
-- [ ] Colores por estado
-- [ ] Unificación final de badges
+Incluye:
+- Dashboard unificado
+- AI Recommendations ejecutables
+- NBA engine
+- Ranking global
+- Urgency system
+- Explainability
+- Simulation panel
 
-## Futuro cercano
-### COCKPIT V3
-- [ ] Refinar command center
-- [ ] Mejorar activity feed
-- [ ] Mejorar observabilidad
-- [ ] Preparar terreno para automatización más avanzada
+## FASE 3 — DECISION INTELLIGENCE V2 (NEXT)
+
+Objetivo:
+Convertir el sistema en un asistente tipo consultor senior
+
+Foco:
+- UX polish
+- lenguaje natural
+- claridad de decisión
+- confianza del usuario

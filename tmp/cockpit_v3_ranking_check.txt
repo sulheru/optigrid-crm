@@ -1,0 +1,9 @@
+28 objects imported automatically (use -v 2 for details).
+
+TOTAL_NEW: 20
+16 followup priority= 72.5 urgency= 54.0 type_weight= 90.0 global= 70.5 confidence= 0.95 flags= followup_overdue
+6 followup priority= 72.5 urgency= 54.0 type_weight= 90.0 global= 70.5 confidence= 0.95 flags= followup_overdue
+13 reply_strategy priority= 67.0 urgency= 54.0 type_weight= 100.0 global= 68.7 confidence= 0.84 flags= reply_overdue
+3 reply_strategy priority= 67.0 urgency= 54.0 type_weight= 100.0 global= 68.7 confidence= 0.84 flags= reply_overdue
+14 contact_strategy priority= 66.5 urgency= 27.0 type_weight= 75.0 global= 57.9 confidence= 0.93 flags= contact_strategy_pending
+NBA: 16 followup 70.5

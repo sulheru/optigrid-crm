@@ -43,13 +43,15 @@
 │   │   ├── __pycache__
 │   │   │   ├── apps.cpython-312.pyc
 │   │   │   ├── __init__.cpython-312.pyc
-│   │   │   └── labels.cpython-312.pyc
-│   │   └── templatetags
-│   │       ├── __init__.py
-│   │       ├── label_filters.py
-│   │       └── __pycache__
-│   │           ├── __init__.cpython-312.pyc
-│   │           └── label_filters.cpython-312.pyc
+│   │   │   ├── labels.cpython-312.pyc
+│   │   │   └── ui_semantics.cpython-312.pyc
+│   │   ├── templatetags
+│   │   │   ├── __init__.py
+│   │   │   ├── label_filters.py
+│   │   │   └── __pycache__
+│   │   │       ├── __init__.cpython-312.pyc
+│   │   │       └── label_filters.cpython-312.pyc
+│   │   └── ui_semantics.py
 │   ├── dashboard_views.py
 │   ├── emailing
 │   │   ├── admin.py
@@ -516,7 +518,8 @@
 │       │   ├── font-awesome.css
 │       │   ├── jqvmap.css
 │       │   ├── lines.css
-│       │   └── style.css
+│       │   ├── style.css
+│       │   └── style.css.bak
 │       ├── fonts
 │       │   ├── FontAwesome.otf
 │       │   ├── fontawesome-webfont.eot
@@ -603,9 +606,44 @@
 ├── tmp
 │   ├── check_label_filters_fix.txt
 │   ├── check_labels_cleanup.txt
+│   ├── dashboard_action_semantics_check.txt
+│   ├── dashboard_data_audit.txt
+│   ├── dashboard_next_best_action_check.txt
+│   ├── dashboard_panel_v2_audit.txt
+│   ├── dashboard_render_status.txt
+│   ├── dashboard_v2_render_check.txt
+│   ├── dashboard_views_fix_check.txt
 │   ├── installed_apps_check.txt
+│   ├── OptiGrid CRM.html_files
+│   │   ├── bootstrap.min.css
+│   │   ├── bootstrap.min.js
+│   │   ├── custom.css
+│   │   ├── font-awesome.css
+│   │   ├── jquery.min.js
+│   │   ├── logo.png
+│   │   ├── metisMenu.min.js
+│   │   └── style.css
+│   ├── OptiGrid CRM.html.txt
+│   ├── Recommendations · OptiGrid CRM.html_files
+│   │   ├── bootstrap.min.css
+│   │   ├── bootstrap.min.js
+│   │   ├── custom.css
+│   │   ├── font-awesome.css
+│   │   ├── jquery.min.js
+│   │   ├── logo.png
+│   │   ├── metisMenu.min.js
+│   │   └── style.css
+│   ├── Recommendations · OptiGrid CRM.html.txt
+│   ├── recommendations_action_semantics_check.txt
+│   ├── recommendations_actions_patch.html
+│   ├── recommendations_cards_check.txt
+│   ├── recommendations_row_alignment_check.txt
+│   ├── recommendations_v2_audit.txt
+│   ├── recommendations_views_cleanup_check.txt
+│   ├── render_verification.txt
 │   ├── runserver.log
 │   └── template_libraries.txt
-└── ui_repair_input.txt
+├── ui_repair_input.txt
+└── verification.txt
 
-116 directories, 493 files
+118 directories, 529 files

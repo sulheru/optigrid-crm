@@ -1,0 +1,2789 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · OptiGrid CRM</title>
+
+  <link rel="stylesheet" href="/static/app_ui/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/app_ui/css/font-awesome.css">
+  <link rel="stylesheet" href="/static/app_ui/css/style.css">
+  <link rel="stylesheet" href="/static/app_ui/css/custom.css">
+
+  <style>
+    html, body {
+      background: #f2f4f8;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #1f2937;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      background: #f2f4f8;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #0f172a;
+      color: #cbd5e1;
+      z-index: 1000;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    }
+
+    .app-sidebar-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-link:hover,
+    .app-brand-link:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .app-brand-logo img {
+      max-width: 24px;
+      max-height: 24px;
+      display: block;
+    }
+
+    .app-brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .app-sidebar-section {
+      padding: 18px 14px 0;
+    }
+
+    .app-sidebar-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin: 0 10px 10px;
+    }
+
+    .app-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-nav-item {
+      margin-bottom: 4px;
+    }
+
+    .app-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-nav-item a:hover,
+    .app-nav-item a:focus {
+      text-decoration: none;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+
+    .app-nav-item.active a {
+      background: rgb(6, 217, 149);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(6, 217, 149, 0.25);
+    }
+
+    .app-nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .app-main {
+      margin-left: 250px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: 72px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .app-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .app-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      color: #111827;
+    }
+
+    .app-page-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .app-page-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-topbar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgb(6, 217, 149);
+      display: inline-block;
+      box-shadow: 0 0 0 4px rgba(6, 217, 149, 0.12);
+    }
+
+    .app-content {
+      padding: 24px;
+      flex: 1;
+    }
+
+    .app-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-card-header {
+      padding: 18px 20px 0;
+    }
+
+    .app-card-body {
+      padding: 20px;
+    }
+
+    .app-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .app-section-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .app-kpi-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-kpi-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .app-kpi-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-btn-primary,
+    .app-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .app-btn-primary {
+      background: rgb(6, 217, 149);
+      border-color: rgb(6, 217, 149);
+      color: #fff;
+    }
+
+    .app-btn-primary:hover,
+    .app-btn-primary:focus {
+      color: #fff;
+      text-decoration: none;
+      background: rgb(3, 197, 135);
+      border-color: rgb(3, 197, 135);
+    }
+
+    .app-btn-secondary {
+      background: #fff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+
+    .app-btn-secondary:hover,
+    .app-btn-secondary:focus {
+      color: #111827;
+      text-decoration: none;
+      background: #f9fafb;
+    }
+
+    @media (max-width: 1024px) {
+      .app-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+
+      .app-shell.sidebar-open .app-sidebar {
+        transform: translateX(0);
+      }
+
+      .app-main {
+        margin-left: 0;
+      }
+
+      .app-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .app-topbar {
+        padding: 0 16px;
+      }
+
+      .app-content {
+        padding: 16px;
+      }
+
+      .app-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  
+
+<style>
+/* =========================
+   🎨 DESIGN TOKENS
+========================= */
+
+:root {
+  --color-primary: rgb(6, 217, 149);
+
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+
+  --color-text: #111827;
+  --color-muted: #6b7280;
+
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+}
+
+
+/* =========================
+   📦 LAYOUT
+========================= */
+
+.app-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.app-card-body {
+  padding: 18px;
+}
+
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-grid {
+  display: grid;
+  gap: 16px;
+}
+
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+
+.app-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: var(--color-primary);
+  color: white;
+
+  border: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-primary:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.app-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: var(--color-text);
+
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-secondary:hover {
+  background: #e5e7eb;
+  text-decoration: none;
+}
+
+
+/* =========================
+   🏷️ BADGES
+========================= */
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-badge-success {
+  background: #dcfce7;
+  color: var(--color-success);
+}
+
+.app-badge-warning {
+  background: #fef3c7;
+  color: var(--color-warning);
+}
+
+.app-badge-danger {
+  background: #fee2e2;
+  color: var(--color-danger);
+}
+
+.app-badge-info {
+  background: #dbeafe;
+  color: var(--color-info);
+}
+
+.app-badge-neutral {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+
+/* =========================
+   📊 STAT CARDS
+========================= */
+
+.app-stat {
+  padding: 16px;
+}
+
+.app-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.app-stat-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+
+/* =========================
+   🧩 HELPERS
+========================= */
+
+.app-text-muted {
+  color: var(--color-muted);
+}
+
+</style>
+
+  
+<style>
+  .command-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .command-grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+  }
+
+  .command-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .section-toolbar .app-section-title {
+    margin-bottom: 0;
+  }
+
+  .section-toolbar a {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(6, 217, 149);
+    text-decoration: none;
+  }
+
+  .section-toolbar a:hover {
+    text-decoration: underline;
+  }
+
+  .command-list,
+  .signal-list,
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .next-best-card {
+    border: 1px solid #dbe4ee;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+  }
+
+  .next-best-shell {
+    display: grid;
+    grid-template-columns: 1.35fr 0.9fr;
+    gap: 0;
+  }
+
+  .next-best-main {
+    padding: 24px;
+  }
+
+  .next-best-side {
+    padding: 24px;
+    background: #f8fafc;
+    border-left: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .next-best-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0f766e;
+  }
+
+  .next-best-title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.15;
+    color: #111827;
+    font-weight: 700;
+  }
+
+  .next-best-subtitle {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .next-best-text {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #374151;
+  }
+
+  .next-best-meta {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .next-best-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .next-best-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .next-best-stat {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #fff;
+    padding: 14px;
+  }
+
+  .next-best-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  .next-best-stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+  }
+
+  .next-best-side-note {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .command-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  }
+
+  .command-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .command-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.35;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .command-subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .command-text {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #374151;
+  }
+
+  .command-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .command-actions form {
+    margin: 0;
+  }
+
+  .priority-badge,
+  .signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .priority-high {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+
+  .priority-medium {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fdba74;
+  }
+
+  .priority-low {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #bbf7d0;
+  }
+
+  .signal-shell {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .signal-column {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+  }
+
+  .signal-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .signal-column-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .signal-count {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #111827;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .signal-item {
+    border-top: 1px solid #eef2f7;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .signal-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .signal-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .signal-item-meta {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .mini-card,
+  .activity-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .mini-card-title,
+  .activity-card-title {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .mini-card-meta,
+  .activity-card-meta {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .mini-card-text,
+  .activity-card-note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+
+  .queue-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+    padding: 16px;
+  }
+
+  .queue-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid #eef2f7;
+  }
+
+  .queue-row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .queue-label {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .queue-value {
+    font-size: 18px;
+    color: #111827;
+    font-weight: 700;
+  }
+
+  .empty-panel {
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    background: #fff;
+    padding: 24px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .icon-chip {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef6ff;
+    color: #2563eb;
+    flex: 0 0 auto;
+  }
+
+  .simulation-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.42);
+    z-index: 1200;
+    display: none;
+  }
+
+  .simulation-overlay.is-open {
+    display: block;
+  }
+
+  .simulation-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    max-width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 1300;
+    box-shadow: -10px 0 30px rgba(15, 23, 42, 0.16);
+    border-left: 1px solid #e5e7eb;
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .simulation-panel.is-open {
+    transform: translateX(0);
+  }
+
+  .simulation-panel-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .simulation-panel-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .simulation-panel-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .simulation-panel-close {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #111827;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+
+  .simulation-panel-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .simulation-state {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    background: #f8fafc;
+  }
+
+  .simulation-state-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .simulation-state-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+  }
+
+  .simulation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .simulation-metric {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+  }
+
+  .simulation-metric-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  .simulation-metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+  }
+
+  .simulation-metric-value.delta-positive {
+    color: #15803d;
+  }
+
+  .simulation-metric-value.delta-negative {
+    color: #b91c1c;
+  }
+
+  .simulation-metric-value.delta-neutral {
+    color: #475569;
+  }
+
+  .simulation-summary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .simulation-summary-badge.is-better {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .simulation-summary-badge.is-worse {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+
+  @media (max-width: 1200px) {
+    .command-grid,
+    .next-best-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .next-best-side {
+      border-left: 0;
+      border-top: 1px solid #e5e7eb;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .signal-shell {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    
+
+
+
+<nav class="app-sidebar">
+  <div class="app-sidebar-brand">
+    <a href="/" class="app-brand-link">
+      <span class="app-brand-logo">
+        <img src="/static/app_ui/images/logo.png" alt="OptiGrid">
+      </span>
+      <span class="app-brand-text">OptiGrid CRM</span>
+    </a>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Main</div>
+    <ul class="app-nav">
+      <li class="app-nav-item active">
+        <a href="/">
+          <i class="fa fa-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="/strategy/chat/">
+          <i class="fa fa-comments-o"></i>
+          <span>Strategic Chat</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Mailing</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="/inbox/">
+          <i class="fa fa-inbox"></i>
+          <span>Inbox</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="/outbox/">
+          <i class="fa fa-send"></i>
+          <span>Outbox</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Execution</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="/recommendations/">
+          <i class="fa fa-bolt"></i>
+          <span>Recommendations</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="/tasks/">
+          <i class="fa fa-check-square-o"></i>
+          <span>Tasks</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="/opportunities/prioritized/">
+          <i class="fa fa-briefcase"></i>
+          <span>Opportunities</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Intelligence</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="/leads/">
+          <i class="fa fa-lightbulb-o"></i>
+          <span>Leads</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+    <div class="app-main">
+      
+
+<header class="app-topbar">
+  <div class="app-topbar-left">
+    <button type="button" class="app-nav-toggle js-nav-toggle" aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="app-topbar-titles">
+      <h1 class="app-page-title">
+        OptiGrid CRM
+      </h1>
+      <div class="app-page-subtitle">
+        AI Commercial Operating System
+      </div>
+    </div>
+  </div>
+
+  <div class="app-topbar-right">
+    <div class="app-topbar-status">
+      <span class="status-dot"></span>
+      <span>System active</span>
+    </div>
+  </div>
+</header>
+
+
+      <main class="app-content">
+        
+
+
+
+<div class="app-card" style="margin-bottom: 24px;">
+  <div class="app-card-body">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+          <span class="app-badge app-badge-neutral">What should you do now</span>
+
+          
+            <span class="app-badge
+              
+                app-badge-warning
+              
+            ">
+              Urgency Medium
+            </span>
+
+            <span class="app-badge
+              
+                app-badge-warning
+              
+            ">
+              Priority Medium
+            </span>
+
+            <span class="app-badge app-badge-info">
+              Should be handled soon
+            </span>
+          
+        </div>
+
+        <h2 style="margin:0 0 8px 0; font-size:28px; line-height:1.2;">
+          Next Best Action
+        </h2>
+
+        <p style="margin:0; color:#6b7280;">
+          La recomendación más importante del sistema en este momento.
+        </p>
+      </div>
+    </div>
+
+    
+      <div style="margin-top:22px; border:1px solid #e5e7eb; border-radius:18px; padding:22px; background:linear-gradient(135deg, #faf5ff 0%, #ffffff 26%);">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:280px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <span class="icon-chip">
+                <i class="fa fa-envelope"></i>
+              </span>
+
+              <div>
+                <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#6b7280;">
+                  reply_strategy
+                </div>
+                <div style="font-size:22px; font-weight:700; color:#111827; line-height:1.25;">
+                  Reply strategy
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:15px; line-height:1.7; color:#111827; white-space:pre-line; margin-bottom:14px;">
+              Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+            </div>
+
+            <div style="font-size:14px; line-height:1.6; color:#475569; margin-bottom:16px;">
+              Seleccionada por una combinación de urgencia y ejecutabilidad. es directamente ejecutable desde el cockpit. presenta señales como reply overdue.
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+              <span class="recommendation-meta-item">ID 3</span>
+              <span class="recommendation-meta-item">Global 68.7</span>
+              <span class="recommendation-meta-item">Decision 82.7</span>
+              <span class="recommendation-meta-item">Urgency 54.0</span>
+            </div>
+
+            
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                
+                  <span class="app-badge app-badge-neutral">reply_overdue</span>
+                
+              </div>
+            
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; min-width:220px;">
+            
+              
+                <form method="post" action="/recommendations/3/execute/" style="margin:0;">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                  <button type="submit" class="app-btn-primary" style="width:100%; justify-content:center;">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/3/create-task/" style="margin:0;">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                  <button type="submit" class="app-btn-secondary" style="width:100%; justify-content:center;">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+            
+
+            <a href="/recommendations/" class="app-btn-secondary" style="text-align:center;">
+              <i class="fa fa-list"></i>
+              <span>View all recommendations</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    
+  </div>
+</div>
+
+<div class="command-stack">
+
+  <section class="app-kpi-grid">
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">15</div>
+      <div class="app-kpi-label">Inbound emails</div>
+    </div>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">27</div>
+      <div class="app-kpi-label">Outbound emails</div>
+    </div>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">71</div>
+      <div class="app-kpi-label">Recommendations</div>
+    </div>
+    <div class="app-kpi-card">
+      <div class="app-kpi-value">19</div>
+      <div class="app-kpi-label">Active opportunities</div>
+    </div>
+  </section>
+
+  
+    <section class="next-best-card">
+      <div class="next-best-shell">
+        <div class="next-best-main">
+          <div class="next-best-kicker">
+            <i class="fa fa-bolt"></i>
+            <span>Next Best Action</span>
+          </div>
+
+          <div class="command-card-top" style="margin-bottom: 0;">
+            <div>
+              <h2 class="next-best-title">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+                Reply strategy
+              </h2>
+              <div class="next-best-subtitle">
+                Scope inference_record#35
+              </div>
+            </div>
+
+            <span class="priority-badge priority-medium">
+              Medium · 67.0
+            </span>
+          </div>
+
+          <div class="next-best-meta">
+            <span class="next-best-meta-item">
+              <i class="fa fa-tag"></i>
+              New
+            </span>
+            <span class="next-best-meta-item">
+              <i class="fa fa-signal"></i>
+              Confidence 0.84
+            </span>
+            <span class="next-best-meta-item">
+              <i class="fa fa-sort-amount-desc"></i>
+              Ranked #1
+            </span>
+          </div>
+
+          <div class="next-best-text">
+            Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+          </div>
+
+          <div class="next-best-actions">
+            
+              <form method="post" action="/recommendations/3/execute/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                <button type="submit" class="app-btn-primary">
+                  <i class="fa fa-play"></i>
+                  <span>Execute</span>
+                </button>
+              </form>
+            
+              <form method="post" action="/recommendations/3/create-task/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-check-square-o"></i>
+                  <span>Create Task</span>
+                </button>
+              </form>
+            
+
+            <a href="/recommendations/" class="app-btn-secondary">
+              <i class="fa fa-list"></i>
+              <span>Open all recommendations</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="next-best-side">
+          <div class="next-best-stat">
+            <div class="next-best-stat-label">Top queue size</div>
+            <div class="next-best-stat-value">10</div>
+          </div>
+
+          <div class="next-best-stat">
+            <div class="next-best-stat-label">High urgency</div>
+            <div class="next-best-stat-value">0</div>
+          </div>
+
+          <div class="next-best-stat">
+            <div class="next-best-stat-label">Medium urgency</div>
+            <div class="next-best-stat-value">4</div>
+          </div>
+
+          <div class="next-best-side-note">
+            La plataforma destaca la acción con mejor combinación de score operativo,
+            confianza y frescura para reducir fricción de decisión.
+          </div>
+        </div>
+      </div>
+    </section>
+  
+
+  <section class="command-grid">
+    <div class="command-stack">
+
+
+
+<div class="app-card" style="margin-bottom: 24px;">
+  <div class="app-card-body">
+    <div class="section-toolbar">
+      <div>
+        <h2 class="app-section-title">Why this one?</h2>
+        <div class="app-section-subtitle">
+          Transparencia comparativa sobre la selección de la acción principal.
+        </div>
+      </div>
+    </div>
+
+    
+      <div style="margin-bottom:18px; padding:16px; border:1px solid #e5e7eb; border-radius:14px; background:#f8fafc;">
+        <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">
+          Selected
+        </div>
+        <div style="font-size:15px; font-weight:700; color:#111827; margin-bottom:6px;">
+          Reply strategy
+        </div>
+        <div style="font-size:14px; line-height:1.6; color:#475569;">
+          Seleccionada por una combinación de urgencia y ejecutabilidad. es directamente ejecutable desde el cockpit. presenta señales como reply overdue.
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:10px;">
+          Why not the others
+        </div>
+
+        
+          <div class="signal-list">
+            
+              <article class="mini-card">
+                <div class="mini-card-title">
+                  Reply strategy
+                </div>
+                <div class="mini-card-meta">
+                  ID 13 · Decision 82.7 · Urgency 54.0
+                </div>
+                <div class="mini-card-text">
+                  Quedó por detrás en el desempate del ranking.
+                </div>
+                <div style="margin-top:10px;">
+                  <button
+                    type="button"
+                    onclick="simulateRecommendation(13, 'Reply strategy', 82.7, 54.0)"
+                    class="app-btn-secondary"
+                    style="font-size:12px; padding:6px 10px;"
+                  >
+                    <i class="fa fa-random"></i>
+                    What if I choose this?
+                  </button>
+                </div>
+              </article>
+            
+              <article class="mini-card">
+                <div class="mini-card-title">
+                  Reply strategy
+                </div>
+                <div class="mini-card-meta">
+                  ID 22 · Decision 82.7 · Urgency 54.0
+                </div>
+                <div class="mini-card-text">
+                  Quedó por detrás en el desempate del ranking.
+                </div>
+                <div style="margin-top:10px;">
+                  <button
+                    type="button"
+                    onclick="simulateRecommendation(22, 'Reply strategy', 82.7, 54.0)"
+                    class="app-btn-secondary"
+                    style="font-size:12px; padding:6px 10px;"
+                  >
+                    <i class="fa fa-random"></i>
+                    What if I choose this?
+                  </button>
+                </div>
+              </article>
+            
+              <article class="mini-card">
+                <div class="mini-card-title">
+                  Reply strategy
+                </div>
+                <div class="mini-card-meta">
+                  ID 31 · Decision 82.7 · Urgency 54.0
+                </div>
+                <div class="mini-card-text">
+                  Quedó por detrás en el desempate del ranking.
+                </div>
+                <div style="margin-top:10px;">
+                  <button
+                    type="button"
+                    onclick="simulateRecommendation(31, 'Reply strategy', 82.7, 54.0)"
+                    class="app-btn-secondary"
+                    style="font-size:12px; padding:6px 10px;"
+                  >
+                    <i class="fa fa-random"></i>
+                    What if I choose this?
+                  </button>
+                </div>
+              </article>
+            
+          </div>
+        
+      </div>
+    
+  </div>
+</div>
+
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">AI Recommended Actions</h2>
+              <div class="app-section-subtitle">
+                Acciones priorizadas por score operativo, confianza y frescura.
+              </div>
+            </div>
+            <a href="/recommendations/">Open recommendations</a>
+          </div>
+
+          
+            <div class="command-list">
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                        Reply strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#35
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 67.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.84</span>
+                  </div>
+
+                  <div class="command-text">
+                    Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/3/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/3/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/3/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                        Reply strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#45
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 67.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.84</span>
+                  </div>
+
+                  <div class="command-text">
+                    Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/13/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/13/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/13/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                        Reply strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#54
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 67.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.84</span>
+                  </div>
+
+                  <div class="command-text">
+                    Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/22/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/22/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/22/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                        Reply strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#63
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 67.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.84</span>
+                  </div>
+
+                  <div class="command-text">
+                    Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/31/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/31/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/31/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-user-plus"></i>
+                        </span>
+                        Contact strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#36
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 66.5
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.93</span>
+                  </div>
+
+                  <div class="command-text">
+                    Buscar o validar otro interlocutor antes de seguir con este contacto.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/4/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/4/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/4/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-user-plus"></i>
+                        </span>
+                        Contact strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#46
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 66.5
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.93</span>
+                  </div>
+
+                  <div class="command-text">
+                    Buscar o validar otro interlocutor antes de seguir con este contacto.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/14/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/14/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/14/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-user-plus"></i>
+                        </span>
+                        Contact strategy
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#55
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 66.5
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.93</span>
+                  </div>
+
+                  <div class="command-text">
+                    Buscar o validar otro interlocutor antes de seguir con este contacto.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/23/execute/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-primary">
+                          <i class="fa fa-play"></i>
+                          <span>Execute</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/23/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/23/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-line-chart"></i>
+                        </span>
+                        Opportunity review
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#34
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 60.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.80</span>
+                  </div>
+
+                  <div class="command-text">
+                    Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/2/promote-opportunity/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-line-chart"></i>
+                          <span>Promote</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/2/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/2/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-line-chart"></i>
+                        </span>
+                        Opportunity review
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#44
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 60.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.80</span>
+                  </div>
+
+                  <div class="command-text">
+                    Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/12/promote-opportunity/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-line-chart"></i>
+                          <span>Promote</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/12/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/12/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+                <article class="command-card">
+                  <div class="command-card-top">
+                    <div>
+                      <h3 class="command-title">
+                        <span class="icon-chip">
+                          <i class="fa fa-line-chart"></i>
+                        </span>
+                        Opportunity review
+                      </h3>
+                      <div class="command-subtitle">
+                        Scope inference_record#53
+                      </div>
+                    </div>
+
+                    <span class="priority-badge priority-medium">
+                      Medium · 60.0
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="app-badge app-badge-info">New</span>
+                    <span class="app-badge app-badge-neutral">Confidence 0.80</span>
+                  </div>
+
+                  <div class="command-text">
+                    Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.
+                  </div>
+
+                  <div class="command-actions">
+                    
+                      <form method="post" action="/recommendations/21/promote-opportunity/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-line-chart"></i>
+                          <span>Promote</span>
+                        </button>
+                      </form>
+                    
+                      <form method="post" action="/recommendations/21/create-task/">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                        <button type="submit" class="app-btn-secondary">
+                          <i class="fa fa-check-square-o"></i>
+                          <span>Create Task</span>
+                        </button>
+                      </form>
+                    
+
+                    <form method="post" action="/recommendations/21/dismiss/">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="4RBgTp14wRR3OhKJCnFIirAxYR1c3wGk6tw5hmDYsYR7GYUN3UItxkjTca5QRTmW">
+                      <button type="submit" class="app-btn-secondary">
+                        <i class="fa fa-times"></i>
+                        <span>Dismiss</span>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              
+            </div>
+          
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Urgency lanes</h2>
+              <div class="app-section-subtitle">
+                Distribución rápida de señales por nivel de atención.
+              </div>
+            </div>
+          </div>
+
+          <div class="signal-shell">
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">High urgency</h3>
+                <span class="signal-count">0</span>
+              </div>
+
+              
+                <div class="signal-item-meta">No items</div>
+              
+            </div>
+
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">Medium urgency</h3>
+                <span class="signal-count">4</span>
+              </div>
+
+              
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-envelope"></i>
+                      Reply strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 67.0 · Confidence 0.84
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-envelope"></i>
+                      Reply strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 67.0 · Confidence 0.84
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-envelope"></i>
+                      Reply strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 67.0 · Confidence 0.84
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-envelope"></i>
+                      Reply strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 67.0 · Confidence 0.84
+                    </div>
+                  </div>
+                
+              
+            </div>
+
+            <div class="signal-column">
+              <div class="signal-column-header">
+                <h3 class="signal-column-title">Low urgency</h3>
+                <span class="signal-count">5</span>
+              </div>
+
+              
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-user-plus"></i>
+                      Contact strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 66.5 · Confidence 0.93
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-user-plus"></i>
+                      Contact strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 66.5 · Confidence 0.93
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-user-plus"></i>
+                      Contact strategy
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 66.5 · Confidence 0.93
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-line-chart"></i>
+                      Opportunity review
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 60.0 · Confidence 0.80
+                    </div>
+                  </div>
+                
+                  <div class="signal-item">
+                    <div class="signal-item-title">
+                      <i class="fa fa-line-chart"></i>
+                      Opportunity review
+                    </div>
+                    <div class="signal-item-meta">
+                      Score 60.0 · Confidence 0.80
+                    </div>
+                  </div>
+                
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="command-side">
+      <div class="queue-card">
+        <div class="section-toolbar">
+          <div>
+            <h2 class="app-section-title">Queue snapshot</h2>
+            <div class="app-section-subtitle">Estado general del pipeline.</div>
+          </div>
+        </div>
+
+        <div class="queue-row">
+          <span class="queue-label">Inbound</span>
+          <span class="queue-value">15</span>
+        </div>
+        <div class="queue-row">
+          <span class="queue-label">Outbound</span>
+          <span class="queue-value">27</span>
+        </div>
+        <div class="queue-row">
+          <span class="queue-label">Recommendations</span>
+          <span class="queue-value">71</span>
+        </div>
+        <div class="queue-row">
+          <span class="queue-label">Opportunities</span>
+          <span class="queue-value">19</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Recent activity</h2>
+              <div class="app-section-subtitle">
+                Últimos eventos registrados por el sistema.
+              </div>
+            </div>
+          </div>
+
+          
+            <div class="empty-panel">No recent activity.</div>
+          
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-card-body">
+          <div class="section-toolbar">
+            <div>
+              <h2 class="app-section-title">Recent outbound</h2>
+              <div class="app-section-subtitle">Últimos drafts o envíos generados.</div>
+            </div>
+          </div>
+
+          
+            <div class="signal-list">
+              
+                <article class="mini-card">
+                  <h3 class="mini-card-title">Re: Re: Intro — RhineCore Manufacturing Systems GmbH</h3>
+                  <div class="mini-card-meta">
+                    Follow-up · Draft
+                  </div>
+                  
+                    <div class="mini-card-text">Hola,
+
+Gracias por tu mensaje.
+
+Generate informational follow-up draft.
+
+Quedo atento.
+</div>
+                  
+                </article>
+              
+                <article class="mini-card">
+                  <h3 class="mini-card-title">Re: Intro — RhineCore Manufacturing Systems GmbH</h3>
+                  <div class="mini-card-meta">
+                    Follow-up · Sent
+                  </div>
+                  
+                    <div class="mini-card-text">Hi,
+
+Thanks for your reply.
+
+Absolutely — I’d be happy to share more detail on how I could support RhineCore Manufacturing Systems GmbH, es…</div>
+                  
+                </article>
+              
+                <article class="mini-card">
+                  <h3 class="mini-card-title">Intro — RhineCore Manufacturing Systems GmbH</h3>
+                  <div class="mini-card-meta">
+                    First contact · Sent
+                  </div>
+                  
+                    <div class="mini-card-text">Hi RhineCore Manufacturing Systems GmbH team,
+
+I wanted to reach out briefly to introduce myself and explore whether there could be a fit f…</div>
+                  
+                </article>
+              
+                <article class="mini-card">
+                  <h3 class="mini-card-title">Intro — BalticMesh Operations GmbH</h3>
+                  <div class="mini-card-meta">
+                    First contact · Sent
+                  </div>
+                  
+                    <div class="mini-card-text">Hi BalticMesh Operations GmbH team,
+
+I wanted to reach out briefly to introduce myself and explore whether there could be a fit for a conve…</div>
+                  
+                </article>
+              
+                <article class="mini-card">
+                  <h3 class="mini-card-title">Intro — DanubeStack Cloud Ops GmbH</h3>
+                  <div class="mini-card-meta">
+                    First contact · Approved
+                  </div>
+                  
+                    <div class="mini-card-text">Hi DanubeStack Cloud Ops GmbH team,
+
+I wanted to reach out briefly to introduce myself and explore whether there could be a fit for a conve…</div>
+                  
+                </article>
+              
+            </div>
+          
+        </div>
+      </div>
+
+      
+
+<div class="app-card">
+  <div class="app-card-body">
+    <div class="section-toolbar">
+      <div>
+        <h2 class="app-section-title">Things to keep in mind</h2>
+        <div class="app-section-subtitle">
+          Señales relevantes del sistema que conviene tener presentes, aunque no impliquen acción inmediata.
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="signal-list">
+        
+          <article class="mini-card">
+            <h3 class="mini-card-title">
+              <span class="icon-chip">
+                <i class="fa fa-reply"></i>
+              </span>
+              Follow-up
+            </h3>
+
+            <div class="mini-card-meta">
+              ID 6 · Insight only · Urgency 54.0
+            </div>
+
+            <div class="mini-card-text">
+              No insistir ahora. Retomar el contacto en may.
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; line-height:1.55; color:#475569;">
+              Se mantiene como insight. ya que el contenido sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como followup overdue.
+            </div>
+
+            
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                
+                  <span class="app-badge app-badge-neutral">followup_overdue</span>
+                
+              </div>
+            
+          </article>
+        
+          <article class="mini-card">
+            <h3 class="mini-card-title">
+              <span class="icon-chip">
+                <i class="fa fa-reply"></i>
+              </span>
+              Follow-up
+            </h3>
+
+            <div class="mini-card-meta">
+              ID 16 · Insight only · Urgency 54.0
+            </div>
+
+            <div class="mini-card-text">
+              No insistir ahora. Retomar el contacto en may.
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; line-height:1.55; color:#475569;">
+              Se mantiene como insight. ya que el contenido sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como followup overdue.
+            </div>
+
+            
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                
+                  <span class="app-badge app-badge-neutral">followup_overdue</span>
+                
+              </div>
+            
+          </article>
+        
+          <article class="mini-card">
+            <h3 class="mini-card-title">
+              <span class="icon-chip">
+                <i class="fa fa-reply"></i>
+              </span>
+              Follow-up
+            </h3>
+
+            <div class="mini-card-meta">
+              ID 25 · Insight only · Urgency 54.0
+            </div>
+
+            <div class="mini-card-text">
+              No insistir ahora. Retomar el contacto en may.
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; line-height:1.55; color:#475569;">
+              Se mantiene como insight. ya que el contenido sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como followup overdue.
+            </div>
+
+            
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                
+                  <span class="app-badge app-badge-neutral">followup_overdue</span>
+                
+              </div>
+            
+          </article>
+        
+          <article class="mini-card">
+            <h3 class="mini-card-title">
+              <span class="icon-chip">
+                <i class="fa fa-lightbulb-o"></i>
+              </span>
+              Next action
+            </h3>
+
+            <div class="mini-card-meta">
+              ID 46 · Insight only · Urgency 19.0
+            </div>
+
+            <div class="mini-card-text">
+              No insistir ahora; registrar recordatorio y retomar el contacto cuando venza la ventana indicada por el contexto.
+
+Rationale: La oportunidad contiene señales explícitas de aplazamiento.
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; line-height:1.55; color:#475569;">
+              Se mantiene como insight. ya que el contenido sugiere esperar en lugar de actuar ahora. aunque sigue siendo relevante por señales como pending recommendation, opportunity scoped.
+            </div>
+
+            
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                
+                  <span class="app-badge app-badge-neutral">pending_recommendation</span>
+                
+                  <span class="app-badge app-badge-neutral">opportunity_scoped</span>
+                
+              </div>
+            
+          </article>
+        
+      </div>
+    
+  </div>
+</div>
+
+    </aside>
+  </section>
+</div>
+
+<div id="simulation-overlay" class="simulation-overlay" onclick="closeSimulationPanel()"></div>
+
+<aside id="simulation-panel" class="simulation-panel" aria-hidden="true">
+  <div class="simulation-panel-header">
+    <div>
+      <h3 class="simulation-panel-title">Simulation</h3>
+      <div id="simulation-panel-subtitle" class="simulation-panel-subtitle">
+        Comparativa frente a la acción principal actual.
+      </div>
+    </div>
+    <button type="button" class="simulation-panel-close" onclick="closeSimulationPanel()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div class="simulation-panel-body">
+    <div class="simulation-state">
+      <div class="simulation-state-title">Decision summary</div>
+      <div class="simulation-state-text">
+        <span id="simulation-summary-badge" class="simulation-summary-badge is-worse">Waiting for input</span>
+      </div>
+    </div>
+
+    <div class="simulation-state">
+      <div class="simulation-state-title">Alternative</div>
+      <div id="simulation-candidate-label" class="simulation-state-text">—</div>
+    </div>
+
+    <div class="simulation-grid">
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Decision score</div>
+        <div id="simulation-delta-decision" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Urgency</div>
+        <div id="simulation-delta-urgency" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Confidence</div>
+        <div id="simulation-delta-confidence" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+      <div class="simulation-metric">
+        <div class="simulation-metric-label">Δ Actionability</div>
+        <div id="simulation-delta-actionability" class="simulation-metric-value delta-neutral">—</div>
+      </div>
+    </div>
+
+    <div class="simulation-state">
+      <div class="simulation-state-title">Interpretation</div>
+      <div id="simulation-interpretation" class="simulation-state-text">
+        Selecciona una alternativa para comparar.
+      </div>
+    </div>
+  </div>
+</aside>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/static/app_ui/js/jquery.min.js"></script>
+  <script src="/static/app_ui/js/bootstrap.min.js"></script>
+  <script src="/static/app_ui/js/metisMenu.min.js"></script>
+
+  <script>
+    (function () {
+      var shell = document.getElementById('app-shell');
+      var toggle = document.querySelector('.js-nav-toggle');
+
+      if (toggle && shell) {
+        toggle.addEventListener('click', function () {
+          shell.classList.toggle('sidebar-open');
+        });
+      }
+    })();
+  </script>
+
+  
+<script>
+(function () {
+  const overlay = document.getElementById("simulation-overlay");
+  const panel = document.getElementById("simulation-panel");
+
+  function formatDelta(value) {
+    if (value > 0) {
+      return `+${value}`;
+    }
+    return `${value}`;
+  }
+
+  function getDeltaClass(value) {
+    if (value > 0) return "delta-positive";
+    if (value < 0) return "delta-negative";
+    return "delta-neutral";
+  }
+
+  function setMetric(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = formatDelta(value);
+    el.classList.remove("delta-positive", "delta-negative", "delta-neutral");
+    el.classList.add(getDeltaClass(value));
+  }
+
+  function buildInterpretation(sim) {
+    const parts = [];
+
+    if (sim.better_choice) {
+      parts.push("Esta alternativa superaría a la acción actual en score de decisión.");
+    } else {
+      parts.push("La acción actual sigue siendo la mejor opción disponible.");
+    }
+
+    if (sim.delta_urgency > 0) {
+      parts.push("Aporta más urgencia.");
+    } else if (sim.delta_urgency < 0) {
+      parts.push("Pierde urgencia frente a la seleccionada.");
+    }
+
+    if (sim.delta_confidence > 0) {
+      parts.push("Tiene mayor confianza.");
+    } else if (sim.delta_confidence < 0) {
+      parts.push("Tiene menor confianza.");
+    }
+
+    if (sim.delta_actionability > 0) {
+      parts.push("Es más fácil de ejecutar directamente.");
+    } else if (sim.delta_actionability < 0) {
+      parts.push("Tiene menor ejecutabilidad directa.");
+    }
+
+    return parts.join(" ");
+  }
+
+  window.closeSimulationPanel = function () {
+    if (overlay) overlay.classList.remove("is-open");
+    if (panel) {
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+  };
+
+  window.simulateRecommendation = function (id, label) {
+    fetch(`/recommendations/simulate/${id}/`)
+      .then(res => res.json())
+      .then(data => {
+        const sim = data.simulation;
+        if (!sim) {
+          return;
+        }
+
+        const subtitle = document.getElementById("simulation-panel-subtitle");
+        const candidate = document.getElementById("simulation-candidate-label");
+        const summaryBadge = document.getElementById("simulation-summary-badge");
+        const interpretation = document.getElementById("simulation-interpretation");
+
+        if (subtitle) {
+          subtitle.textContent = `Comparativa de ${label} frente a la NBA actual.`;
+        }
+
+        if (candidate) {
+          candidate.textContent = `${label} · Recommendation #${data.candidate_id}`;
+        }
+
+        if (summaryBadge) {
+          summaryBadge.classList.remove("is-better", "is-worse");
+          if (sim.better_choice) {
+            summaryBadge.classList.add("is-better");
+            summaryBadge.textContent = "Alternative would be stronger";
+          } else {
+            summaryBadge.classList.add("is-worse");
+            summaryBadge.textContent = "Current NBA remains stronger";
+          }
+        }
+
+        setMetric("simulation-delta-decision", sim.delta_decision);
+        setMetric("simulation-delta-urgency", sim.delta_urgency);
+        setMetric("simulation-delta-confidence", sim.delta_confidence);
+        setMetric("simulation-delta-actionability", sim.delta_actionability);
+
+        if (interpretation) {
+          interpretation.textContent = buildInterpretation(sim);
+        }
+
+        if (overlay) overlay.classList.add("is-open");
+        if (panel) {
+          panel.classList.add("is-open");
+          panel.setAttribute("aria-hidden", "false");
+        }
+      })
+      .catch(() => {
+        const subtitle = document.getElementById("simulation-panel-subtitle");
+        const interpretation = document.getElementById("simulation-interpretation");
+        const summaryBadge = document.getElementById("simulation-summary-badge");
+
+        if (subtitle) subtitle.textContent = "No se pudo cargar la simulación.";
+        if (interpretation) interpretation.textContent = "Ha ocurrido un error consultando el endpoint de simulación.";
+        if (summaryBadge) {
+          summaryBadge.classList.remove("is-better");
+          summaryBadge.classList.add("is-worse");
+          summaryBadge.textContent = "Simulation error";
+        }
+
+        if (overlay) overlay.classList.add("is-open");
+        if (panel) {
+          panel.classList.add("is-open");
+          panel.setAttribute("aria-hidden", "false");
+        }
+      });
+  };
+})();
+</script>
+
+</body>
+</html>
