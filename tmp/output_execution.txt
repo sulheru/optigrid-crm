@@ -1,0 +1,559 @@
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/models.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.db import models
+
+
+class CRMTask(models.Model):
+    STATUS_CHOICES = [
+        ("open", "Open"),
+        ("in_progress", "In Progress"),
+        ("done", "Done"),
+        ("dismissed", "Dismissed"),
+    ]
+
+    TASK_TYPE_CHOICES = [
+        ("reply_email", "Reply Email"),
+        ("follow_up", "Follow Up"),
+        ("schedule_call", "Schedule Call"),
+        ("prepare_proposal", "Prepare Proposal"),
+        ("review_manually", "Review Manually"),
+        ("opportunity_review", "Opportunity review"),
+        ("qualification_review", "Qualification review"),
+        ("pricing_review", "Pricing review"),
+    ]
+
+    SOURCE_CHOICES = [
+        ("manual", "Manual"),
+        ("auto", "Auto"),
+    ]
+
+    opportunity = models.ForeignKey(
+        "opportunities.Opportunity",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tasks",
+    )
+
+    source_recommendation = models.ForeignKey(
+        "recommendations.AIRecommendation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tasks",
+    )
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    task_type = models.CharField(max_length=50, choices=TASK_TYPE_CHOICES)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="open")
+    priority = models.CharField(max_length=20, default="normal")
+    due_at = models.DateTimeField(null=True, blank=True)
+
+    source = models.CharField(
+        max_length=20,
+        choices=SOURCE_CHOICES,
+        default="manual",
+    )
+    source_action = models.CharField(max_length=100, blank=True)
+    is_revoked = models.BooleanField(default=False, db_index=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} [{self.status}]"
+
+    @property
+    def is_auto(self):
+        return self.source == "auto"
+
+    @property
+    def can_be_revoked(self):
+        return self.is_auto and not self.is_revoked and self.status not in {"done", "dismissed"}
+
+    @property
+    def effective_status_label(self):
+        if self.is_revoked:
+            return "Revoked"
+        return self.get_status_display()
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/services/materialize.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from apps.recommendations.models import AIRecommendation
+from apps.tasks.models import CRMTask
+
+
+EXACT_TASK_TYPE_MAP = {
+    "reply_strategy": ("reply_email", "Responder email recomendado por IA", "high"),
+    "followup": ("follow_up", "Hacer follow-up", "high"),
+    "schedule_call": ("schedule_call", "Agendar llamada", "high"),
+    "prepare_proposal": ("prepare_proposal", "Preparar propuesta comercial", "high"),
+    "qualification": ("qualification_review", "Revisar cualificación comercial", "normal"),
+    "opportunity_review": ("opportunity_review", "Revisar oportunidad detectada por IA", "high"),
+    "pricing_strategy": ("pricing_review", "Revisar estrategia de pricing", "normal"),
+}
+
+KEYWORD_FALLBACKS = [
+    (("reply", "respond"), ("reply_email", "Responder email recomendado por IA", "high")),
+    (("follow",), ("follow_up", "Hacer follow-up", "high")),
+    (("call", "meeting"), ("schedule_call", "Agendar llamada", "high")),
+    (("proposal", "quote", "offer"), ("prepare_proposal", "Preparar propuesta comercial", "high")),
+    (("qualif",), ("qualification_review", "Revisar cualificación comercial", "normal")),
+    (("opportunity",), ("opportunity_review", "Revisar oportunidad detectada por IA", "high")),
+    (("pricing", "price", "budget"), ("pricing_review", "Revisar estrategia de pricing", "normal")),
+]
+
+
+def recommendation_to_task_payload(recommendation: AIRecommendation) -> dict:
+    rec_type = (recommendation.recommendation_type or "").strip().lower()
+    rec_text = recommendation.recommendation_text or ""
+
+    mapped = EXACT_TASK_TYPE_MAP.get(rec_type)
+    if mapped is not None:
+        task_type, title, priority = mapped
+        return {
+            "title": title,
+            "description": rec_text,
+            "task_type": task_type,
+            "priority": priority,
+        }
+
+    for keywords, payload in KEYWORD_FALLBACKS:
+        if any(keyword in rec_type for keyword in keywords):
+            task_type, title, priority = payload
+            return {
+                "title": title,
+                "description": rec_text,
+                "task_type": task_type,
+                "priority": priority,
+            }
+
+    return {
+        "title": "Revisar recomendación IA",
+        "description": rec_text,
+        "task_type": "review_manually",
+        "priority": "normal",
+    }
+
+
+def materialize_recommendation_as_task(recommendation: AIRecommendation) -> CRMTask:
+    existing = CRMTask.objects.filter(source_recommendation=recommendation).first()
+    if existing:
+        return existing
+
+    payload = recommendation_to_task_payload(recommendation)
+
+    task = CRMTask.objects.create(
+        source_recommendation=recommendation,
+        title=payload["title"],
+        description=payload["description"],
+        task_type=payload["task_type"],
+        priority=payload["priority"],
+        status="open",
+    )
+
+    if hasattr(recommendation, "status") and recommendation.status in ("new", "open", "pending"):
+        recommendation.status = "materialized"
+        recommendation.save(update_fields=["status"])
+
+    return task
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/tasks/views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
+from .models import CRMTask
+
+
+def tasks_list_view(request):
+    source = request.GET.get("source", "all")
+    status = request.GET.get("status", "all")
+    revoked = request.GET.get("revoked", "active")
+    source_action = request.GET.get("source_action", "all")
+
+    tasks = CRMTask.objects.select_related("opportunity").all().order_by(
+        "is_revoked",
+        "-created_at",
+    )
+
+    if source != "all":
+        tasks = tasks.filter(source=source)
+
+    if status != "all":
+        tasks = tasks.filter(status=status)
+
+    if revoked == "revoked":
+        tasks = tasks.filter(is_revoked=True)
+    elif revoked == "all":
+        pass
+    else:
+        tasks = tasks.filter(is_revoked=False)
+
+    if source_action != "all":
+        if source_action == "empty":
+            tasks = tasks.filter(source_action="")
+        else:
+            tasks = tasks.filter(source_action=source_action)
+
+    base_qs = CRMTask.objects.all()
+
+    source_action_values = (
+        CRMTask.objects.exclude(source_action="")
+        .values_list("source_action", flat=True)
+        .distinct()
+        .order_by("source_action")
+    )
+
+    context = {
+        "tasks": tasks,
+        "filters": {
+            "source": source,
+            "status": status,
+            "revoked": revoked,
+            "source_action": source_action,
+        },
+        "source_action_values": source_action_values,
+        "counts": {
+            "all": base_qs.count(),
+            "auto": base_qs.filter(source="auto").count(),
+            "manual": base_qs.filter(source="manual").count(),
+            "open": base_qs.filter(status="open", is_revoked=False).count(),
+            "in_progress": base_qs.filter(status="in_progress", is_revoked=False).count(),
+            "done": base_qs.filter(status="done", is_revoked=False).count(),
+            "dismissed": base_qs.filter(status="dismissed", is_revoked=False).count(),
+            "revoked": base_qs.filter(is_revoked=True).count(),
+        },
+    }
+    return render(request, "tasks/list.html", context)
+
+
+@require_POST
+def revoke_task(request, task_id):
+    task = get_object_or_404(CRMTask, pk=task_id)
+
+    if task.source != "auto":
+        messages.warning(request, "Solo se pueden revocar tasks automáticas.")
+        return redirect(request.META.get("HTTP_REFERER", "/tasks/"))
+
+    if task.is_revoked:
+        messages.info(request, "La task ya estaba revocada.")
+        return redirect(request.META.get("HTTP_REFERER", "/tasks/"))
+
+    task.is_revoked = True
+    task.save(update_fields=["is_revoked", "updated_at"])
+
+    messages.success(request, "Task revocada. El sistema no la recreará automáticamente.")
+    return redirect(request.META.get("HTTP_REFERER", "/tasks/"))
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/models.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.db import models
+
+
+class Opportunity(models.Model):
+    STATUS_CHOICES = [
+        ("new", "New"),
+        ("qualified", "Qualified"),
+        ("proposal", "Proposal"),
+        ("won", "Won"),
+        ("lost", "Lost"),
+    ]
+
+    source_task = models.ForeignKey(
+        "tasks.CRMTask",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="opportunities",
+    )
+
+    source_recommendation = models.ForeignKey(
+        "recommendations.AIRecommendation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="spawned_opportunities",
+    )
+
+    title = models.CharField(max_length=255)
+    company_name = models.CharField(max_length=255, blank=True)
+    stage = models.CharField(max_length=30, choices=STATUS_CHOICES, default="new")
+    estimated_value = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    confidence = models.FloatField(default=0.0)
+    summary = models.TextField(blank=True)
+
+    last_analyzed_at = models.DateTimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} [{self.stage}]"
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/services/promote.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from apps.opportunities.models import Opportunity
+from apps.tasks.models import CRMTask
+
+
+PROMOTABLE_TASK_TYPES = {
+    "schedule_call",
+    "prepare_proposal",
+    "follow_up",
+}
+
+
+def promote_task_to_opportunity(task: CRMTask) -> Opportunity:
+    existing = task.opportunities.first()
+    if existing:
+        return existing
+
+    stage = "new"
+    if task.task_type == "prepare_proposal":
+        stage = "proposal"
+    elif task.task_type == "schedule_call":
+        stage = "qualified"
+
+    opportunity = Opportunity.objects.create(
+        source_task=task,
+        title=task.title,
+        company_name="",
+        stage=stage,
+        confidence=0.6,
+        summary=task.description or "",
+    )
+    return opportunity
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.contrib import messages
+from django.db.models import F
+from django.http import HttpResponseNotAllowed
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+
+from .models import Opportunity
+
+
+ALLOWED_SORTS = {
+    "updated_at": "-updated_at",
+    "-updated_at": "updated_at",
+    "created_at": "-created_at",
+    "-created_at": "created_at",
+    "estimated_value": "estimated_value",
+    "-estimated_value": "-estimated_value",
+    "confidence": "confidence",
+    "-confidence": "-confidence",
+    "title": "title",
+    "-title": "-title",
+}
+
+STAGE_CHOICES = ["new", "qualified", "proposal", "won", "lost"]
+
+STAGE_TRANSITIONS = {
+    "new": ["qualified"],
+    "qualified": ["proposal", "lost"],
+    "proposal": ["won", "lost"],
+    "won": [],
+    "lost": [],
+}
+
+
+def _normalize_sort(sort_value: str) -> str:
+    if sort_value in ALLOWED_SORTS:
+        return ALLOWED_SORTS[sort_value]
+    return "-updated_at"
+
+
+def list_opportunities(request):
+    qs = Opportunity.objects.all()
+
+    stage = (request.GET.get("stage") or "").strip()
+    sort = (request.GET.get("sort") or "-updated_at").strip()
+
+    if stage and stage in STAGE_CHOICES:
+        qs = qs.filter(stage=stage)
+
+    sort_field = _normalize_sort(sort)
+
+    # Nulls-last razonable para estimated_value y confidence en PostgreSQL/Django 6
+    if sort_field in ("estimated_value", "-estimated_value"):
+        descending = sort_field.startswith("-")
+        field_name = "estimated_value"
+        qs = qs.order_by(
+            F(field_name).desc(nulls_last=True) if descending else F(field_name).asc(nulls_last=True),
+            F("updated_at").desc(nulls_last=True),
+        )
+    elif sort_field in ("confidence", "-confidence"):
+        descending = sort_field.startswith("-")
+        field_name = "confidence"
+        qs = qs.order_by(
+            F(field_name).desc(nulls_last=True) if descending else F(field_name).asc(nulls_last=True),
+            F("updated_at").desc(nulls_last=True),
+        )
+    else:
+        qs = qs.order_by(sort_field)
+
+    context = {
+        "opportunities": qs,
+        "current_stage": stage,
+        "current_sort": sort_field,
+        "stage_choices": STAGE_CHOICES,
+        "stage_transitions": STAGE_TRANSITIONS,
+        "total_results": qs.count(),
+    }
+    return render(request, "opportunities/list.html", context)
+
+
+def transition_opportunity_stage(request, pk: int):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+
+    opportunity = get_object_or_404(Opportunity, pk=pk)
+    target_stage = (request.POST.get("stage") or "").strip()
+
+    if target_stage not in STAGE_CHOICES:
+        messages.error(request, "Stage inválido.")
+        return redirect(request.META.get("HTTP_REFERER") or reverse("opportunities:list"))
+
+    allowed_targets = STAGE_TRANSITIONS.get(opportunity.stage, [])
+    if target_stage not in allowed_targets:
+        messages.error(
+            request,
+            f"No se permite transición de '{opportunity.stage}' a '{target_stage}'.",
+        )
+        return redirect(request.META.get("HTTP_REFERER") or reverse("opportunities:list"))
+
+    previous_stage = opportunity.stage
+    opportunity.stage = target_stage
+    opportunity.save(update_fields=["stage", "updated_at"])
+
+    messages.success(
+        request,
+        f"Opportunity #{opportunity.pk} movida de '{previous_stage}' a '{target_stage}'.",
+    )
+    return redirect(request.META.get("HTTP_REFERER") or reverse("opportunities:list"))
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/opportunities/views_prioritized.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.shortcuts import get_object_or_404, render
+
+from apps.opportunities.models import Opportunity
+from apps.opportunities.services.prioritization import (
+    build_opportunity_priority_row,
+    build_prioritized_opportunities,
+)
+from apps.tasks.models import CRMTask
+
+
+def prioritized_opportunities_view(request):
+    stage = (request.GET.get("stage") or "").strip() or None
+    needs_attention_only = request.GET.get("needs_attention") in {"1", "true", "yes"}
+
+    filter_high = request.GET.get("high") == "1"
+    filter_autotasks = request.GET.get("autotasks") == "1"
+    filter_no_action = request.GET.get("no_action") == "1"
+    filter_risk = request.GET.get("risk") == "1"
+
+    rows = build_prioritized_opportunities(
+        stage=stage,
+        needs_attention_only=needs_attention_only,
+    )
+    rows = [row.to_dict() for row in rows]
+
+    if filter_high:
+        rows = [r for r in rows if r["priority_bucket"] == "high"]
+
+    if filter_autotasks:
+        rows = [r for r in rows if r["has_autotasks"]]
+
+    if filter_no_action:
+        rows = [r for r in rows if not r["has_open_tasks"]]
+
+    if filter_risk:
+        rows = [r for r in rows if r["has_risk"]]
+
+    stats = {
+        "visible_count": len(rows),
+        "high_count": len([r for r in rows if r["priority_bucket"] == "high"]),
+        "blocked_count": len([r for r in rows if r["execution_status"] == "blocked"]),
+    }
+
+    return render(
+        request,
+        "opportunities/prioritized.html",
+        {
+            "rows": rows,
+            "stats": stats,
+            "selected_stage": stage or "",
+            "needs_attention_only": needs_attention_only,
+            "filters": {
+                "high": filter_high,
+                "autotasks": filter_autotasks,
+                "no_action": filter_no_action,
+                "risk": filter_risk,
+            },
+            "stage_choices": [
+                ("", "All"),
+                ("new", "New"),
+                ("qualified", "Qualified"),
+                ("proposal", "Proposal"),
+            ],
+        },
+    )
+
+
+def opportunity_tasks_view(request, pk: int):
+    opportunity = get_object_or_404(Opportunity, pk=pk)
+    priority_row = build_opportunity_priority_row(opportunity).to_dict()
+
+    tasks = CRMTask.objects.filter(opportunity=opportunity).order_by("-created_at", "-id")
+    open_tasks = [task for task in tasks if task.status in {"open", "in_progress"}]
+    auto_tasks = [task for task in tasks if task.source == "auto"]
+
+    return render(
+        request,
+        "opportunities/opportunity_tasks.html",
+        {
+            "opportunity": opportunity,
+            "priority_row": priority_row,
+            "tasks": tasks,
+            "open_tasks_count": len(open_tasks),
+            "auto_tasks_count": len(auto_tasks),
+        },
+    )
+
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+
+from apps.opportunities.models import Opportunity
+
+
+@require_POST
+def opportunity_set_stage_view(request, pk):
+    opportunity = get_object_or_404(Opportunity, pk=pk)
+
+    target_stage = (request.POST.get("stage") or "").strip()
+    next_url = (request.POST.get("next") or "").strip() or "/opportunities/prioritized/"
+
+    valid_stages = {choice[0] for choice in Opportunity.STAGE_CHOICES}
+    if target_stage not in valid_stages:
+        messages.error(request, f"Invalid stage: {target_stage}")
+        return redirect(next_url)
+
+    current_stage = opportunity.stage
+    if current_stage == target_stage:
+        messages.info(request, f"Opportunity already in stage '{target_stage}'.")
+        return redirect(next_url)
+
+    opportunity.stage = target_stage
+    opportunity.save(update_fields=["stage", "updated_at"])
+
+    messages.success(
+        request,
+        f"Opportunity #{opportunity.id} stage changed: {current_stage} → {target_stage}.",
+    )
+    return redirect(next_url)

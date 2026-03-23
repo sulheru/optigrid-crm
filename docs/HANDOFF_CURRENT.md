@@ -1,49 +1,97 @@
-# HANDOFF — CURRENT STATE
+# HANDOFF CURRENT
 
-## System Status
+## Proyecto
+OptiGrid CRM — AI Commercial Operating System
 
-OptiGrid CRM is currently in a **post-UI consolidation phase**.
+## Fecha
+2026-03-23
 
-The system is:
-- Functionally complete at pipeline level
-- Visually unified at a high level
-- Not yet fully cleaned or audited
+## Estado de la sesión
+Sesión de auditoría global y rediseño del roadmap.
 
-## Key Achievements This Session
+No se ha implementado código nuevo.
+No se ha refactorizado nada.
+La sesión se ha dedicado a inspección real y decisiones de arquitectura.
 
-- Design system consolidated into `design_system.html`
-- Major templates refactored:
-  - tasks
-  - leads
-  - opportunities
-  - strategic chat
-- UI Foundation V2 mostly aligned with app shell
+---
 
-## Known Issues
+## Hallazgos principales
 
-- `base.html` still contains duplicated design system styles
-- Some templates may still contain inline styles
-- No global verification performed after refactor
-- Possible inconsistencies between templates
+### 1. Estado real del sistema
+El sistema ya tiene backend significativo y no está en fase meramente conceptual.
 
-## Risk
+Se han confirmado piezas reales:
 
-Medium:
-- UI inconsistencies may exist
-- Hidden duplication may remain
-- System state partially assumed, not verified
+- `AIRecommendation` como entidad operativa
+- execution layer en recommendations
+- task materialization
+- opportunity promotion
+- pipeline `services/` con:
+  - email_ingest
+  - fact_extraction
+  - inference_engine
+  - update_proposals
+- inbox intelligence paralela en `apps/emailing`
+- strategy backend con selección rule-based / Gemini parcial
+- dashboard / recommendations / tasks / inbox / opportunities con base UI V2 parcial
 
-## Strategic Position
+### 2. Problema estructural real
+No existe todavía una capa backend plenamente unificada.
 
-The project is at a **critical transition point**:
+Conviven al menos dos lógicas/pipelines relevantes:
 
-From:
-- iterative building
+- pipeline facts → inferences → proposals → recommendations
+- pipeline inbox interpretation → decision → apply
 
-To:
-- system-level understanding and control
+Además:
+- la simulación de correo sigue embebida en el flujo operativo
+- no existe todavía provider abstraction layer formal
+- no existe todavía SOI implementado
+- Outlook y Calendar reales no están conectados
 
-## Recommendation
+### 3. Conclusión estratégica
+La prioridad correcta ya no es UI ni plugins directos.
 
-Next session MUST:
-- audit the entire system before further development
+La prioridad correcta es:
+
+**consolidar el backend canónico antes de enchufar integraciones externas**
+
+---
+
+## Decisión tomada
+Se redefine el roadmap del proyecto en clave backend-first:
+
+1. CONTROL Y CANONICAL BACKEND
+2. PROVIDER ABSTRACTION LAYER
+3. SCENARIO ORCHESTRATOR INTERFACE (SOI)
+4. REAL INTEGRATIONS
+5. EXECUTIVE SURFACES
+
+---
+
+## Notas importantes
+- El SOI fue introducido como idea tardía en esta sesión y queda aceptado como futura capa de orquestación.
+- Calendar se considera útil no solo como agenda, sino como canal de recordatorios y notificaciones móviles.
+- Tasks debe seguir siendo fuente de verdad operativa; Calendar será proyección/sincronización cuando convenga.
+
+---
+
+## Qué NO hacer en la siguiente sesión
+- no empezar aún por Outlook real
+- no empezar aún por Calendar real
+- no implementar aún SOI completo
+- no saltar directamente a plugins sin cerrar backend
+
+---
+
+## Qué SÍ hacer en la siguiente sesión
+- comenzar FASE A: CONTROL Y CANONICAL BACKEND
+- diseñar estructura backend objetivo
+- decidir pipeline canónico
+- identificar puntos de mezcla entre:
+  - core
+  - providers
+  - simulación
+  - views
+- preparar la futura provider abstraction layer
+

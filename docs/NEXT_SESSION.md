@@ -1,44 +1,66 @@
-# NEXT SESSION — GLOBAL SYSTEM AUDIT
+# NEXT SESSION
 
-## Objective
+## Objetivo
+Iniciar la FASE A — CONTROL Y CANONICAL BACKEND.
 
-Understand the REAL state of the system.
+## Contexto
+La auditoría de hoy ha confirmado que el sistema ya tiene backend potente, pero todavía no suficientemente unificado.
 
-## Tasks
+Conviven:
+- pipeline facts/inferences/proposals/recommendations
+- inbox intelligence / decision / apply
+- simulación embebida en emailing
+- strategy backend parcial
+- execution layer funcional
 
-1. Full codebase audit
-   - apps/*
-   - templates/*
-   - views
-   - models
-   - urls
+Antes de empezar con SOI, Outlook o LLM plugins completos, hay que consolidar el backend canónico.
 
-2. Build system map
-   - real pipeline flow
-   - active vs unused components
+---
 
-3. Detect issues
-   - duplication
-   - inconsistencies
-   - legacy code
+## Objetivos concretos de la siguiente sesión
 
-4. Evaluate UI layer
-   - design system usage
-   - base.html duplication
-   - inline styles
+### 1. Definir pipeline canónico
+Aclarar:
+- cuál es el flujo principal real del sistema
+- cómo encajan:
+  - email_ingest
+  - facts
+  - inferences
+  - updates
+  - recommendations
+  - inbox intelligence
+  - execution
 
-5. Produce:
-   - system map
-   - gap analysis
-   - technical debt list
-   - next phase plan
+### 2. Diseñar target backend structure
+Separar mental y estructuralmente:
+- domain models
+- application services
+- providers/adapters
+- orchestration
+- views
 
-## Rules
+### 3. Identificar acoplamientos
+Buscar puntos donde hoy esté mezclado:
+- simulación con core
+- views con lógica de aplicación
+- recommendations con UI decoration
+- execution con provider implícito
 
-- No coding
-- No refactoring
-- No assumptions
+### 4. Preparar provider abstraction layer
+Sin implementarla completa aún, dejar definido qué contratos harán falta:
+- MailProvider
+- LLMProvider
+- CalendarProvider
+- SOI
 
-## Output
+---
 
-Clear, structured diagnosis of the system state
+## Regla de trabajo
+No asumir nada.
+Leer primero.
+No implementar plugins todavía.
+No abrir Outlook todavía.
+No refactorizar a ciegas.
+
+Primero control backend.
+
