@@ -1,0 +1,1336 @@
+=== PWD ===
+/home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm
+
+=== TEMPLATE: templates/recommendations/list.html ===
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/recommendations/list.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+{% extends "base.html" %}
+{% block title %}Recommendations · OptiGrid CRM{% endblock %}
+{% block content %}
+
+<style>
+  .item {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .item:last-child {
+    border-bottom: 0;
+  }
+
+  .item-opportunity-review {
+    background: linear-gradient(to right, #faf5ff 0%, #ffffff 18%);
+    border-left: 4px solid #7c3aed;
+  }
+
+  .topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .type-default {
+    background: #e5e7eb;
+    color: #374151;
+  }
+
+  .type-opportunity-review {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+
+  .type-reply-strategy {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .type-followup {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .type-schedule-call {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .type-prepare-proposal {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .status-new { background: #dbeafe; color: #1d4ed8; }
+  .status-materialized { background: #dcfce7; color: #166534; }
+  .status-dismissed { background: #e5e7eb; color: #4b5563; }
+  .status-executed { background: #fef3c7; color: #92400e; }
+
+  .meta {
+    color: var(--app-muted);
+    font-size: 13px;
+    margin: 6px 0 10px 0;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .rec-text {
+    line-height: 1.5;
+  }
+
+  .actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .actions form {
+    margin: 0;
+  }
+
+  .btn-opportunity {
+    border-color: #c4b5fd;
+    background: #f5f3ff;
+    color: #5b21b6;
+  }
+
+  .btn-opportunity:hover {
+    background: #ede9fe;
+  }
+
+  .back-link {
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>
+
+<div class="page">
+  <div class="page-header">
+    <div class="title-block">
+      <h1>Recommendations</h1>
+      <p>Supervisión operativa de recomendaciones generadas por el sistema.</p>
+    </div>
+    <a href="/" class="back-link">← Dashboard</a>
+  </div>
+
+  <div class="filters">
+    <form method="get">
+      <div>
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="">Todos</option>
+          {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="recommendation_type">Type</label>
+        <select id="recommendation_type" name="recommendation_type">
+          <option value="">Todos</option>
+          {% for value in recommendation_types %}
+            <option value="{{ value }}" {% if selected_recommendation_type == value %}selected{% endif %}>{{ value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label>&nbsp;</label>
+        <div class="toolbar">
+          <button type="submit">Aplicar filtros</button>
+          <a href="/recommendations/" class="btn btn-secondary">Limpiar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    {% for recommendation in recommendations %}
+      <div class="item {% if recommendation.recommendation_type == 'opportunity_review' %}item-opportunity-review{% endif %}">
+        <div class="topline">
+          <div class="title-wrap">
+            {% if recommendation.recommendation_type == "opportunity_review" %}
+              <span class="type-badge type-opportunity-review">Opportunity Review</span>
+            {% elif recommendation.recommendation_type == "reply_strategy" %}
+              <span class="type-badge type-reply-strategy">Reply Strategy</span>
+            {% elif recommendation.recommendation_type == "followup" %}
+              <span class="type-badge type-followup">Follow-up</span>
+            {% elif recommendation.recommendation_type == "schedule_call" %}
+              <span class="type-badge type-schedule-call">Schedule Call</span>
+            {% elif recommendation.recommendation_type == "prepare_proposal" %}
+              <span class="type-badge type-prepare-proposal">Prepare Proposal</span>
+            {% else %}
+              <span class="type-badge type-default">
+                {{ recommendation.recommendation_type|default:"recommendation" }}
+              </span>
+            {% endif %}
+
+            <span class="chip status-{{ recommendation.status|default:'new' }}">
+              {{ recommendation.status|default:"—" }}
+            </span>
+          </div>
+        </div>
+
+        <div class="meta">
+          <span>ID {{ recommendation.id }}</span>
+          <span>confidence {{ recommendation.confidence|default:"—" }}</span>
+          <span>scope {{ recommendation.scope_type|default:"—" }}#{{ recommendation.scope_id|default:"—" }}</span>
+        </div>
+
+        <div class="rec-text">{{ recommendation.recommendation_text }}</div>
+
+        {% if recommendation.recommendation_type == "opportunity_review" %}
+          <div class="muted mt-8">
+            Señal comercial detectada. Puede promoverse a oportunidad.
+          </div>
+        {% endif %}
+
+        {% if recommendation.status == "new" %}
+          <div class="actions">
+            {% if recommendation.recommendation_type == "followup" %}
+              <form method="post" action="{% url 'execute_followup' recommendation.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Execute</button>
+              </form>
+            {% endif %}
+
+            {% if recommendation.recommendation_type == "opportunity_review" or recommendation.recommendation_type == "prepare_proposal" or recommendation.recommendation_type == "schedule_call" or recommendation.recommendation_type == "pricing_strategy" or recommendation.recommendation_type == "qualification" %}
+              <form method="post" action="/recommendations/{{ recommendation.id }}/promote-opportunity/">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-opportunity">Promote to Opportunity</button>
+              </form>
+            {% endif %}
+
+            <form method="post" action="/recommendations/{{ recommendation.id }}/create-task/">
+              {% csrf_token %}
+              <button type="submit">Create Task</button>
+            </form>
+
+            <form method="post" action="/recommendations/{{ recommendation.id }}/dismiss/">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-secondary">Dismiss</button>
+            </form>
+          </div>
+        {% else %}
+          <div class="muted mt-8">Sin acciones disponibles para este estado.</div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="card-body">
+        <div class="empty">No hay recommendations.</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
+
+=== TEMPLATE: templates/base.html ===
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}OptiGrid CRM{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'app_ui/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app_ui/css/font-awesome.css' %}">
+  <link rel="stylesheet" href="{% static 'app_ui/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'app_ui/css/custom.css' %}">
+
+  <style>
+    html, body {
+      background: #f2f4f8;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #1f2937;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      background: #f2f4f8;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #0f172a;
+      color: #cbd5e1;
+      z-index: 1000;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    }
+
+    .app-sidebar-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-link:hover,
+    .app-brand-link:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .app-brand-logo img {
+      max-width: 24px;
+      max-height: 24px;
+      display: block;
+    }
+
+    .app-brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .app-sidebar-section {
+      padding: 18px 14px 0;
+    }
+
+    .app-sidebar-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin: 0 10px 10px;
+    }
+
+    .app-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-nav-item {
+      margin-bottom: 4px;
+    }
+
+    .app-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-nav-item a:hover,
+    .app-nav-item a:focus {
+      text-decoration: none;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+
+    .app-nav-item.active a {
+      background: rgb(6, 217, 149);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(6, 217, 149, 0.25);
+    }
+
+    .app-nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .app-main {
+      margin-left: 250px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: 72px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .app-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .app-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      color: #111827;
+    }
+
+    .app-page-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .app-page-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-topbar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgb(6, 217, 149);
+      display: inline-block;
+      box-shadow: 0 0 0 4px rgba(6, 217, 149, 0.12);
+    }
+
+    .app-content {
+      padding: 24px;
+      flex: 1;
+    }
+
+    .app-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-card-header {
+      padding: 18px 20px 0;
+    }
+
+    .app-card-body {
+      padding: 20px;
+    }
+
+    .app-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .app-section-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .app-kpi-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-kpi-value {
+      font-size: 30px;
+
+=== PARTIALS: templates/partials/design_system.html ===
+{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/partials/design_system.html #}
+{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
+<style>
+/* =========================
+   🎨 DESIGN TOKENS
+========================= */
+
+:root {
+  --color-primary: rgb(6, 217, 149);
+
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+
+  --color-text: #111827;
+  --color-muted: #6b7280;
+
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+}
+
+
+/* =========================
+   📦 LAYOUT
+========================= */
+
+.app-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.app-card-body {
+  padding: 18px;
+}
+
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-grid {
+  display: grid;
+  gap: 16px;
+}
+
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+
+.app-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: var(--color-primary);
+  color: white;
+
+  border: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-primary:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.app-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: var(--color-text);
+
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-secondary:hover {
+  background: #e5e7eb;
+  text-decoration: none;
+}
+
+
+/* =========================
+   🏷️ BADGES
+========================= */
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-badge-success {
+  background: #dcfce7;
+  color: var(--color-success);
+}
+
+.app-badge-warning {
+  background: #fef3c7;
+  color: var(--color-warning);
+}
+
+.app-badge-danger {
+  background: #fee2e2;
+  color: var(--color-danger);
+}
+
+.app-badge-info {
+  background: #dbeafe;
+  color: var(--color-info);
+}
+
+.app-badge-neutral {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+
+/* =========================
+   📊 STAT CARDS
+========================= */
+
+.app-stat {
+  padding: 16px;
+}
+
+.app-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.app-stat-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+
+/* =========================
+   🧩 HELPERS
+========================= */
+
+.app-text-muted {
+  color: var(--color-muted);
+}
+
+</style>
+
+=== LABELS: apps/core/labels.py ===
+RECOMMENDATION_LABELS = {
+    "contact_strategy": "Contact strategy",
+    "followup": "Follow-up",
+    "hold": "On hold",
+    "next_action": "Next action",
+    "opportunity_review": "Opportunity review",
+    "pricing_strategy": "Pricing strategy",
+    "qualification": "Qualification",
+    "reply_strategy": "Reply strategy",
+    "risk_flag": "Risk detected",
+    "timing_strategy": "Timing strategy",
+}
+
+EMAIL_TYPE_LABELS = {
+    "first_contact": "First contact",
+    "followup": "Follow-up",
+}
+
+REPLY_TYPE_LABELS = {
+    "interested": "Interested",
+    "needs_info": "Needs information",
+    "not_interested": "Not interested",
+    "not_now": "Not now",
+    "unclear": "Unclear",
+}
+
+ACTION_TYPE_LABELS = {
+    "advance_opportunity": "Advance opportunity",
+    "mark_lost": "Mark as lost",
+    "schedule_followup": "Schedule follow-up",
+    "send_clarification": "Send clarification",
+    "send_information": "Send information",
+}
+
+STATUS_LABELS = {
+    "new": "New",
+    "reviewed": "Reviewed",
+    "linked": "Linked",
+    "draft": "Draft",
+    "approved": "Approved",
+    "sent": "Sent",
+    "failed": "Failed",
+    "suggested": "Suggested",
+    "applied": "Applied",
+    "dismissed": "Dismissed",
+    "executed": "Executed",
+    "materialized": "Materialized",
+}
+
+STAGE_LABELS = {
+    "new": "New",
+    "qualified": "Qualified",
+    "contacted": "Contacted",
+    "meeting": "Meeting",
+    "proposal": "Proposal",
+    "negotiation": "Negotiation",
+    "won": "Won",
+    "lost": "Lost",
+}
+
+INTENT_LABELS = {
+    "interested": "Interested",
+    "needs_info": "Needs information",
+    "not_interested": "Not interested",
+    "not_now": "Not now",
+    "unclear": "Unclear",
+}
+
+RISK_FLAG_LABELS = {
+    "missing_contact_data": "Missing contact data",
+    "missing_decision_maker": "Missing decision maker",
+    "negative_sentiment": "Negative sentiment",
+    "pricing_pushback": "Pricing pushback",
+    "timing_unclear": "Timing unclear",
+    "no_clear_next_step": "No clear next step",
+}
+
+=== TEMPLATE FILTERS: apps/core/templatetags/label_filters.py ===
+from django import template
+
+from apps.core.labels import (
+    ACTION_TYPE_LABELS,
+    EMAIL_TYPE_LABELS,
+    INTENT_LABELS,
+    RECOMMENDATION_LABELS,
+    REPLY_TYPE_LABELS,
+    RISK_FLAG_LABELS,
+    STAGE_LABELS,
+    STATUS_LABELS,
+)
+
+register = template.Library()
+
+
+def _fallback(value):
+    if value is None:
+        return ""
+    return str(value).replace("_", " ").strip().title()
+
+
+@register.filter(name="recommendation_label")
+def recommendation_label(value):
+    return RECOMMENDATION_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="email_type_label")
+def email_type_label(value):
+    return EMAIL_TYPE_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="reply_label")
+def reply_label(value):
+    return REPLY_TYPE_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="action_label")
+def action_label(value):
+    return ACTION_TYPE_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="status_label")
+def status_label(value):
+    return STATUS_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="stage_label")
+def stage_label(value):
+    return STAGE_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="intent_label")
+def intent_label(value):
+    return INTENT_LABELS.get(value, _fallback(value))
+
+
+@register.filter(name="risk_flag_label")
+def risk_flag_label(value):
+    return RISK_FLAG_LABELS.get(value, _fallback(value))
+
+=== VIEWS: apps/recommendations/views.py ===
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/views.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
+from apps.emailing.models import InboundEmail, OutboundEmail
+from apps.emailing.services.reply_generator import generate_followup_draft_from_inbound
+from apps.opportunities.models import Opportunity
+from apps.opportunities.services.promote import promote_task_to_opportunity
+from apps.recommendations.models import AIRecommendation
+from apps.tasks.services.materialize import materialize_recommendation_as_task
+
+
+def _resolve_opportunity_from_recommendation(recommendation: AIRecommendation):
+    direct_opportunity = getattr(recommendation, "opportunity", None)
+    if direct_opportunity is not None:
+        return direct_opportunity
+
+    scope_type = (getattr(recommendation, "scope_type", "") or "").strip().lower()
+    scope_id = getattr(recommendation, "scope_id", None)
+
+    if scope_type == "opportunity" and scope_id not in (None, ""):
+        try:
+            return Opportunity.objects.filter(pk=int(scope_id)).first()
+        except (TypeError, ValueError):
+            return None
+
+    return None
+
+
+def _find_reusable_followup_for_inbound(inbound: InboundEmail):
+    if inbound is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            source_inbound=inbound,
+            email_type=OutboundEmail.TYPE_FOLLOWUP,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _find_reusable_followup_for_opportunity(opportunity: Opportunity):
+    if opportunity is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            opportunity=opportunity,
+            source_inbound__isnull=True,
+            email_type=OutboundEmail.TYPE_FOLLOWUP,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _build_manual_followup_draft(opportunity: Opportunity):
+    opportunity_name = (
+        getattr(opportunity, "title", None)
+        or getattr(opportunity, "company_name", None)
+        or "Opportunity"
+    )
+
+    return OutboundEmail.objects.create(
+        opportunity=opportunity,
+        email_type=OutboundEmail.TYPE_FOLLOWUP,
+        subject=f"Follow-up — {opportunity_name}",
+        body="Just checking in regarding our previous conversation.",
+        status=OutboundEmail.STATUS_DRAFT,
+    )
+
+
+def _find_reusable_first_contact_for_opportunity(opportunity: Opportunity):
+    if opportunity is None:
+        return None
+
+    return (
+        OutboundEmail.objects.filter(
+            opportunity=opportunity,
+            source_inbound__isnull=True,
+            email_type=OutboundEmail.TYPE_FIRST_CONTACT,
+            status__in=[
+                OutboundEmail.STATUS_DRAFT,
+                OutboundEmail.STATUS_APPROVED,
+            ],
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+
+def _build_first_contact_draft(opportunity: Opportunity):
+    opportunity_name = (
+        getattr(opportunity, "title", None)
+        or getattr(opportunity, "company_name", None)
+        or "Opportunity"
+    )
+
+    company_name = getattr(opportunity, "company_name", "") or opportunity_name
+
+    subject = f"Intro — {company_name}"
+    body = (
+        f"Hi {company_name} team,\n\n"
+        "I wanted to reach out briefly to introduce myself and explore whether "
+        "there could be a fit for a conversation.\n\n"
+        "If useful, I can share a short overview and suggest next steps.\n\n"
+        "Best regards,"
+    )
+
+    return OutboundEmail.objects.create(
+        opportunity=opportunity,
+        email_type=OutboundEmail.TYPE_FIRST_CONTACT,
+        subject=subject,
+        body=body,
+        status=OutboundEmail.STATUS_DRAFT,
+    )
+
+
+def _mark_recommendation_executed(recommendation: AIRecommendation):
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return
+
+    recommendation.status = AIRecommendation.STATUS_EXECUTED
+    recommendation.save(update_fields=["status"])
+
+
+def recommendation_list(request):
+    status = request.GET.get("status", "").strip()
+    recommendation_type = request.GET.get("recommendation_type", "").strip()
+
+    qs = AIRecommendation.objects.all().order_by("-id")
+
+    if status:
+        qs = qs.filter(status=status)
+
+    if recommendation_type:
+        qs = qs.filter(recommendation_type=recommendation_type)
+
+    recommendation_types = list(
+        AIRecommendation.objects.order_by()
+        .values_list("recommendation_type", flat=True)
+        .distinct()
+    )
+
+    status_choices = getattr(AIRecommendation, "STATUS_CHOICES", [])
+    if not status_choices:
+        status_choices = [
+            ("new", "New"),
+            ("materialized", "Materialized"),
+            ("dismissed", "Dismissed"),
+            ("executed", "Executed"),
+        ]
+
+    context = {
+        "recommendations": qs[:200],
+        "status_choices": status_choices,
+        "selected_status": status,
+        "selected_recommendation_type": recommendation_type,
+        "recommendation_types": recommendation_types,
+    }
+    return render(request, "recommendations/list.html", context)
+
+
+@require_POST
+def recommendation_create_task(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+    materialize_recommendation_as_task(recommendation)
+    return redirect("/recommendations/")
+
+
+@require_POST
+def recommendation_dismiss(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_DISMISSED:
+        return redirect("/recommendations/")
+
+    recommendation.status = AIRecommendation.STATUS_DISMISSED
+    recommendation.save(update_fields=["status"])
+    return redirect("/recommendations/")
+
+
+@require_POST
+def recommendation_promote_opportunity(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    existing = Opportunity.objects.filter(source_recommendation=recommendation).first()
+    if existing:
+        return redirect("/opportunities/prioritized/")
+
+    task = materialize_recommendation_as_task(recommendation)
+    opportunity = promote_task_to_opportunity(task)
+
+    if hasattr(opportunity, "source_recommendation_id") and not opportunity.source_recommendation_id:
+        opportunity.source_recommendation = recommendation
+        opportunity.save(update_fields=["source_recommendation", "updated_at"])
+
+    return redirect("/opportunities/prioritized/")
+
+
+@require_POST
+def execute_followup(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=followup")
+
+    opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
+
+    inbound = (
+        InboundEmail.objects.filter(opportunity=opportunity)
+        .order_by("-received_at", "-created_at")
+        .first()
+    )
+
+    outbound = None
+
+    if inbound is not None:
+        outbound = _find_reusable_followup_for_inbound(inbound)
+        if outbound is None:
+            outbound = generate_followup_draft_from_inbound(inbound)
+    else:
+        outbound = _find_reusable_followup_for_opportunity(opportunity)
+        if outbound is None:
+            outbound = _build_manual_followup_draft(opportunity)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
+
+    return redirect("/outbox/?type=followup")
+
+
+@require_POST
+def execute_contact_strategy(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=first_contact")
+
+    opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
+
+    outbound = _find_reusable_first_contact_for_opportunity(opportunity)
+    if outbound is None:
+        outbound = _build_first_contact_draft(opportunity)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
+
+    return redirect("/outbox/?type=first_contact")
+
+
+@require_POST
+def execute_reply_strategy(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+
+    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+        return redirect("/outbox/?type=followup")
+
+    opportunity = _resolve_opportunity_from_recommendation(recommendation)
+    if opportunity is None:
+        return redirect("/recommendations/")
+
+    inbound = (
+        InboundEmail.objects.filter(opportunity=opportunity)
+        .order_by("-received_at", "-created_at")
+        .first()
+    )
+    if inbound is None:
+        return redirect("/recommendations/")
+
+    outbound = _find_reusable_followup_for_inbound(inbound)
+    if outbound is None:
+        outbound = generate_followup_draft_from_inbound(inbound)
+
+    if outbound is not None:
+        _mark_recommendation_executed(recommendation)
+
+    return redirect("/outbox/?type=followup")
+
+
+@require_POST
+def execute_recommendation(request, pk):
+    recommendation = get_object_or_404(AIRecommendation, pk=pk)
+    recommendation_type = (recommendation.recommendation_type or "").strip().lower()
+
+    if recommendation_type == "followup":
+        return execute_followup(request, pk)
+
+    if recommendation_type == "contact_strategy":
+        return execute_contact_strategy(request, pk)
+
+    if recommendation_type == "reply_strategy":
+        return execute_reply_strategy(request, pk)
+
+    return redirect("/recommendations/")
+
+=== URLS: apps/recommendations/urls.py ===
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/urls.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.recommendation_list),
+    path("<int:pk>/create-task/", views.recommendation_create_task),
+    path("<int:pk>/dismiss/", views.recommendation_dismiss),
+    path("<int:pk>/promote-opportunity/", views.recommendation_promote_opportunity),
+    path("<int:pk>/execute/", views.execute_recommendation, name="execute_recommendation"),
+    path("<int:pk>/execute-followup/", views.execute_followup, name="execute_followup"),
+    path("<int:pk>/execute-contact-strategy/", views.execute_contact_strategy, name="execute_contact_strategy"),
+    path("<int:pk>/execute-reply-strategy/", views.execute_reply_strategy, name="execute_reply_strategy"),
+]
+
+=== MODEL: apps/recommendations/models.py ===
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/models.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.db import models
+
+
+class AIRecommendation(models.Model):
+    STATUS_NEW = "new"
+    STATUS_MATERIALIZED = "materialized"
+    STATUS_DISMISSED = "dismissed"
+    STATUS_EXECUTED = "executed"
+
+    STATUS_CHOICES = [
+        (STATUS_NEW, "New"),
+        (STATUS_MATERIALIZED, "Materialized"),
+        (STATUS_DISMISSED, "Dismissed"),
+        (STATUS_EXECUTED, "Executed"),
+    ]
+
+    scope_type = models.CharField(max_length=50)
+    scope_id = models.CharField(max_length=100)
+    recommendation_type = models.CharField(max_length=100)
+    recommendation_text = models.TextField()
+    confidence = models.FloatField()
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+=== SEARCH: label_filters usage in templates ===
+templates/dashboard/home.html:2:{% load label_filters %}
+templates/emailing/outbox.html:2:{% load label_filters %}
+templates/emailing/partials/inbox_email_card.html:1:{% load label_filters %}
+templates/emailing/inbox.html:2:{% load label_filters %}
+
+=== SEARCH: title filter on semantic fields ===
+
+=== SEARCH: technical strings exposed in recommendations template ===
+templates/recommendations/list.html:62:  .type-followup {
+templates/recommendations/list.html:77:  .status-new { background: #dbeafe; color: #1d4ed8; }
+templates/recommendations/list.html:78:  .status-materialized { background: #dcfce7; color: #166534; }
+templates/recommendations/list.html:79:  .status-dismissed { background: #e5e7eb; color: #4b5563; }
+templates/recommendations/list.html:80:  .status-executed { background: #fef3c7; color: #92400e; }
+templates/recommendations/list.html:134:        <label for="status">Status</label>
+templates/recommendations/list.html:135:        <select id="status" name="status">
+templates/recommendations/list.html:137:          {% for value, label in status_choices %}
+templates/recommendations/list.html:138:            <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+templates/recommendations/list.html:144:        <label for="recommendation_type">Type</label>
+templates/recommendations/list.html:145:        <select id="recommendation_type" name="recommendation_type">
+templates/recommendations/list.html:147:          {% for value in recommendation_types %}
+templates/recommendations/list.html:148:            <option value="{{ value }}" {% if selected_recommendation_type == value %}selected{% endif %}>{{ value }}</option>
+templates/recommendations/list.html:165:      <div class="item {% if recommendation.recommendation_type == 'opportunity_review' %}item-opportunity-review{% endif %}">
+templates/recommendations/list.html:168:            {% if recommendation.recommendation_type == "opportunity_review" %}
+templates/recommendations/list.html:170:            {% elif recommendation.recommendation_type == "reply_strategy" %}
+templates/recommendations/list.html:172:            {% elif recommendation.recommendation_type == "followup" %}
+templates/recommendations/list.html:173:              <span class="type-badge type-followup">Follow-up</span>
+templates/recommendations/list.html:174:            {% elif recommendation.recommendation_type == "schedule_call" %}
+templates/recommendations/list.html:176:            {% elif recommendation.recommendation_type == "prepare_proposal" %}
+templates/recommendations/list.html:180:                {{ recommendation.recommendation_type|default:"recommendation" }}
+templates/recommendations/list.html:184:            <span class="chip status-{{ recommendation.status|default:'new' }}">
+templates/recommendations/list.html:185:              {{ recommendation.status|default:"—" }}
+templates/recommendations/list.html:198:        {% if recommendation.recommendation_type == "opportunity_review" %}
+templates/recommendations/list.html:204:        {% if recommendation.status == "new" %}
+templates/recommendations/list.html:206:            {% if recommendation.recommendation_type == "followup" %}
+templates/recommendations/list.html:207:              <form method="post" action="{% url 'execute_followup' recommendation.id %}">
+templates/recommendations/list.html:213:            {% if recommendation.recommendation_type == "opportunity_review" or recommendation.recommendation_type == "prepare_proposal" or recommendation.recommendation_type == "schedule_call" or recommendation.recommendation_type == "pricing_strategy" or recommendation.recommendation_type == "qualification" %}
+templates/recommendations/recommendation_list.html.legacy:44:<select name="status">
+templates/recommendations/recommendation_list.html.legacy:46:{% for value,label in status_choices %}
+templates/recommendations/recommendation_list.html.legacy:52:<select name="recommendation_type">
+templates/recommendations/recommendation_list.html.legacy:54:{% for t in recommendation_types %}
+templates/recommendations/recommendation_list.html.legacy:71:<span class="badge {{r.status}}">
+templates/recommendations/recommendation_list.html.legacy:72:{{r.status}}
+templates/recommendations/recommendation_list.html.legacy:81:{% if r.status == "new" %}
+apps/recommendations/opportunity_intelligence.py:160:        recommendation_type=OPPORTUNITY_REVIEW_TYPE,
+apps/recommendations/opportunity_intelligence.py:161:    ).exclude(status__in=DISMISSLIKE_STATUSES).order_by("-id").first()
+apps/recommendations/opportunity_intelligence.py:183:        recommendation_type=OPPORTUNITY_REVIEW_TYPE,
+apps/recommendations/opportunity_intelligence.py:186:        status="new",
+apps/recommendations/priority.py:1:# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/priority.py
+apps/recommendations/priority.py:8:    "followup": 25,
+apps/recommendations/priority.py:9:    "reply_strategy": 25,
+apps/recommendations/priority.py:10:    "contact_strategy": 20,
+apps/recommendations/priority.py:19:def compute_priority_score(recommendation):
+apps/recommendations/priority.py:20:    if recommendation.status != "new":
+apps/recommendations/priority.py:40:    score += TYPE_WEIGHTS.get(recommendation.recommendation_type, 5)
+apps/recommendations/models.py:21:    recommendation_type = models.CharField(max_length=100)
+apps/recommendations/models.py:24:    status = models.CharField(
+apps/recommendations/views.py:7:from apps.emailing.services.reply_generator import generate_followup_draft_from_inbound
+apps/recommendations/views.py:31:def _find_reusable_followup_for_inbound(inbound: InboundEmail):
+apps/recommendations/views.py:39:            status__in=[
+apps/recommendations/views.py:49:def _find_reusable_followup_for_opportunity(opportunity: Opportunity):
+apps/recommendations/views.py:58:            status__in=[
+apps/recommendations/views.py:68:def _build_manual_followup_draft(opportunity: Opportunity):
+apps/recommendations/views.py:80:        status=OutboundEmail.STATUS_DRAFT,
+apps/recommendations/views.py:93:            status__in=[
+apps/recommendations/views.py:126:        status=OutboundEmail.STATUS_DRAFT,
+apps/recommendations/views.py:131:    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+apps/recommendations/views.py:134:    recommendation.status = AIRecommendation.STATUS_EXECUTED
+apps/recommendations/views.py:135:    recommendation.save(update_fields=["status"])
+apps/recommendations/views.py:139:    status = request.GET.get("status", "").strip()
+apps/recommendations/views.py:140:    recommendation_type = request.GET.get("recommendation_type", "").strip()
+apps/recommendations/views.py:144:    if status:
+apps/recommendations/views.py:145:        qs = qs.filter(status=status)
+apps/recommendations/views.py:147:    if recommendation_type:
+apps/recommendations/views.py:148:        qs = qs.filter(recommendation_type=recommendation_type)
+apps/recommendations/views.py:150:    recommendation_types = list(
+apps/recommendations/views.py:152:        .values_list("recommendation_type", flat=True)
+apps/recommendations/views.py:156:    status_choices = getattr(AIRecommendation, "STATUS_CHOICES", [])
+apps/recommendations/views.py:157:    if not status_choices:
+apps/recommendations/views.py:158:        status_choices = [
+apps/recommendations/views.py:167:        "status_choices": status_choices,
+apps/recommendations/views.py:168:        "selected_status": status,
+apps/recommendations/views.py:169:        "selected_recommendation_type": recommendation_type,
+apps/recommendations/views.py:170:        "recommendation_types": recommendation_types,
+apps/recommendations/views.py:186:    if recommendation.status == AIRecommendation.STATUS_DISMISSED:
+apps/recommendations/views.py:189:    recommendation.status = AIRecommendation.STATUS_DISMISSED
+apps/recommendations/views.py:190:    recommendation.save(update_fields=["status"])
+apps/recommendations/views.py:213:def execute_followup(request, pk):
+apps/recommendations/views.py:216:    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+apps/recommendations/views.py:217:        return redirect("/outbox/?type=followup")
+apps/recommendations/views.py:232:        outbound = _find_reusable_followup_for_inbound(inbound)
+apps/recommendations/views.py:234:            outbound = generate_followup_draft_from_inbound(inbound)
+apps/recommendations/views.py:236:        outbound = _find_reusable_followup_for_opportunity(opportunity)
+apps/recommendations/views.py:238:            outbound = _build_manual_followup_draft(opportunity)
+apps/recommendations/views.py:243:    return redirect("/outbox/?type=followup")
+apps/recommendations/views.py:247:def execute_contact_strategy(request, pk):
+apps/recommendations/views.py:250:    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+apps/recommendations/views.py:268:def execute_reply_strategy(request, pk):
+apps/recommendations/views.py:271:    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
+apps/recommendations/views.py:272:        return redirect("/outbox/?type=followup")
+apps/recommendations/views.py:286:    outbound = _find_reusable_followup_for_inbound(inbound)
+apps/recommendations/views.py:288:        outbound = generate_followup_draft_from_inbound(inbound)
+apps/recommendations/views.py:293:    return redirect("/outbox/?type=followup")
+apps/recommendations/views.py:299:    recommendation_type = (recommendation.recommendation_type or "").strip().lower()
+apps/recommendations/views.py:301:    if recommendation_type == "followup":
+apps/recommendations/views.py:302:        return execute_followup(request, pk)
+apps/recommendations/views.py:304:    if recommendation_type == "contact_strategy":
+apps/recommendations/views.py:305:        return execute_contact_strategy(request, pk)
+apps/recommendations/views.py:307:    if recommendation_type == "reply_strategy":
+apps/recommendations/views.py:308:        return execute_reply_strategy(request, pk)
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:18:            recommendation_type__in=SOURCE_TYPES
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:25:                recommendation_type="opportunity_review",
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:34:                recommendation_type="opportunity_review",
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:36:                    f"Revisar oportunidad comercial: señal derivada de '{rec.recommendation_type}'."
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:39:                status="new",
+apps/recommendations/management/commands/crm_pipeline_report.py:32:        self.stdout.write("recommendation_status:")
+apps/recommendations/management/commands/crm_pipeline_report.py:36:            .values("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:38:            .order_by("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:42:                self.stdout.write(f"- {row['status']}={row['total']}")
+apps/recommendations/management/commands/crm_pipeline_report.py:47:        self.stdout.write("recommendation_type:")
+apps/recommendations/management/commands/crm_pipeline_report.py:51:            .values("recommendation_type")
+apps/recommendations/management/commands/crm_pipeline_report.py:53:            .order_by("recommendation_type")
+apps/recommendations/management/commands/crm_pipeline_report.py:57:                self.stdout.write(f"- {row['recommendation_type']}={row['total']}")
+apps/recommendations/management/commands/crm_pipeline_report.py:62:        self.stdout.write("task_status:")
+apps/recommendations/management/commands/crm_pipeline_report.py:66:            .values("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:68:            .order_by("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:72:                self.stdout.write(f"- {row['status']}={row['total']}")
+apps/recommendations/management/commands/crm_pipeline_report.py:109:        elif "status" in opportunity_field_names:
+apps/recommendations/management/commands/crm_pipeline_report.py:110:            status_rows = (
+apps/recommendations/management/commands/crm_pipeline_report.py:112:                .values("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:114:                .order_by("status")
+apps/recommendations/management/commands/crm_pipeline_report.py:116:            self.stdout.write("status:")
+apps/recommendations/management/commands/crm_pipeline_report.py:117:            if status_rows:
+apps/recommendations/management/commands/crm_pipeline_report.py:118:                for row in status_rows:
+apps/recommendations/management/commands/crm_pipeline_report.py:119:                    self.stdout.write(f"- {row['status']}={row['total']}")
+apps/recommendations/management/commands/crm_pipeline_report.py:123:            self.stdout.write("- stage/status field not found")
+apps/recommendations/urls.py:13:    path("<int:pk>/execute-followup/", views.execute_followup, name="execute_followup"),
+apps/recommendations/urls.py:14:    path("<int:pk>/execute-contact-strategy/", views.execute_contact_strategy, name="execute_contact_strategy"),
+apps/recommendations/urls.py:15:    path("<int:pk>/execute-reply-strategy/", views.execute_reply_strategy, name="execute_reply_strategy"),
+apps/recommendations/services.py:64:    recommendation_type: str,
+apps/recommendations/services.py:71:        recommendation_type=recommendation_type,
+apps/recommendations/services.py:74:        status="new",
+apps/recommendations/services.py:82:        recommendation_type="opportunity_review",
+apps/recommendations/services.py:96:        recommendation_type="opportunity_review",
+apps/recommendations/migrations/0001_initial.py:22:                ('recommendation_type', models.CharField(max_length=100)),
+apps/recommendations/migrations/0001_initial.py:25:                ('status', models.CharField(default='active', max_length=50)),
+apps/recommendations/migrations/0002_alter_airecommendation_status.py:1:# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/migrations/0002_alter_airecommendation_status.py
+apps/recommendations/migrations/0002_alter_airecommendation_status.py:17:            name='status',
+
+=== DJANGO TEMPLATE CHECK ===
+System check identified no issues (0 silenced).
+
+=== DONE ===

@@ -1,0 +1,4993 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recommendations · OptiGrid CRM</title>
+
+  <link rel="stylesheet" href="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/bootstrap.min.css">
+  <link rel="stylesheet" href="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/font-awesome.css">
+  <link rel="stylesheet" href="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/style.css">
+  <link rel="stylesheet" href="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/custom.css">
+
+  <style>
+    html, body {
+      background: #f2f4f8;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #1f2937;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      background: #f2f4f8;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #0f172a;
+      color: #cbd5e1;
+      z-index: 1000;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    }
+
+    .app-sidebar-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-link:hover,
+    .app-brand-link:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .app-brand-logo img {
+      max-width: 24px;
+      max-height: 24px;
+      display: block;
+    }
+
+    .app-brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .app-sidebar-section {
+      padding: 18px 14px 0;
+    }
+
+    .app-sidebar-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin: 0 10px 10px;
+    }
+
+    .app-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-nav-item {
+      margin-bottom: 4px;
+    }
+
+    .app-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-nav-item a:hover,
+    .app-nav-item a:focus {
+      text-decoration: none;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+
+    .app-nav-item.active a {
+      background: rgb(6, 217, 149);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(6, 217, 149, 0.25);
+    }
+
+    .app-nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .app-main {
+      margin-left: 250px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: 72px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .app-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .app-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      color: #111827;
+    }
+
+    .app-page-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .app-page-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-topbar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgb(6, 217, 149);
+      display: inline-block;
+      box-shadow: 0 0 0 4px rgba(6, 217, 149, 0.12);
+    }
+
+    .app-content {
+      padding: 24px;
+      flex: 1;
+    }
+
+    .app-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-card-header {
+      padding: 18px 20px 0;
+    }
+
+    .app-card-body {
+      padding: 20px;
+    }
+
+    .app-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .app-section-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .app-kpi-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-kpi-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .app-kpi-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-btn-primary,
+    .app-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .app-btn-primary {
+      background: rgb(6, 217, 149);
+      border-color: rgb(6, 217, 149);
+      color: #fff;
+    }
+
+    .app-btn-primary:hover,
+    .app-btn-primary:focus {
+      color: #fff;
+      text-decoration: none;
+      background: rgb(3, 197, 135);
+      border-color: rgb(3, 197, 135);
+    }
+
+    .app-btn-secondary {
+      background: #fff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+
+    .app-btn-secondary:hover,
+    .app-btn-secondary:focus {
+      color: #111827;
+      text-decoration: none;
+      background: #f9fafb;
+    }
+
+    @media (max-width: 1024px) {
+      .app-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+
+      .app-shell.sidebar-open .app-sidebar {
+        transform: translateX(0);
+      }
+
+      .app-main {
+        margin-left: 0;
+      }
+
+      .app-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .app-topbar {
+        padding: 0 16px;
+      }
+
+      .app-content {
+        padding: 16px;
+      }
+
+      .app-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  
+
+<style>
+/* =========================
+   🎨 DESIGN TOKENS
+========================= */
+
+:root {
+  --color-primary: rgb(6, 217, 149);
+
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+
+  --color-text: #111827;
+  --color-muted: #6b7280;
+
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+}
+
+
+/* =========================
+   📦 LAYOUT
+========================= */
+
+.app-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.app-card-body {
+  padding: 18px;
+}
+
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-grid {
+  display: grid;
+  gap: 16px;
+}
+
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+
+.app-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: var(--color-primary);
+  color: white;
+
+  border: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-primary:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.app-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: var(--color-text);
+
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-secondary:hover {
+  background: #e5e7eb;
+  text-decoration: none;
+}
+
+
+/* =========================
+   🏷️ BADGES
+========================= */
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-badge-success {
+  background: #dcfce7;
+  color: var(--color-success);
+}
+
+.app-badge-warning {
+  background: #fef3c7;
+  color: var(--color-warning);
+}
+
+.app-badge-danger {
+  background: #fee2e2;
+  color: var(--color-danger);
+}
+
+.app-badge-info {
+  background: #dbeafe;
+  color: var(--color-info);
+}
+
+.app-badge-neutral {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+
+/* =========================
+   📊 STAT CARDS
+========================= */
+
+.app-stat {
+  padding: 16px;
+}
+
+.app-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.app-stat-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+
+/* =========================
+   🧩 HELPERS
+========================= */
+
+.app-text-muted {
+  color: var(--color-muted);
+}
+
+</style>
+
+  
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    
+
+
+
+<nav class="app-sidebar">
+  <div class="app-sidebar-brand">
+    <a href="http://127.0.0.1:8000/" class="app-brand-link">
+      <span class="app-brand-logo">
+        <img src="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/logo.png" alt="OptiGrid">
+      </span>
+      <span class="app-brand-text">OptiGrid CRM</span>
+    </a>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Main</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/">
+          <i class="fa fa-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/strategy/chat/">
+          <i class="fa fa-comments-o"></i>
+          <span>Strategic Chat</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Mailing</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/inbox/">
+          <i class="fa fa-inbox"></i>
+          <span>Inbox</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/outbox/">
+          <i class="fa fa-send"></i>
+          <span>Outbox</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Execution</div>
+    <ul class="app-nav">
+      <li class="app-nav-item active">
+        <a href="http://127.0.0.1:8000/recommendations/">
+          <i class="fa fa-bolt"></i>
+          <span>Recommendations</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/tasks/">
+          <i class="fa fa-check-square-o"></i>
+          <span>Tasks</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/opportunities/prioritized/">
+          <i class="fa fa-briefcase"></i>
+          <span>Opportunities</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Intelligence</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/leads/">
+          <i class="fa fa-lightbulb-o"></i>
+          <span>Leads</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+    <div class="app-main">
+      
+
+<header class="app-topbar">
+  <div class="app-topbar-left">
+    <button type="button" class="app-nav-toggle js-nav-toggle" aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="app-topbar-titles">
+      <h1 class="app-page-title">
+        OptiGrid CRM
+      </h1>
+      <div class="app-page-subtitle">
+        AI Commercial Operating System
+      </div>
+    </div>
+  </div>
+
+  <div class="app-topbar-right">
+    <div class="app-topbar-status">
+      <span class="status-dot"></span>
+      <span>System active</span>
+    </div>
+  </div>
+</header>
+
+
+      <main class="app-content">
+        
+<style>
+  .recommendations-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .recommendations-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .recommendations-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .recommendations-subtitle {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .recommendations-filters-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .recommendations-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .recommendations-field select {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0 12px;
+    background: #fff;
+    color: #111827;
+  }
+
+  .recommendations-filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 100%;
+    flex-wrap: wrap;
+  }
+
+  .recommendations-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .recommendation-item + .recommendation-item {
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .recommendation-item {
+    padding: 20px;
+  }
+
+  .recommendation-item--highlight {
+    background: linear-gradient(to right, #faf5ff 0%, #ffffff 22%);
+    border-left: 4px solid #7c3aed;
+  }
+
+  .recommendation-topline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-titleline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-meta {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-meta-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    color: #475569;
+  }
+
+  .recommendation-text {
+    margin-top: 14px;
+    color: #111827;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  .recommendation-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .recommendation-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .recommendation-empty {
+    padding: 28px;
+    text-align: center;
+    color: #6b7280;
+  }
+
+  .app-badge-status-new {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .app-badge-status-materialized {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .app-badge-status-dismissed {
+    background: #e5e7eb;
+    color: #4b5563;
+  }
+
+  .app-badge-status-executed {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .icon-chip {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef6ff;
+    color: #2563eb;
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 992px) {
+    .recommendations-filters-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="recommendations-page">
+  <div class="recommendations-header">
+    <div>
+      <h1 class="recommendations-title">Recommendations</h1>
+      <p class="recommendations-subtitle">
+        Supervisión operativa de recomendaciones generadas por el sistema.
+      </p>
+    </div>
+
+    <a href="http://127.0.0.1:8000/" class="app-btn-secondary">
+      <i class="fa fa-arrow-left"></i>
+      <span>Dashboard</span>
+    </a>
+  </div>
+
+  <div class="app-card">
+    <div class="app-card-body">
+      <form method="get" class="recommendations-filters-form">
+        <div class="recommendations-field">
+          <label for="status">Estado</label>
+          <select id="status" name="status">
+            <option value="" selected="selected">Todos</option>
+            
+              <option value="new">
+                New
+              </option>
+            
+              <option value="materialized">
+                Materialized
+              </option>
+            
+              <option value="dismissed">
+                Dismissed
+              </option>
+            
+              <option value="executed">
+                Executed
+              </option>
+            
+          </select>
+        </div>
+
+        <div class="recommendations-field">
+          <label for="recommendation_type">Tipo</label>
+          <select id="recommendation_type" name="recommendation_type">
+            <option value="" selected="selected">Todos</option>
+            
+              <option value="qualification">
+                Qualification
+              </option>
+            
+              <option value="opportunity_review">
+                Opportunity review
+              </option>
+            
+              <option value="reply_strategy">
+                Reply strategy
+              </option>
+            
+              <option value="contact_strategy">
+                Contact strategy
+              </option>
+            
+              <option value="next_action">
+                Next action
+              </option>
+            
+              <option value="followup">
+                Follow-up
+              </option>
+            
+              <option value="timing_strategy">
+                Timing strategy
+              </option>
+            
+              <option value="pricing_strategy">
+                Pricing strategy
+              </option>
+            
+              <option value="hold">
+                On hold
+              </option>
+            
+              <option value="risk_flag">
+                Risk detected
+              </option>
+            
+          </select>
+        </div>
+
+        <div class="recommendations-filter-actions">
+          <button type="submit" class="app-btn-primary">
+            <i class="fa fa-filter"></i>
+            <span>Aplicar filtros</span>
+          </button>
+
+          <a href="http://127.0.0.1:8000/recommendations/" class="app-btn-secondary">
+            <i class="fa fa-refresh"></i>
+            <span>Limpiar</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-card">
+    <div class="recommendations-list">
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 71</span>
+            <span class="recommendation-meta-item">Confidence 0.9</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text"></div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 70</span>
+            <span class="recommendation-meta-item">Confidence 0.9</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text"></div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 69</span>
+            <span class="recommendation-meta-item">Confidence 0.77</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#18
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with TyrolLink Platform Systems GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 68</span>
+            <span class="recommendation-meta-item">Confidence 0.77</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#17
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with DanubeStack Cloud Ops GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 67</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#16
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with BalticMesh Operations GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 66</span>
+            <span class="recommendation-meta-item">Confidence 0.79</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#15
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with SaarPulse Infrastructure GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 65</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#14
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with RhineCore Manufacturing Systems GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 64</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#13
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with NordScale Grid Analytics GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/64/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/64/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/64/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 63</span>
+            <span class="recommendation-meta-item">Confidence 0.81</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#12
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with WestPulse Industrial Networks GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/63/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/63/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/63/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 62</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#11
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with Heliox Industrial Cloud GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/62/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/62/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/62/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 61</span>
+            <span class="recommendation-meta-item">Confidence 0.79</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#10
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with CloudRail DACH AG based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/61/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/61/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/61/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 60</span>
+            <span class="recommendation-meta-item">Confidence 0.81</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#9
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with NetForge Systems GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/60/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/60/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/60/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 59</span>
+            <span class="recommendation-meta-item">Confidence 0.85</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#8
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with Auron Gridworks GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/59/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/59/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/59/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 58</span>
+            <span class="recommendation-meta-item">Confidence 0.79</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#7
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with CloudRail DACH AG based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/58/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/58/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/58/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 57</span>
+            <span class="recommendation-meta-item">Confidence 0.81</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#6
+            </span>
+          </div>
+
+          <div class="recommendation-text">Initiate contact with NetForge Systems GmbH based on detected signals</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/57/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/57/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/57/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 56</span>
+            <span class="recommendation-meta-item">Confidence 0.7</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#5
+            </span>
+          </div>
+
+          <div class="recommendation-text">Opportunity shows risk signals and no active execution path. Review before advancing.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/56/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/56/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 55</span>
+            <span class="recommendation-meta-item">Confidence 0.75</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#5
+            </span>
+          </div>
+
+          <div class="recommendation-text">Define next concrete action for this opportunity.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/55/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/55/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 54</span>
+            <span class="recommendation-meta-item">Confidence 0.7</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#4
+            </span>
+          </div>
+
+          <div class="recommendation-text">Opportunity shows risk signals and no active execution path. Review before advancing.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/54/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/54/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 53</span>
+            <span class="recommendation-meta-item">Confidence 0.75</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#4
+            </span>
+          </div>
+
+          <div class="recommendation-text">Define next concrete action for this opportunity.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/53/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/53/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 52</span>
+            <span class="recommendation-meta-item">Confidence 0.7</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Opportunity shows risk signals and no active execution path. Review before advancing.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/52/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/52/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 51</span>
+            <span class="recommendation-meta-item">Confidence 0.75</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Define next concrete action for this opportunity.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/51/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/51/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 50</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Schedule follow-up based on customer timing signal.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-neutral
+                  
+                ">
+                  Active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 49</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#3
+            </span>
+          </div>
+
+          <div class="recommendation-text">Schedule follow-up based on customer timing signal.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-neutral
+                  
+                ">
+                  Active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 48</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Schedule follow-up based on customer timing signal.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 47</span>
+            <span class="recommendation-meta-item">Confidence 0.79</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Lanzar follow-up breve y contextual para reactivar la conversación.
+
+Rationale: No se detecta actividad reciente desde hace 8 días.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 46</span>
+            <span class="recommendation-meta-item">Confidence 0.88</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">No insistir ahora; registrar recordatorio y retomar el contacto cuando venza la ventana indicada por el contexto.
+
+Rationale: La oportunidad contiene señales explícitas de aplazamiento.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/46/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/46/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Risk detected
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 45</span>
+            <span class="recommendation-meta-item">Confidence 0.77</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar riesgo comercial y validar si el stage actual sigue reflejando la realidad.
+
+Rationale: El contexto contiene señales de espera, aplazamiento o fricción.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/45/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/45/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 44</span>
+            <span class="recommendation-meta-item">Confidence 0.88</span>
+            <span class="recommendation-meta-item">
+              Scope opportunity#1
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad y definir siguiente paso manual.
+
+Rationale: No se detectó una señal dominante única; conviene mantener control humano.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/44/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/44/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 43</span>
+            <span class="recommendation-meta-item">Confidence 0.65</span>
+            <span class="recommendation-meta-item">
+              Scope email_message#19
+            </span>
+          </div>
+
+          <div class="recommendation-text">Se detecta señal comercial suficiente para revisar apertura de oportunidad. (score=65)</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 42</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#64
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'qualification'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 41</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#61
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'qualification'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 40</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#59
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'pricing_strategy'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 39</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#52
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'qualification'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 38</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#50
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'pricing_strategy'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 37</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#43
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'qualification'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 36</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#40
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'pricing_strategy'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 35</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#33
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar oportunidad comercial: señal derivada de 'qualification'.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Reply strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-materialized
+                  
+                ">
+                  Materialized
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 34</span>
+            <span class="recommendation-meta-item">Confidence 0.84</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#66
+            </span>
+          </div>
+
+          <div class="recommendation-text">Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-dismissed
+                  
+                ">
+                  Dismissed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 33</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#65
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-filter"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Qualification
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 32</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#64
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder con explicación breve del servicio y una pregunta de cualificación.</div>
+
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Reply strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 31</span>
+            <span class="recommendation-meta-item">Confidence 0.84</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#63
+            </span>
+          </div>
+
+          <div class="recommendation-text">Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/31/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/31/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/31/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-executed
+                  
+                ">
+                  Executed
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 30</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#62
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-note">
+              Sin acciones disponibles para este estado.
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-filter"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Qualification
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 29</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#61
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder con explicación breve del servicio y una pregunta de cualificación.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/29/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/29/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/29/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 28</span>
+            <span class="recommendation-meta-item">Confidence 0.65</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#60
+            </span>
+          </div>
+
+          <div class="recommendation-text">No abrir oportunidad todavía. Mantener seguimiento ligero hasta obtener más señal.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/28/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/28/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-eur"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Pricing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 27</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#59
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder enmarcando primero el alcance antes de discutir precio cerrado.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/27/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/27/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/27/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Timing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 26</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#58
+            </span>
+          </div>
+
+          <div class="recommendation-text">Mantener el caso vivo pero diferido. Programar seguimiento en la ventana indicada.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/26/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/26/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 25</span>
+            <span class="recommendation-meta-item">Confidence 0.95</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#57
+            </span>
+          </div>
+
+          <div class="recommendation-text">No insistir ahora. Retomar el contacto en may.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/25/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/25/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/25/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 24</span>
+            <span class="recommendation-meta-item">Confidence 0.9</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#56
+            </span>
+          </div>
+
+          <div class="recommendation-text">Identificar un interlocutor alternativo o pedir redirección explícita.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/24/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/24/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 23</span>
+            <span class="recommendation-meta-item">Confidence 0.93</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#55
+            </span>
+          </div>
+
+          <div class="recommendation-text">Buscar o validar otro interlocutor antes de seguir con este contacto.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/23/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/23/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/23/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Reply strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 22</span>
+            <span class="recommendation-meta-item">Confidence 0.84</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#54
+            </span>
+          </div>
+
+          <div class="recommendation-text">Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/22/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/22/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/22/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 21</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#53
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/21/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/21/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/21/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-filter"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Qualification
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 20</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#52
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder con explicación breve del servicio y una pregunta de cualificación.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/20/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/20/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/20/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 19</span>
+            <span class="recommendation-meta-item">Confidence 0.65</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#51
+            </span>
+          </div>
+
+          <div class="recommendation-text">No abrir oportunidad todavía. Mantener seguimiento ligero hasta obtener más señal.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/19/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/19/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-eur"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Pricing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 18</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#50
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder enmarcando primero el alcance antes de discutir precio cerrado.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/18/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/18/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/18/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Timing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 17</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#49
+            </span>
+          </div>
+
+          <div class="recommendation-text">Mantener el caso vivo pero diferido. Programar seguimiento en la ventana indicada.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/17/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/17/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 16</span>
+            <span class="recommendation-meta-item">Confidence 0.95</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#48
+            </span>
+          </div>
+
+          <div class="recommendation-text">No insistir ahora. Retomar el contacto en may.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/16/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/16/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/16/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 15</span>
+            <span class="recommendation-meta-item">Confidence 0.9</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#47
+            </span>
+          </div>
+
+          <div class="recommendation-text">Identificar un interlocutor alternativo o pedir redirección explícita.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/15/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/15/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 14</span>
+            <span class="recommendation-meta-item">Confidence 0.93</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#46
+            </span>
+          </div>
+
+          <div class="recommendation-text">Buscar o validar otro interlocutor antes de seguir con este contacto.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/14/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/14/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/14/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Reply strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 13</span>
+            <span class="recommendation-meta-item">Confidence 0.84</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#45
+            </span>
+          </div>
+
+          <div class="recommendation-text">Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/13/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/13/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/13/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 12</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#44
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/12/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/12/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/12/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-filter"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Qualification
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 11</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#43
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder con explicación breve del servicio y una pregunta de cualificación.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/11/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/11/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/11/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 10</span>
+            <span class="recommendation-meta-item">Confidence 0.65</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#42
+            </span>
+          </div>
+
+          <div class="recommendation-text">No abrir oportunidad todavía. Mantener seguimiento ligero hasta obtener más señal.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/10/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/10/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  On hold
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 9</span>
+            <span class="recommendation-meta-item">Confidence 0.65</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#41
+            </span>
+          </div>
+
+          <div class="recommendation-text">No abrir oportunidad todavía. Mantener seguimiento ligero hasta obtener más señal.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/9/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/9/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-eur"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Pricing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 8</span>
+            <span class="recommendation-meta-item">Confidence 0.78</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#40
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder enmarcando primero el alcance antes de discutir precio cerrado.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/8/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/8/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/8/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Timing strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 7</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#39
+            </span>
+          </div>
+
+          <div class="recommendation-text">Mantener el caso vivo pero diferido. Programar seguimiento en la ventana indicada.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/7/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/7/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-reply"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Follow-up
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 6</span>
+            <span class="recommendation-meta-item">Confidence 0.95</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#38
+            </span>
+          </div>
+
+          <div class="recommendation-text">No insistir ahora. Retomar el contacto en may.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/6/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/6/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/6/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-lightbulb-o"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Next action
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 5</span>
+            <span class="recommendation-meta-item">Confidence 0.9</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#37
+            </span>
+          </div>
+
+          <div class="recommendation-text">Identificar un interlocutor alternativo o pedir redirección explícita.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/5/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/5/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-user-plus"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Contact strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 4</span>
+            <span class="recommendation-meta-item">Confidence 0.93</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#36
+            </span>
+          </div>
+
+          <div class="recommendation-text">Buscar o validar otro interlocutor antes de seguir con este contacto.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/4/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/4/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/4/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-envelope"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Reply strategy
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 3</span>
+            <span class="recommendation-meta-item">Confidence 0.84</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#35
+            </span>
+          </div>
+
+          <div class="recommendation-text">Preparar respuesta aclarando alcance y validando necesidad antes de avanzar.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/3/execute/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-primary">
+                    <i class="fa fa-play"></i>
+                    <span>Execute</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/3/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/3/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item recommendation-item--highlight">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-line-chart"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Opportunity review
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 2</span>
+            <span class="recommendation-meta-item">Confidence 0.8</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#34
+            </span>
+          </div>
+
+          <div class="recommendation-text">Revisar apertura de oportunidad y dejar claro el siguiente paso comercial.</div>
+
+          
+            <div class="recommendation-note">
+              Señal comercial detectada. Puede promoverse a oportunidad.
+            </div>
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/2/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/2/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/2/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+        <div class="recommendation-item ">
+          <div class="recommendation-topline">
+            <div>
+              <div class="recommendation-titleline">
+                <span class="icon-chip">
+                  <i class="fa fa-filter"></i>
+                </span>
+
+                <span class="app-badge app-badge-neutral">
+                  Qualification
+                </span>
+
+                <span class="app-badge
+                  
+                    app-badge-status-new
+                  
+                ">
+                  New
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendation-meta">
+            <span class="recommendation-meta-item">ID 1</span>
+            <span class="recommendation-meta-item">Confidence 0.82</span>
+            <span class="recommendation-meta-item">
+              Scope inference_record#33
+            </span>
+          </div>
+
+          <div class="recommendation-text">Responder con explicación breve del servicio y una pregunta de cualificación.</div>
+
+          
+
+          
+            <div class="recommendation-actions">
+              
+                <form method="post" action="/recommendations/1/promote-opportunity/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-line-chart"></i>
+                    <span>Promote</span>
+                  </button>
+                </form>
+              
+                <form method="post" action="/recommendations/1/create-task/">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                  <button type="submit" class="app-btn-secondary">
+                    <i class="fa fa-check-square-o"></i>
+                    <span>Create Task</span>
+                  </button>
+                </form>
+              
+
+              <form method="post" action="/recommendations/1/dismiss/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="ogCWYjOgcZAWlc6ymvBZkPlTTgmWyAKFi5WDvQblvwvxBy29vNVKE8Vd3D0pdMPj">
+                <button type="submit" class="app-btn-secondary">
+                  <i class="fa fa-times"></i>
+                  <span>Dismiss</span>
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/jquery.min.js"></script>
+  <script src="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/bootstrap.min.js"></script>
+  <script src="Recommendations%20%C2%B7%20OptiGrid%20CRM.html_files/metisMenu.min.js"></script>
+
+  <script>
+    (function () {
+      var shell = document.getElementById('app-shell');
+      var toggle = document.querySelector('.js-nav-toggle');
+
+      if (toggle && shell) {
+        toggle.addEventListener('click', function () {
+          shell.classList.toggle('sidebar-open');
+        });
+      }
+    })();
+  </script>
+
+  
+
+
+</body></html>

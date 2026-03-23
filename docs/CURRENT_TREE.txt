@@ -37,6 +37,19 @@
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── core
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── labels.py
+│   │   ├── __pycache__
+│   │   │   ├── apps.cpython-312.pyc
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   └── labels.cpython-312.pyc
+│   │   └── templatetags
+│   │       ├── __init__.py
+│   │       ├── label_filters.py
+│   │       └── __pycache__
+│   │           ├── __init__.cpython-312.pyc
+│   │           └── label_filters.cpython-312.pyc
 │   ├── dashboard_views.py
 │   ├── emailing
 │   │   ├── admin.py
@@ -118,9 +131,11 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_activityevent_delete_event.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── 0001_initial.cpython-312.pyc
+│   │   │       ├── 0002_activityevent_delete_event.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
 │   │   ├── __pycache__
@@ -128,6 +143,7 @@
 │   │   │   ├── apps.cpython-312.pyc
 │   │   │   ├── __init__.cpython-312.pyc
 │   │   │   └── models.cpython-312.pyc
+│   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── facts
@@ -286,12 +302,14 @@
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
 │   │   ├── opportunity_intelligence.py
+│   │   ├── priority.py
 │   │   ├── __pycache__
 │   │   │   ├── admin.cpython-312.pyc
 │   │   │   ├── apps.cpython-312.pyc
 │   │   │   ├── __init__.cpython-312.pyc
 │   │   │   ├── models.cpython-312.pyc
 │   │   │   ├── opportunity_intelligence.cpython-312.pyc
+│   │   │   ├── priority.cpython-312.pyc
 │   │   │   ├── services.cpython-312.pyc
 │   │   │   ├── urls.cpython-312.pyc
 │   │   │   └── views.cpython-312.pyc
@@ -489,6 +507,58 @@
 │   ├── update_proposals.py
 │   └── workflows
 │       └── __init__.py
+├── static
+│   └── app_ui
+│       ├── css
+│       │   ├── bootstrap.min.css
+│       │   ├── clndr.css
+│       │   ├── custom.css
+│       │   ├── font-awesome.css
+│       │   ├── jqvmap.css
+│       │   ├── lines.css
+│       │   └── style.css
+│       ├── fonts
+│       │   ├── FontAwesome.otf
+│       │   ├── fontawesome-webfont.eot
+│       │   ├── fontawesome-webfont.svg
+│       │   ├── fontawesome-webfont.ttf
+│       │   ├── fontawesome-webfont.woff
+│       │   ├── fontawesome-webfont.woff2
+│       │   ├── glyphicons-halflings-regular.eot
+│       │   ├── glyphicons-halflings-regular.svg
+│       │   ├── glyphicons-halflings-regular.ttf
+│       │   ├── glyphicons-halflings-regular.woff
+│       │   └── glyphicons-halflings-regular.woff2
+│       ├── images
+│       │   ├── 1.png
+│       │   ├── 2.png
+│       │   ├── 3.png
+│       │   ├── 4.png
+│       │   ├── 5.png
+│       │   ├── arrow-left.png
+│       │   ├── arrow-right.png
+│       │   ├── bg.jpg
+│       │   ├── cloud.png
+│       │   ├── logo.png
+│       │   ├── pic1.png
+│       │   ├── pic2.png
+│       │   ├── pic3.jpg
+│       │   └── pic4.jpg
+│       └── js
+│           ├── bootstrap.min.js
+│           ├── Chart.js
+│           ├── clndr.js
+│           ├── custom.js
+│           ├── d3.v3.js
+│           ├── jquery.min.js
+│           ├── jquery.vmap.js
+│           ├── jquery.vmap.sampledata.js
+│           ├── jquery.vmap.world.js
+│           ├── metisMenu.min.js
+│           ├── moment-2.2.1.js
+│           ├── rickshaw.js
+│           ├── site.js
+│           └── underscore-min.js
 ├── strategy_trace.txt
 ├── task_migration_input.txt
 ├── templates
@@ -517,7 +587,10 @@
 │   │   ├── opportunity_tasks.html.legacy
 │   │   └── prioritized.html
 │   ├── partials
-│   │   └── app_nav.html
+│   │   ├── app_nav.html
+│   │   ├── app_sidebar.html
+│   │   ├── app_topbar.html
+│   │   └── design_system.html
 │   ├── placeholders
 │   ├── recommendations
 │   │   ├── list.html
@@ -528,19 +601,11 @@
 │       └── list.html
 ├── tests
 ├── tmp
-│   ├── cockpit_inspect.txt
-│   ├── cockpit_routes.txt
-│   ├── CURRENT_TREE.md
-│   ├── dev_verify_execute_contact_strategy.txt
-│   ├── dev_verify_execute_followup.txt
-│   ├── dev_verify_execute_reply_strategy.txt
-│   ├── dev_verify_execute_unified.txt
-│   ├── final_check.txt
-│   ├── final_check_v2.txt
-│   ├── quick_check.txt
+│   ├── check_label_filters_fix.txt
+│   ├── check_labels_cleanup.txt
+│   ├── installed_apps_check.txt
 │   ├── runserver.log
-│   ├── verify_execute_followup_phase2_direct.py
-│   └── views_recovered_preview.py
+│   └── template_libraries.txt
 └── ui_repair_input.txt
 
-107 directories, 437 files
+116 directories, 493 files

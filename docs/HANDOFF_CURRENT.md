@@ -1,46 +1,72 @@
-# HANDOFF CURRENT
+# HANDOFF — CURRENT STATE
 
-## Estado actual
-OptiGrid CRM ya tiene una capa visual V2 funcional y coherente para las vistas principales de operación.
+## System: OptiGrid CRM
 
-## Vistas estabilizadas
-- Dashboard
-- Inbox
-- Outbox
+### 🧩 Architecture
 
-## Base visual
-- `templates/base.html` actúa como shell compartido
-- Sidebar y topbar ya consolidados
-- Design system ligero aplicado sobre el shell
-- Assets servidos desde `static/app_ui/`
+1. Communication Layer (Email)
+2. CRM Core
+3. Semantic Engine (LLM)
+4. Governance Layer
+5. Cockpit UI
 
-## Capa semántica
-Se ha introducido una capa de labels desacoplada del backend:
+---
 
-- `apps/core/labels.py`
-- `apps/core/templatetags/label_filters.py`
+## 🔁 Pipeline
 
-Esto evita exponer directamente strings internos como:
-- `followup`
-- `reply_strategy`
-- `contact_strategy`
-- `advance_opportunity`
+Email → Fact → Inference → Proposal → Recommendation → Execute → Action
 
-## Punto técnico importante
-`label_filters` ya está reconocido por Django. La librería aparece registrada en template libraries, por lo que el problema de carga de filtros quedó resuelto.
+---
 
-## Deuda principal restante
-La sección con más deuda ahora mismo es:
-- `templates/recommendations/list.html`
+## ⚙️ Current Capabilities
 
-Ahí todavía quedan:
-- lógica visual hardcodeada
-- labels internas
-- estilo no totalmente alineado con V2
+### Recommendations
+- Generated automatically
+- Prioritized (priority_score, confidence)
+- Executable via UI
+- Status lifecycle:
+  - new
+  - executed
+  - dismissed
 
-## Recomendación para siguiente sesión
-Entrar directamente a:
-1. inspección de `templates/recommendations/list.html`
-2. refactor visual completo
-3. integración con `label_filters`
-4. opcional: iconografía y colores por tipo
+### Execution
+- Unified endpoint
+- Action types:
+  - followup
+  - contact_strategy
+  - reply_strategy
+
+### Dashboard
+- AI Recommended Actions block
+- Sorted by priority/confidence
+- Partial semantic mapping
+
+---
+
+## 🎨 UI
+
+### Recommendations View
+- Card-based layout
+- Inline actions
+- Clean hierarchy
+- No table artifacts
+
+---
+
+## ⚠️ Known Gaps
+
+- No global prioritization (Next Best Action)
+- No urgency system
+- No activity feed
+- No cross-recommendation reasoning
+
+---
+
+## 🧠 System Nature
+
+Transitioning from:
+CRM → AI Operating System
+
+User role:
+Supervisor
+

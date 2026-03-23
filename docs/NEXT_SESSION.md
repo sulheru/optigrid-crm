@@ -1,31 +1,66 @@
-# NEXT SESSION
+# NEXT SESSION — Cockpit V3
 
-## Objetivo
-Cerrar la capa visual y semántica de la UI empezando por Recommendations.
+## 🎯 Goal
 
-## Prioridad 1 — Recommendations UI
-Inspeccionar y refactorizar:
-- `templates/recommendations/list.html`
+Introduce intelligence layer on top of recommendations:
 
-Objetivos:
-- alinear con `base.html`
-- usar el design system V2
-- eliminar labels internas visibles
-- usar `label_filters`
+👉 NEXT BEST ACTION ENGINE
 
-## Prioridad 2 — Semántica visual
-Definir si conviene introducir:
-- icono por `recommendation_type`
-- color por prioridad
-- color por estado
+---
 
-## Prioridad 3 — Cleanup
-Buscar y eliminar:
-- `|title` sobre campos semánticos
-- strings internas expuestas en UI
-- restos de layout legacy
+## 🔥 Objectives
 
-## Restricción operativa
-No asumir contexto.
-Verificar primero el fichero real antes de modificar.
-Entregar siempre ficheros completos con `cat > ...`.
+### 1. Next Best Action (NBA)
+- Select single most important recommendation
+- Based on:
+  - priority_score
+  - confidence
+  - urgency signals
+  - type weighting
+
+### 2. Urgency Layer
+- Detect time-sensitive actions
+- Introduce:
+  - urgency_score
+  - overdue logic
+  - escalation flags
+
+### 3. Dashboard Upgrade
+- New top block:
+  → "What should you do now"
+- Separate from list
+
+### 4. Recommendation Ranking Engine
+- Global scoring formula
+- Sort across types
+
+---
+
+## 🧠 Key Idea
+
+Move from:
+
+List of actions → Decision system
+
+---
+
+## ⚙️ Suggested Implementation
+
+- New module:
+  apps.recommendations.engine
+
+- Functions:
+  - compute_priority()
+  - compute_urgency()
+  - get_next_best_action()
+
+---
+
+## 📌 Expected Outcome
+
+System starts behaving like:
+
+👉 Autonomous commercial brain
+
+Not just assistant
+

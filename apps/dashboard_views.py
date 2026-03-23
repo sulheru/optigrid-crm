@@ -2,6 +2,11 @@
 # LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.shortcuts import render
 
+from apps.core.ui_semantics import (
+    build_available_actions,
+    get_priority_level,
+    get_recommendation_ui,
+)
 from apps.emailing.models import InboundEmail, OutboundEmail
 from apps.events.models import ActivityEvent
 from apps.opportunities.models import Opportunity
@@ -24,21 +29,36 @@ def dashboard_home_view(request):
     )
 
     recommendations = list(
-        AIRecommendation.objects.filter(status="new")
+        AIRecommendation.objects.filter(status=AIRecommendation.STATUS_NEW)
     )
 
     scored = []
     for recommendation in recommendations:
         recommendation.priority_score = compute_priority_score(recommendation)
+
+        priority_level, priority_config = get_priority_level(
+            recommendation.priority_score
+        )
+        recommendation.priority_level = priority_level
+        recommendation.priority_label = priority_config["label"]
+        recommendation.priority_css = priority_config["css"]
+        recommendation.priority_color = priority_config["color"]
+
+        ui_config = get_recommendation_ui(recommendation.recommendation_type)
+        recommendation.ui_icon = ui_config["icon"]
+        recommendation.ui_color = ui_config["color"]
+        recommendation.available_actions = build_available_actions(recommendation)
+
         scored.append(recommendation)
 
     scored.sort(key=lambda x: x.priority_score, reverse=True)
 
-    top_actions = scored[:5]
+    top_actions = scored[:10]
+    best_action = top_actions[0] if top_actions else None
 
-    high_urgency = [r for r in scored if r.priority_score >= 70][:5]
-    medium_urgency = [r for r in scored if 40 <= r.priority_score < 70][:5]
-    low_urgency = [r for r in scored if r.priority_score < 40][:5]
+    high_urgency = [r for r in scored if r.priority_level == "high"][:5]
+    medium_urgency = [r for r in scored if r.priority_level == "medium"][:5]
+    low_urgency = [r for r in scored if r.priority_level == "low"][:5]
 
     recent_activity = list(
         ActivityEvent.objects.order_by("-created_at")[:10]
@@ -54,6 +74,7 @@ def dashboard_home_view(request):
         "recent_recommendations": recent_recommendations,
         "recent_opportunities": recent_opportunities,
         "top_actions": top_actions,
+        "best_action": best_action,
         "urgency_high": high_urgency,
         "urgency_medium": medium_urgency,
         "urgency_low": low_urgency,

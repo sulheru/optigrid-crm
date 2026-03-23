@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OptiGrid CRM</title>
+
+  <link rel="stylesheet" href="OptiGrid%20CRM.html_files/bootstrap.min.css">
+  <link rel="stylesheet" href="OptiGrid%20CRM.html_files/font-awesome.css">
+  <link rel="stylesheet" href="OptiGrid%20CRM.html_files/style.css">
+  <link rel="stylesheet" href="OptiGrid%20CRM.html_files/custom.css">
+
+  <style>
+    html, body {
+      background: #f2f4f8;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #1f2937;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      background: #f2f4f8;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #0f172a;
+      color: #cbd5e1;
+      z-index: 1000;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    }
+
+    .app-sidebar-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-link:hover,
+    .app-brand-link:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .app-brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .app-brand-logo img {
+      max-width: 24px;
+      max-height: 24px;
+      display: block;
+    }
+
+    .app-brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .app-sidebar-section {
+      padding: 18px 14px 0;
+    }
+
+    .app-sidebar-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin: 0 10px 10px;
+    }
+
+    .app-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .app-nav-item {
+      margin-bottom: 4px;
+    }
+
+    .app-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app-nav-item a:hover,
+    .app-nav-item a:focus {
+      text-decoration: none;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+
+    .app-nav-item.active a {
+      background: rgb(6, 217, 149);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(6, 217, 149, 0.25);
+    }
+
+    .app-nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .app-main {
+      margin-left: 250px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: 72px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .app-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .app-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      color: #111827;
+    }
+
+    .app-page-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .app-page-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-topbar-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgb(6, 217, 149);
+      display: inline-block;
+      box-shadow: 0 0 0 4px rgba(6, 217, 149, 0.12);
+    }
+
+    .app-content {
+      padding: 24px;
+      flex: 1;
+    }
+
+    .app-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-card-header {
+      padding: 18px 20px 0;
+    }
+
+    .app-card-body {
+      padding: 20px;
+    }
+
+    .app-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .app-section-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .app-kpi-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .app-kpi-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .app-kpi-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .app-btn-primary,
+    .app-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .app-btn-primary {
+      background: rgb(6, 217, 149);
+      border-color: rgb(6, 217, 149);
+      color: #fff;
+    }
+
+    .app-btn-primary:hover,
+    .app-btn-primary:focus {
+      color: #fff;
+      text-decoration: none;
+      background: rgb(3, 197, 135);
+      border-color: rgb(3, 197, 135);
+    }
+
+    .app-btn-secondary {
+      background: #fff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+
+    .app-btn-secondary:hover,
+    .app-btn-secondary:focus {
+      color: #111827;
+      text-decoration: none;
+      background: #f9fafb;
+    }
+
+    @media (max-width: 1024px) {
+      .app-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+
+      .app-shell.sidebar-open .app-sidebar {
+        transform: translateX(0);
+      }
+
+      .app-main {
+        margin-left: 0;
+      }
+
+      .app-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .app-topbar {
+        padding: 0 16px;
+      }
+
+      .app-content {
+        padding: 16px;
+      }
+
+      .app-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  
+
+<style>
+/* =========================
+   🎨 DESIGN TOKENS
+========================= */
+
+:root {
+  --color-primary: rgb(6, 217, 149);
+
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+
+  --color-text: #111827;
+  --color-muted: #6b7280;
+
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+}
+
+
+/* =========================
+   📦 LAYOUT
+========================= */
+
+.app-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.app-card-body {
+  padding: 18px;
+}
+
+.app-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.app-grid {
+  display: grid;
+  gap: 16px;
+}
+
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+
+.app-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: var(--color-primary);
+  color: white;
+
+  border: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-primary:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.app-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: var(--color-text);
+
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-btn-secondary:hover {
+  background: #e5e7eb;
+  text-decoration: none;
+}
+
+
+/* =========================
+   🏷️ BADGES
+========================= */
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-badge-success {
+  background: #dcfce7;
+  color: var(--color-success);
+}
+
+.app-badge-warning {
+  background: #fef3c7;
+  color: var(--color-warning);
+}
+
+.app-badge-danger {
+  background: #fee2e2;
+  color: var(--color-danger);
+}
+
+.app-badge-info {
+  background: #dbeafe;
+  color: var(--color-info);
+}
+
+.app-badge-neutral {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+
+/* =========================
+   📊 STAT CARDS
+========================= */
+
+.app-stat {
+  padding: 16px;
+}
+
+.app-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.app-stat-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+
+/* =========================
+   🧩 HELPERS
+========================= */
+
+.app-text-muted {
+  color: var(--color-muted);
+}
+
+</style>
+
+  
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    
+
+
+
+<nav class="app-sidebar">
+  <div class="app-sidebar-brand">
+    <a href="http://127.0.0.1:8000/" class="app-brand-link">
+      <span class="app-brand-logo">
+        <img src="OptiGrid%20CRM.html_files/logo.png" alt="OptiGrid">
+      </span>
+      <span class="app-brand-text">OptiGrid CRM</span>
+    </a>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Main</div>
+    <ul class="app-nav">
+      <li class="app-nav-item active">
+        <a href="http://127.0.0.1:8000/">
+          <i class="fa fa-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/strategy/chat/">
+          <i class="fa fa-comments-o"></i>
+          <span>Strategic Chat</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Mailing</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/inbox/">
+          <i class="fa fa-inbox"></i>
+          <span>Inbox</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/outbox/">
+          <i class="fa fa-send"></i>
+          <span>Outbox</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Execution</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/recommendations/">
+          <i class="fa fa-bolt"></i>
+          <span>Recommendations</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/tasks/">
+          <i class="fa fa-check-square-o"></i>
+          <span>Tasks</span>
+        </a>
+      </li>
+
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/opportunities/prioritized/">
+          <i class="fa fa-briefcase"></i>
+          <span>Opportunities</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="app-sidebar-section">
+    <div class="app-sidebar-label">Intelligence</div>
+    <ul class="app-nav">
+      <li class="app-nav-item ">
+        <a href="http://127.0.0.1:8000/leads/">
+          <i class="fa fa-lightbulb-o"></i>
+          <span>Leads</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+    <div class="app-main">
+      
+
+<header class="app-topbar">
+  <div class="app-topbar-left">
+    <button type="button" class="app-nav-toggle js-nav-toggle" aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="app-topbar-titles">
+      <h1 class="app-page-title">
+        OptiGrid CRM
+      </h1>
+      <div class="app-page-subtitle">
+        AI Commercial Operating System
+      </div>
+    </div>
+  </div>
+
+  <div class="app-topbar-right">
+    <div class="app-topbar-status">
+      <span class="status-dot"></span>
+      <span>System active</span>
+    </div>
+  </div>
+</header>
+
+
+      <main class="app-content">
+        
+
+<div class="app-page">
+
+  <!-- HEADER -->
+  <div class="app-page-header">
+    <h1>Dashboard</h1>
+    <p>AI Commercial Cockpit</p>
+  </div>
+
+  <!-- AI RECOMMENDED ACTIONS -->
+  <div class="app-card">
+
+    <div class="app-card-header">
+      <h2>AI Recommended Actions</h2>
+    </div>
+
+    
+
+      <div class="app-empty">
+        No recommendations available.
+      </div>
+
+    
+
+  </div>
+
+</div>
+
+
+      </main>
+    </div>
+  </div>
+
+  <script src="OptiGrid%20CRM.html_files/jquery.min.js"></script>
+  <script src="OptiGrid%20CRM.html_files/bootstrap.min.js"></script>
+  <script src="OptiGrid%20CRM.html_files/metisMenu.min.js"></script>
+
+  <script>
+    (function () {
+      var shell = document.getElementById('app-shell');
+      var toggle = document.querySelector('.js-nav-toggle');
+
+      if (toggle && shell) {
+        toggle.addEventListener('click', function () {
+          shell.classList.toggle('sidebar-open');
+        });
+      }
+    })();
+  </script>
+
+  
+
+
+</body></html>

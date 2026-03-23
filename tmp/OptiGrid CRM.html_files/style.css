@@ -2696,26 +2696,3 @@ span.btn_7{
   font-size: 64%;
 }
 }
-
-/* CSS personalizado */
-
-.recommendation-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.recommendation-main {
-  max-width: 70%;
-}
-
-.recommendation-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.group-header {
-  margin: 16px 0 8px;
-}
