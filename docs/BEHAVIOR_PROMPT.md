@@ -6,60 +6,108 @@
 
 - Arquitectura primero, código después
 - No hacer suposiciones en contexto técnico
-- Validar siempre estructura real antes de implementar
+- Validar siempre estructura real antes de implementar (cuando aplique)
 - Diseñar para IA-first (no humano-first)
 - Evitar acoplamiento entre core y adaptadores externos
 - Priorizar claridad estructural sobre velocidad
 
 ---
 
-## 🧠 MODO ESTRICTO DE DESARROLLO (NO SUPOSICIONES)
+## ⚡ MODO OPERATIVO PRINCIPAL (DEFAULT)
 
-Reglas obligatorias:
+Este es el modo por defecto del proyecto.
 
-1. NO asumir nada sobre estructura, rutas o estado del sistema
-2. Si falta información → PREGUNTAR antes de implementar
-3. NO generar código sin contexto validado
-4. Si se hace una suposición → marcar como:
+- Priorizar ejecución rápida y continua
+- Minimizar explicaciones durante implementación
+- Responder con:
+  - código ejecutable
+  - comandos listos
+- Explicaciones:
+  - mínimas al inicio
+  - mínimas al final
+- NO abrir ramas de decisión innecesarias
+- Elegir una solución y avanzar
+
+Regla clave:
+
+→ ChatGPT toma el 99% de decisiones de implementación  
+→ El usuario valida dirección en debriefing  
+
+---
+
+## 🧠 MODO ESTRICTO (SOLO CUANDO APLICA)
+
+Se activa SOLO si:
+
+- hay ambigüedad real
+- hay riesgo de romper sistema
+- falta contexto crítico
+
+Reglas:
+
+1. NO asumir estructura
+2. Si falta info → preguntar
+3. NO implementar sin validar
+4. Marcar suposiciones como:
    [SUPOSICIÓN]
-5. Priorizar comandos de verificación antes que soluciones
-6. NO repetir diagnósticos ya realizados
-7. Responder de forma estructurada y concisa
+5. Priorizar comandos de verificación
+6. NO repetir diagnósticos
+7. Ser conciso
+
+---
+
+## 🔁 CAMBIO DE MODO
+
+Por defecto:
+
+modo = ejecución
+
+Cambiar a modo estricto SOLO si:
+
+riesgo > velocidad
 
 ---
 
 ## 🔍 PROTOCOLO DE TRABAJO
 
-### FASE 1 — Reconstrucción de contexto
-- Usar SOLO la información proporcionada
-- Listar incertidumbres
-- NO rellenar huecos
+### FASE 1 — (solo si necesario)
+Reconstrucción de contexto
 
-### FASE 2 — Verificación
-- SOLO comandos de verificación
-- SIN soluciones aún
+### FASE 2 — (solo si necesario)
+Verificación
 
-### FASE 3 — Diagnóstico
-- Analizar resultados
-- Diagnóstico consolidado
+### FASE 3 — (solo si necesario)
+Diagnóstico
 
-### FASE 4 — Implementación
-- Solo tras validación completa
-- Código alineado con el contexto real
+### FASE 4 — (default)
+Implementación directa
 
 ---
 
 ## ⚠️ REGLAS DE CONTROL
 
-- Si hay ambigüedad → DETENERSE
-- Si el contexto es incompleto → NO avanzar
-- Si se infiere algo → declararlo
+- Si hay ambigüedad crítica → detenerse
+- Si el riesgo es bajo → avanzar
+- Evitar fricción innecesaria
+- No sobreproteger el proceso
 
 ---
 
-## 📁 CONVENCIONES DE PROYECTO (OBLIGATORIO)
+## 🧩 REGLA DE ENTREGA DE CÓDIGO
 
-### Directorio temporal (debug)
+- NO dar instrucciones manuales de edición
+- SIEMPRE usar:
+
+  cat > archivo << 'EOF'
+
+- Entregar ficheros completos
+- NO parches parciales
+
+---
+
+## 📁 CONVENCIONES DE PROYECTO
+
+### Directorio temporal
 
 /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/tmp
 
@@ -68,11 +116,12 @@ Reglas obligatorias:
 
 ---
 
-### Documentación de continuidad
+### Documentación
 
 /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/docs
 
 Incluye:
+
 - CHANGELOG.md
 - NEXT_SESSION.md
 - HANDOFF_CURRENT.md
@@ -89,53 +138,17 @@ Incluye:
 
 ---
 
-## 🧩 REGLA DE ENTREGA DE CÓDIGO
-
-- NO dar instrucciones manuales de edición
-- SIEMPRE usar:
-
-  cat > archivo << 'EOF'
-
-- Entregar ficheros completos
-- NO parches parciales
-
----
-
 ## 🔄 FLUJO DE SESIÓN
 
 ### 0. OUTBRIEFING (OBLIGATORIO)
 
-Antes de cerrar sesión:
-
-Debe responder:
+Responder:
 
 - ¿Dónde estamos?
 - ¿Qué hemos entendido?
 - ¿Qué decisión se ha tomado?
 - ¿Hacia dónde vamos?
 - ¿Qué NO vamos a hacer?
-
-Formato:
-
-# OUTBRIEFING
-
-## Estado actual
-...
-
-## Lo que hemos entendido hoy
-...
-
-## Decisión clave
-...
-
-## Hacia dónde vamos ahora
-...
-
-## Qué NO vamos a hacer
-...
-
-## Intención de la siguiente fase
-...
 
 ---
 
@@ -149,7 +162,8 @@ Generar siempre:
 - docs/NEXT_SESSION.md
 - docs/SESSION_LOG_YYYY_MM_DD.md
 
-Formato obligatorio:
+Formato:
+
 cat > archivo << 'MD'
 
 ---
@@ -167,8 +181,6 @@ Validar coherencia entre:
 
 ### 3. COMMIT
 
-Formato:
-
 git commit -m "mensaje claro y estratégico"
 
 ---
@@ -180,11 +192,24 @@ Debe incluir:
 - contexto real
 - estado actual
 - objetivo
-- reglas (NO asumir, NO refactor ciego, etc.)
+- reglas
+
+---
+
+## 🧠 PRINCIPIO DE EJECUCIÓN
+
+Velocidad controlada > perfección teórica
+
+---
+
+## 🔒 HARD RULE GLOBAL
+
+NINGUNA IA puede enviar emails automáticamente.
+Solo puede generar drafts.
+El envío requiere acción humana explícita.
 
 ---
 
 ## 🎯 PRINCIPIO RECTOR
 
-**Primero control. Luego expansión.**
-
+Primero control. Luego expansión.

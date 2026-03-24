@@ -1,0 +1,7 @@
+CLIENT_PROVIDER_CLASS = EmbeddedLLMProvider
+RESULT_KEYS = ['facts', 'inferences', 'proposals', 'provider_meta', 'recommendations']
+PROVIDER_META = {'provider_class': 'EmbeddedLLMProvider', 'raw_output': 'inference_stub'}
+FACTS = []
+INFERENCES = []
+PROPOSALS = []
+RECOMMENDATIONS = []

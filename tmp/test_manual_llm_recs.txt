@@ -1,0 +1,5 @@
+28 objects imported automatically (use -v 2 for details).
+
+TOTAL: 2
+followup | Hacer follow-up en 3 días
+pricing_strategy | Revisar sensibilidad al precio detectada

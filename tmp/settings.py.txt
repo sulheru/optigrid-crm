@@ -161,16 +161,3 @@ INBOX_AUTO_BLOCK_ON_RISK_FLAGS = [
 # === Provider Abstraction Layer ===
 MAIL_PROVIDER = "embedded"
 LLM_PROVIDER = "embedded"
-
-# === LLM Governance Layer V1 ===
-LLM_OUTPUT_MODE = "hybrid"  # inference_only | hybrid | llm_driven
-LLM_MIN_CONFIDENCE = 0.70
-LLM_ALLOWED_RECOMMENDATION_TYPES = [
-    "followup",
-    "contact_strategy",
-    "reply_strategy",
-    "opportunity_review",
-    "pricing_strategy",
-    "advance_opportunity",
-    "mark_lost",
-]

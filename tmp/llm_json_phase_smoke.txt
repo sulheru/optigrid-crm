@@ -1,0 +1,8 @@
+ACTIVE_PROVIDER_CLASS = EmbeddedLLMProvider
+RESULT_KEYS = ['facts', 'inferences', 'proposals', 'provider_meta', 'recommendations']
+PARSED = False
+INFERENCES = []
+JSON_PROVIDER_PARSED = True
+JSON_INFERENCE_COUNT = 1
+JSON_FIRST_INFERENCE = {'type': 'interest_detected', 'confidence': 0.88, 'value': {'intent': 'pricing_request'}}
+JSON_RECOMMENDATION_COUNT = 1

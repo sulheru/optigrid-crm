@@ -1,26 +1,72 @@
 # ROADMAP — OptiGrid CRM
 
-## Current Phase
+---
 
-FASE 2 — PROVIDER ABSTRACTION LAYER
+## ✔ COMPLETADO
 
-## Phases
+### Backend Core
 
-1. CONTROL Y CANONICAL BACKEND ✅
-2. PROVIDER ABSTRACTION LAYER ← CURRENT
-3. SCENARIO ORCHESTRATOR INTERFACE (SOI)
-4. REAL INTEGRATIONS
-5. EXECUTIVE SURFACES
+- pipeline canónico
+- execution desacoplada
+- sistema determinista
 
-## Immediate Next Steps
+---
 
-- MailProvider abstraction
-- LLMProvider abstraction
-- Wiring into execution layer
-- Introduce Settings (Governance Layer)
+### AI Layer
 
-## Strategic Direction
+- LLM structured output
+- integration en inference
+- governance básica
 
-Convert system into:
+---
 
-AI-first autonomous commercial operating system
+### Providers
+
+- abstraction layer
+- mail + llm desacoplados
+- runtime switching
+
+---
+
+## 🔜 SIGUIENTE FASE
+
+### Recommendation Merge Layer V1
+
+Objetivo:
+
+- deduplicación rules / LLM
+- resolución de conflictos
+- unificación de decisiones
+
+---
+
+## 🔜 POSTERIOR
+
+### Cockpit V3
+
+- explainability
+- source (rules / llm / merged)
+- confidence visible
+
+---
+
+### Policy Engine
+
+- reglas explícitas de ejecución
+- control de acciones críticas
+
+---
+
+### Integración real
+
+- Gemini real
+- M365 real
+
+---
+
+## 🎯 DIRECCIÓN
+
+Sistema IA-first gobernado, no automatización ciega
+
+---
+

@@ -1,0 +1,8 @@
+MAIL_PROVIDER_CLASS = EmbeddedMailProvider
+LLM_PROVIDER_CLASS = EmbeddedLLMProvider
+CAL_PROVIDER_CLASS = PlaceholderCalendarProvider
+ADAPTER_MAIL_CLASS = EmbeddedMailProvider
+ADAPTER_LLM_CLASS = EmbeddedLLMProvider
+ADAPTER_CAL_CLASS = PlaceholderCalendarProvider
+MAIL_DRAFT_RESULT = {'provider': 'embedded', 'status': 'draft_created', 'to': 'test@example.com', 'subject': 'x'}
+LLM_GENERATE_RESULT = generation_stub

@@ -1,24 +1,52 @@
-# CHANGELOG
+# CHANGELOG — OptiGrid CRM
 
-## 2026-03-24
+---
 
-### Added
-- Canonical backend structure
-- Execution layer split:
-  - execution_application.py
-  - execution_actions.py
-  - execution_adapters.py
-  - execution.py (facade)
+## 2026-03-24 — Provider Abstraction + Governance + Runtime
 
-### Changed
-- Unified inference entrypoint
-- Unified recommendation execution
-- Inbox now routes through recommendations
+### ✨ Added
 
-### Fixed
-- Duplicated inference generation
-- Execution logic fragmentation
-- Hidden side-effects in services
+- Provider Abstraction Layer
+  - MailProvider (embedded, m365)
+  - LLMProvider (embedded, gemini)
+  - registry desacoplado
 
-### Notes
-- System ready for Provider Abstraction Layer
+- LLM structured output
+  - JSON contract
+  - normalization
+  - validation
+
+- Governance Layer V1
+  - modo
+  - confidence threshold
+  - allowlist de tipos
+
+- Runtime Settings
+  - persistencia en DB
+  - override dinámico de providers
+
+---
+
+### 🔧 Changed
+
+- LLM integrado en inference pipeline
+- providers desacoplados de lógica
+- execution permanece intacta
+
+---
+
+### 🔒 Security / Safety
+
+- HARD RULE:
+  - prohibido envío automático de emails
+  - solo drafts permitidos
+
+---
+
+### 🧠 Architecture
+
+- transición a sistema IA-first gobernado
+- adopción de modelo híbrido (Rules + LLM)
+
+---
+

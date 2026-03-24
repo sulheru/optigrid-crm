@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from apps.inferences.models import InferenceRecord
 from apps.recommendations.services import create_recommendation_from_inference
-from apps.recommendations.services_llm import create_recommendations_from_llm_output
 from services.ai.llm_client import LLMClient
 
 
@@ -24,7 +23,6 @@ def create_inference_record(
         inference_value=inference_value or {},
         confidence=confidence,
     )
-
 
 
 def create_inference(
@@ -63,17 +61,4 @@ def create_inference(
 
         created.append(record)
 
-    # --- NEW: LLM DIRECT RECOMMENDATIONS ---
-    try:
-        from apps.recommendations.services_llm import create_recommendations_from_llm_output
-
-        create_recommendations_from_llm_output(
-            scope_type=source_type,
-            scope_id=source_id,
-            llm_result=result,
-        )
-    except Exception:
-        pass
-
     return created
-

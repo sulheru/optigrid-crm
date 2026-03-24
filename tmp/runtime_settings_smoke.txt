@@ -1,0 +1,10 @@
+29 objects imported automatically (use -v 2 for details).
+
+DEFAULT_MODE = hybrid
+DEFAULT_MIN_CONFIDENCE = 0.7
+DEFAULT_ALLOWED = ['followup', 'contact_strategy', 'reply_strategy', 'opportunity_review', 'pricing_strategy', 'advance_opportunity', 'mark_lost']
+DB_MODE = hybrid
+DB_MIN_CONFIDENCE = 0.9
+DB_ALLOWED = ['followup']
+CREATED_COUNT = 1
+REC = followup | Hacer follow-up en 2 días | 0.95

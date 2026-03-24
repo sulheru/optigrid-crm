@@ -1,0 +1,10 @@
+29 objects imported automatically (use -v 2 for details).
+
+DEFAULT_MAIL_PROVIDER_NAME = embedded
+DEFAULT_LLM_PROVIDER_NAME = embedded
+DEFAULT_MAIL_PROVIDER_CLASS = EmbeddedMailProvider
+DEFAULT_LLM_PROVIDER_CLASS = EmbeddedLLMProvider
+DB_MAIL_PROVIDER_NAME = m365
+DB_LLM_PROVIDER_NAME = gemini
+DB_MAIL_PROVIDER_CLASS = M365MailProvider
+DB_LLM_PROVIDER_CLASS = GeminiLLMProvider

@@ -1,8 +1,0 @@
-Sorry: IndentationError: unexpected indent (crm_pipeline_report.py, line 24)USING FILE: apps/emailing/management/commands/crm_pipeline_report.py
-PATCHED: apps/emailing/management/commands/crm_pipeline_report.py
-Traceback (most recent call last):
-  File "/home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/tmp/patch_email_ingest_safe.py", line 52, in <module>
-    subprocess.run(["python3", "-m", "py_compile", target], check=True)
-  File "/usr/lib/python3.12/subprocess.py", line 571, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['python3', '-m', 'py_compile', 'apps/emailing/management/commands/crm_pipeline_report.py']' returned non-zero exit status 1.

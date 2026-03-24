@@ -1,40 +1,68 @@
 # NEXT SESSION — OptiGrid CRM
 
-## Fase
+---
 
-PROVIDER ABSTRACTION LAYER — INICIO
+## CONTEXTO
 
-## Objetivo
+Sistema IA-first con:
 
-Introducir capa de providers sin romper el sistema actual.
+- providers desacoplados
+- LLM integrado
+- governance operativa
+- runtime settings activos
 
-## Tareas
+Modelo:
 
-1. Definir interfaces:
-   - MailProvider
-   - LLMProvider
-   - CalendarProvider
+Rules + LLM (sin merge aún)
 
-2. Crear wrappers:
-   - EmbeddedMailProvider
-   - M365MailProvider (wrapper sobre graph_client)
-   - EmbeddedLLMProvider
-   - GeminiLLMProvider (wrapper sobre llm_backends)
+---
 
-3. Wiring:
-   - conectar providers en execution_adapters
-   - introducir flags en settings
+## OBJETIVO
 
-4. Validación:
-   - no romper tests
-   - mantener comportamiento actual
+Implementar:
 
-## Reglas
+Recommendation Merge Layer V1
 
-- NO implementar integraciones completas
+---
+
+## ALCANCE
+
+1. Introducir source en Recommendation
+
+- rules
+- llm
+- merged
+
+---
+
+2. Merge básico
+
+- agrupar por type
+- deduplicar
+- priorizar rules como base
+
+---
+
+3. Integración
+
+- conectar en pipeline antes de governance
+
+---
+
+## REGLAS
+
 - NO romper execution
-- NO refactor innecesario
+- NO refactor agresivo
+- mantener backward compatibility
+- NO introducir complejidad innecesaria
 
-## Resultado esperado
+---
 
-Sistema con providers intercambiables listo para integraciones reales.
+## RESULTADO ESPERADO
+
+- una sola lista coherente de recommendations
+- sin duplicados
+- base preparada para explainability
+
+---
+
