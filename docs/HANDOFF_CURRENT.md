@@ -1,120 +1,95 @@
-# HANDOFF — OptiGrid CRM
+# HANDOFF — CURRENT STATE
+
+## PROYECTO
+OptiGrid CRM — AI Commercial Operating System
+
+## FASE ACTUAL
+RECOMMENDATION MERGE LAYER V1 — COMPLETADA
+
+PRÓXIMA FASE:
+COCKPIT V3 — NEXT BEST ACTION ENGINE
 
 ---
 
-## 🧠 ESTADO ACTUAL
-
-Sistema IA-first con backend canónico completamente consolidado.
+## ESTADO DEL SISTEMA
 
 Pipeline operativo:
 
-Email → Fact → Inference → Recommendation → Execution
+Email → Fact → Inference → (Rules + LLM) → Merge → Recommendations → Execution
 
 ---
 
-## 🧱 CAPAS IMPLEMENTADAS
+## DECISIONES RECIENTES (CRÍTICAS)
 
-### ✔ Core
-
-- pipeline determinista funcionando
-- execution desacoplada
-- entrypoints únicos:
-  - InferenceService
-  - execute_recommendation_service
+### Merge Layer
+- source: rules / llm / merged
+- deduplicación por scope + type
+- prioridad rules
+- LLM solo enriquece
 
 ---
 
-### ✔ Provider Abstraction Layer
+## NUEVA CAPA (EN DISEÑO)
 
-- MailProvider
-  - embedded
-  - m365 (wrapper)
+### Next Best Action Engine (NBA)
 
-- LLMProvider
-  - embedded
-  - gemini (wrapper)
-
-- registry desacoplado
+Definición:
+- el sistema selecciona UNA única acción global prioritaria
 
 ---
 
-### ✔ LLM Integration
+## DECISIONES ARQUITECTÓNICAS NBA
 
-- salida estructurada (JSON)
-- normalización de tipos
-- validación
-- integración en inference
+### Unidad de ranking
+- Recommendations (no tasks, no opportunities)
 
----
+### Tipo de ranking
+- runtime (no persistido)
 
-### ✔ Governance Layer V1
+### Número de acciones
+- UNA única NBA global
 
-- control por:
-  - modo (LLM_OUTPUT_MODE)
-  - confianza
-  - tipos permitidos
+### Fórmula base
 
----
-
-### ✔ Runtime Settings
-
-- modelo persistente (DB)
-- prioridad:
-  DB > settings.py > default
-- control dinámico:
-  - MAIL_PROVIDER
-  - LLM_PROVIDER
+score = confidence + urgency + type_weight
 
 ---
 
-## 🔒 HARD RULE GLOBAL
-
-NINGUNA IA puede enviar emails automáticamente.
-
-- permitido:
-  - create draft
-
-- prohibido:
-  - send email automático
-
-El envío requiere acción humana explícita.
+### Urgency
+- basada en reglas (no LLM)
+- derivada de:
+  - recencia
+  - falta de respuesta
+  - señales temporales
 
 ---
 
-## 🧠 MODELO DE DECISIÓN
+### Type Weight (hardcoded V1)
 
-Modelo C:
+Ejemplo:
 
-Rules + LLM → (futuro: Merge Layer) → Governance → Execution
-
-Estado actual:
-
-- sistema híbrido
-- rules activas
-- LLM integrado
-- merge aún no explícito
+- followup → alto
+- contact_strategy → medio
+- review → bajo
 
 ---
 
-## ⚠️ LIMITACIONES ACTUALES
-
-- no existe merge layer
-- duplicidad potencial rules / LLM
-- no hay explainability en UI
-- Gemini aún no en uso real
+### Explainability
+- NO en V1
 
 ---
 
-## 🧭 SIGUIENTE PASO NATURAL
+## HARD RULE GLOBAL
 
-Recommendation Merge Layer V1
-
----
-
-## 🧠 PRINCIPIO DEL SISTEMA
-
-IA controla el sistema interno  
-Humano controla efectos irreversibles
+NINGUNA IA envía emails automáticamente
 
 ---
+
+## RESULTADO
+
+Sistema preparado para:
+
+→ decisión global
+→ cockpit operativo
+→ ejecución guiada
 

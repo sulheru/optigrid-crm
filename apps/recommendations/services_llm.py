@@ -160,7 +160,8 @@ def create_recommendations_from_llm_output(
             recommendation_text=rec_text,
             confidence=confidence,
             status="new",
-        )
+        ,
+            source="llm")
         created.append(obj)
 
     return created

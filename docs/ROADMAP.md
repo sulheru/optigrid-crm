@@ -1,72 +1,98 @@
-# ROADMAP — OptiGrid CRM
+# ROADMAP — OPTIGRID CRM
 
 ---
 
-## ✔ COMPLETADO
+## FASE ACTUAL
 
-### Backend Core
+### ✅ COMPLETADO
 
-- pipeline canónico
-- execution desacoplada
-- sistema determinista
+#### 1. Core Pipeline
+Email → Fact → Inference → Recommendation → Task → Opportunity
+
+#### 2. Execution Layer
+- ejecución unificada
+- drafts funcionales
+- integración con recommendations
+
+#### 3. Provider Abstraction
+- LLM desacoplado
+- runtime configurable
+
+#### 4. Governance Layer V1
+- control estructural básico
+
+#### 5. Recommendation Merge Layer V1
+- unificación rules + LLM
+- deduplicación
+- source tracking
+- persistencia coherente
 
 ---
 
-### AI Layer
+## 🔄 EN PROGRESO
 
-- LLM structured output
-- integration en inference
-- governance básica
-
----
-
-### Providers
-
-- abstraction layer
-- mail + llm desacoplados
-- runtime switching
-
----
-
-## 🔜 SIGUIENTE FASE
-
-### Recommendation Merge Layer V1
+### 6. Cockpit V3 — Next Best Action Engine
 
 Objetivo:
+→ convertir el sistema en decisor operativo
 
-- deduplicación rules / LLM
-- resolución de conflictos
-- unificación de decisiones
+Incluye:
+
+- ranking global
+- urgency system
+- type weighting
+- selección de 1 acción
+
+Estado:
+DISEÑADO — listo para implementación
 
 ---
 
-## 🔜 POSTERIOR
+## 🔜 SIGUIENTE
 
-### Cockpit V3
+### 7. Dashboard Intelligence
 
+- bloque NBA
+- visualización priorizada
+- CTA de ejecución
+
+---
+
+## 🔮 FUTURO
+
+### 8. Merge Layer V2
 - explainability
-- source (rules / llm / merged)
-- confidence visible
+- scoring avanzado
+- conflict resolution
 
 ---
 
-### Policy Engine
-
-- reglas explícitas de ejecución
-- control de acciones críticas
-
----
-
-### Integración real
-
-- Gemini real
-- M365 real
+### 9. Governance V2
+- políticas dinámicas
+- validación avanzada
 
 ---
 
-## 🎯 DIRECCIÓN
+### 10. Autonomy Layer
 
-Sistema IA-first gobernado, no automatización ciega
+- ejecución semi-automática
+- loops controlados
+- feedback system
 
 ---
+
+### 11. Learning Layer
+
+- ajuste de scoring
+- optimización basada en resultados
+
+---
+
+## VISIÓN FINAL
+
+Sistema IA-first que:
+
+- decide qué hacer
+- prioriza automáticamente
+- ejecuta con supervisión humana
 

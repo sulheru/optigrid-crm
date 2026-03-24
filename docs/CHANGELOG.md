@@ -1,52 +1,36 @@
-# CHANGELOG — OptiGrid CRM
+# CHANGELOG
+
+## 2026-03-24 — Recommendation Merge Layer V1
+
+[contenido previo...]
 
 ---
 
-## 2026-03-24 — Provider Abstraction + Governance + Runtime
+## 2026-03-24 — NBA Engine Design (Pre-Implementation)
 
-### ✨ Added
+### Added (Design Decisions)
 
-- Provider Abstraction Layer
-  - MailProvider (embedded, m365)
-  - LLMProvider (embedded, gemini)
-  - registry desacoplado
+- definición de Next Best Action (NBA)
+- unidad de ranking: Recommendations
+- ejecución: runtime (no persistido)
+- output: 1 acción global
 
-- LLM structured output
-  - JSON contract
-  - normalization
-  - validation
+### Scoring Model
 
-- Governance Layer V1
-  - modo
-  - confidence threshold
-  - allowlist de tipos
+score = confidence + urgency + type_weight
 
-- Runtime Settings
-  - persistencia en DB
-  - override dinámico de providers
+### Urgency
+- basada en reglas
+- no LLM
 
----
+### Type Weight
+- hardcoded en V1
 
-### 🔧 Changed
+### Constraints
+- sin explainability
+- sin ML
+- sin persistencia
 
-- LLM integrado en inference pipeline
-- providers desacoplados de lógica
-- execution permanece intacta
-
----
-
-### 🔒 Security / Safety
-
-- HARD RULE:
-  - prohibido envío automático de emails
-  - solo drafts permitidos
-
----
-
-### 🧠 Architecture
-
-- transición a sistema IA-first gobernado
-- adopción de modelo híbrido (Rules + LLM)
-
----
+### Objective
+convertir el sistema en decisor operativo
 

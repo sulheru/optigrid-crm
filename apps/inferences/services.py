@@ -4,6 +4,7 @@ from apps.inferences.models import InferenceRecord
 from apps.recommendations.services import create_recommendation_from_inference
 from apps.recommendations.services_llm import create_recommendations_from_llm_output
 from services.ai.llm_client import LLMClient
+from apps.recommendations.merge_runtime import merge_persisted_recommendations_for_scope
 
 
 def create_inference_record(
@@ -71,6 +72,11 @@ def create_inference(
             scope_type=source_type,
             scope_id=source_id,
             llm_result=result,
+        )
+
+        merge_persisted_recommendations_for_scope(
+            scope_type=record.source_type,
+            scope_id=record.source_id,
         )
     except Exception:
         pass

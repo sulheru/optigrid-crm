@@ -1,5 +1,3 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/models.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.db import models
 
 
@@ -16,14 +14,33 @@ class AIRecommendation(models.Model):
         (STATUS_EXECUTED, "Executed"),
     ]
 
+    SOURCE_RULES = "rules"
+    SOURCE_LLM = "llm"
+    SOURCE_MERGED = "merged"
+
+    SOURCE_CHOICES = [
+        (SOURCE_RULES, "Rules"),
+        (SOURCE_LLM, "LLM"),
+        (SOURCE_MERGED, "Merged"),
+    ]
+
     scope_type = models.CharField(max_length=50)
     scope_id = models.CharField(max_length=100)
     recommendation_type = models.CharField(max_length=100)
     recommendation_text = models.TextField()
     confidence = models.FloatField()
+
     status = models.CharField(
         max_length=50,
         choices=STATUS_CHOICES,
         default=STATUS_NEW,
     )
+
+    source = models.CharField(
+        max_length=16,
+        choices=SOURCE_CHOICES,
+        default=SOURCE_RULES,
+        db_index=True,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)

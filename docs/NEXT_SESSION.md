@@ -1,68 +1,77 @@
-# NEXT SESSION — OptiGrid CRM
-
----
+# NEXT SESSION
 
 ## CONTEXTO
 
-Sistema IA-first con:
-
-- providers desacoplados
-- LLM integrado
-- governance operativa
-- runtime settings activos
-
-Modelo:
-
-Rules + LLM (sin merge aún)
+Merge Layer V1 completada
+Sistema coherente y sin duplicados
 
 ---
 
 ## OBJETIVO
 
-Implementar:
-
-Recommendation Merge Layer V1
+COCKPIT V3 — NEXT BEST ACTION ENGINE
 
 ---
 
-## ALCANCE
+## IMPLEMENTACIÓN
 
-1. Introducir source en Recommendation
+### 1. NBA Engine
 
-- rules
-- llm
-- merged
+Input:
+- recommendations (merged, status=new)
+
+Compute:
+- urgency_score (rules)
+- type_weight (hardcoded)
+- final score
+
+score = confidence + urgency + type_weight
+
+Output:
+- 1 recommendation (top)
 
 ---
 
-2. Merge básico
+### 2. Urgency Rules
 
-- agrupar por type
-- deduplicar
-- priorizar rules como base
+Ejemplo:
+
+- email reciente → alta urgencia
+- sin respuesta → media
+- frío → baja
 
 ---
 
-3. Integración
+### 3. Type Weights
 
-- conectar en pipeline antes de governance
+Ejemplo:
+
+- followup → 1.0
+- contact_strategy → 0.6
+- review → 0.3
+
+---
+
+### 4. Dashboard
+
+Nuevo bloque:
+
+"What should you do now"
 
 ---
 
 ## REGLAS
 
-- NO romper execution
-- NO refactor agresivo
-- mantener backward compatibility
-- NO introducir complejidad innecesaria
+- no persistir scoring
+- no romper execution
+- no duplicar lógica
+- validar antes de implementar
 
 ---
 
-## RESULTADO ESPERADO
+## CRITERIO DE ÉXITO
 
-- una sola lista coherente de recommendations
-- sin duplicados
-- base preparada para explainability
-
----
+- 1 acción clara
+- ranking consistente
+- comportamiento determinista
 
