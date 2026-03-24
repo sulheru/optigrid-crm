@@ -426,6 +426,7 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
+├── BEHAVIOR_PROMPT.md
 ├── cleartmp.sh
 ├── config
 │   ├── asgi.py
@@ -441,7 +442,6 @@
 │   ├── urls.py
 │   └── wsgi.py
 ├── db.sqlite3
-├── debug_ui_foundation.txt
 ├── dev_verify_execute_contact_strategy.py
 ├── dev_verify_execute_followup.py
 ├── dev_verify_execute_reply_strategy.py
@@ -473,20 +473,11 @@
 ├── fix_django_app_names.sh
 ├── flog.sh
 ├── frun.sh
-├── inbox_full_restore_input.txt
-├── inbox_migration_input.txt
-├── legacy_templates_audit.txt
-├── legacy_templates_report.txt
-├── legacy_templates_strict.txt
-├── llm_context_optigrid_crm.txt
 ├── manage.py
-├── outbox_migration_input.txt
-├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
 ├── patch_views_recommendations.py
-├── recommendations_trace.txt
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
 │   └── base.txt
@@ -569,8 +560,6 @@
 │           ├── rickshaw.js
 │           ├── site.js
 │           └── underscore-min.js
-├── strategy_trace.txt
-├── task_migration_input.txt
 ├── templates
 │   ├── base.html
 │   ├── dashboard
@@ -614,8 +603,26 @@
 │   └── tasks
 │       └── list.html
 ├── tests
-├── tmp
-├── ui_repair_input.txt
-└── verification.txt
+└── tmp
+    ├── debug_ui_foundation.txt
+    ├── inbox_full_restore_input.txt
+    ├── inbox_migration_input.txt
+    ├── legacy_templates_audit.txt
+    ├── legacy_templates_report.txt
+    ├── legacy_templates_strict.txt
+    ├── llm_context_optigrid_crm.txt
+    ├── outbox_migration_input.txt
+    ├── output_execution.txt
+    ├── output_pipeline.txt
+    ├── output_reco.txt
+    ├── output_routes.txt
+    ├── output_strategy.txt
+    ├── output.txt
+    ├── output_ui.txt
+    ├── recommendations_trace.txt
+    ├── strategy_trace.txt
+    ├── task_migration_input.txt
+    ├── ui_repair_input.txt
+    └── verification.txt
 
-117 directories, 502 files
+117 directories, 509 files

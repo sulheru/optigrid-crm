@@ -157,3 +157,7 @@ INBOX_AUTO_BLOCK_ON_RISK_FLAGS = [
     "blocked_action",
     "sensitive_stage_change",
 ]
+
+# === Provider Abstraction Layer ===
+MAIL_PROVIDER = "embedded"
+LLM_PROVIDER = "embedded"

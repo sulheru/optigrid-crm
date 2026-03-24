@@ -1,15 +1,14 @@
 # Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/recommendations/views.py
 # LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.core.ui_semantics import build_available_actions, get_recommendation_ui
 from apps.emailing.models import InboundEmail, OutboundEmail
-from apps.emailing.services.reply_generator import generate_followup_draft_from_inbound
 from apps.opportunities.models import Opportunity
-from apps.opportunities.services.promote import promote_task_to_opportunity
 from apps.recommendations.models import AIRecommendation
-from apps.tasks.services.materialize import materialize_recommendation_as_task
+from apps.recommendations.execution import RecommendationExecutionError, execute_recommendation_service
 
 
 RECOMMENDATIONS_LIST_PATH = "/recommendations/"
@@ -171,6 +170,11 @@ def _get_recommendation_types():
     return [value for value in values if value]
 
 
+
+def _redirect_back_to_recommendations(request):
+    return redirect(request.META.get("HTTP_REFERER") or "/recommendations/")
+
+
 def _decorate_recommendation_for_ui(recommendation: AIRecommendation):
     ui_config = get_recommendation_ui(recommendation.recommendation_type)
     recommendation.ui_icon = ui_config["icon"]
@@ -248,99 +252,39 @@ def recommendation_promote_opportunity(request, pk):
 @require_POST
 def execute_followup(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
-
-    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
-        return redirect(OUTBOX_FOLLOWUP_PATH)
-
-    opportunity = _resolve_opportunity_from_recommendation(recommendation)
-    if opportunity is None:
-        return _recommendation_list_redirect()
-
-    inbound = (
-        InboundEmail.objects.filter(opportunity=opportunity)
-        .order_by("-received_at", "-created_at")
-        .first()
-    )
-
-    outbound = None
-
-    if inbound is not None:
-        outbound = _find_reusable_followup_for_inbound(inbound)
-        if outbound is None:
-            outbound = generate_followup_draft_from_inbound(inbound)
-    else:
-        outbound = _find_reusable_followup_for_opportunity(opportunity)
-        if outbound is None:
-            outbound = _build_manual_followup_draft(opportunity)
-
-    if outbound is not None:
-        _mark_recommendation_executed(recommendation)
-
-    return redirect(OUTBOX_FOLLOWUP_PATH)
-
+    try:
+        execute_recommendation_service(recommendation, actor="recommendations_view")
+        messages.success(request, "Recommendation executed.")
+    except RecommendationExecutionError as exc:
+        messages.error(request, str(exc))
+    return _redirect_back_to_recommendations(request)
 
 @require_POST
 def execute_contact_strategy(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
-
-    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
-        return redirect(OUTBOX_FIRST_CONTACT_PATH)
-
-    opportunity = _resolve_opportunity_from_recommendation(recommendation)
-    if opportunity is None:
-        return _recommendation_list_redirect()
-
-    outbound = _find_reusable_first_contact_for_opportunity(opportunity)
-    if outbound is None:
-        outbound = _build_first_contact_draft(opportunity)
-
-    if outbound is not None:
-        _mark_recommendation_executed(recommendation)
-
-    return redirect(OUTBOX_FIRST_CONTACT_PATH)
-
+    try:
+        execute_recommendation_service(recommendation, actor="recommendations_view")
+        messages.success(request, "Recommendation executed.")
+    except RecommendationExecutionError as exc:
+        messages.error(request, str(exc))
+    return _redirect_back_to_recommendations(request)
 
 @require_POST
 def execute_reply_strategy(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
-
-    if recommendation.status == AIRecommendation.STATUS_EXECUTED:
-        return redirect(OUTBOX_FOLLOWUP_PATH)
-
-    opportunity = _resolve_opportunity_from_recommendation(recommendation)
-    if opportunity is None:
-        return _recommendation_list_redirect()
-
-    inbound = (
-        InboundEmail.objects.filter(opportunity=opportunity)
-        .order_by("-received_at", "-created_at")
-        .first()
-    )
-    if inbound is None:
-        return _recommendation_list_redirect()
-
-    outbound = _find_reusable_followup_for_inbound(inbound)
-    if outbound is None:
-        outbound = generate_followup_draft_from_inbound(inbound)
-
-    if outbound is not None:
-        _mark_recommendation_executed(recommendation)
-
-    return redirect(OUTBOX_FOLLOWUP_PATH)
-
+    try:
+        execute_recommendation_service(recommendation, actor="recommendations_view")
+        messages.success(request, "Recommendation executed.")
+    except RecommendationExecutionError as exc:
+        messages.error(request, str(exc))
+    return _redirect_back_to_recommendations(request)
 
 @require_POST
 def execute_recommendation(request, pk):
     recommendation = get_object_or_404(AIRecommendation, pk=pk)
-    recommendation_type = _normalized_text(recommendation.recommendation_type)
-
-    if recommendation_type == "followup":
-        return execute_followup(request, pk)
-
-    if recommendation_type == "contact_strategy":
-        return execute_contact_strategy(request, pk)
-
-    if recommendation_type == "reply_strategy":
-        return execute_reply_strategy(request, pk)
-
-    return _recommendation_list_redirect()
+    try:
+        execute_recommendation_service(recommendation, actor="recommendations_view")
+        messages.success(request, "Recommendation executed.")
+    except RecommendationExecutionError as exc:
+        messages.error(request, str(exc))
+    return _redirect_back_to_recommendations(request)

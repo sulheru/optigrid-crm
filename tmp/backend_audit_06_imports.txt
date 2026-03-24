@@ -1,0 +1,385 @@
+services/email_ingest.py:3:from __future__ import annotations
+services/email_ingest.py:5:from typing import Any
+services/email_ingest.py:7:from services.fact_extraction import create_facts_from_email
+services/email_ingest.py:8:from services.inference_engine import create_inferences_from_fact
+services/email_ingest.py:9:from services.update_proposals import create_update_proposal_from_inference
+services/events.py:3:from __future__ import annotations
+services/events.py:5:from typing import Any
+services/events.py:7:from apps.events.models import Event
+apps/emailing/migrations/0007_inboundinterpretation_inbounddecision.py:5:import django.db.models.deletion
+apps/emailing/migrations/0007_inboundinterpretation_inbounddecision.py:6:from django.db import migrations, models
+services/m365/graph_client.py:3:import requests
+services/inference_engine.py:3:from __future__ import annotations
+services/inference_engine.py:5:from dataclasses import dataclass
+services/inference_engine.py:6:from typing import Any
+services/inference_engine.py:8:from apps.facts.models import FactRecord
+services/inference_engine.py:9:from apps.inferences.models import InferenceRecord
+services/fact_extraction.py:3:from __future__ import annotations
+services/fact_extraction.py:5:from dataclasses import dataclass
+services/fact_extraction.py:6:from typing import Any
+services/fact_extraction.py:8:from django.utils import timezone
+services/fact_extraction.py:10:from apps.emailing.models import EmailMessage
+services/fact_extraction.py:11:from apps.facts.models import FactRecord
+apps/emailing/migrations/0008_outboundemail_source_recommendation.py:3:from django.db import migrations, models
+apps/emailing/migrations/0008_outboundemail_source_recommendation.py:4:import django.db.models.deletion
+services/update_proposals.py:3:from __future__ import annotations
+services/update_proposals.py:5:from typing import Any
+services/update_proposals.py:7:from apps.inferences.models import InferenceRecord
+services/update_proposals.py:8:from apps.updates.models import CRMUpdateProposal
+apps/emailing/migrations/0008_inbounddecision_automation_fields.py:3:from django.db import migrations, models
+apps/emailing/migrations/0009_merge_0008_emailing_branches.py:3:from django.db import migrations
+apps/emailing/migrations/0004_outboundemail_email_type.py:5:from django.db import migrations, models
+apps/emailing/migrations/0001_initial.py:5:import django.db.models.deletion
+apps/emailing/migrations/0001_initial.py:6:from django.db import migrations, models
+apps/emailing/migrations/0006_outboundemail_source_inbound.py:5:import django.db.models.deletion
+apps/emailing/migrations/0006_outboundemail_source_inbound.py:6:from django.db import migrations, models
+apps/emailing/migrations/0005_inboundemail.py:5:import django.db.models.deletion
+apps/emailing/migrations/0005_inboundemail.py:6:from django.db import migrations, models
+apps/emailing/migrations/0002_remove_emailthread_linked_company_and_more.py:5:import django.db.models.deletion
+apps/emailing/migrations/0002_remove_emailthread_linked_company_and_more.py:6:from django.db import migrations, models
+apps/emailing/migrations/0003_alter_outboundemail_options_and_more.py:5:from django.db import migrations, models
+apps/emailing/urls.py:3:from django.urls import path
+apps/emailing/urls.py:5:from .views import (
+apps/inferences/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/inferences/views.py:3:from django.shortcuts import render
+apps/inferences/admin.py:3:from django.contrib import admin
+apps/inferences/models.py:3:from django.db import models
+apps/inferences/apps.py:3:from django.apps import AppConfig
+apps/emailing/management/commands/crm_pipeline_report.py:3:from __future__ import annotations
+apps/emailing/management/commands/crm_pipeline_report.py:5:from django.core.management.base import BaseCommand
+apps/emailing/management/commands/crm_pipeline_report.py:6:from django.db.models import Case, CharField, Count, Value, When
+apps/emailing/management/commands/crm_pipeline_report.py:8:from apps.emailing.models import EmailMessage
+apps/emailing/management/commands/crm_pipeline_report.py:9:from apps.facts.models import FactRecord
+apps/emailing/management/commands/crm_pipeline_report.py:10:from apps.inferences.models import InferenceRecord
+apps/emailing/management/commands/crm_pipeline_report.py:11:from apps.updates.models import CRMUpdateProposal
+apps/emailing/management/commands/crm_pipeline_report.py:12:from apps.recommendations.models import AIRecommendation
+apps/emailing/management/commands/crm_pipeline_report.py:13:from apps.tasks.models import CRMTask
+apps/emailing/management/commands/crm_pipeline_report.py:14:from apps.opportunities.models import Opportunity
+apps/inferences/tests.py:3:from django.test import TestCase
+apps/emailing/management/commands/demo_email_flow.py:3:from __future__ import annotations
+apps/emailing/management/commands/demo_email_flow.py:5:from django.core.management.base import BaseCommand
+apps/emailing/management/commands/demo_email_flow.py:6:from django.utils import timezone
+apps/emailing/management/commands/demo_email_flow.py:8:from apps.emailing.models import EmailMessage, EmailThread
+apps/emailing/management/commands/demo_email_flow.py:9:from services.email_ingest import process_email_message
+apps/strategy/urls.py:3:from django.urls import path
+apps/strategy/urls.py:5:from .views import StrategyChatView
+apps/emailing/views.py:3:from django.shortcuts import get_object_or_404, redirect, render
+apps/emailing/views.py:4:from django.utils import timezone
+apps/emailing/views.py:5:from django.views.decorators.http import require_POST
+apps/emailing/views.py:7:from apps.emailing.models import InboundDecision, InboundEmail, OutboundEmail
+apps/emailing/views.py:8:from apps.emailing.services.inbound_analysis_service import analyze_inbound_email
+apps/emailing/views.py:9:from apps.emailing.services.inbound_decision_apply_service import (
+apps/emailing/views.py:13:from apps.emailing.services.outbound_sender import (
+apps/emailing/views.py:17:from apps.emailing.services.reply_generator import generate_followup_draft_from_inbound
+apps/emailing/admin.py:3:from django.contrib import admin
+apps/strategy/views.py:3:from __future__ import annotations
+apps/strategy/views.py:5:from django.shortcuts import redirect, render
+apps/strategy/views.py:6:from django.views import View
+apps/strategy/views.py:8:from .services.context_builder import build_strategy_context
+apps/strategy/views.py:9:from .services.llm_backends import generate_strategy_answer
+apps/strategy/apps.py:3:from django.apps import AppConfig
+apps/emailing/models.py:3:from django.db import models
+apps/emailing/apps.py:3:from django.apps import AppConfig
+apps/strategy/services/rule_based_engine.py:3:from __future__ import annotations
+apps/strategy/services/rule_based_engine.py:5:from typing import Any
+apps/strategy/services/llm_backends.py:3:from __future__ import annotations
+apps/strategy/services/llm_backends.py:5:import os
+apps/strategy/services/llm_backends.py:6:from dataclasses import dataclass
+apps/strategy/services/llm_backends.py:7:from typing import Protocol
+apps/strategy/services/llm_backends.py:9:from .prompt_builder import build_strategy_prompt
+apps/strategy/services/context_builder.py:3:from __future__ import annotations
+apps/strategy/services/context_builder.py:5:import json
+apps/strategy/services/context_builder.py:6:from dataclasses import dataclass
+apps/strategy/services/context_builder.py:7:from typing import Any, Iterable
+apps/strategy/services/context_builder.py:9:from django.apps import apps
+apps/emailing/services/inbound_interpreter.py:3:from dataclasses import asdict, dataclass
+apps/emailing/services/inbound_interpreter.py:4:from typing import Any
+apps/strategy/services/prompt_builder.py:3:from __future__ import annotations
+apps/strategy/services/prompt_builder.py:5:from typing import Any
+apps/emailing/services/inbound_simulator.py:3:from django.utils import timezone
+apps/emailing/services/inbound_simulator.py:5:from apps.emailing.models import InboundEmail, OutboundEmail
+apps/strategy/services/strategy_engine.py:3:from __future__ import annotations
+apps/strategy/services/strategy_engine.py:5:from typing import Any
+apps/strategy/services/strategy_engine.py:7:from .llm_backends import generate_strategy_answer
+apps/emailing/services/inbound_decision_engine.py:3:from dataclasses import asdict, dataclass
+apps/emailing/services/inbound_decision_engine.py:4:from typing import Any
+apps/emailing/services/inbound_decision_apply_service.py:3:import logging
+apps/emailing/services/inbound_decision_apply_service.py:5:from django.db import transaction
+apps/emailing/services/inbound_decision_apply_service.py:6:from django.utils import timezone
+apps/emailing/services/inbound_decision_apply_service.py:8:from apps.emailing.models import InboundDecision, OutboundEmail
+apps/emailing/services/inbound_decision_apply_service.py:9:from apps.tasks.models import CRMTask
+apps/emailing/services/outbound_sender.py:3:from django.utils import timezone
+apps/emailing/services/outbound_sender.py:5:from apps.emailing.models import OutboundEmail
+apps/emailing/services/outbound_sender.py:6:from apps.emailing.services.inbound_simulator import simulate_inbound_reply_for_outbound
+apps/emailing/services/inbound_analysis_service.py:3:from apps.emailing.models import InboundDecision, InboundInterpretation
+apps/emailing/services/inbound_analysis_service.py:4:from apps.emailing.services.decision_automation import (
+apps/emailing/services/inbound_analysis_service.py:8:from apps.emailing.services.inbound_decision_engine import (
+apps/emailing/services/inbound_analysis_service.py:12:from apps.emailing.services.inbound_interpreter import (
+apps/core/templatetags/label_filters.py:1:from django import template
+apps/core/templatetags/label_filters.py:3:from apps.core.labels import (
+apps/emailing/services/decision_automation.py:3:import logging
+apps/emailing/services/decision_automation.py:4:from decimal import Decimal
+apps/emailing/services/decision_automation.py:6:from django.conf import settings
+apps/emailing/services/decision_automation.py:8:from apps.emailing.models import InboundDecision
+apps/core/apps.py:1:from django.apps import AppConfig
+apps/emailing/services/reply_generator.py:3:from apps.emailing.models import InboundEmail, OutboundEmail
+apps/emailing/tests.py:3:from django.test import TestCase, override_settings
+apps/emailing/tests.py:4:from django.utils import timezone
+apps/emailing/tests.py:6:from apps.emailing.models import (
+apps/emailing/tests.py:12:from apps.emailing.services.inbound_analysis_service import analyze_inbound_email
+apps/emailing/tests.py:13:from apps.emailing.services.inbound_decision_apply_service import (
+apps/emailing/tests.py:17:from apps.emailing.services.inbound_decision_engine import build_inbound_decision
+apps/emailing/tests.py:18:from apps.emailing.services.inbound_interpreter import interpret_inbound_email
+apps/emailing/tests.py:19:from apps.opportunities.models import Opportunity
+apps/emailing/tests.py:20:from apps.tasks.models import CRMTask
+apps/lead_research/schemas.py:3:from __future__ import annotations
+apps/lead_research/schemas.py:5:from typing import Any, List, Optional
+apps/lead_research/schemas.py:7:from pydantic import BaseModel, Field, HttpUrl, field_validator
+apps/opportunities/views_prioritized.py:3:from django.shortcuts import get_object_or_404, render
+apps/opportunities/views_prioritized.py:5:from apps.opportunities.models import Opportunity
+apps/opportunities/views_prioritized.py:6:from apps.opportunities.services.prioritization import (
+apps/opportunities/views_prioritized.py:10:from apps.tasks.models import CRMTask
+apps/opportunities/views_prioritized.py:90:from django.contrib import messages
+apps/opportunities/views_prioritized.py:91:from django.shortcuts import get_object_or_404, redirect
+apps/opportunities/views_prioritized.py:92:from django.views.decorators.http import require_POST
+apps/opportunities/views_prioritized.py:94:from apps.opportunities.models import Opportunity
+apps/lead_research/migrations/0001_initial.py:5:import django.db.models.deletion
+apps/lead_research/migrations/0001_initial.py:6:import django.utils.timezone
+apps/lead_research/migrations/0001_initial.py:7:from django.db import migrations, models
+apps/lead_research/urls.py:3:from django.urls import path
+apps/lead_research/urls.py:4:from . import views
+apps/opportunities/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/lead_research/views.py:3:from django.shortcuts import render, redirect, get_object_or_404
+apps/lead_research/views.py:4:from django.utils import timezone
+apps/lead_research/views.py:6:from apps.lead_research.models import LeadSuggestion
+apps/lead_research/views.py:7:from apps.lead_research.services.lead_promotion import promote_lead_to_opportunity
+apps/opportunities/migrations/0003_opportunity_source_recommendation.py:5:import django.db.models.deletion
+apps/opportunities/migrations/0003_opportunity_source_recommendation.py:6:from django.db import migrations, models
+apps/opportunities/migrations/0002_initial.py:5:import django.db.models.deletion
+apps/opportunities/migrations/0002_initial.py:6:from django.db import migrations, models
+apps/lead_research/models.py:3:from django.db import models
+apps/lead_research/models.py:4:from django.utils import timezone
+apps/opportunities/migrations/0004_opportunity_last_analyzed_at.py:3:from django.db import migrations, models
+apps/lead_research/apps.py:3:from django.apps import AppConfig
+apps/opportunities/urls.py:3:from django.urls import path
+apps/opportunities/urls.py:4:from django.views.generic import RedirectView
+apps/opportunities/urls.py:6:from apps.opportunities.views_prioritized import (
+apps/lead_research/services/signal_discovery.py:3:from __future__ import annotations
+apps/lead_research/services/signal_discovery.py:5:import json
+apps/lead_research/services/signal_discovery.py:6:import logging
+apps/lead_research/services/signal_discovery.py:7:from dataclasses import dataclass
+apps/lead_research/services/signal_discovery.py:8:from decimal import Decimal
+apps/lead_research/services/signal_discovery.py:9:from typing import Any, Iterable
+apps/lead_research/services/signal_discovery.py:10:from urllib.parse import urlparse
+apps/lead_research/services/signal_discovery.py:12:from django.conf import settings
+apps/lead_research/services/signal_discovery.py:13:from django.db import IntegrityError, transaction
+apps/lead_research/services/signal_discovery.py:14:from django.db.models import Q
+apps/lead_research/services/signal_discovery.py:15:from django.utils import timezone
+apps/lead_research/services/signal_discovery.py:16:from pydantic import ValidationError
+apps/lead_research/services/signal_discovery.py:18:from apps.companies.models import Company
+apps/lead_research/services/signal_discovery.py:19:from apps.lead_research.models import LeadResearchSnapshot, LeadSignal, LeadSuggestion
+apps/lead_research/services/signal_discovery.py:20:from apps.lead_research.schemas import (
+apps/lead_research/services/lead_promotion.py:3:from django.db import transaction
+apps/lead_research/services/lead_promotion.py:5:from apps.opportunities.models import Opportunity
+apps/lead_research/services/lead_promotion.py:6:from apps.recommendations.models import AIRecommendation
+apps/lead_research/services/lead_promotion.py:7:from apps.tasks.models import CRMTask
+apps/lead_research/services/lead_promotion.py:8:from apps.emailing.models import OutboundEmail
+apps/lead_research/tasks.py:3:import logging
+apps/lead_research/tasks.py:5:from celery import shared_task
+apps/lead_research/tasks.py:7:from apps.lead_research.services.signal_discovery import SignalDiscoveryService
+apps/opportunities/management/commands/enrich_opportunities.py:3:from django.core.management.base import BaseCommand
+apps/opportunities/management/commands/enrich_opportunities.py:5:from apps.opportunities.models import Opportunity
+apps/opportunities/management/commands/enrich_opportunities.py:6:from apps.recommendations.models import AIRecommendation
+apps/opportunities/management/commands/enrich_opportunities.py:7:from apps.opportunities.services.enrichment import build_opportunity_defaults_from_recommendation
+apps/opportunities/management/commands/analyze_opportunity.py:3:from django.core.management.base import BaseCommand
+apps/opportunities/management/commands/analyze_opportunity.py:4:from apps.opportunities.models import Opportunity
+apps/opportunities/management/commands/analyze_opportunity.py:5:from apps.opportunities.services.opportunity_analyzer import analyze_opportunity_core
+apps/opportunities/management/commands/analyze_open_opportunities.py:3:from django.core.management.base import BaseCommand
+apps/opportunities/management/commands/analyze_open_opportunities.py:5:from apps.opportunities.models import Opportunity
+apps/opportunities/management/commands/analyze_open_opportunities.py:6:from apps.opportunities.services.opportunity_analyzer import analyze_opportunity
+apps/opportunities/management/commands/promote_tasks.py:3:from django.core.management.base import BaseCommand
+apps/opportunities/management/commands/promote_tasks.py:5:from apps.opportunities.services.promote import PROMOTABLE_TASK_TYPES, promote_task_to_opportunity
+apps/opportunities/management/commands/promote_tasks.py:6:from apps.tasks.models import CRMTask
+apps/updates/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/updates/views.py:3:from django.shortcuts import render
+apps/opportunities/views.py:3:from django.contrib import messages
+apps/opportunities/views.py:4:from django.db.models import F
+apps/opportunities/views.py:5:from django.http import HttpResponseNotAllowed
+apps/opportunities/views.py:6:from django.shortcuts import get_object_or_404, redirect, render
+apps/opportunities/views.py:7:from django.urls import reverse
+apps/opportunities/views.py:9:from .models import Opportunity
+apps/updates/admin.py:3:from django.contrib import admin
+apps/opportunities/admin.py:3:from django.contrib import admin
+apps/opportunities/admin.py:5:from .models import Opportunity
+apps/updates/models.py:3:from django.db import models
+apps/opportunities/models.py:3:from django.db import models
+apps/updates/apps.py:3:from django.apps import AppConfig
+apps/opportunities/apps.py:3:from django.apps import AppConfig
+apps/updates/tests.py:3:from django.test import TestCase
+apps/opportunities/services/autotasker.py:3:from __future__ import annotations
+apps/opportunities/services/autotasker.py:5:from dataclasses import dataclass
+apps/opportunities/services/autotasker.py:6:from datetime import timedelta
+apps/opportunities/services/autotasker.py:7:from typing import Any
+apps/opportunities/services/autotasker.py:9:from django.conf import settings
+apps/opportunities/services/autotasker.py:10:from django.utils import timezone
+apps/opportunities/services/autotasker.py:12:from apps.tasks.models import CRMTask
+apps/opportunities/services/enrichment.py:3:from decimal import Decimal, InvalidOperation
+apps/opportunities/services/enrichment.py:5:from apps.inferences.models import InferenceRecord
+apps/tasks/migrations/0003_crmtask_opportunity_crmtask_source_and_more.py:5:import django.db.models.deletion
+apps/tasks/migrations/0003_crmtask_opportunity_crmtask_source_and_more.py:6:from django.db import migrations, models
+apps/opportunities/services/promote.py:3:from apps.opportunities.models import Opportunity
+apps/opportunities/services/promote.py:4:from apps.tasks.models import CRMTask
+apps/tasks/migrations/0001_initial.py:5:import django.db.models.deletion
+apps/tasks/migrations/0001_initial.py:6:from django.db import migrations, models
+apps/opportunities/services/opportunity_analyzer.py:3:from __future__ import annotations
+apps/opportunities/services/opportunity_analyzer.py:5:from dataclasses import dataclass
+apps/opportunities/services/opportunity_analyzer.py:6:from datetime import timedelta
+apps/opportunities/services/opportunity_analyzer.py:7:from typing import Any
+apps/opportunities/services/opportunity_analyzer.py:9:from django.conf import settings
+apps/opportunities/services/opportunity_analyzer.py:10:from django.db import transaction
+apps/opportunities/services/opportunity_analyzer.py:11:from django.utils import timezone
+apps/opportunities/services/opportunity_analyzer.py:13:from apps.opportunities.services.autotasker import auto_materialize_tasks
+apps/opportunities/services/opportunity_analyzer.py:14:from apps.opportunities.services.context_builder import build_opportunity_analysis_context
+apps/opportunities/services/opportunity_analyzer.py:15:from apps.recommendations.models import AIRecommendation
+apps/tasks/migrations/0004_crmtask_is_revoked.py:3:from django.db import migrations, models
+apps/tasks/migrations/0002_alter_crmtask_task_type.py:5:from django.db import migrations, models
+apps/opportunities/services/context_builder.py:3:from __future__ import annotations
+apps/opportunities/services/context_builder.py:5:from dataclasses import asdict, dataclass
+apps/opportunities/services/context_builder.py:6:from typing import Any
+apps/opportunities/services/context_builder.py:8:from django.apps import apps
+apps/tasks/urls.py:3:from django.urls import path
+apps/tasks/urls.py:5:from .views import revoke_task, tasks_list_view
+apps/opportunities/services/prioritization.py:3:from __future__ import annotations
+apps/opportunities/services/prioritization.py:5:from dataclasses import dataclass
+apps/opportunities/services/prioritization.py:6:from typing import Any
+apps/opportunities/services/prioritization.py:8:from django.utils import timezone
+apps/opportunities/services/prioritization.py:10:from apps.opportunities.models import Opportunity
+apps/opportunities/services/prioritization.py:11:from apps.opportunities.services.context_builder import build_opportunity_analysis_context
+apps/opportunities/services/prioritization.py:12:from apps.tasks.models import CRMTask
+apps/opportunities/tests.py:3:from django.test import TestCase
+apps/opportunities/tasks.py:3:from __future__ import annotations
+apps/opportunities/tasks.py:5:from celery import shared_task
+apps/opportunities/tasks.py:6:from django.conf import settings
+apps/opportunities/tasks.py:8:from apps.opportunities.models import Opportunity
+apps/opportunities/tasks.py:9:from apps.opportunities.services.opportunity_analyzer import analyze_opportunity
+apps/dashboard_views.py:1:from django.shortcuts import render
+apps/dashboard_views.py:3:from apps.core.ui_semantics import (
+apps/dashboard_views.py:7:from apps.emailing.models import InboundEmail, OutboundEmail
+apps/dashboard_views.py:8:from apps.events.models import ActivityEvent
+apps/dashboard_views.py:9:from apps.opportunities.models import Opportunity
+apps/dashboard_views.py:10:from apps.recommendations.models import AIRecommendation
+apps/dashboard_views.py:11:from apps.recommendations.ranking_engine import (
+apps/tasks/management/commands/reclassify_manual_tasks.py:3:from django.core.management.base import BaseCommand
+apps/tasks/management/commands/reclassify_manual_tasks.py:5:from apps.tasks.models import CRMTask
+apps/tasks/management/commands/reclassify_manual_tasks.py:6:from apps.recommendations.models import AIRecommendation
+apps/tasks/management/commands/materialize_open_recommendations.py:3:from django.core.management.base import BaseCommand
+apps/tasks/management/commands/materialize_open_recommendations.py:5:from apps.recommendations.models import AIRecommendation
+apps/tasks/management/commands/materialize_open_recommendations.py:6:from apps.tasks.models import CRMTask
+apps/tasks/management/commands/materialize_open_recommendations.py:7:from apps.tasks.services.materialize import materialize_recommendation_as_task
+apps/tasks/management/commands/materialize_recommendations.py:3:from django.core.management.base import BaseCommand
+apps/tasks/management/commands/materialize_recommendations.py:5:from apps.recommendations.models import AIRecommendation
+apps/tasks/management/commands/materialize_recommendations.py:6:from apps.tasks.services.materialize import materialize_recommendation_as_task
+apps/companies/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/tasks/views.py:3:from django.contrib import messages
+apps/tasks/views.py:4:from django.shortcuts import get_object_or_404, redirect, render
+apps/tasks/views.py:5:from django.views.decorators.http import require_POST
+apps/tasks/views.py:7:from .models import CRMTask
+apps/companies/views.py:3:from django.shortcuts import render
+apps/tasks/admin.py:3:from django.contrib import admin
+apps/tasks/admin.py:5:from .models import CRMTask
+apps/companies/admin.py:3:from django.contrib import admin
+apps/tasks/models.py:3:from django.db import models
+apps/companies/models.py:3:from django.db import models
+apps/tasks/apps.py:3:from django.apps import AppConfig
+apps/tasks/services/materialize.py:3:from apps.recommendations.models import AIRecommendation
+apps/tasks/services/materialize.py:4:from apps.tasks.models import CRMTask
+apps/companies/apps.py:3:from django.apps import AppConfig
+apps/tasks/tests.py:3:from django.test import TestCase
+apps/companies/tests.py:3:from django.test import TestCase
+apps/recommendations/ranking_engine.py:1:from __future__ import annotations
+apps/recommendations/ranking_engine.py:3:from datetime import timedelta
+apps/recommendations/ranking_engine.py:4:from typing import Iterable, List, Optional, Tuple
+apps/recommendations/ranking_engine.py:6:from django.utils import timezone
+apps/recommendations/ranking_engine.py:8:from apps.core.ui_semantics import build_available_actions
+apps/recommendations/ranking_engine.py:9:from apps.emailing.models import InboundEmail
+apps/recommendations/ranking_engine.py:10:from apps.opportunities.models import Opportunity
+apps/recommendations/ranking_engine.py:11:from apps.recommendations.models import AIRecommendation
+apps/recommendations/ranking_engine.py:12:from apps.recommendations.priority import compute_priority_score
+apps/facts/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/recommendations/simulation.py:1:from typing import Optional, Dict
+apps/recommendations/simulation.py:3:from apps.recommendations.models import AIRecommendation
+apps/facts/views.py:3:from django.shortcuts import render
+apps/recommendations/views_simulation.py:1:from django.http import JsonResponse
+apps/recommendations/views_simulation.py:2:from django.shortcuts import get_object_or_404
+apps/recommendations/views_simulation.py:4:from apps.recommendations.models import AIRecommendation
+apps/recommendations/views_simulation.py:5:from apps.recommendations.ranking_engine import (
+apps/recommendations/views_simulation.py:9:from apps.recommendations.simulation import simulate_alternative
+apps/facts/admin.py:3:from django.contrib import admin
+apps/facts/models.py:3:from django.db import models
+apps/recommendations/migrations/0002_alter_airecommendation_status.py:5:from django.db import migrations, models
+apps/facts/apps.py:3:from django.apps import AppConfig
+apps/recommendations/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/facts/tests.py:3:from django.test import TestCase
+apps/recommendations/services.py:3:from apps.inferences.models import InferenceRecord
+apps/recommendations/services.py:4:from apps.recommendations.models import AIRecommendation
+apps/recommendations/urls.py:4:from django.urls import path
+apps/recommendations/urls.py:6:from . import views
+apps/recommendations/urls.py:7:from .views_simulation import simulate_recommendation
+apps/events/migrations/0001_initial.py:5:from django.db import migrations, models
+apps/events/migrations/0002_activityevent_delete_event.py:5:from django.db import migrations, models
+apps/events/services.py:3:from apps.events.models import ActivityEvent
+apps/recommendations/management/commands/crm_pipeline_report.py:3:from django.core.management.base import BaseCommand
+apps/recommendations/management/commands/crm_pipeline_report.py:4:from django.db.models import Count
+apps/recommendations/management/commands/crm_pipeline_report.py:6:from apps.emailing.models import EmailMessage
+apps/recommendations/management/commands/crm_pipeline_report.py:7:from apps.facts.models import FactRecord
+apps/recommendations/management/commands/crm_pipeline_report.py:8:from apps.inferences.models import InferenceRecord
+apps/recommendations/management/commands/crm_pipeline_report.py:9:from apps.updates.models import CRMUpdateProposal
+apps/recommendations/management/commands/crm_pipeline_report.py:10:from apps.recommendations.models import AIRecommendation
+apps/recommendations/management/commands/crm_pipeline_report.py:11:from apps.tasks.models import CRMTask
+apps/recommendations/management/commands/crm_pipeline_report.py:12:from apps.opportunities.models import Opportunity
+apps/events/views.py:3:from django.shortcuts import render
+apps/recommendations/management/commands/detect_opportunity_signals.py:3:from __future__ import annotations
+apps/recommendations/management/commands/detect_opportunity_signals.py:5:from django.core.management.base import BaseCommand
+apps/recommendations/management/commands/detect_opportunity_signals.py:7:from apps.emailing.models import EmailMessage
+apps/recommendations/management/commands/detect_opportunity_signals.py:8:from apps.recommendations.opportunity_intelligence import (
+apps/events/admin.py:3:from django.contrib import admin
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:3:from django.core.management.base import BaseCommand
+apps/recommendations/management/commands/backfill_opportunity_reviews.py:5:from apps.recommendations.models import AIRecommendation
+apps/events/models.py:3:from django.db import models
+apps/events/apps.py:3:from django.apps import AppConfig
+apps/recommendations/views.py:3:from django.shortcuts import get_object_or_404, redirect, render
+apps/recommendations/views.py:4:from django.views.decorators.http import require_POST
+apps/recommendations/views.py:6:from apps.core.ui_semantics import build_available_actions, get_recommendation_ui
+apps/recommendations/views.py:7:from apps.emailing.models import InboundEmail, OutboundEmail
+apps/recommendations/views.py:8:from apps.emailing.services.reply_generator import generate_followup_draft_from_inbound
+apps/recommendations/views.py:9:from apps.opportunities.models import Opportunity
+apps/recommendations/views.py:10:from apps.opportunities.services.promote import promote_task_to_opportunity
+apps/recommendations/views.py:11:from apps.recommendations.models import AIRecommendation
+apps/recommendations/views.py:12:from apps.tasks.services.materialize import materialize_recommendation_as_task
+apps/events/tests.py:3:from django.test import TestCase
+apps/recommendations/admin.py:3:from django.contrib import admin
+apps/recommendations/models.py:3:from django.db import models
+apps/recommendations/priority.py:3:from datetime import timedelta
+apps/recommendations/priority.py:4:from django.utils import timezone
+apps/recommendations/opportunity_intelligence.py:3:from __future__ import annotations
+apps/recommendations/opportunity_intelligence.py:5:from dataclasses import dataclass, field
+apps/recommendations/opportunity_intelligence.py:6:from typing import Iterable
+apps/recommendations/opportunity_intelligence.py:8:from django.db import transaction
+apps/recommendations/opportunity_intelligence.py:10:from apps.facts.models import FactRecord
+apps/recommendations/opportunity_intelligence.py:11:from apps.inferences.models import InferenceRecord
+apps/recommendations/opportunity_intelligence.py:12:from apps.recommendations.models import AIRecommendation
+apps/contacts/migrations/0001_initial.py:5:import django.db.models.deletion
+apps/contacts/migrations/0001_initial.py:6:from django.db import migrations, models
+apps/recommendations/apps.py:3:from django.apps import AppConfig
+apps/contacts/views.py:3:from django.shortcuts import render
+apps/recommendations/tests.py:3:from django.test import TestCase
+apps/contacts/admin.py:3:from django.contrib import admin
+apps/contacts/models.py:3:from django.db import models
+apps/contacts/models.py:4:from apps.companies.models import Company
+apps/contacts/apps.py:3:from django.apps import AppConfig
+apps/contacts/tests.py:3:from django.test import TestCase
+apps/users/views.py:3:from django.shortcuts import render
+apps/users/models.py:3:from django.db import models
+apps/users/admin.py:3:from django.contrib import admin
+apps/users/apps.py:3:from django.apps import AppConfig
+apps/users/tests.py:3:from django.test import TestCase

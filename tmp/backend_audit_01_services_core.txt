@@ -1,0 +1,450 @@
+==== services/email_ingest.py ====
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/services/email_ingest.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from __future__ import annotations
+
+from typing import Any
+
+from services.fact_extraction import create_facts_from_email
+from services.inference_engine import create_inferences_from_fact
+from services.update_proposals import create_update_proposal_from_inference
+
+try:
+    from apps.recommendations.services import create_recommendation_from_inference
+except Exception:
+    def create_recommendation_from_inference(inference):
+        return None
+
+
+def process_email_message(email_message: Any) -> dict[str, Any]:
+    """
+    Pipeline real mínimo:
+
+    EmailMessage
+      -> FactRecord
+      -> InferenceRecord
+      -> CRMUpdateProposal
+      -> AIRecommendation
+    """
+    facts = create_facts_from_email(email_message)
+
+    inferences = []
+    for fact in facts:
+        inferences.extend(create_inferences_from_fact(fact))
+
+    proposals = []
+    for inference in inferences:
+        proposal = create_update_proposal_from_inference(inference)
+        if proposal is not None:
+            proposals.append(proposal)
+
+    recommendations = []
+    for inference in inferences:
+        recommendation = create_recommendation_from_inference(inference)
+        if recommendation is not None:
+            recommendations.append(recommendation)
+
+    return {
+        "email_message": email_message,
+        "facts": facts,
+        "inferences": inferences,
+        "proposals": proposals,
+        "recommendations": recommendations,
+    }
+
+==== services/fact_extraction.py ====
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/services/fact_extraction.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+from django.utils import timezone
+
+from apps.emailing.models import EmailMessage
+from apps.facts.models import FactRecord
+
+
+@dataclass
+class ExtractedFact:
+    fact_type: str
+    fact_value: dict[str, Any]
+    confidence: float
+
+
+def _normalize_text(text: str) -> str:
+    return (text or "").strip()
+
+
+def _email_datetime(email: EmailMessage):
+    """
+    Devuelve la mejor fecha disponible sin asumir nombres de campo concretos.
+    """
+    for field_name in ("received_at", "sent_at", "created_at", "updated_at"):
+        value = getattr(email, field_name, None)
+        if value is not None:
+            return value
+    return timezone.now()
+
+
+def extract_fact_candidates_from_email(email: EmailMessage) -> list[ExtractedFact]:
+    """
+    Extracción heurística mínima para el vertical slice inicial.
+
+    Regla:
+    - solo hechos observables
+    - no inferencias aquí
+    """
+    body_text = getattr(email, "body_text", "") or ""
+    subject = getattr(email, "subject", "") or ""
+
+    text = _normalize_text(body_text).lower()
+    subject_lc = _normalize_text(subject).lower()
+
+    candidates: list[ExtractedFact] = []
+
+    if not text and not subject_lc:
+        return candidates
+
+    if "no soy la persona adecuada" in text or "no llevo esta parte" in text:
+        candidates.append(
+            ExtractedFact(
+                fact_type="redirect_statement",
+                fact_value={
+                    "kind": "redirect_statement",
+                    "evidence": "contact_not_right_person",
+                    "source_text": body_text,
+                },
+                confidence=0.95,
+            )
+        )
+
+    if "escríbeme en mayo" in text or "escribeme en mayo" in text:
+        candidates.append(
+            ExtractedFact(
+                fact_type="timing_statement",
+                fact_value={
+                    "kind": "timing_statement",
+                    "timing": "may",
+                    "source_text": body_text,
+                },
+                confidence=0.95,
+            )
+        )
+
+    if "nos interesa" in text or "podríamos valorar" in text or "podriamos valorar" in text:
+        candidates.append(
+            ExtractedFact(
+                fact_type="interest_statement",
+                fact_value={
+                    "kind": "interest_statement",
+                    "signal": "expressed_interest",
+                    "source_text": body_text,
+                },
+                confidence=0.85,
+            )
+        )
+
+    if "qué incluiría" in text or "que incluiria" in text or "alcance" in text:
+        candidates.append(
+            ExtractedFact(
+                fact_type="scope_statement",
+                fact_value={
+                    "kind": "scope_statement",
+                    "signal": "asks_about_scope",
+                    "source_text": body_text,
+                },
+                confidence=0.85,
+            )
+        )
+
+    if "presupuesto" in text or "coste" in text or "precio" in text:
+        candidates.append(
+            ExtractedFact(
+                fact_type="budget_statement",
+                fact_value={
+                    "kind": "budget_statement",
+                    "signal": "budget_or_price_mentioned",
+                    "source_text": body_text,
+                },
+                confidence=0.80,
+            )
+        )
+
+    if "gracias" in text and len(text) < 80:
+        candidates.append(
+            ExtractedFact(
+                fact_type="light_reply_statement",
+                fact_value={
+                    "kind": "light_reply_statement",
+                    "signal": "light_polite_reply",
+                    "source_text": body_text,
+                },
+                confidence=0.70,
+            )
+        )
+
+    return candidates
+
+
+def create_facts_from_email(email: EmailMessage) -> list[FactRecord]:
+    """
+    Materializa hechos estructurados desde un EmailMessage.
+    """
+    created: list[FactRecord] = []
+    candidates = extract_fact_candidates_from_email(email)
+    observed_at = _email_datetime(email)
+
+    for candidate in candidates:
+        fact = FactRecord.objects.create(
+            source_type="email_message",
+            source_id=email.id,
+            fact_type=candidate.fact_type,
+            fact_value=candidate.fact_value,
+            observed_at=observed_at,
+            confidence=candidate.confidence,
+        )
+        created.append(fact)
+
+    return created
+
+==== services/inference_engine.py ====
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/services/inference_engine.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+from apps.facts.models import FactRecord
+from apps.inferences.models import InferenceRecord
+
+
+@dataclass
+class InferenceCandidate:
+    inference_type: str
+    inference_value: dict[str, Any]
+    confidence: float
+    rationale: str
+
+
+def infer_from_fact(fact: FactRecord) -> list[InferenceCandidate]:
+    """
+    Convierte un hecho en una o varias inferencias operativas.
+    """
+    out: list[InferenceCandidate] = []
+
+    if fact.fact_type == "redirect_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="contact_role_fit",
+                inference_value={
+                    "status": "redirected",
+                    "contact_role_fit": "low",
+                },
+                confidence=0.93,
+                rationale="El mensaje indica explícitamente que el interlocutor no es la persona adecuada.",
+            )
+        )
+        out.append(
+            InferenceCandidate(
+                inference_type="next_best_action",
+                inference_value={
+                    "action": "find_alternative_contact",
+                },
+                confidence=0.90,
+                rationale="Si el contacto actual redirige, la siguiente acción útil es identificar al interlocutor correcto.",
+            )
+        )
+
+    elif fact.fact_type == "timing_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="next_best_action",
+                inference_value={
+                    "action": "follow_up_later",
+                    "suggested_timing": "may",
+                },
+                confidence=0.95,
+                rationale="El email marca una ventana temporal explícita para retomar el contacto.",
+            )
+        )
+        out.append(
+            InferenceCandidate(
+                inference_type="relationship_temperature",
+                inference_value={
+                    "temperature": "deferred_not_rejected",
+                },
+                confidence=0.82,
+                rationale="No hay rechazo total; hay aplazamiento con momento futuro indicado.",
+            )
+        )
+
+    elif fact.fact_type == "interest_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="interest_level",
+                inference_value={
+                    "level": "moderate",
+                },
+                confidence=0.82,
+                rationale="El email expresa interés explícito o disposición a valorar una revisión inicial.",
+            )
+        )
+
+    elif fact.fact_type == "scope_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="opportunity_probability",
+                inference_value={
+                    "status": "emerging_signal",
+                    "signal_strength": "moderate",
+                },
+                confidence=0.80,
+                rationale="Preguntar por alcance suele ser una señal comercial relevante, aunque aún temprana.",
+            )
+        )
+        out.append(
+            InferenceCandidate(
+                inference_type="next_best_action",
+                inference_value={
+                    "action": "reply_with_scope_clarification",
+                },
+                confidence=0.84,
+                rationale="La mejor respuesta operativa es aclarar alcance antes de avanzar.",
+            )
+        )
+
+    elif fact.fact_type == "budget_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="pricing_objection",
+                inference_value={
+                    "status": "budget_or_price_signal",
+                },
+                confidence=0.78,
+                rationale="La mención de presupuesto o precio introduce sensibilidad económica en la conversación.",
+            )
+        )
+
+    elif fact.fact_type == "light_reply_statement":
+        out.append(
+            InferenceCandidate(
+                inference_type="interest_level",
+                inference_value={
+                    "level": "weak_or_ambiguous",
+                },
+                confidence=0.65,
+                rationale="Una respuesta breve y cortés no es suficiente por sí sola para concluir interés fuerte.",
+            )
+        )
+
+    return out
+
+
+def create_inferences_from_fact(fact: FactRecord) -> list[InferenceRecord]:
+    created: list[InferenceRecord] = []
+
+    for candidate in infer_from_fact(fact):
+        record = InferenceRecord.objects.create(
+            source_type="fact_record",
+            source_id=fact.id,
+            inference_type=candidate.inference_type,
+            inference_value=candidate.inference_value,
+            confidence=candidate.confidence,
+            rationale=candidate.rationale,
+        )
+        created.append(record)
+
+    return created
+
+==== services/update_proposals.py ====
+# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/services/update_proposals.py
+# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from __future__ import annotations
+
+from typing import Any
+
+from apps.inferences.models import InferenceRecord
+from apps.updates.models import CRMUpdateProposal
+
+
+def _proposal_kwargs_for_inference(inference: InferenceRecord) -> dict[str, Any] | None:
+    """
+    Traduce una inferencia en una propuesta de actualización CRM
+    compatible con el modelo real actual.
+
+    Como el modelo actual exige target_entity_id NOT NULL y todavía no
+    estamos materializando Contact/Opportunity reales en este slice,
+    anclamos la propuesta a la propia InferenceRecord que la origina.
+    """
+    iv = inference.inference_value or {}
+
+    base_target = {
+        "target_entity_type": "inference_record",
+        "target_entity_id": inference.id,
+    }
+
+    if inference.inference_type == "contact_role_fit" and iv.get("status") == "redirected":
+        return {
+            **base_target,
+            "proposed_change_type": "mark_contact_redirected",
+            "proposed_payload": {
+                "intended_target_entity_type": "contact",
+                "contact_status": "redirected",
+                "source_inference_id": inference.id,
+                "rationale": inference.rationale,
+            },
+            "confidence": inference.confidence,
+            "approval_required": False,
+        }
+
+    if inference.inference_type == "next_best_action" and iv.get("action") == "follow_up_later":
+        return {
+            **base_target,
+            "proposed_change_type": "schedule_followup_window",
+            "proposed_payload": {
+                "intended_target_entity_type": "opportunity",
+                "suggested_timing": iv.get("suggested_timing"),
+                "source_inference_id": inference.id,
+                "rationale": inference.rationale,
+            },
+            "confidence": inference.confidence,
+            "approval_required": False,
+        }
+
+    if inference.inference_type == "opportunity_probability" and iv.get("status") == "emerging_signal":
+        return {
+            **base_target,
+            "proposed_change_type": "create_or_open_opportunity",
+            "proposed_payload": {
+                "intended_target_entity_type": "opportunity",
+                "opportunity_status": "signal_detected",
+                "signal_strength": iv.get("signal_strength", "moderate"),
+                "source_inference_id": inference.id,
+                "rationale": inference.rationale,
+            },
+            "confidence": inference.confidence,
+            "approval_required": True,
+        }
+
+    return None
+
+
+def create_update_proposal_from_inference(
+    inference: InferenceRecord,
+) -> CRMUpdateProposal | None:
+    payload = _proposal_kwargs_for_inference(inference)
+    if not payload:
+        return None
+
+    return CRMUpdateProposal.objects.create(
+        target_entity_type=payload["target_entity_type"],
+        target_entity_id=payload["target_entity_id"],
+        proposed_change_type=payload["proposed_change_type"],
+        proposed_payload=payload["proposed_payload"],
+        confidence=payload["confidence"],
+        approval_required=payload["approval_required"],
+        proposal_status="pending_approval" if payload["approval_required"] else "proposed",
+    )
