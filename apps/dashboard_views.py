@@ -1,85 +1,21 @@
-from apps.recommendations.nba import get_next_best_action_result
-
 from django.shortcuts import render
 
-from apps.core.ui_semantics import (
-    get_priority_level,
-    get_recommendation_ui,
-)
-from apps.emailing.models import InboundEmail, OutboundEmail
-from apps.events.models import ActivityEvent
-from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
-from apps.recommendations.ranking_engine import (
-    get_next_best_action,
-    rank_recommendations,
-    split_recommendations_by_kind,
-)
+from apps.recommendations.nba import get_next_best_action_explained
 
 
 def dashboard_home_view(request):
-    recent_inbound = list(
-        InboundEmail.objects.order_by("-received_at", "-created_at")[:5]
-    )
-    recent_outbound = list(
-        OutboundEmail.objects.select_related("opportunity").order_by("-created_at")[:5]
-    )
-    recent_recommendations = list(
-        AIRecommendation.objects.order_by("-id")[:5]
-    )
-    recent_opportunities = list(
-        Opportunity.objects.order_by("-updated_at", "-id")[:5]
-    )
+    recommendations = AIRecommendation.objects.filter(status="new")
 
-    recommendations = list(
-        AIRecommendation.objects.filter(status=AIRecommendation.STATUS_NEW)
-    )
-
-    ranked = rank_recommendations(recommendations)
-    actionable_recommendations, insight_recommendations = split_recommendations_by_kind(ranked)
-
-    for recommendation in ranked:
-        priority_level, priority_config = get_priority_level(
-            recommendation.priority_score
-        )
-        recommendation.priority_level = priority_level
-        recommendation.priority_label = priority_config["label"]
-        recommendation.priority_css = priority_config["css"]
-        recommendation.priority_color = priority_config["color"]
-
-        ui_config = get_recommendation_ui(recommendation.recommendation_type)
-        recommendation.ui_icon = ui_config["icon"]
-        recommendation.ui_color = ui_config["color"]
-
-    top_actions = actionable_recommendations[:10]
-    best_action = get_next_best_action(ranked)
-    alternatives = [r for r in actionable_recommendations if getattr(r, "id", None) != getattr(best_action, "id", None)][:3] if best_action else actionable_recommendations[:3]
-
-    high_urgency = [r for r in actionable_recommendations if r.urgency_level == "high"][:5]
-    medium_urgency = [r for r in actionable_recommendations if r.urgency_level == "medium"][:5]
-    low_urgency = [r for r in actionable_recommendations if r.urgency_level == "low"][:5]
-
-    recent_activity = list(
-        ActivityEvent.objects.order_by("-created_at")[:10]
-    )
+    nba_result = get_next_best_action_explained(recommendations)
+    best_action = nba_result.recommendation if nba_result else None
 
     context = {
-        "total_inbound_emails": InboundEmail.objects.count(),
-        "total_outbound_emails": OutboundEmail.objects.count(),
-        "total_recommendations": AIRecommendation.objects.count(),
-        "total_opportunities": Opportunity.objects.count(),
-        "recent_inbound_emails": recent_inbound,
-        "recent_outbound_emails": recent_outbound,
-        "recent_recommendations": recent_recommendations,
-        "recent_opportunities": recent_opportunities,
-        "top_actions": top_actions,
+        "recommendations": recommendations,
         "best_action": best_action,
-        "nba_alternatives": alternatives,
-        "insight_recommendations": insight_recommendations[:6],
-        "urgency_high": high_urgency,
-        "urgency_medium": medium_urgency,
-        "urgency_low": low_urgency,
-        "recent_activity": recent_activity,
+        "best_action_explanation": nba_result,
+        "best_action_breakdown": nba_result.breakdown if nba_result else None,
+        "best_action_alternatives": nba_result.alternatives if nba_result else [],
     }
 
-    return render(request, "dashboard/home.html", context)
+    return render(request, "dashboard/index.html", context)

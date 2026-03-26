@@ -1,4 +1,0 @@
-Operations to perform:
-  Apply all migrations: admin, auth, companies, contacts, contenttypes, core, emailing, events, facts, inferences, lead_research, opportunities, recommendations, sessions, tasks, updates
-Running migrations:
-  Applying core.0001_initial... OK

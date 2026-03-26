@@ -1,85 +1,82 @@
-# NEXT SESSION
+# NEXT SESSION — PORT SYSTEM V1
 
-## CONTEXTO
+## Contexto
 
-Merge Layer V1 completada.
-NBA Engine V1 ya está creado y estable.
-Dashboard vuelve a cargar.
-Tests y system check OK.
+Sistema con NBA Engine consolidado y core estable.
 
-Sin embargo, se ha detectado dualidad entre:
+Necesidad:
 
-- `apps/recommendations/nba.py`
-- `apps/recommendations/ranking_engine.py`
+Abrir el sistema a integraciones externas sin perder control.
 
 ---
 
-## OBJETIVO
+## Objetivo
 
-COCKPIT V3 — NBA ENGINE CONSOLIDATION
+Diseñar formalmente el sistema de puertos (nivel producción).
 
-Cerrar la implementación del Next Best Action Engine
-dejando un único motor canónico de priorización.
-
----
-
-## TAREA PRINCIPAL
-
-### 1. Consolidación NBA
-
-Revisar:
-
-- `apps/recommendations/nba.py`
-- `apps/recommendations/ranking_engine.py`
-- `apps/dashboard_views.py`
-
-Objetivo:
-- decidir cuál será el motor canónico
-- evitar coexistencia redundante
-- mantener compatibilidad con dashboard actual
+NO implementar.
 
 ---
 
-## IMPLEMENTACIÓN ESPERADA
+## Alcance
 
-### A. Canonical Path
-Definir una única función fuente de verdad para:
+### 1. ExternalActionIntent
 
-- seleccionar best action
-- calcular scoring final
-- exponer recommendation principal al dashboard
-
-### B. Dashboard
-Asegurar que:
-
-- `best_action` sale del motor canónico
-- no haya doble cálculo conceptual
-- el bloque "What should you do now" use el resultado correcto
-
-### C. Validación
-Ejecutar:
-
-- `python3 manage.py check`
-- tests relevantes
-- validación visual dashboard
+- definición completa de entidad
+- campos
+- estados
+- relación con Recommendation / Task
 
 ---
 
-## REGLAS
+### 2. Policy Gate
 
-- no tocar execution layer
-- no persistir score
-- no añadir complejidad nueva
-- no mantener dos motores paralelos sin necesidad
-- validar contexto real antes de tocar código
-- entregar cambios con ficheros completos
+- reglas por tipo de acción
+- human-in-the-loop obligatorio
+- clasificación de acciones críticas
 
 ---
 
-## CRITERIO DE ÉXITO
+### 3. Port Router
 
-- un solo motor NBA canónico
-- dashboard estable
-- una única acción principal clara
-- sin duplicidad conceptual
-- base lista para evolución futura
+- mapping intent → adapter
+- resolución dinámica
+
+---
+
+### 4. ExternalPort Contract
+
+- interfaz base
+- normalización de resultados
+- idempotencia
+
+---
+
+### 5. Adapter Model
+
+- separación puerto vs adapter
+- M365 como primer caso
+
+---
+
+### 6. Event Model
+
+- ciclo completo de intención externa
+- trazabilidad
+
+---
+
+## Reglas
+
+- no implementar código funcional
+- no tocar execution layer existente
+- no introducir complejidad innecesaria
+- mantener coherencia con arquitectura actual
+
+---
+
+## Resultado esperado
+
+Documento de arquitectura sólido:
+
+PORT SYSTEM V1 — SPEC listo para implementación en sesiones futuras

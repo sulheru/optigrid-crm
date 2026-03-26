@@ -1,4 +1,0 @@
-CREATED_COUNT = 1
-FIRST_TYPE = interest_detected
-FIRST_CONFIDENCE = 0.91
-FIRST_VALUE = {'type': 'interest_detected', 'confidence': 0.91, 'value': {'intent': 'pricing_request'}}

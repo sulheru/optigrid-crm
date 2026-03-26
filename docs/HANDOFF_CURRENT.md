@@ -1,109 +1,104 @@
 # HANDOFF — CURRENT STATE
+## OptiGrid CRM — AI Commercial Operating System
 
-## PROYECTO
-OptiGrid CRM — AI Commercial Operating System
+### Estado general
 
-## FASE ACTUAL
-COCKPIT V3 — NEXT BEST ACTION ENGINE
+El sistema ha completado la consolidación del NBA Engine V1.
+
+Existe ahora una única fuente de verdad para la selección de la acción principal:
+- apps/recommendations/nba.py
+
+Se elimina la dualidad conceptual con ranking_engine.
+
+---
+
+### Arquitectura actual validada
+
+Pipeline completo:
+
+Email → Fact → Inference → Recommendation → Task → Opportunity
+
+Capas operativas:
+
+- Communication Layer (Emailing)
+- CRM Core (Facts, Inferences, Entities)
+- Decision Layer (Recommendations + NBA Engine)
+- Execution Layer (Tasks, Opportunities, Drafts)
+- UI Cockpit (Dashboard, Inbox, Recommendations, Tasks)
+
+---
+
+### NBA Engine
 
 Estado:
-PARCIALMENTE IMPLEMENTADO Y ESTABLE
+
+- compute_score → operativo
+- get_next_best_action → operativo
+- get_next_best_action_explained → operativo
+- get_score_breakdown → operativo
+
+Scoring:
+
+- priority_score → runtime
+- urgency_score → runtime
+- confidence → persistido
+
+No se persisten scores → cálculo dinámico
 
 ---
 
-## ESTADO DEL SISTEMA
+### Tests
 
-Pipeline operativo:
-
-Email → Fact → Inference → (Rules + LLM) → Merge → Recommendations → Execution
-
-Base actual:
-- Merge Layer V1 completada
-- recommendations unificadas
-- source controlado (`rules` / `llm` / `merged`)
-- execution layer estable
-- dashboard funcional
+- tests_nba → OK
+- manage.py check → OK
+- sistema estable
 
 ---
-
-## QUÉ SE HA HECHO EN ESTA SESIÓN
-
-### NBA Engine V1
-Implementado:
-
-- `apps/recommendations/nba.py`
-- scoring runtime
-- urgency rules V1
-- type weights hardcoded
-- selección de una única recommendation global
 
 ### Dashboard
-- bloque NBA presente y operativo
-- home vuelve a cargar correctamente
 
-### Tests / Validación
-- `manage.py check` OK
-- tests de `apps.recommendations` OK
+- bloque “What should you do now” estable
+- una única acción principal
+- sin duplicidad de cálculo
 
 ---
 
-## HALLAZGO ARQUITECTÓNICO CLAVE
+### Estado conceptual del sistema
 
-Actualmente conviven dos caminos de priorización:
+El sistema ha evolucionado de:
 
-1. `apps/recommendations/nba.py`
-2. `apps/recommendations/ranking_engine.py`
-
-Esto significa que:
-
-- el sistema ya tiene base NBA funcional
-- pero aún no existe un único motor canónico consolidado
-- hay duplicidad conceptual en la capa de priorización
-
----
-
-## DECISIÓN TOMADA
-
-No forzar consolidación en esta sesión.
-
-Se prioriza:
-
-- estabilidad
-- continuidad
-- no romper dashboard
-- no tocar execution layer
-
-La consolidación canónica queda como siguiente paso explícito.
-
----
-
-## SIGUIENTE OBJETIVO
-
-Cerrar Cockpit V3 correctamente mediante:
-
-- unificación de motor NBA
-- eliminación de dualidad lógica
-- conexión definitiva del dashboard a un solo camino canónico
-- validación visual y técnica final
-
----
-
-## REGLAS VIGENTES
-
-- NO persistir score
-- NO tocar execution layer
-- NO introducir LLM en urgencia V1
-- NO duplicar lógica innecesariamente
-- NINGUNA IA envía emails automáticamente
-
----
-
-## RESULTADO
-
-Sistema preparado para pasar de:
-
-“hay un motor NBA base”
+CRM con recomendaciones
 
 a:
 
-“existe una única acción prioritaria calculada por un motor canónico y consistente”
+Decision Engine con interfaz (AI-first cockpit)
+
+---
+
+### Próximo salto arquitectónico
+
+External Port System V1 (NO implementado)
+
+- no existe aún:
+  - ExternalActionIntent
+  - Policy Gate explícito
+  - Port Router
+  - Adapter Layer formal
+
+pero el sistema está preparado para ello.
+
+---
+
+### Riesgos actuales
+
+- ranking_engine.py aún existe (deuda técnica leve)
+- ausencia de contratos formales para integración externa
+- ausencia de control explícito de acciones externas
+
+---
+
+### Conclusión
+
+Core estable, coherente y listo para expansión controlada.
+
+Siguiente fase: diseño de puertos (arquitectura, no implementación)

@@ -349,6 +349,7 @@
 │   │   │       ├── 0003_airecommendation_source.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
+│   │   ├── nba.py
 │   │   ├── opportunity_intelligence.py
 │   │   ├── priority.py
 │   │   ├── __pycache__
@@ -362,6 +363,7 @@
 │   │   │   ├── merge.cpython-312.pyc
 │   │   │   ├── merge_runtime.cpython-312.pyc
 │   │   │   ├── models.cpython-312.pyc
+│   │   │   ├── nba.cpython-312.pyc
 │   │   │   ├── opportunity_intelligence.cpython-312.pyc
 │   │   │   ├── priority.cpython-312.pyc
 │   │   │   ├── ranking_engine.cpython-312.pyc
@@ -370,6 +372,7 @@
 │   │   │   ├── simulation.cpython-312.pyc
 │   │   │   ├── tests.cpython-312.pyc
 │   │   │   ├── tests_merge.cpython-312.pyc
+│   │   │   ├── tests_nba.cpython-312.pyc
 │   │   │   ├── urls.cpython-312.pyc
 │   │   │   ├── views.cpython-312.pyc
 │   │   │   └── views_simulation.cpython-312.pyc
@@ -378,6 +381,7 @@
 │   │   ├── services.py
 │   │   ├── simulation.py
 │   │   ├── tests_merge.py
+│   │   ├── tests_nba.py
 │   │   ├── tests.py
 │   │   ├── urls.py
 │   │   ├── views.py
@@ -533,6 +537,7 @@
 │   ├── SESSION_LOG_2026_03_12.md
 │   ├── SESSION_LOG_2026_03_23.md
 │   ├── SESSION_LOG_2026_03_24.md
+│   ├── SESSION_LOG_2026_03_25.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -684,8 +689,12 @@
 ├── tests
 └── tmp
     ├── base.py.txt
+    ├── dashboard_views.py.txt
     ├── execution_adapters.py.txt
+    ├── fix_dashboard_import_block.py
+    ├── fix_dashboard_render_import.py
     ├── fix_inference_service.py
+    ├── fix_nba_dashboard_import.py
     ├── governance_v1_smoke.txt
     ├── governance_v1_tests.txt
     ├── graph_client.py.txt
@@ -694,6 +703,7 @@
     ├── inferences_services_current.txt
     ├── inference_tests.txt
     ├── install_merge_layer_v1.py
+    ├── install_nba_engine_v1.py
     ├── llm_backends.py.txt
     ├── llm_client_provider_smoke.txt
     ├── llm_client_provider_tests.txt
@@ -722,6 +732,7 @@
     ├── reco_output_2.txt
     ├── reco_output.txt
     ├── registry.py.txt
+    ├── repair_dashboard_views_imports.py
     ├── runtime_settings_migrate.txt
     ├── runtime_settings_smoke.txt
     ├── runtime_settings_tests.txt
@@ -730,4 +741,4 @@
     ├── test_llm_recommendations.txt
     └── test_manual_llm_recs.txt
 
-127 directories, 604 files
+127 directories, 615 files

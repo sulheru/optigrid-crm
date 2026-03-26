@@ -1,108 +1,69 @@
-# ROADMAP — OPTIGRID CRM
+# ROADMAP — OptiGrid CRM
+
+## Estado actual
+
+✔ Core CRM
+✔ Pipeline completo
+✔ NBA Engine consolidado
+✔ Execution Layer funcional
+✔ UI Cockpit estable
 
 ---
 
-## FASE ACTUAL
+## Fase actual
 
-### ✅ COMPLETADO
-
-#### 1. Core Pipeline
-Email → Fact → Inference → Recommendation → Task → Opportunity
-
-#### 2. Execution Layer
-- ejecución unificada
-- drafts funcionales
-- integración con recommendations
-
-#### 3. Provider Abstraction
-- LLM desacoplado
-- runtime configurable
-
-#### 4. Governance Layer V1
-- control estructural básico
-
-#### 5. Recommendation Merge Layer V1
-- unificación rules + LLM
-- deduplicación
-- source tracking
-- persistencia coherente
+COCKPIT V3 — COMPLETADO
 
 ---
 
-## 🔄 EN PROGRESO
+## Próxima fase
 
-### 6. Cockpit V3 — Next Best Action Engine
+### PORT SYSTEM V1 (ARQUITECTURA)
 
 Objetivo:
-→ convertir el sistema en decisor operativo
+
+Definir capa de integración externa controlada
 
 Incluye:
 
-- ranking global
-- urgency system
-- type weighting
-- selección de 1 acción
-
-Estado actual:
-PARCIALMENTE IMPLEMENTADO Y ESTABLE
-
-Ya realizado:
-- `apps/recommendations/nba.py`
-- scoring runtime no persistido
-- reglas de urgencia V1
-- tests base OK
-- bloque dashboard operativo
-
-Pendiente:
-- consolidar un único motor NBA canónico
-- eliminar dualidad conceptual con `ranking_engine`
-- conectar dashboard al camino definitivo sin duplicidad
+- ExternalActionIntent
+- Policy Gate
+- Port Router
+- Adapter Contract
+- Event lifecycle
 
 ---
 
-## 🔜 SIGUIENTE
+## Fase siguiente
 
-### 7. NBA Consolidation / Dashboard Canonicalization
+### PORT SYSTEM V1 — IMPLEMENTACIÓN
 
-- unificar `nba.py` y `ranking_engine.py`
-- definir motor canónico único
-- usar una sola ruta para `best_action`
-- mantener compatibilidad visual y funcional
-- validar fallback cuando no haya recommendations válidas
+- Mail Port (draft + send gated)
+- M365 Adapter
+- Primer flujo real end-to-end
 
 ---
 
-## 🔮 FUTURO
+## Fase futura
 
-### 8. Dashboard Intelligence V2
-- explainability ligera
-- alternatives panel más claro
-- score visible y consistente
+### AUTONOMY LAYER
 
-### 9. Merge Layer V2
-- explainability
-- scoring avanzado
-- conflict resolution
-
-### 10. Governance V2
-- políticas dinámicas
-- validación avanzada
-
-### 11. Autonomy Layer
-- ejecución semi-automática
-- loops controlados
-- feedback system
-
-### 12. Learning Layer
-- ajuste de scoring
-- optimización basada en resultados
+- auto-execution condicionado
+- policy tuning
+- risk scoring
 
 ---
 
-## VISIÓN FINAL
+### LEARNING LAYER
 
-Sistema IA-first que:
+- ajuste dinámico de weights NBA
+- feedback loop
+- reinforcement signals
 
-- decide qué hacer
-- prioriza automáticamente
-- ejecuta con supervisión humana
+---
+
+## Visión
+
+Sistema evoluciona hacia:
+
+AI Commercial Operating System completo

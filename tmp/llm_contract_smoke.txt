@@ -1,7 +1,0 @@
-NORMALIZE_follow up = followup
-NORMALIZE_pricing = pricing_strategy
-ALLOWED_unknown = False
-CREATED_COUNT = 3
-REC = followup | Hacer follow-up en 3 días | 1.0
-REC = pricing_strategy | Revisar sensibilidad al precio detectada | 0.9
-REC = reply_strategy | Responder aclarando alcance | 0.0

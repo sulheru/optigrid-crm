@@ -1,73 +1,38 @@
 # CHANGELOG
 
-## 2026-03-24 — Recommendation Merge Layer V1
-
-[contenido previo...]
-
----
-
-## 2026-03-24 — NBA Engine Design (Pre-Implementation)
-
-### Added (Design Decisions)
-
-- definición de Next Best Action (NBA)
-- unidad de ranking: Recommendations
-- ejecución: runtime (no persistido)
-- output: 1 acción global
-
-### Scoring Model
-
-score = confidence + urgency + type_weight
-
-### Urgency
-- basada en reglas
-- no LLM
-
-### Type Weight
-- hardcoded en V1
-
-### Constraints
-- sin explainability
-- sin ML
-- sin persistencia
-
-### Objective
-convertir el sistema en decisor operativo
-
----
-
-## 2026-03-25 — NBA Engine V1 (Partial Implementation)
+## 2026-03-26 — NBA ENGINE CONSOLIDATION
 
 ### Added
 
-- creado `apps/recommendations/nba.py`
-- añadido scoring runtime para recommendations
-- añadidas reglas simples de urgencia V1
-- añadidos pesos por tipo
-- creada selección de una única recommendation global
-- creado `apps/recommendations/tests_nba.py`
-- añadido bloque dashboard "What should you do now"
+- NBA Engine como motor canónico
+- Explainability:
+  - get_score_breakdown
+  - get_next_best_action_explained
 
-### Validated
+### Changed
 
-- `manage.py check` OK
-- tests de `apps.recommendations` OK
-- dashboard vuelve a cargar correctamente
+- Eliminada dualidad conceptual:
+  - ranking_engine deja de ser fuente de verdad
+- Dashboard usa únicamente NBA Engine
+- Tests alineados con modelo real
 
-### Fixed During Session
+### Fixed
 
-- corregida corrupción de import en `apps/dashboard_views.py`
-- corregido bloque de imports roto
-- restaurada carga correcta del dashboard
+- mismatch entre tests y modelo (confidence NOT NULL)
+- eliminación de campos inexistentes en tests
+- estabilidad del dashboard
 
-### Architectural Finding
+### Architectural
 
-- existe dualidad entre:
-  - `apps/recommendations/nba.py`
-  - `apps/recommendations/ranking_engine.py`
+- separación clara:
+  - IA (confidence)
+  - sistema (scoring runtime)
+- scoring no persistido
 
-### Current Status
+### Result
 
-- NBA V1 estable
-- integración funcional
-- consolidación canónica pendiente
+Sistema pasa de:
+- múltiples criterios de priorización
+
+a:
+- un único motor de decisión coherente

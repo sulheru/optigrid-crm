@@ -1,6 +1,0 @@
-LLM_OUTPUT_MODE = hybrid
-LLM_MIN_CONFIDENCE = 0.7
-LLM_ALLOWED_RECOMMENDATION_TYPES = ['advance_opportunity', 'contact_strategy', 'followup', 'mark_lost', 'opportunity_review', 'pricing_strategy', 'reply_strategy']
-CREATED_COUNT = 2
-REC = followup | Hacer follow-up en 3 días | 0.95
-REC = mark_lost | Marcar oportunidad como perdida | 0.92
