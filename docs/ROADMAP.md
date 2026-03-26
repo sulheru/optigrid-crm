@@ -43,46 +43,57 @@ Incluye:
 - type weighting
 - selección de 1 acción
 
-Estado:
-DISEÑADO — listo para implementación
+Estado actual:
+PARCIALMENTE IMPLEMENTADO Y ESTABLE
+
+Ya realizado:
+- `apps/recommendations/nba.py`
+- scoring runtime no persistido
+- reglas de urgencia V1
+- tests base OK
+- bloque dashboard operativo
+
+Pendiente:
+- consolidar un único motor NBA canónico
+- eliminar dualidad conceptual con `ranking_engine`
+- conectar dashboard al camino definitivo sin duplicidad
 
 ---
 
 ## 🔜 SIGUIENTE
 
-### 7. Dashboard Intelligence
+### 7. NBA Consolidation / Dashboard Canonicalization
 
-- bloque NBA
-- visualización priorizada
-- CTA de ejecución
+- unificar `nba.py` y `ranking_engine.py`
+- definir motor canónico único
+- usar una sola ruta para `best_action`
+- mantener compatibilidad visual y funcional
+- validar fallback cuando no haya recommendations válidas
 
 ---
 
 ## 🔮 FUTURO
 
-### 8. Merge Layer V2
+### 8. Dashboard Intelligence V2
+- explainability ligera
+- alternatives panel más claro
+- score visible y consistente
+
+### 9. Merge Layer V2
 - explainability
 - scoring avanzado
 - conflict resolution
 
----
-
-### 9. Governance V2
+### 10. Governance V2
 - políticas dinámicas
 - validación avanzada
 
----
-
-### 10. Autonomy Layer
-
+### 11. Autonomy Layer
 - ejecución semi-automática
 - loops controlados
 - feedback system
 
----
-
-### 11. Learning Layer
-
+### 12. Learning Layer
 - ajuste de scoring
 - optimización basada en resultados
 
@@ -95,4 +106,3 @@ Sistema IA-first que:
 - decide qué hacer
 - prioriza automáticamente
 - ejecuta con supervisión humana
-

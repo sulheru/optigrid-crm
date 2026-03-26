@@ -1,8 +1,7 @@
 from apps.recommendations.nba import get_next_best_action_result
 
-from django.shortcuts import render
-
 from apps.core.ui_semantics import (
+from django.shortcuts import render
     get_priority_level,
     get_recommendation_ui,
 )
@@ -79,7 +78,3 @@ def dashboard_home_view(request):
         "urgency_high": high_urgency,
         "urgency_medium": medium_urgency,
         "urgency_low": low_urgency,
-        "recent_activity": recent_activity,
-    }
-
-    return render(request, "dashboard/home.html", context)

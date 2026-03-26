@@ -2,7 +2,7 @@
 {# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 
-{% block content %}
+{% block content %}\n{% include "dashboard/partials/next_best_action.html" %}
 
 <h2>AI Recommended Actions</h2>
 

@@ -4,10 +4,10 @@
 OptiGrid CRM — AI Commercial Operating System
 
 ## FASE ACTUAL
-RECOMMENDATION MERGE LAYER V1 — COMPLETADA
-
-PRÓXIMA FASE:
 COCKPIT V3 — NEXT BEST ACTION ENGINE
+
+Estado:
+PARCIALMENTE IMPLEMENTADO Y ESTABLE
 
 ---
 
@@ -17,79 +17,93 @@ Pipeline operativo:
 
 Email → Fact → Inference → (Rules + LLM) → Merge → Recommendations → Execution
 
----
-
-## DECISIONES RECIENTES (CRÍTICAS)
-
-### Merge Layer
-- source: rules / llm / merged
-- deduplicación por scope + type
-- prioridad rules
-- LLM solo enriquece
+Base actual:
+- Merge Layer V1 completada
+- recommendations unificadas
+- source controlado (`rules` / `llm` / `merged`)
+- execution layer estable
+- dashboard funcional
 
 ---
 
-## NUEVA CAPA (EN DISEÑO)
+## QUÉ SE HA HECHO EN ESTA SESIÓN
 
-### Next Best Action Engine (NBA)
+### NBA Engine V1
+Implementado:
 
-Definición:
-- el sistema selecciona UNA única acción global prioritaria
+- `apps/recommendations/nba.py`
+- scoring runtime
+- urgency rules V1
+- type weights hardcoded
+- selección de una única recommendation global
 
----
+### Dashboard
+- bloque NBA presente y operativo
+- home vuelve a cargar correctamente
 
-## DECISIONES ARQUITECTÓNICAS NBA
-
-### Unidad de ranking
-- Recommendations (no tasks, no opportunities)
-
-### Tipo de ranking
-- runtime (no persistido)
-
-### Número de acciones
-- UNA única NBA global
-
-### Fórmula base
-
-score = confidence + urgency + type_weight
+### Tests / Validación
+- `manage.py check` OK
+- tests de `apps.recommendations` OK
 
 ---
 
-### Urgency
-- basada en reglas (no LLM)
-- derivada de:
-  - recencia
-  - falta de respuesta
-  - señales temporales
+## HALLAZGO ARQUITECTÓNICO CLAVE
+
+Actualmente conviven dos caminos de priorización:
+
+1. `apps/recommendations/nba.py`
+2. `apps/recommendations/ranking_engine.py`
+
+Esto significa que:
+
+- el sistema ya tiene base NBA funcional
+- pero aún no existe un único motor canónico consolidado
+- hay duplicidad conceptual en la capa de priorización
 
 ---
 
-### Type Weight (hardcoded V1)
+## DECISIÓN TOMADA
 
-Ejemplo:
+No forzar consolidación en esta sesión.
 
-- followup → alto
-- contact_strategy → medio
-- review → bajo
+Se prioriza:
+
+- estabilidad
+- continuidad
+- no romper dashboard
+- no tocar execution layer
+
+La consolidación canónica queda como siguiente paso explícito.
 
 ---
 
-### Explainability
-- NO en V1
+## SIGUIENTE OBJETIVO
+
+Cerrar Cockpit V3 correctamente mediante:
+
+- unificación de motor NBA
+- eliminación de dualidad lógica
+- conexión definitiva del dashboard a un solo camino canónico
+- validación visual y técnica final
 
 ---
 
-## HARD RULE GLOBAL
+## REGLAS VIGENTES
 
-NINGUNA IA envía emails automáticamente
+- NO persistir score
+- NO tocar execution layer
+- NO introducir LLM en urgencia V1
+- NO duplicar lógica innecesariamente
+- NINGUNA IA envía emails automáticamente
 
 ---
 
 ## RESULTADO
 
-Sistema preparado para:
+Sistema preparado para pasar de:
 
-→ decisión global
-→ cockpit operativo
-→ ejecución guiada
+“hay un motor NBA base”
 
+a:
+
+“existe una única acción prioritaria calculada por un motor canónico y consistente”

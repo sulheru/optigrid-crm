@@ -34,3 +34,40 @@ score = confidence + urgency + type_weight
 ### Objective
 convertir el sistema en decisor operativo
 
+---
+
+## 2026-03-25 — NBA Engine V1 (Partial Implementation)
+
+### Added
+
+- creado `apps/recommendations/nba.py`
+- añadido scoring runtime para recommendations
+- añadidas reglas simples de urgencia V1
+- añadidos pesos por tipo
+- creada selección de una única recommendation global
+- creado `apps/recommendations/tests_nba.py`
+- añadido bloque dashboard "What should you do now"
+
+### Validated
+
+- `manage.py check` OK
+- tests de `apps.recommendations` OK
+- dashboard vuelve a cargar correctamente
+
+### Fixed During Session
+
+- corregida corrupción de import en `apps/dashboard_views.py`
+- corregido bloque de imports roto
+- restaurada carga correcta del dashboard
+
+### Architectural Finding
+
+- existe dualidad entre:
+  - `apps/recommendations/nba.py`
+  - `apps/recommendations/ranking_engine.py`
+
+### Current Status
+
+- NBA V1 estable
+- integración funcional
+- consolidación canónica pendiente
