@@ -1,38 +1,32 @@
 # CHANGELOG
 
-## 2026-03-26 — NBA ENGINE CONSOLIDATION
+## 2026-03-26 — External Actions Stabilization
 
-### Added
+### FIXES CRÍTICOS
 
-- NBA Engine como motor canónico
-- Explainability:
-  - get_score_breakdown
-  - get_next_best_action_explained
+- Eliminada recursión en dispatcher
+- Eliminado auto-dispatch en creación de intents
+- Corrección de estados (READY_TO_EXECUTE vs SUCCEEDED)
+- Restauración de idempotencia en bridge
+- Corrección de tests dependientes de modelo AIRecommendation
 
-### Changed
+### MEJORAS
 
-- Eliminada dualidad conceptual:
-  - ranking_engine deja de ser fuente de verdad
-- Dashboard usa únicamente NBA Engine
-- Tests alineados con modelo real
+- Separación clara:
+  - create_intent
+  - dispatch_intent
 
-### Fixed
+- Introducción de patrón controlado de ejecución
 
-- mismatch entre tests y modelo (confidence NOT NULL)
-- eliminación de campos inexistentes en tests
-- estabilidad del dashboard
+### TESTING
 
-### Architectural
+- apps.external_actions: OK
+- apps.recommendations: OK
+- apps.emailing: OK
 
-- separación clara:
-  - IA (confidence)
-  - sistema (scoring runtime)
-- scoring no persistido
+### DECISIONES ARQUITECTÓNICAS
 
-### Result
+- create_intent nunca ejecuta
+- ejecución siempre explícita
+- human approval por defecto
 
-Sistema pasa de:
-- múltiples criterios de priorización
-
-a:
-- un único motor de decisión coherente

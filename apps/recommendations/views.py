@@ -9,6 +9,7 @@ from apps.emailing.models import InboundEmail, OutboundEmail
 from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
 from apps.recommendations.execution import RecommendationExecutionError, execute_recommendation_service
+from apps.recommendations.services.external_actions import ensure_external_action_intent_for_recommendation
 
 
 RECOMMENDATIONS_LIST_PATH = "/recommendations/"

@@ -26,4 +26,6 @@ urlpatterns = [
     # Otros módulos
     path("tasks/", include("apps.tasks.urls")),
     path("opportunities/", include("apps.opportunities.urls")),
+    
+    path("external-actions/", include("apps.external_actions.urls")),
 ]

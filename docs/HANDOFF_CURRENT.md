@@ -1,104 +1,77 @@
 # HANDOFF — CURRENT STATE
-## OptiGrid CRM — AI Commercial Operating System
 
-### Estado general
+## PROYECTO
+OptiGrid CRM — AI Commercial Operating System
 
-El sistema ha completado la consolidación del NBA Engine V1.
+## FASE ACTUAL
+External Actions — Stabilization Completed
 
-Existe ahora una única fuente de verdad para la selección de la acción principal:
-- apps/recommendations/nba.py
+## ESTADO GENERAL
 
-Se elimina la dualidad conceptual con ranking_engine.
+Sistema consistente y estable tras corrección arquitectónica crítica.
 
----
+✔ Tests en verde:
+- apps.external_actions
+- apps.recommendations
+- apps.emailing
 
-### Arquitectura actual validada
-
-Pipeline completo:
-
-Email → Fact → Inference → Recommendation → Task → Opportunity
-
-Capas operativas:
-
-- Communication Layer (Emailing)
-- CRM Core (Facts, Inferences, Entities)
-- Decision Layer (Recommendations + NBA Engine)
-- Execution Layer (Tasks, Opportunities, Drafts)
-- UI Cockpit (Dashboard, Inbox, Recommendations, Tasks)
+✔ Django check OK
 
 ---
 
-### NBA Engine
+## ARQUITECTURA ACTUAL
 
-Estado:
-
-- compute_score → operativo
-- get_next_best_action → operativo
-- get_next_best_action_explained → operativo
-- get_score_breakdown → operativo
-
-Scoring:
-
-- priority_score → runtime
-- urgency_score → runtime
-- confidence → persistido
-
-No se persisten scores → cálculo dinámico
+Recommendation
+    ↓
+ExternalActionIntent (READY_TO_EXECUTE)
+    ↓
+[Approval pendiente]
+    ↓
+Dispatcher (no automático)
 
 ---
 
-### Tests
+## DECISIONES CLAVE
 
-- tests_nba → OK
-- manage.py check → OK
-- sistema estable
-
----
-
-### Dashboard
-
-- bloque “What should you do now” estable
-- una única acción principal
-- sin duplicidad de cálculo
+- create_intent NO ejecuta
+- NO auto-dispatch
+- ejecución SIEMPRE explícita
+- human-in-the-loop por defecto
 
 ---
 
-### Estado conceptual del sistema
+## COMPONENTES CLAVE
 
-El sistema ha evolucionado de:
-
-CRM con recomendaciones
-
-a:
-
-Decision Engine con interfaz (AI-first cockpit)
+- external_actions.models
+- external_actions.services.bridge
+- external_actions.services.dispatcher
+- external_actions.services.approval (pendiente de integrar en flujo)
 
 ---
 
-### Próximo salto arquitectónico
+## ESTADO DE EXTERNAL ACTIONS
 
-External Port System V1 (NO implementado)
-
-- no existe aún:
-  - ExternalActionIntent
-  - Policy Gate explícito
-  - Port Router
-  - Adapter Layer formal
-
-pero el sistema está preparado para ello.
+✔ Idempotencia garantizada
+✔ Sin recursión
+✔ Estados consistentes
+✔ Base lista para approval + providers
 
 ---
 
-### Riesgos actuales
+## RIESGOS ELIMINADOS
 
-- ranking_engine.py aún existe (deuda técnica leve)
-- ausencia de contratos formales para integración externa
-- ausencia de control explícito de acciones externas
+- envío automático de emails ❌
+- loops de ejecución ❌
+- duplicación de intents ❌
+- corrupción de estado ❌
 
 ---
 
-### Conclusión
+## SIGUIENTE OBJETIVO
 
-Core estable, coherente y listo para expansión controlada.
+Implementar:
 
-Siguiente fase: diseño de puertos (arquitectura, no implementación)
+1. Approval Flow
+2. Dispatcher limpio (ejecución real)
+3. Provider adapters (email)
+

@@ -165,6 +165,44 @@
 │   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
+│   ├── external_actions
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── dispatcher.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── 0001_initial.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── admin.cpython-312.pyc
+│   │   │   ├── apps.cpython-312.pyc
+│   │   │   ├── dispatcher.cpython-312.pyc
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   ├── models.cpython-312.pyc
+│   │   │   ├── services.cpython-312.pyc
+│   │   │   ├── tests_approval.cpython-312.pyc
+│   │   │   ├── tests.cpython-312.pyc
+│   │   │   ├── tests_dispatcher.cpython-312.pyc
+│   │   │   ├── urls.cpython-312.pyc
+│   │   │   └── views.cpython-312.pyc
+│   │   ├── services
+│   │   │   ├── approval.py
+│   │   │   ├── core.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── approval.cpython-312.pyc
+│   │   │       ├── core.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
+│   │   ├── services_legacy.py
+│   │   ├── tests_approval.py
+│   │   ├── tests_dispatcher.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
 │   ├── facts
 │   │   ├── admin.py
 │   │   ├── apps.py
@@ -376,7 +414,12 @@
 │   │   │   ├── urls.cpython-312.pyc
 │   │   │   ├── views.cpython-312.pyc
 │   │   │   └── views_simulation.cpython-312.pyc
-│   │   ├── ranking_engine.py
+│   │   ├── services
+│   │   │   ├── external_actions.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── external_actions.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
 │   │   ├── services_llm.py
 │   │   ├── services.py
 │   │   ├── simulation.py
@@ -538,17 +581,19 @@
 │   ├── SESSION_LOG_2026_03_23.md
 │   ├── SESSION_LOG_2026_03_24.md
 │   ├── SESSION_LOG_2026_03_25.md
+│   ├── SESSION_LOG_2026_03_26.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
+├── fix_dispatcher_module_v1.txt
 ├── fix_django_app_names.sh
 ├── flog.sh
 ├── frun.sh
 ├── manage.py
-├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
+├── patch_auto_dispatch_safe_intents.txt
 ├── patch_views_recommendations.py
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
@@ -558,6 +603,18 @@
 ├── scripts
 ├── sed
 ├── services
+│   ├── adapters
+│   │   ├── __init__.py
+│   │   ├── m365
+│   │   │   ├── calendar.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mail.py
+│   │   │   └── __pycache__
+│   │   │       ├── calendar.cpython-312.pyc
+│   │   │       ├── __init__.cpython-312.pyc
+│   │   │       └── mail.cpython-312.pyc
+│   │   └── __pycache__
+│   │       └── __init__.cpython-312.pyc
 │   ├── ai
 │   │   ├── agents
 │   │   │   ├── __init__.py
@@ -579,6 +636,22 @@
 │   │   └── __pycache__
 │   │       ├── graph_client.cpython-312.pyc
 │   │       └── __init__.cpython-312.pyc
+│   ├── ports
+│   │   ├── contracts.py
+│   │   ├── idempotency.py
+│   │   ├── __init__.py
+│   │   ├── policy.py
+│   │   ├── __pycache__
+│   │   │   ├── contracts.cpython-312.pyc
+│   │   │   ├── idempotency.cpython-312.pyc
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   ├── policy.cpython-312.pyc
+│   │   │   ├── registry.cpython-312.pyc
+│   │   │   ├── router.cpython-312.pyc
+│   │   │   └── types.cpython-312.pyc
+│   │   ├── registry.py
+│   │   ├── router.py
+│   │   └── types.py
 │   ├── __pycache__
 │   │   ├── email_ingest.cpython-312.pyc
 │   │   ├── events.cpython-312.pyc
@@ -688,57 +761,35 @@
 │       └── list.html
 ├── tests
 └── tmp
-    ├── base.py.txt
-    ├── dashboard_views.py.txt
-    ├── execution_adapters.py.txt
-    ├── fix_dashboard_import_block.py
-    ├── fix_dashboard_render_import.py
-    ├── fix_inference_service.py
-    ├── fix_nba_dashboard_import.py
-    ├── governance_v1_smoke.txt
-    ├── governance_v1_tests.txt
-    ├── graph_client.py.txt
-    ├── inference_json_phase_smoke.txt
-    ├── inference_smoke.txt
-    ├── inferences_services_current.txt
-    ├── inference_tests.txt
-    ├── install_merge_layer_v1.py
-    ├── install_nba_engine_v1.py
-    ├── llm_backends.py.txt
-    ├── llm_client_provider_smoke.txt
-    ├── llm_client_provider_tests.txt
-    ├── llm_client.py.txt
-    ├── llm_contract_smoke.txt
-    ├── llm_contract_tests.txt
-    ├── llm_embedded.py.txt
-    ├── llm_json_phase_smoke.txt
-    ├── llm_json_phase_tests.txt
-    ├── mail_embedded.py.txt
-    ├── patch_governance_v1.py
-    ├── patch_inference_service_llm_recs.py
-    ├── patch_inferences_merge_hook.py
-    ├── patch_llm_recommendation_source_fixed.py
-    ├── patch_llm_recommendation_source.py
-    ├── patch_merge_hook.py
-    ├── patch_recommendations_model_source.py
-    ├── provider_runtime_smoke.txt
-    ├── provider_runtime_tests.txt
-    ├── provider_smoke_test.txt
-    ├── provider_tests.txt
-    ├── recommendations_execution_actions.txt
-    ├── recommendations_execution_application.txt
-    ├── recommendations_models.txt
-    ├── recommendations_services.txt
-    ├── reco_output_2.txt
-    ├── reco_output.txt
-    ├── registry.py.txt
-    ├── repair_dashboard_views_imports.py
-    ├── runtime_settings_migrate.txt
-    ├── runtime_settings_smoke.txt
-    ├── runtime_settings_tests.txt
-    ├── services.py.txt
-    ├── settings.py.txt
-    ├── test_llm_recommendations.txt
-    └── test_manual_llm_recs.txt
+    ├── apps_external_actions.txt
+    ├── bootstrap_port_system_v1.sh
+    ├── check.txt
+    ├── extend_external_actions_tests.py
+    ├── external_actions_output.txt
+    ├── fix_broken_try_block.py
+    ├── fix_disable_autodispatch_output.txt
+    ├── fix_dispatcher_module_v1_output.txt
+    ├── fix_dispatcher_module_v1.sh
+    ├── fix_external_actions_disable_autodispatch.py
+    ├── fix_external_actions_import.py
+    ├── fix_external_actions_recursion_output.txt
+    ├── fix_external_actions_recursion.py
+    ├── fix_external_actions_tests_recommendation_factory.py
+    ├── fix_recommendation_factory_override_filter.py
+    ├── fix_try_output.txt
+    ├── inspect_external_action_intent_model.py
+    ├── inspect_external_action_intent_model.txt
+    ├── outpu_check.txt
+    ├── output.txt
+    ├── patch_auto_dispatch_safe_intents.py
+    ├── patch_auto_dispatch_safe_intents.txt
+    ├── patch_execution_application_port_bridge_v1.py
+    ├── patch_external_actions_dispatch.py
+    ├── patch_external_actions_tests_use_factory.py
+    ├── patch_port_system_live_bridge.py
+    ├── patch_settings_external_actions.py
+    ├── port_system_recommendation_bridge_v1.sh
+    ├── pytest.txt
+    └── session_run.txt
 
-127 directories, 615 files
+141 directories, 652 files

@@ -1,83 +1,60 @@
 # SESSION LOG — 2026-03-26
 
-## Objetivo
-
-Consolidar NBA Engine como motor único de decisión.
-
----
-
-## Trabajo realizado
-
-### 1. Consolidación NBA
-
-- validación de nba.py como motor canónico
-- eliminación conceptual de ranking_engine
+## TIPO DE SESIÓN
+Corrección arquitectónica
 
 ---
 
-### 2. Corrección de tests
+## SITUACIÓN INICIAL
 
-Problemas detectados:
-
-- uso de campos inexistentes:
-  - rationale
-  - priority_score
-  - urgency_score
-
-- constraint real:
-  - confidence es NOT NULL
-
-Solución:
-
-- tests adaptados al modelo real
-- runtime injection para scoring
-- persistencia solo de confidence
+- External Actions funcional pero inconsistente
+- auto-dispatch activo
+- recursión en dispatcher
+- tests parcialmente válidos
 
 ---
 
-### 3. Validación
+## PROBLEMAS DETECTADOS
 
-- tests NBA → OK
-- manage.py check → OK
-- dashboard funcional
-
----
-
-### 4. Arquitectura clarificada
-
-Modelo final:
-
-- confidence → persistido (IA)
-- priority_score → runtime
-- urgency_score → runtime
+- recursión infinita potencial
+- ejecución automática no controlada
+- estados incorrectos
+- duplicación de intents
+- tests acoplados a modelo antiguo
 
 ---
 
-### 5. Diseño Port System V1
+## ACCIONES REALIZADAS
 
-Se ha definido arquitectura completa:
-
-- ExternalActionIntent
-- Policy Gate
-- Port Router
-- Adapter Layer
-- Event integration
-
-NO IMPLEMENTADO
+1. Eliminación de auto-dispatch
+2. Eliminación de recursión en dispatcher
+3. Separación create vs dispatch
+4. Corrección de estados
+5. Refactor de tests con factory dinámica
+6. Restauración de idempotencia
 
 ---
 
-## Decisiones clave
+## RESULTADO
 
-- un único motor NBA
-- scoring no persistido
-- separación IA vs sistema
-- prohibición de ejecución externa directa sin policy
+✔ Sistema estable
+✔ Tests en verde
+✔ Arquitectura coherente
 
 ---
 
-## Estado final
+## APRENDIZAJES
 
-Sistema estable y coherente.
+- nunca mezclar create + execute
+- evitar automatismos en capas críticas
+- tests deben adaptarse al modelo real, no asumirlo
 
-Listo para diseño de integración externa.
+---
+
+## ESTADO FINAL
+
+Sistema listo para:
+- approval layer
+- ejecución controlada
+- integración de providers
+

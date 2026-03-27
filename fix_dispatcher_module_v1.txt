@@ -1,0 +1,12 @@
+[ok] dispatcher movido a apps/external_actions/dispatcher.py
+[ok] tests_dispatcher corregido
+Creating test database for alias 'default'...
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.041s
+
+OK
+Destroying test database for alias 'default'...
+Found 13 test(s).
+System check identified no issues (0 silenced).
+System check identified no issues (0 silenced).

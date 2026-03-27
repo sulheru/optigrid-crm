@@ -1,82 +1,69 @@
-# NEXT SESSION — PORT SYSTEM V1
+# NEXT SESSION — PLAN
 
-## Contexto
+## OBJETIVO
 
-Sistema con NBA Engine consolidado y core estable.
-
-Necesidad:
-
-Abrir el sistema a integraciones externas sin perder control.
+Construir Execution Pipeline completo (Approval + Dispatch)
 
 ---
 
-## Objetivo
+## PRIORIDADES
 
-Diseñar formalmente el sistema de puertos (nivel producción).
+### 1. Approval Flow (MVP)
 
-NO implementar.
+- integrar approval_required
+- endpoint / método:
+  approve_external_action_intent
 
----
-
-## Alcance
-
-### 1. ExternalActionIntent
-
-- definición completa de entidad
-- campos
-- estados
-- relación con Recommendation / Task
+- transición:
+  READY_TO_EXECUTE → APPROVED
 
 ---
 
-### 2. Policy Gate
+### 2. Dispatcher limpio
 
-- reglas por tipo de acción
-- human-in-the-loop obligatorio
-- clasificación de acciones críticas
+- función explícita:
+  dispatch_external_action_intent(intent)
 
----
-
-### 3. Port Router
-
-- mapping intent → adapter
-- resolución dinámica
+- sin efectos secundarios
+- sin auto-trigger
 
 ---
 
-### 4. ExternalPort Contract
+### 3. Integración mínima email provider
 
-- interfaz base
-- normalización de resultados
-- idempotencia
-
----
-
-### 5. Adapter Model
-
-- separación puerto vs adapter
-- M365 como primer caso
+- mock o stub provider
+- preparar interfaz:
+  send_email_draft / create_draft
 
 ---
 
-### 6. Event Model
+### 4. Estado del Intent
 
-- ciclo completo de intención externa
-- trazabilidad
+Definir claramente:
 
----
-
-## Reglas
-
-- no implementar código funcional
-- no tocar execution layer existente
-- no introducir complejidad innecesaria
-- mantener coherencia con arquitectura actual
+- NEW
+- READY_TO_EXECUTE
+- APPROVED
+- EXECUTED
+- FAILED
 
 ---
 
-## Resultado esperado
+## NO HACER
 
-Documento de arquitectura sólido:
+- no automatizar ejecución aún
+- no añadir complejidad innecesaria
+- no introducir LLM en ejecución
 
-PORT SYSTEM V1 — SPEC listo para implementación en sesiones futuras
+---
+
+## CRITERIO DE ÉXITO
+
+Pipeline completo:
+
+Recommendation
+→ Intent
+→ Approval
+→ Dispatch manual
+→ Resultado consistente
+

@@ -1,69 +1,55 @@
-# ROADMAP — OptiGrid CRM
+# ROADMAP — EXTERNAL ACTIONS
 
-## Estado actual
+## FASE 1 — STABILIZATION (COMPLETADA)
 
-✔ Core CRM
-✔ Pipeline completo
-✔ NBA Engine consolidado
-✔ Execution Layer funcional
-✔ UI Cockpit estable
-
----
-
-## Fase actual
-
-COCKPIT V3 — COMPLETADO
+✔ eliminar auto-dispatch  
+✔ eliminar recursión  
+✔ asegurar idempotencia  
+✔ estabilizar tests  
 
 ---
 
-## Próxima fase
+## FASE 2 — CONTROL LAYER (SIGUIENTE)
 
-### PORT SYSTEM V1 (ARQUITECTURA)
-
-Objetivo:
-
-Definir capa de integración externa controlada
-
-Incluye:
-
-- ExternalActionIntent
-- Policy Gate
-- Port Router
-- Adapter Contract
-- Event lifecycle
+- approval flow
+- estados de aprobación
+- UI mínima (opcional)
 
 ---
 
-## Fase siguiente
+## FASE 3 — EXECUTION LAYER
 
-### PORT SYSTEM V1 — IMPLEMENTACIÓN
-
-- Mail Port (draft + send gated)
-- M365 Adapter
-- Primer flujo real end-to-end
+- dispatcher explícito
+- logging de ejecución
+- manejo de errores
 
 ---
 
-## Fase futura
+## FASE 4 — PROVIDERS
 
-### AUTONOMY LAYER
-
-- auto-execution condicionado
-- policy tuning
-- risk scoring
+- email (Microsoft Graph / SMTP)
+- abstracción de providers
+- retry + fallback
 
 ---
 
-### LEARNING LAYER
+## FASE 5 — POLICY ENGINE
 
-- ajuste dinámico de weights NBA
-- feedback loop
-- reinforcement signals
+- qué requiere aprobación
+- qué puede auto-ejecutarse
+- límites de seguridad
 
 ---
 
-## Visión
+## FASE 6 — AUTOMATION (FUTURO)
 
-Sistema evoluciona hacia:
+- auto-exec controlado
+- reglas configurables
+- observabilidad
 
-AI Commercial Operating System completo
+---
+
+## PRINCIPIO FUNDAMENTAL
+
+"Nada se ejecuta sin control explícito"
+

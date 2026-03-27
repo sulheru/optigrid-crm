@@ -11,6 +11,7 @@ from apps.opportunities.services.promote import (
     promote_task_to_opportunity,
 )
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.external_actions import ensure_external_action_intent_for_recommendation
 
 from .execution_actions import (
     RecommendationExecutionError,
@@ -87,6 +88,16 @@ def execute_recommendation_service(
 
     if recommendation_type == "reply_strategy":
         outbound = create_reply_draft_from_recommendation(recommendation)
+        intent, created = ensure_external_action_intent_for_recommendation(recommendation)
+        if intent is not None:
+            result.side_effects.append(
+                "external_intent_created" if created else "external_intent_reused"
+            )
+        intent, created = ensure_external_action_intent_for_recommendation(recommendation)
+        if intent is not None:
+            result.side_effects.append(
+                "external_intent_created" if created else "external_intent_reused"
+            )
         result.created_entities["outbound_email_id"] = outbound.id
         result.side_effects.append("draft_created")
 

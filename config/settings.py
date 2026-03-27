@@ -21,6 +21,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'apps.external_actions',
     "apps.core",
     "apps.lead_research",
     "django.contrib.admin",
