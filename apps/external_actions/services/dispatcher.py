@@ -1,100 +1,98 @@
 from __future__ import annotations
 
-from typing import Any
-
-from django.db import transaction
-
 from apps.external_actions.models import ExternalActionIntent
 from apps.external_actions.providers.email_stub import send_email_draft
 
 
-def _model_fields():
-    return {f.name for f in ExternalActionIntent._meta.fields}
+BLOCKED_INTENT_TYPES = {
+    ExternalActionIntent.IntentType.EMAIL_SEND,
+}
 
 
-def _has(field: str) -> bool:
-    return field in _model_fields()
+def _ensure_dispatchable(intent: ExternalActionIntent) -> None:
+    if intent.intent_type in BLOCKED_INTENT_TYPES:
+        raise ValueError("Auto-send de email desactivado por guardrail global")
+
+    if intent.execution_status == ExternalActionIntent.ExecutionStatus.EXECUTING:
+        raise ValueError("El intent ya está en ejecución")
+
+    if intent.dispatch_status == ExternalActionIntent.DispatchStatus.DISPATCHED:
+        raise ValueError("El intent ya fue despachado")
+
+    if intent.approval_required:
+        if intent.approval_status != ExternalActionIntent.ApprovalStatus.APPROVED:
+            raise ValueError("El intent requiere aprobación humana antes del dispatch")
+    else:
+        if intent.approval_status not in {
+            ExternalActionIntent.ApprovalStatus.NOT_REQUIRED,
+            ExternalActionIntent.ApprovalStatus.APPROVED,
+        }:
+            raise ValueError("Estado de aprobación no válido para dispatch")
+
+    if intent.execution_status not in {
+        ExternalActionIntent.ExecutionStatus.READY_TO_EXECUTE,
+        ExternalActionIntent.ExecutionStatus.DRAFT,
+        ExternalActionIntent.ExecutionStatus.VALIDATED,
+        ExternalActionIntent.ExecutionStatus.DRY_RUN_READY,
+    }:
+        raise ValueError("El intent no está en un estado ejecutable")
 
 
-def _get_enum(container_name: str, attr_name: str, default: str):
-    container = getattr(ExternalActionIntent, container_name, None)
-    if not container:
-        return default
-    return getattr(container, attr_name, default)
-
-
-def _set_execution_status(intent, value, update_fields):
-    if _has("execution_status"):
-        intent.execution_status = value
-        update_fields.append("execution_status")
-    elif _has("status"):
-        intent.status = value
-        update_fields.append("status")
-
-
-def _set_error(intent, error, update_fields):
-    if _has("error_message"):
-        intent.error_message = error
-        update_fields.append("error_message")
-
-
-def _set_result(intent, result, update_fields):
-    if _has("provider_result"):
-        intent.provider_result = result
-        update_fields.append("provider_result")
-
-
-def _already_executed(intent: ExternalActionIntent) -> bool:
-    if _has("execution_status"):
-        return intent.execution_status == _get_enum("ExecutionStatus", "EXECUTED", "executed")
-    if _has("status"):
-        return intent.status == _get_enum("ExecutionStatus", "EXECUTED", "executed")
-    return False
-
-
-def _is_allowed(intent: ExternalActionIntent) -> bool:
-    if not getattr(intent, "approval_required", False):
-        return True
-    return getattr(intent, "approval_status", None) == _get_enum("ApprovalStatus", "APPROVED", "approved")
-
-
-def _resolve_handler(intent: ExternalActionIntent):
-    return send_email_draft
+def _perform_dispatch(intent: ExternalActionIntent) -> None:
+    # Stub canónico único para esta fase.
+    # Mantiene compatibilidad con los tests actuales y evita múltiples rutas activas.
+    send_email_draft(intent.payload)
 
 
 def dispatch_external_action_intent(intent: ExternalActionIntent) -> ExternalActionIntent:
+    if intent.execution_status == ExternalActionIntent.ExecutionStatus.SUCCEEDED:
+        return intent
 
-    # 🔒 Fase 1 — lock + ejecución (puede fallar → rollback OK)
+    if intent.dispatch_status == ExternalActionIntent.DispatchStatus.COMPLETED:
+        return intent
+
+    _ensure_dispatchable(intent)
+
     try:
-        with transaction.atomic():
-            intent = ExternalActionIntent.objects.select_for_update().get(pk=intent.pk)
+        intent.mark_dispatched()
+        intent.save(
+            update_fields=[
+                "dispatch_status",
+                "execution_status",
+                "dispatched_at",
+                "last_attempt_at",
+                "attempt_count",
+                "updated_at",
+            ]
+        )
 
-            if _already_executed(intent):
-                return intent
+        _perform_dispatch(intent)
 
-            if not _is_allowed(intent):
-                raise ValueError("Este intent requiere aprobación antes de ejecutarse")
+        intent.mark_succeeded()
+        intent.save(
+            update_fields=[
+                "dispatch_status",
+                "execution_status",
+                "completed_at",
+                "updated_at",
+            ]
+        )
 
-            result: dict[str, Any] = _resolve_handler(intent)(intent)
-
-            update_fields = []
-            _set_result(intent, result, update_fields)
-            _set_execution_status(intent, _get_enum("ExecutionStatus", "EXECUTED", "executed"), update_fields)
-            _set_error(intent, "", update_fields)
-
-            intent.save(update_fields=update_fields or None)
-            return intent
+        print(
+            f"[FLOW] ExternalActionIntent dispatched id={intent.id} "
+            f"type={intent.intent_type}"
+        )
+        return intent
 
     except Exception as exc:
-
-        # 🔒 Fase 2 — persistir fallo en NUEVA transacción
-        with transaction.atomic():
-            intent = ExternalActionIntent.objects.get(pk=intent.pk)
-
-            update_fields = []
-            _set_execution_status(intent, _get_enum("ExecutionStatus", "FAILED", "failed"), update_fields)
-            _set_error(intent, str(exc), update_fields)
-
-            intent.save(update_fields=update_fields or None)
-
+        intent.mark_failed(code="dispatch_error", message=str(exc))
+        intent.save(
+            update_fields=[
+                "dispatch_status",
+                "execution_status",
+                "last_error_code",
+                "last_error_message",
+                "updated_at",
+            ]
+        )
         raise

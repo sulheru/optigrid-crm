@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from apps.emailing.models import InboundEmail, OutboundEmail
+from apps.emailing.models import InboundDecision, InboundEmail, OutboundEmail
 from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
 from apps.tasks.services.materialize import materialize_recommendation_as_task
@@ -21,6 +21,15 @@ def resolve_inbound_for_recommendation(recommendation: AIRecommendation) -> Inbo
     if scope_type == "inbound_email" and scope_id not in (None, ""):
         return InboundEmail.objects.filter(pk=scope_id).first()
 
+    if scope_type == "inbound_decision" and scope_id not in (None, ""):
+        decision = (
+            InboundDecision.objects.filter(pk=scope_id)
+            .select_related("inbound_email")
+            .first()
+        )
+        if decision is not None:
+            return decision.inbound_email
+
     if scope_type == "opportunity" and scope_id not in (None, ""):
         return (
             InboundEmail.objects.filter(opportunity_id=scope_id)
@@ -37,6 +46,15 @@ def resolve_opportunity_for_recommendation(recommendation: AIRecommendation) -> 
 
     if scope_type == "opportunity" and scope_id not in (None, ""):
         return Opportunity.objects.filter(pk=scope_id).first()
+
+    if scope_type == "inbound_decision" and scope_id not in (None, ""):
+        decision = (
+            InboundDecision.objects.filter(pk=scope_id)
+            .select_related("inbound_email__opportunity")
+            .first()
+        )
+        if decision is not None and decision.inbound_email_id:
+            return decision.inbound_email.opportunity
 
     inbound = resolve_inbound_for_recommendation(recommendation)
     if inbound and inbound.opportunity_id:

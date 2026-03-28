@@ -10,6 +10,7 @@ from django.db import transaction
 from apps.facts.models import FactRecord
 from apps.inferences.models import InferenceRecord
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 
 
 OPPORTUNITY_REVIEW_TYPE = "opportunity_review"
@@ -58,7 +59,6 @@ def _extract_signal_bonus_from_inference(inference: InferenceRecord) -> int:
 
     inference_value = getattr(inference, "inference_value", None)
 
-    # Ajuste simple por contenido semántico
     text = _safe_lower(inference_value)
     if inference_type == "opportunity_probability":
         if any(token in text for token in ("high", "alta", "strong", "fuerte", "likely")):
@@ -113,10 +113,7 @@ def assess_source_for_opportunity(source_type: str, source_id: int) -> SignalAss
             score += delta
             signals.append(f"inference:{inference_type}")
 
-    # Regla básica de umbral
     should_create = score >= 50
-
-    # Confidence simple y estable
     confidence = min(max(score / 100.0, 0.05), 0.95)
 
     rationale_parts: list[str] = []
@@ -134,13 +131,9 @@ def assess_source_for_opportunity(source_type: str, source_id: int) -> SignalAss
         rationale_parts.append("signal_strength=insufficient")
 
     if should_create:
-        rationale_parts.append(
-            "decision=create opportunity_review recommendation"
-        )
+        rationale_parts.append("decision=create opportunity_review recommendation")
     else:
-        rationale_parts.append(
-            "decision=do not create opportunity_review recommendation"
-        )
+        rationale_parts.append("decision=do not create opportunity_review recommendation")
 
     return SignalAssessment(
         source_type=source_type,
@@ -154,15 +147,23 @@ def assess_source_for_opportunity(source_type: str, source_id: int) -> SignalAss
 
 
 def _existing_recommendation(source_type: str, source_id: int):
-    return AIRecommendation.objects.filter(
-        scope_type=source_type,
-        scope_id=source_id,
-        recommendation_type=OPPORTUNITY_REVIEW_TYPE,
-    ).exclude(status__in=DISMISSLIKE_STATUSES).order_by("-id").first()
+    return (
+        AIRecommendation.objects.filter(
+            scope_type=source_type,
+            scope_id=str(source_id),
+            recommendation_type=OPPORTUNITY_REVIEW_TYPE,
+        )
+        .exclude(status__in=DISMISSLIKE_STATUSES)
+        .order_by("-id")
+        .first()
+    )
 
 
 @transaction.atomic
-def ensure_opportunity_review_recommendation(source_type: str, source_id: int) -> tuple[AIRecommendation | None, bool, SignalAssessment]:
+def ensure_opportunity_review_recommendation(
+    source_type: str,
+    source_id: int,
+) -> tuple[AIRecommendation | None, bool, SignalAssessment]:
     assessment = assess_source_for_opportunity(source_type=source_type, source_id=source_id)
 
     existing = _existing_recommendation(source_type=source_type, source_id=source_id)
@@ -177,13 +178,14 @@ def ensure_opportunity_review_recommendation(source_type: str, source_id: int) -
         f"(score={assessment.score})"
     )
 
-    recommendation = AIRecommendation.objects.create(
+    recommendation = create_recommendation(
         scope_type=source_type,
         scope_id=source_id,
         recommendation_type=OPPORTUNITY_REVIEW_TYPE,
         recommendation_text=recommendation_text,
         confidence=assessment.confidence,
-        status="new",
+        source=AIRecommendation.SOURCE_RULES,
+        status=AIRecommendation.STATUS_NEW,
     )
 
     return recommendation, True, assessment

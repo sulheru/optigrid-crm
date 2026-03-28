@@ -2,153 +2,138 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.db import transaction
-
 from apps.external_actions.models import ExternalActionIntent
-from apps.external_actions.dispatcher import dispatch_external_action_intent as run_external_action_dispatch
-from services.ports.idempotency import build_intent_idempotency_key
-from services.ports.policy import evaluate_policy_for_intent
-from services.ports.router import get_port_router
 
 
-@transaction.atomic
+TERMINAL_APPROVAL_STATUSES = {
+    ExternalActionIntent.ApprovalStatus.REJECTED,
+    ExternalActionIntent.ApprovalStatus.EXPIRED,
+}
+
+TERMINAL_EXECUTION_STATUSES = {
+    ExternalActionIntent.ExecutionStatus.SUCCEEDED,
+    ExternalActionIntent.ExecutionStatus.FAILED,
+    ExternalActionIntent.ExecutionStatus.SUPERSEDED,
+}
+
+
+def _normalize_policy(
+    *,
+    policy_classification: str | None = None,
+    approval_required: bool | None = None,
+) -> tuple[str, bool]:
+    classification = (
+        policy_classification
+        or ExternalActionIntent.PolicyClassification.REVIEWABLE
+    )
+
+    if approval_required is None:
+        approval_required = classification != ExternalActionIntent.PolicyClassification.AUTOMATIC
+
+    return classification, bool(approval_required)
+
+
+def _apply_initial_state(intent: ExternalActionIntent) -> ExternalActionIntent:
+    if intent.approval_required:
+        intent.mark_pending_approval()
+        intent.dispatch_status = ExternalActionIntent.DispatchStatus.NOT_DISPATCHED
+        intent.execution_status = ExternalActionIntent.ExecutionStatus.DRAFT
+    else:
+        intent.approval_required = False
+        intent.approval_status = ExternalActionIntent.ApprovalStatus.NOT_REQUIRED
+        intent.mark_ready()
+
+    return intent
+
+
+def _find_existing_by_idempotency(
+    *,
+    idempotency_key: str,
+    idempotency_scope: str = "provider_account",
+) -> ExternalActionIntent | None:
+    if not idempotency_key:
+        return None
+
+    return (
+        ExternalActionIntent.objects.filter(
+            idempotency_key=idempotency_key,
+            idempotency_scope=idempotency_scope,
+        )
+        .exclude(approval_status__in=TERMINAL_APPROVAL_STATUSES)
+        .exclude(execution_status__in=TERMINAL_EXECUTION_STATUSES)
+        .order_by("-created_at")
+        .first()
+    )
+
+
 def create_external_action_intent(
     *,
     intent_type: str,
-    port_name: str,
-    payload: dict[str, Any],
-    provider: str = "m365",
+    payload: dict[str, Any] | None = None,
+    port_name: str = "",
+    adapter_key: str = "",
+    provider: str = "",
+    target_ref_type: str = "",
+    target_ref_id: str = "",
     source_kind: str = ExternalActionIntent.SourceKind.RECOMMENDATION,
     source_id: str = "",
     recommendation=None,
     task=None,
     requested_by=None,
-    target_ref_type: str = "",
-    target_ref_id: str = "",
-    rationale: str = "",
+    normalized_preview: dict[str, Any] | None = None,
+    policy_classification: str | None = None,
+    approval_required: bool | None = None,
+    idempotency_key: str = "",
+    idempotency_scope: str = "provider_account",
+    risk_score=None,
     reason: str = "",
+    rationale: str = "",
     confidence=None,
+    dry_run_supported: bool = True,
 ) -> ExternalActionIntent:
-    intent = ExternalActionIntent.objects.create(
+    existing = _find_existing_by_idempotency(
+        idempotency_key=idempotency_key,
+        idempotency_scope=idempotency_scope,
+    )
+    if existing is not None:
+        return existing
+
+    policy_classification, approval_required = _normalize_policy(
+        policy_classification=policy_classification,
+        approval_required=approval_required,
+    )
+
+    intent = ExternalActionIntent(
         intent_type=intent_type,
         port_name=port_name,
+        adapter_key=adapter_key,
         provider=provider,
+        target_ref_type=target_ref_type,
+        target_ref_id=target_ref_id,
         source_kind=source_kind,
-        source_id=source_id,
+        source_id=str(source_id or ""),
         recommendation=recommendation,
         task=task,
         requested_by=requested_by,
-        target_ref_type=target_ref_type,
-        target_ref_id=target_ref_id,
         payload=payload or {},
-        rationale=rationale,
+        normalized_preview=normalized_preview or {},
+        policy_classification=policy_classification,
+        approval_required=approval_required,
+        idempotency_key=idempotency_key,
+        idempotency_scope=idempotency_scope,
+        risk_score=risk_score,
         reason=reason,
+        rationale=rationale,
         confidence=confidence,
+        dry_run_supported=dry_run_supported,
     )
-    intent.idempotency_key = build_intent_idempotency_key(intent)
-    decision = evaluate_policy_for_intent(intent)
-    intent.policy_classification = decision.classification
-    intent.approval_required = decision.requires_approval
 
-    if decision.decision == "block":
-        intent.mark_blocked("; ".join(decision.reasons) or "Blocked by policy.")
-    elif decision.decision == "require_approval":
-        intent.mark_pending_approval()
-    else:
-        intent.approval_status = ExternalActionIntent.ApprovalStatus.NOT_REQUIRED
-        intent.mark_ready()
-
+    _apply_initial_state(intent)
     intent.save()
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
 
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
+    print(
+        f"[FLOW] ExternalActionIntent created id={intent.id} "
+        f"type={intent.intent_type} approval={intent.approval_status} "
+        f"dispatch={intent.dispatch_status} execution={intent.execution_status}"
+    )
     return intent
-
-
-@transaction.atomic
-def approve_external_action_intent(intent: ExternalActionIntent, *, approved_by=None) -> ExternalActionIntent:
-    intent.mark_approved(user=approved_by)
-    intent.mark_ready()
-    intent.save(update_fields=[
-        "approval_required",
-        "approval_status",
-        "approved_by",
-        "approved_at",
-        "dispatch_status",
-        "execution_status",
-        "updated_at",
-    ])
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    # ---------------------------------------------------------
-    # AUTO-DISPATCH (solo intents seguros)
-    # ---------------------------------------------------------
-    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_CREATE_DRAFT:
-# no rompemos el flujo principal
-            pass
-
-    return intent
-
-
-@transaction.atomic
-def dispatch_external_action_intent(intent: ExternalActionIntent):
-    return 
-

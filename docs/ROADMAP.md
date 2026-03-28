@@ -1,86 +1,33 @@
 # ROADMAP — OptiGrid CRM
 
-## Fase actual
+## FASE ACTUAL
+CORE CONTROL LAYER — COMPLETADO
 
-✔ External Actions (COMPLETADO)
+## SIGUIENTE FASE
 
----
+### SESSION 2 — MAIL PORT (multi-account ready)
 
-## Fase siguiente (PRIORIDAD ALTA)
+Objetivo:
+- Introducir abstracción de proveedor de correo
+- Preparar múltiples cuentas
+- Mantener envío desactivado
 
-### Knowledge Harvest Pipeline V1
+### SESSION 3 — LLM PORT (configurable)
 
-- email ingestion semántica
-- memoria vectorial básica
-- knowledge candidates
-- promoción manual a KB
+Objetivo:
+- Integrar proveedor LLM
+- Configuración dinámica
+- Mantener output en modo controlado
 
----
+### SESSION 4 — AUDITORÍA FINAL PRE-LIVE
 
-## Fase siguiente
+Objetivo:
+- Validar estabilidad completa
+- Revisar riesgos
+- Preparar activación progresiva
 
-### Knowledge Base canónica
+## FUTURO
 
-- FAQ
-- Behaviors
-- Capability proposals
-
----
-
-## Fase siguiente
-
-### Settings / Governance V1
-
-- FAQ editable
-- Behaviors editables
-- Policies
-- Providers
-- Risk rules
-
----
-
-## Fase siguiente
-
-### Chat contextual (Drafts + Recommendations)
-
-- copiloto por entidad
-- doble output:
-  - chat
-  - modificación estructurada
-
----
-
-## Fase siguiente
-
-### Policy Engine V1
-
-- control de automatización
-- risk-based decisions
-
----
-
-## Fase futura
-
-### Providers reales
-
-- Microsoft 365
-- APIs externas
-
----
-
-## Fase futura
-
-### Automatización controlada
-
-- auto-preparation responses
-- first contact outbound (opcional)
-
----
-
-## Principios
-
-- IA propone, humano decide
-- nada automático sin control
-- aprendizaje continuo desde datos reales
-- sistema gobernable en todo momento
-
+- UI de configuración (LLM + Mail)
+- Auto-respuestas controladas
+- Aprendizaje desde KB

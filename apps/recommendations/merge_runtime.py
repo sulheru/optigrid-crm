@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from apps.recommendations.merge import merge_recommendation_candidates
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 
 
 def merge_persisted_recommendations_for_scope(scope_type: str, scope_id) -> list[AIRecommendation]:
@@ -31,9 +32,9 @@ def merge_persisted_recommendations_for_scope(scope_type: str, scope_id) -> list
             continue
 
         persisted_kept.append(
-            AIRecommendation.objects.create(
+            create_recommendation(
                 scope_type=rec.scope_type,
-                scope_id=str(rec.scope_id),
+                scope_id=rec.scope_id,
                 recommendation_type=rec.recommendation_type,
                 recommendation_text=rec.recommendation_text,
                 confidence=rec.confidence,

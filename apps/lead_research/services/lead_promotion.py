@@ -2,10 +2,11 @@
 # LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.db import transaction
 
+from apps.emailing.models import OutboundEmail
 from apps.opportunities.models import Opportunity
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 from apps.tasks.models import CRMTask
-from apps.emailing.models import OutboundEmail
 
 
 def promote_lead_to_opportunity(lead):
@@ -34,13 +35,14 @@ def promote_lead_to_opportunity(lead):
         ).order_by("-id").first()
 
         if not recommendation:
-            recommendation = AIRecommendation.objects.create(
+            recommendation = create_recommendation(
                 scope_type="opportunity",
                 scope_id=opportunity.id,
                 recommendation_type="contact_strategy",
                 recommendation_text=f"Initiate contact with {lead.company_name} based on detected signals",
                 confidence=lead.confidence,
-                status="new",
+                source=AIRecommendation.SOURCE_RULES,
+                status=AIRecommendation.STATUS_NEW,
             )
 
         task = CRMTask.objects.filter(

@@ -1,34 +1,35 @@
-# CHANGELOG
+# CHANGELOG — SESSION CORE CONTROL LAYER
 
-## 2026-03-27 — External Actions Pipeline
+## Added
 
-### Added
+- Central factory for AIRecommendation creation
+- ExternalActionIntent full lifecycle:
+  - approval
+  - dispatch
+- Inbound decision → recommendation bridge (restored)
 
-- Approval service
-- Dispatcher limpio y no recursivo
-- Email provider stub
-- Tests completos:
-  - approval flow
-  - dispatch con y sin approval
-  - idempotencia
-  - manejo de errores
+## Changed
 
-### Fixed
+- Execution layer unified under execute_recommendation_service
+- Inbound pipeline:
+  - scope_type moved from inbound_decision → inbound_email
+  - action mapping normalized
 
-- Bug crítico de rollback en transacciones (failure-safe execution)
-- Introspección incorrecta de campos
-- Inconsistencias en execution_status
+## Fixed
 
-### Architectural Decisions
+- Broken inbound execution (no opportunity resolution)
+- Draft creation failure (OutboundEmail not created)
+- Recommendation deduplication issues
+- Multiple creation paths for AIRecommendation
 
-- Separación estricta create vs dispatch
-- Schema-tolerant dispatcher
-- Failure-safe execution (doble transacción)
-- Idempotencia obligatoria
+## Removed / Deprecated
 
-### Status
+- Direct AIRecommendation.objects.create in production paths
+- Legacy creation flows (kept only in tests)
 
-✔ Stable
-✔ Tested
-✔ Ready for next phase
+## Known Issues
 
+- apps.knowledge.tests failing due to missing models:
+  - BehaviorEntry
+  - FAQEntry
+  - VectorMemoryItem

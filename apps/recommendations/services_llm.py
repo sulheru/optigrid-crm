@@ -6,6 +6,7 @@ from apps.core.runtime_settings import (
     get_runtime_str_setting,
 )
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 
 
 ALLOWED_RECOMMENDATION_TYPES = {
@@ -153,15 +154,15 @@ def create_recommendations_from_llm_output(
         if existing:
             continue
 
-        obj = AIRecommendation.objects.create(
+        obj = create_recommendation(
             scope_type=scope_type,
             scope_id=scope_id,
             recommendation_type=rec_type,
             recommendation_text=rec_text,
             confidence=confidence,
-            status="new",
-        ,
-            source="llm")
+            source=AIRecommendation.SOURCE_LLM,
+            status=AIRecommendation.STATUS_NEW,
+        )
         created.append(obj)
 
     return created

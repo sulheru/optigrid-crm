@@ -3,6 +3,7 @@
 from django.core.management.base import BaseCommand
 
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 
 
 SOURCE_TYPES = {"pricing_strategy", "qualification", "prepare_proposal", "schedule_call"}
@@ -28,7 +29,7 @@ class Command(BaseCommand):
             if already_exists:
                 continue
 
-            AIRecommendation.objects.create(
+            create_recommendation(
                 scope_type=rec.scope_type,
                 scope_id=rec.scope_id,
                 recommendation_type="opportunity_review",
@@ -36,7 +37,8 @@ class Command(BaseCommand):
                     f"Revisar oportunidad comercial: señal derivada de '{rec.recommendation_type}'."
                 ),
                 confidence=max(float(rec.confidence or 0.70), 0.75),
-                status="new",
+                source=AIRecommendation.SOURCE_RULES,
+                status=AIRecommendation.STATUS_NEW,
             )
             created += 1
             self.stdout.write(

@@ -1,53 +1,58 @@
-# HANDOFF — OptiGrid CRM
+# HANDOFF — CURRENT STATE
 
-## Estado actual
+## Estado general
 
-FASE: External Actions — Approval + Execution Pipeline COMPLETADA
+El sistema ha completado la estabilización del CORE CONTROL LAYER.
 
-El sistema dispone de:
+El flujo principal es ahora:
 
-- ExternalActionIntent estable
-- Approval flow implementado
-- Dispatcher limpio, no recursivo y determinista
-- Execution desacoplada (email_stub)
-- Idempotencia garantizada
-- Persistencia de errores robusta (failure-safe)
-- Tests 100% en verde
+Recommendation → Execution → ExternalActionIntent → (Approval → Dispatch)
 
-## Decisiones críticas fijadas
+## Componentes clave
 
-- ❌ No auto-dispatch
-- ❌ No auto-send (implementado pero desactivado)
-- ✅ Human-in-the-loop por defecto
-- ✅ Ejecución siempre explícita
-- ✅ Riesgo basado en irreversibilidad (no en canal)
+### Recommendations
+- Creación centralizada en:
+  apps/recommendations/services/factory.py
+- Eliminadas rutas paralelas en producción
 
-## Arquitectura consolidada
+### Execution Layer
+- Punto único:
+  execute_recommendation_service
+- Acciones soportadas:
+  - reply_strategy → draft + external intent
+  - followup → task
+  - contact_strategy → task
+  - opportunity_review → task (+ posible promoción)
+  - advance_opportunity → stage++
+  - mark_lost → stage=lost
 
-Recommendation
-→ ExternalActionIntent
-→ (Approval)
-→ Dispatch explícito
-→ Execution (stub)
-→ Persistencia consistente (success / failure)
+### Inbound Pipeline
+- Restaurado correctamente
+- scope_type = inbound_email
+- Mapping action → recommendation consistente
 
-## Siguiente foco
+### External Actions
+- Flujo completo:
+  - create intent
+  - approve
+  - dispatch
+- email.send sigue bloqueado (guardrail activo)
 
-NO UI.
-NO providers reales todavía.
+## Estado de tests
 
-Siguiente bloque prioritario:
+- Core tests: OK
+- Emailing tests: OK
+- External actions: OK
+- Único fallo:
+  apps.knowledge.tests (ImportError)
 
-👉 Knowledge + Behavior Ingestion Pipeline V1
+## Riesgos conocidos
 
-- lectura de emails
-- memoria vectorial
-- detección de patrones
-- generación de knowledge candidates
+- Módulo knowledge desalineado (no bloqueante)
+- Observabilidad limitada (logs básicos)
 
-## Notas clave
+## Conclusión
 
-- El sistema NO automatiza acciones externas
-- Sí aprende desde el día cero
-- La IA propone, no ejecuta
-
+Sistema estable y preparado para integración de:
+- Mail real (controlado)
+- LLM

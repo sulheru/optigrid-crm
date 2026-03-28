@@ -13,6 +13,7 @@ from django.utils import timezone
 from apps.opportunities.services.autotasker import auto_materialize_tasks
 from apps.opportunities.services.context_builder import build_opportunity_analysis_context
 from apps.recommendations.models import AIRecommendation
+from apps.recommendations.services.factory import create_recommendation
 
 
 ACTIVE_RECOMMENDATION_STATUSES = [
@@ -136,12 +137,13 @@ def _create_or_reuse_recommendation(opportunity, rec_type: str, text: str, confi
     if existing is not None:
         return existing, False
 
-    rec = AIRecommendation.objects.create(
+    rec = create_recommendation(
         scope_type="opportunity",
-        scope_id=str(opportunity.id),
+        scope_id=opportunity.id,
         recommendation_type=rec_type,
         recommendation_text=text,
         confidence=confidence,
+        source=AIRecommendation.SOURCE_RULES,
         status=AIRecommendation.STATUS_NEW,
     )
     return rec, True

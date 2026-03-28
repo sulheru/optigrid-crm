@@ -172,9 +172,11 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── 0001_initial.cpython-312.pyc
+│   │   │       ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
 │   │   ├── providers
@@ -252,6 +254,63 @@
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── __init__.py
+│   ├── knowledge
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── hooks.py
+│   │   ├── __init__.py
+│   │   ├── management
+│   │   │   ├── commands
+│   │   │   │   ├── harvest_knowledge.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── harvest_knowledge.cpython-312.pyc
+│   │   │   │   │   ├── __init__.cpython-312.pyc
+│   │   │   │   │   └── review_knowledge_candidate.cpython-312.pyc
+│   │   │   │   └── review_knowledge_candidate.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       └── __init__.cpython-312.pyc
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_behavior_faq_knowledgeembedding_and_more.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── 0001_initial.cpython-312.pyc
+│   │   │       ├── 0002_behavior_faq_knowledgeembedding_and_more.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── admin.cpython-312.pyc
+│   │   │   ├── apps.cpython-312.pyc
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   ├── models.cpython-312.pyc
+│   │   │   ├── signals.cpython-312.pyc
+│   │   │   └── tests.cpython-312.pyc
+│   │   ├── services
+│   │   │   ├── candidate_generator.py
+│   │   │   ├── email_knowledge_extractor.py
+│   │   │   ├── embedding_service.py
+│   │   │   ├── embeddings.py
+│   │   │   ├── extraction.py
+│   │   │   ├── generator.py
+│   │   │   ├── hooks.py
+│   │   │   ├── __init__.py
+│   │   │   ├── promotion.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── candidate_generator.cpython-312.pyc
+│   │   │   │   ├── email_knowledge_extractor.cpython-312.pyc
+│   │   │   │   ├── embeddings.cpython-312.pyc
+│   │   │   │   ├── embedding_service.cpython-312.pyc
+│   │   │   │   ├── extraction.cpython-312.pyc
+│   │   │   │   ├── generator.cpython-312.pyc
+│   │   │   │   ├── hooks.cpython-312.pyc
+│   │   │   │   ├── __init__.cpython-312.pyc
+│   │   │   │   ├── promotion.cpython-312.pyc
+│   │   │   │   └── vector_memory.cpython-312.pyc
+│   │   │   └── vector_memory.py
+│   │   ├── signals.py
+│   │   └── tests.py
 │   ├── lead_research
 │   │   ├── apps.py
 │   │   ├── __init__.py
@@ -424,9 +483,11 @@
 │   │   │   └── views_simulation.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── external_actions.py
+│   │   │   ├── factory.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── external_actions.cpython-312.pyc
+│   │   │       ├── factory.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── services_llm.py
 │   │   ├── services.py
@@ -546,6 +607,7 @@
 │       ├── models.py.bak
 │       └── views.py.bak
 ├── cd
+├── cleansession.sh
 ├── cleartmp.sh
 ├── config
 │   ├── asgi.py
@@ -572,6 +634,7 @@
 │   ├── BEHAVIOR_PROMPT.md
 │   ├── CANONICAL_BACKEND.md
 │   ├── CHANGELOG.md
+│   ├── CURRENT_TREE.md
 │   ├── CURRENT_TREE.txt
 │   ├── DASHBOARD_STATUS_UPDATE.md
 │   ├── HANDOFF_CURRENT.md
@@ -591,6 +654,7 @@
 │   ├── SESSION_LOG_2026_03_25.md
 │   ├── SESSION_LOG_2026_03_26.md
 │   ├── SESSION_LOG_2026_03_27.md
+│   ├── SESSION_LOG_2026_03_28.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -770,35 +834,5 @@
 │       └── list.html
 ├── tests
 └── tmp
-    ├── apps_external_actions.txt
-    ├── bootstrap_port_system_v1.sh
-    ├── check.txt
-    ├── extend_external_actions_tests.py
-    ├── external_actions_output.txt
-    ├── fix_broken_try_block.py
-    ├── fix_disable_autodispatch_output.txt
-    ├── fix_dispatcher_module_v1_output.txt
-    ├── fix_dispatcher_module_v1.sh
-    ├── fix_external_actions_disable_autodispatch.py
-    ├── fix_external_actions_import.py
-    ├── fix_external_actions_recursion_output.txt
-    ├── fix_external_actions_recursion.py
-    ├── fix_external_actions_tests_recommendation_factory.py
-    ├── fix_recommendation_factory_override_filter.py
-    ├── fix_try_output.txt
-    ├── inspect_external_action_intent_model.py
-    ├── inspect_external_action_intent_model.txt
-    ├── outpu_check.txt
-    ├── output.txt
-    ├── patch_auto_dispatch_safe_intents.py
-    ├── patch_auto_dispatch_safe_intents.txt
-    ├── patch_execution_application_port_bridge_v1.py
-    ├── patch_external_actions_dispatch.py
-    ├── patch_external_actions_tests_use_factory.py
-    ├── patch_port_system_live_bridge.py
-    ├── patch_settings_external_actions.py
-    ├── port_system_recommendation_bridge_v1.sh
-    ├── pytest.txt
-    └── session_run.txt
 
-143 directories, 659 files
+153 directories, 683 files
