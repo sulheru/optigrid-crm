@@ -1,5 +1,3 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/services/inbound_analysis_service.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from apps.emailing.models import InboundDecision, InboundInterpretation
 from apps.emailing.services.decision_automation import (
     maybe_auto_apply_decision,
@@ -13,6 +11,10 @@ from apps.emailing.services.inbound_interpreter import (
     interpret_inbound_email,
     interpretation_to_dict,
 )
+
+# === KNOWLEDGE HARVEST IMPORTS ===
+from apps.knowledge.services.email_knowledge_extractor import extract_from_email
+from apps.knowledge.services.candidate_generator import generate_candidates
 
 
 def analyze_inbound_email(inbound_email) -> dict:
@@ -85,6 +87,14 @@ def analyze_inbound_email(inbound_email) -> dict:
     if decision.status == InboundDecision.STATUS_SUGGESTED:
         auto_apply_result = maybe_auto_apply_decision(decision)
         decision.refresh_from_db()
+
+    # === KNOWLEDGE HARVEST (V1) ===
+    try:
+        candidates = extract_from_email(inbound_email)
+        generate_candidates(candidates)
+    except Exception:
+        # Fail-safe: nunca romper pipeline principal
+        pass
 
     return {
         "interpretation": interpretation_to_dict(interpretation_result),

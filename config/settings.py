@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.opportunities",
     "apps.events",
     'apps.strategy',
+    'apps.knowledge',
 ]
 
 MIDDLEWARE = [
