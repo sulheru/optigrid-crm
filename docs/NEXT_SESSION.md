@@ -1,69 +1,77 @@
-# NEXT SESSION — PLAN
+# NEXT SESSION — Knowledge Harvest Pipeline V1
 
-## OBJETIVO
+## Objetivo
 
-Construir Execution Pipeline completo (Approval + Dispatch)
+Construir el sistema de aprendizaje del CRM:
 
----
-
-## PRIORIDADES
-
-### 1. Approval Flow (MVP)
-
-- integrar approval_required
-- endpoint / método:
-  approve_external_action_intent
-
-- transición:
-  READY_TO_EXECUTE → APPROVED
+👉 La IA observa → aprende → propone → humano valida
 
 ---
 
-### 2. Dispatcher limpio
+## Alcance
 
-- función explícita:
-  dispatch_external_action_intent(intent)
+### 1. Email ingestion semántica
 
-- sin efectos secundarios
-- sin auto-trigger
-
----
-
-### 3. Integración mínima email provider
-
-- mock o stub provider
-- preparar interfaz:
-  send_email_draft / create_draft
+- leer inbound emails
+- extraer:
+  - posibles preguntas
+  - posibles respuestas
+  - patrones operativos
 
 ---
 
-### 4. Estado del Intent
+### 2. Memoria vectorial (V1 simple)
 
-Definir claramente:
-
-- NEW
-- READY_TO_EXECUTE
-- APPROVED
-- EXECUTED
-- FAILED
+- almacenar embeddings
+- permitir similitud
+- base para clustering
 
 ---
 
-## NO HACER
+### 3. Knowledge Candidates
 
-- no automatizar ejecución aún
-- no añadir complejidad innecesaria
-- no introducir LLM en ejecución
+Nuevo modelo:
+
+- tipo:
+  - FAQ
+  - BEHAVIOR
+  - CAPABILITY_PROPOSAL
+- contenido propuesto
+- confidence_score
+- source_examples
+- status: proposed
 
 ---
 
-## CRITERIO DE ÉXITO
+### 4. Generator service
 
-Pipeline completo:
+Servicio que:
 
-Recommendation
-→ Intent
-→ Approval
-→ Dispatch manual
-→ Resultado consistente
+- detecta recurrencias
+- genera candidates automáticamente
+
+---
+
+### 5. Review mínima (sin UI compleja)
+
+- aceptar
+- rechazar
+- promover a KB
+
+---
+
+## Reglas
+
+- ❌ NO auto-learning a KB directa
+- ❌ NO auto-activation
+- ✅ humano valida todo
+- ✅ vectorial = sugerencia, no verdad
+
+---
+
+## Resultado esperado
+
+Sistema capaz de decir:
+
+"He aprendido X. ¿Quieres que lo use a partir de ahora?"
 

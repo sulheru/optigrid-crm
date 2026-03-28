@@ -1,32 +1,34 @@
 # CHANGELOG
 
-## 2026-03-26 — External Actions Stabilization
+## 2026-03-27 — External Actions Pipeline
 
-### FIXES CRÍTICOS
+### Added
 
-- Eliminada recursión en dispatcher
-- Eliminado auto-dispatch en creación de intents
-- Corrección de estados (READY_TO_EXECUTE vs SUCCEEDED)
-- Restauración de idempotencia en bridge
-- Corrección de tests dependientes de modelo AIRecommendation
+- Approval service
+- Dispatcher limpio y no recursivo
+- Email provider stub
+- Tests completos:
+  - approval flow
+  - dispatch con y sin approval
+  - idempotencia
+  - manejo de errores
 
-### MEJORAS
+### Fixed
 
-- Separación clara:
-  - create_intent
-  - dispatch_intent
+- Bug crítico de rollback en transacciones (failure-safe execution)
+- Introspección incorrecta de campos
+- Inconsistencias en execution_status
 
-- Introducción de patrón controlado de ejecución
+### Architectural Decisions
 
-### TESTING
+- Separación estricta create vs dispatch
+- Schema-tolerant dispatcher
+- Failure-safe execution (doble transacción)
+- Idempotencia obligatoria
 
-- apps.external_actions: OK
-- apps.recommendations: OK
-- apps.emailing: OK
+### Status
 
-### DECISIONES ARQUITECTÓNICAS
-
-- create_intent nunca ejecuta
-- ejecución siempre explícita
-- human approval por defecto
+✔ Stable
+✔ Tested
+✔ Ready for next phase
 

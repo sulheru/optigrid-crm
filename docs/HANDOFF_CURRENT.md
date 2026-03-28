@@ -1,77 +1,53 @@
-# HANDOFF — CURRENT STATE
+# HANDOFF — OptiGrid CRM
 
-## PROYECTO
-OptiGrid CRM — AI Commercial Operating System
+## Estado actual
 
-## FASE ACTUAL
-External Actions — Stabilization Completed
+FASE: External Actions — Approval + Execution Pipeline COMPLETADA
 
-## ESTADO GENERAL
+El sistema dispone de:
 
-Sistema consistente y estable tras corrección arquitectónica crítica.
+- ExternalActionIntent estable
+- Approval flow implementado
+- Dispatcher limpio, no recursivo y determinista
+- Execution desacoplada (email_stub)
+- Idempotencia garantizada
+- Persistencia de errores robusta (failure-safe)
+- Tests 100% en verde
 
-✔ Tests en verde:
-- apps.external_actions
-- apps.recommendations
-- apps.emailing
+## Decisiones críticas fijadas
 
-✔ Django check OK
+- ❌ No auto-dispatch
+- ❌ No auto-send (implementado pero desactivado)
+- ✅ Human-in-the-loop por defecto
+- ✅ Ejecución siempre explícita
+- ✅ Riesgo basado en irreversibilidad (no en canal)
 
----
-
-## ARQUITECTURA ACTUAL
+## Arquitectura consolidada
 
 Recommendation
-    ↓
-ExternalActionIntent (READY_TO_EXECUTE)
-    ↓
-[Approval pendiente]
-    ↓
-Dispatcher (no automático)
+→ ExternalActionIntent
+→ (Approval)
+→ Dispatch explícito
+→ Execution (stub)
+→ Persistencia consistente (success / failure)
 
----
+## Siguiente foco
 
-## DECISIONES CLAVE
+NO UI.
+NO providers reales todavía.
 
-- create_intent NO ejecuta
-- NO auto-dispatch
-- ejecución SIEMPRE explícita
-- human-in-the-loop por defecto
+Siguiente bloque prioritario:
 
----
+👉 Knowledge + Behavior Ingestion Pipeline V1
 
-## COMPONENTES CLAVE
+- lectura de emails
+- memoria vectorial
+- detección de patrones
+- generación de knowledge candidates
 
-- external_actions.models
-- external_actions.services.bridge
-- external_actions.services.dispatcher
-- external_actions.services.approval (pendiente de integrar en flujo)
+## Notas clave
 
----
-
-## ESTADO DE EXTERNAL ACTIONS
-
-✔ Idempotencia garantizada
-✔ Sin recursión
-✔ Estados consistentes
-✔ Base lista para approval + providers
-
----
-
-## RIESGOS ELIMINADOS
-
-- envío automático de emails ❌
-- loops de ejecución ❌
-- duplicación de intents ❌
-- corrupción de estado ❌
-
----
-
-## SIGUIENTE OBJETIVO
-
-Implementar:
-
-1. Approval Flow
-2. Dispatcher limpio (ejecución real)
-3. Provider adapters (email)
+- El sistema NO automatiza acciones externas
+- Sí aprende desde el día cero
+- La IA propone, no ejecuta
 

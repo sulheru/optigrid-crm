@@ -177,6 +177,12 @@
 │   │   │       ├── 0001_initial.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
+│   │   ├── providers
+│   │   │   ├── email_stub.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── email_stub.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
 │   │   ├── __pycache__
 │   │   │   ├── admin.cpython-312.pyc
 │   │   │   ├── apps.cpython-312.pyc
@@ -192,10 +198,12 @@
 │   │   ├── services
 │   │   │   ├── approval.py
 │   │   │   ├── core.py
+│   │   │   ├── dispatcher.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── approval.cpython-312.pyc
 │   │   │       ├── core.cpython-312.pyc
+│   │   │       ├── dispatcher.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── services_legacy.py
 │   │   ├── tests_approval.py
@@ -582,6 +590,7 @@
 │   ├── SESSION_LOG_2026_03_24.md
 │   ├── SESSION_LOG_2026_03_25.md
 │   ├── SESSION_LOG_2026_03_26.md
+│   ├── SESSION_LOG_2026_03_27.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -792,4 +801,4 @@
     ├── pytest.txt
     └── session_run.txt
 
-141 directories, 652 files
+143 directories, 659 files

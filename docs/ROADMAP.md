@@ -1,55 +1,86 @@
-# ROADMAP — EXTERNAL ACTIONS
+# ROADMAP — OptiGrid CRM
 
-## FASE 1 — STABILIZATION (COMPLETADA)
+## Fase actual
 
-✔ eliminar auto-dispatch  
-✔ eliminar recursión  
-✔ asegurar idempotencia  
-✔ estabilizar tests  
+✔ External Actions (COMPLETADO)
 
 ---
 
-## FASE 2 — CONTROL LAYER (SIGUIENTE)
+## Fase siguiente (PRIORIDAD ALTA)
 
-- approval flow
-- estados de aprobación
-- UI mínima (opcional)
+### Knowledge Harvest Pipeline V1
 
----
-
-## FASE 3 — EXECUTION LAYER
-
-- dispatcher explícito
-- logging de ejecución
-- manejo de errores
+- email ingestion semántica
+- memoria vectorial básica
+- knowledge candidates
+- promoción manual a KB
 
 ---
 
-## FASE 4 — PROVIDERS
+## Fase siguiente
 
-- email (Microsoft Graph / SMTP)
-- abstracción de providers
-- retry + fallback
+### Knowledge Base canónica
 
----
-
-## FASE 5 — POLICY ENGINE
-
-- qué requiere aprobación
-- qué puede auto-ejecutarse
-- límites de seguridad
+- FAQ
+- Behaviors
+- Capability proposals
 
 ---
 
-## FASE 6 — AUTOMATION (FUTURO)
+## Fase siguiente
 
-- auto-exec controlado
-- reglas configurables
-- observabilidad
+### Settings / Governance V1
+
+- FAQ editable
+- Behaviors editables
+- Policies
+- Providers
+- Risk rules
 
 ---
 
-## PRINCIPIO FUNDAMENTAL
+## Fase siguiente
 
-"Nada se ejecuta sin control explícito"
+### Chat contextual (Drafts + Recommendations)
+
+- copiloto por entidad
+- doble output:
+  - chat
+  - modificación estructurada
+
+---
+
+## Fase siguiente
+
+### Policy Engine V1
+
+- control de automatización
+- risk-based decisions
+
+---
+
+## Fase futura
+
+### Providers reales
+
+- Microsoft 365
+- APIs externas
+
+---
+
+## Fase futura
+
+### Automatización controlada
+
+- auto-preparation responses
+- first contact outbound (opcional)
+
+---
+
+## Principios
+
+- IA propone, humano decide
+- nada automático sin control
+- aprendizaje continuo desde datos reales
+- sistema gobernable en todo momento
 
