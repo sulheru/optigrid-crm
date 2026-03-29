@@ -2,10 +2,25 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from apps.tenancy.models import MailboxAccount, OperatingOrganization
 from django.utils import timezone
 
 
 class ExternalActionIntent(models.Model):
+    operating_organization = models.ForeignKey(
+        OperatingOrganization,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="external_action_intents",
+    )
+    mailbox_account = models.ForeignKey(
+        MailboxAccount,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="external_action_intents",
+    )
     class IntentType(models.TextChoices):
         EMAIL_CREATE_DRAFT = "email.create_draft", "Email: Create Draft"
         EMAIL_SEND = "email.send", "Email: Send"

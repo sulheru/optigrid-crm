@@ -1,17 +1,90 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/dashboard/index.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
 {% extends "base.html" %}
 
-{% block content %}\n{% include "dashboard/partials/next_best_action.html" %}
+{% block content %}
+<div class="app-stack">
 
-<h2>AI Recommended Actions</h2>
+  <section class="app-row-between">
+    <div>
+      <h2 class="app-section-title">Operational Visibility</h2>
+      <div class="app-section-subtitle">
+        Dashboard conectado a datos reales del sistema.
+      </div>
+    </div>
 
-<div class="reco-list">
-  {% for r in recommendations %}
-    {% include "dashboard/partials/recommendation_card.html" %}
-  {% empty %}
-    <p>No recommendations available</p>
-  {% endfor %}
+    <div class="app-action-row">
+      <a href="{{ dashboard_links.recommendations }}" class="app-btn-secondary">
+        <i class="fa fa-bolt"></i>
+        <span>Recommendations</span>
+      </a>
+      <a href="{{ dashboard_links.tasks }}" class="app-btn-secondary">
+        <i class="fa fa-check-square-o"></i>
+        <span>Tasks</span>
+      </a>
+      <a href="{{ dashboard_links.opportunities }}" class="app-btn-secondary">
+        <i class="fa fa-briefcase"></i>
+        <span>Opportunities</span>
+      </a>
+      <a href="{{ dashboard_links.admin_intents }}" class="app-btn-primary">
+        <i class="fa fa-shield"></i>
+        <span>External Intents Admin</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="app-kpi-grid">
+    <article class="app-kpi-card">
+      <div class="app-kpi-value">{{ kpis.recommendations }}</div>
+      <div class="app-kpi-label">Recommendations</div>
+    </article>
+
+    <article class="app-kpi-card">
+      <div class="app-kpi-value">{{ kpis.tasks }}</div>
+      <div class="app-kpi-label">Tasks</div>
+    </article>
+
+    <article class="app-kpi-card">
+      <div class="app-kpi-value">{{ kpis.opportunities }}</div>
+      <div class="app-kpi-label">Opportunities</div>
+    </article>
+
+    <article class="app-kpi-card">
+      <div class="app-kpi-value">{{ kpis.intents }}</div>
+      <div class="app-kpi-label">External Action Intents</div>
+    </article>
+  </section>
+
+  <section class="app-card">
+    <div class="app-card-body">
+      <div class="app-row-between">
+        <div>
+          <h3 class="app-section-title">AI Recommended Actions</h3>
+          <div class="app-section-subtitle">
+            Últimas recomendaciones reales detectadas por el sistema.
+          </div>
+        </div>
+        <div class="app-topbar-status">
+          <span class="status-dot"></span>
+          <span>{{ recommendation_total }} visible{{ recommendation_total|pluralize }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if recommendation_cards %}
+    <section class="app-grid app-grid-auto-280">
+      {% for card in recommendation_cards %}
+        {% include "dashboard/partials/recommendation_card.html" with card=card %}
+      {% endfor %}
+    </section>
+  {% else %}
+    <section class="app-card">
+      <div class="app-card-body">
+        <div class="app-empty">
+          No hay recomendaciones visibles todavía. El pipeline está activo, pero aún no hay elementos para mostrar en el dashboard.
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
 </div>
-
 {% endblock %}

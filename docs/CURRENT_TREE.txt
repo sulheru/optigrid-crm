@@ -175,10 +175,12 @@
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.py
+│   │   │   ├── 0003_externalactionintent_tenant_scope.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── 0001_initial.cpython-312.pyc
 │   │   │       ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.cpython-312.pyc
+│   │   │       ├── 0003_externalactionintent_tenant_scope.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
 │   │   ├── providers
@@ -458,11 +460,13 @@
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_alter_airecommendation_status.py
 │   │   │   ├── 0003_airecommendation_source.py
+│   │   │   ├── 0004_airecommendation_tenant_scope.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
 │   │   │       ├── 0001_initial.cpython-312.pyc
 │   │   │       ├── 0002_alter_airecommendation_status.cpython-312.pyc
 │   │   │       ├── 0003_airecommendation_source.cpython-312.pyc
+│   │   │       ├── 0004_airecommendation_tenant_scope.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
 │   │   ├── models.py
 │   │   ├── nba.py
@@ -493,10 +497,12 @@
 │   │   │   ├── views.cpython-312.pyc
 │   │   │   └── views_simulation.cpython-312.pyc
 │   │   ├── services
+│   │   │   ├── action_loop.py
 │   │   │   ├── external_actions.py
 │   │   │   ├── factory.py
 │   │   │   ├── __init__.py
 │   │   │   └── __pycache__
+│   │   │       ├── action_loop.cpython-312.pyc
 │   │   │       ├── external_actions.cpython-312.pyc
 │   │   │       ├── factory.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
@@ -579,6 +585,24 @@
 │   │   ├── tests.py
 │   │   ├── urls.py
 │   │   └── views.py
+│   ├── tenancy
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_seed_default_orgs.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── 0001_initial.cpython-312.pyc
+│   │   │       ├── 0002_seed_default_orgs.cpython-312.pyc
+│   │   │       └── __init__.cpython-312.pyc
+│   │   ├── models.py
+│   │   └── __pycache__
+│   │       ├── admin.cpython-312.pyc
+│   │       ├── apps.cpython-312.pyc
+│   │       ├── __init__.cpython-312.pyc
+│   │       └── models.cpython-312.pyc
 │   ├── updates
 │   │   ├── admin.py
 │   │   ├── apps.py
@@ -618,7 +642,6 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
-├── cd
 ├── cleansession.sh
 ├── cleartmp.sh
 ├── config
@@ -676,20 +699,16 @@
 ├── flog.sh
 ├── frun.sh
 ├── manage.py
-├── migrate
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
 ├── patch_auto_dispatch_safe_intents.txt
 ├── patch_views_recommendations.py
-├── python
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
 │   └── base.txt
-├── rg
 ├── runserver.log
 ├── scripts
-├── sed
 ├── services
 │   ├── adapters
 │   │   ├── __init__.py
@@ -785,6 +804,7 @@
 │       │   ├── arrow-right.png
 │       │   ├── bg.jpg
 │       │   ├── cloud.png
+│       │   ├── favicon.ico
 │       │   ├── logo.png
 │       │   ├── pic1.png
 │       │   ├── pic2.png
@@ -813,7 +833,8 @@
 │   │   └── partials
 │   │       ├── decision_transparency.html
 │   │       ├── insight_list.html
-│   │       └── next_best_action.html
+│   │       ├── next_best_action.html
+│   │       └── recommendation_card.html
 │   ├── emailing
 │   │   ├── email_detail.html.legacy
 │   │   ├── email_list.html.legacy
@@ -847,8 +868,7 @@
 │   │   └── chat.html
 │   └── tasks
 │       └── list.html
-├── test
 ├── tests
 └── tmp
 
-154 directories, 698 files
+158 directories, 714 files

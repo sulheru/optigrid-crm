@@ -1,32 +1,43 @@
 # CHANGELOG
 
-## [Session] Mail Provider Layer Integration + Knowledge Stabilization
+## [Session] Action Loop V1 + Operability + Tenant Scoping
 
 ### Added
-- Runtime settings system
-- Execution adapter registry
-- Provider abstraction for mail
-- prepare_mail_provider_context()
-- normalized_preview in ExternalActionIntent
-- inbound-based resolution (thread + account)
+- Action Loop V1 desde dashboard:
+  - approve
+  - dismiss
+- Servicio de materialización recommendation → ExternalActionIntent
+- Nueva app tenancy
+- Modelo OperatingOrganization
+- Modelo MailboxAccount
+- Seed inicial:
+  - OptiGrid IT
+  - OptiGrid Simulation Lab
 
 ### Changed
-- Replaced flat payloads with provider-aware payloads
-- Integrated provider layer into recommendation → intent flow
-- Enhanced dispatcher with guardrails
-
-### Fixed
-- Knowledge models inconsistencies
-- VectorMemoryItem field errors
-- KnowledgeCandidate enum mismatch
-- Broken migrations
+- AIRecommendation ahora admite:
+  - operating_organization
+  - mailbox_account
+- ExternalActionIntent ahora admite:
+  - operating_organization
+  - mailbox_account
+- Action Loop propaga scoping desde recommendation a intent
+- Admin de ExternalActionIntent alineado con el modelo real
 
 ### Improved
-- Observability of external intents
-- Multi-account readiness
-- Thread continuity handling
+- Observabilidad real de intents
+- Human-in-the-loop funcional
+- Frontera de memoria por empresa operadora
+- Base para varios buzones dentro del mismo tenant
+- Aislamiento preparado entre tenants distintos
+- Base correcta para SMLL posterior
 
-### Security / Guardrails
-- Explicit block on EMAIL_SEND
-- Draft-only execution enforced
+### Fixed
+- Errores del admin por campos asumidos incorrectamente
+- Errores de render en lista de intents
+- Errores de importación de tenancy
 
+### Guardrails
+- Sin provider real
+- Sin envío real
+- email.send sigue bloqueado

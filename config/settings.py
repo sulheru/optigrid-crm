@@ -21,6 +21,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    "apps.tenancy",
     'apps.external_actions',
     "apps.core",
     "apps.lead_research",

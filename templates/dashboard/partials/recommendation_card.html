@@ -1,0 +1,89 @@
+<article class="app-card">
+  <div class="app-card-body app-stack" style="gap: 14px;">
+
+    <div class="app-row-between" style="align-items: flex-start;">
+      <div style="min-width: 0;">
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #6b7280; margin-bottom: 6px;">
+          {{ card.recommendation_type|default:"recommendation" }}
+        </div>
+        <h4 style="margin: 0; font-size: 18px; line-height: 1.3; color: #111827;">
+          {{ card.title }}
+        </h4>
+      </div>
+
+      <span class="app-badge
+        {% if card.status|lower == 'active' or card.status|lower == 'approved' or card.status|lower == 'applied' or card.status|lower == 'completed' %}
+          app-badge-success
+        {% elif card.status|lower == 'pending' or card.status|lower == 'pending_approval' or card.status|lower == 'scheduled' %}
+          app-badge-warning
+        {% elif card.status|lower == 'dismissed' or card.status|lower == 'rejected' or card.status|lower == 'expired' or card.status|lower == 'cancelled' %}
+          app-badge-danger
+        {% elif card.status|lower == 'converted_to_task' or card.status|lower == 'in_progress' %}
+          app-badge-info
+        {% else %}
+          app-badge-neutral
+        {% endif %}
+      ">
+        {{ card.status }}
+      </span>
+    </div>
+
+    <div class="app-badge-row">
+      <span class="app-badge app-badge-neutral">Priority: {{ card.priority }}</span>
+      <span class="app-badge app-badge-neutral">Confidence: {{ card.confidence }}</span>
+      <span class="app-badge app-badge-neutral">Scope: {{ card.scope }}</span>
+    </div>
+
+    <div>
+      <div style="font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px;">Summary</div>
+      <div class="app-text-muted" style="font-size: 14px; line-height: 1.55;">
+        {{ card.summary }}
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px;">Rationale</div>
+      <div class="app-text-muted" style="font-size: 14px; line-height: 1.55;">
+        {{ card.rationale }}
+      </div>
+    </div>
+
+    <div class="app-row-between" style="align-items: center;">
+      <div class="app-text-muted" style="font-size: 13px;">
+        Created: {{ card.created_at }}
+      </div>
+
+      <div class="app-action-row" style="margin-top: 0;">
+        <a href="{{ card.detail_url }}" class="app-btn-secondary">
+          <i class="fa fa-search"></i>
+          <span>Inspect</span>
+        </a>
+
+        {% if card.can_approve %}
+        <form method="post" action="/" style="display:inline-flex; margin:0;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="approve">
+          <input type="hidden" name="recommendation_id" value="{{ card.id }}">
+          <button type="submit" class="app-btn-primary">
+            <i class="fa fa-check"></i>
+            <span>Approve</span>
+          </button>
+        </form>
+        {% endif %}
+
+        {% if card.can_dismiss %}
+        <form method="post" action="/" style="display:inline-flex; margin:0;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="dismiss">
+          <input type="hidden" name="recommendation_id" value="{{ card.id }}">
+          <button type="submit" class="app-btn-danger">
+            <i class="fa fa-times"></i>
+            <span>Dismiss</span>
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</article>

@@ -1,32 +1,44 @@
 # NEXT SESSION OBJECTIVES
 
 ## Objetivo principal
-Mejorar visibilidad y comenzar transición a ejecución real controlada.
+Implementar Simulated Persona V1 como fundamento directo de SMLL.
 
-## Prioridad 1 — Observabilidad (UI/Admin)
-- Mostrar normalized_preview en admin
-- Vista clara de:
-  - provider
-  - account_key
-  - subject
-  - recipients
-  - thread_ref
+## Prioridad 1 — Modelo SimulatedPersona
+- identidad
+- cargo
+- empresa simulada
+- seniority
+- notas de personaje
 
-## Prioridad 2 — Logging estructurado
-- Añadir logs de:
-  - draft creation
-  - dispatch events
-- Preparar base para auditoría
+## Prioridad 2 — Perfil conductual
+- formalidad
+- estilo comunicativo
+- paciencia
+- tolerancia al riesgo
+- apertura al cambio
+- cooperación / resistencia
 
-## Prioridad 3 — Provider real (solo draft)
-- Integrar M365 draft API
-- Mantener bloqueo de send
+## Prioridad 3 — Contexto profesional
+- objetivos
+- pains
+- prioridades
+- presión interna
+- presupuesto implícito
+- marco de decisión
 
-## Prioridad 4 — Refinamiento LLM (opcional)
-- Permitir re-generación de drafts antes de ejecución
+## Prioridad 4 — Estado dinámico
+- interés
+- confianza
+- saturación
+- urgencia
+- frustración
+- temperatura relacional
 
-## No hacer aún
-- No activar email.send
-- No automatizar dispatch real
-- No UI compleja
+## Prioridad 5 — Base de prompt builder
+- prompt estructurado a partir de persona + estado + contexto
 
+## Restricciones
+- No provider real
+- No email.send real
+- No automatización irreversible
+- No mezclar memoria entre tenant real y tenant simulado

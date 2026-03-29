@@ -1,7 +1,23 @@
+from django.conf import settings
 from django.db import models
+from apps.tenancy.models import MailboxAccount, OperatingOrganization
 
 
 class AIRecommendation(models.Model):
+    operating_organization = models.ForeignKey(
+        OperatingOrganization,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="recommendations",
+    )
+    mailbox_account = models.ForeignKey(
+        MailboxAccount,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="recommendations",
+    )
     STATUS_NEW = "new"
     STATUS_MATERIALIZED = "materialized"
     STATUS_DISMISSED = "dismissed"
