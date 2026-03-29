@@ -41,3 +41,29 @@
 - Sin provider real
 - Sin envío real
 - email.send sigue bloqueado
+
+## [SMLL V0] — Simulated Persona Runtime
+
+### Added
+- SimulatedPersona model (multi-tenant + mailbox scoped)
+- SimulatedPersonaMemory
+- SMLL Engine V0:
+  - signal detection
+  - reply generation
+  - state evolution
+  - memory persistence
+
+### Tests
+- Model tests
+- Runtime tests
+- Robust test setup (schema-agnostic org/mailbox creation)
+
+### Improvements
+- Flexible test assertions (semantic instead of literal)
+- Compatibility layer for tenancy/mailbox schemas
+
+### Status
+- Fully functional
+- All tests passing
+- Ready for integration phase
+

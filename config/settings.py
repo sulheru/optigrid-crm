@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "apps.events",
     'apps.strategy',
     'apps.knowledge',
+    'apps.simulated_personas',
 ]
 
 MIDDLEWARE = [

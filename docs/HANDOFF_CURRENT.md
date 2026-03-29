@@ -1,42 +1,72 @@
 # HANDOFF — CURRENT STATE
 
-## Estado general
-El sistema ha quedado operable, observable y correctamente delimitado por tenant antes de entrar en simulación avanzada.
+## Proyecto
+OptiGrid CRM — AI Commercial Operating System
 
-## Capacidades activas
+## Estado actual
+SMLL (Simulated Mail with LLM) — Fase V0 completada
 
-### Action Loop
-- Dashboard con recomendaciones reales
-- Approval manual desde UI
-- Dismiss manual desde UI
-- Materialización recommendation → ExternalActionIntent
-- Inspección posterior en admin
+## Componentes implementados
 
-### External Actions
-- Admin alineado con el modelo real
-- Lista y detalle funcionales
-- payload y normalized_preview visibles
-- approval / dispatch / execution visibles
-- tenant y mailbox visibles
+### Simulated Personas
+- Modelo `SimulatedPersona` completo
+- Scope por:
+  - OperatingOrganization
+  - MailboxAccount
+- Atributos:
+  - identidad (nombre, rol, empresa)
+  - estilo (formality, communication_style)
+  - estado (interest, trust, frustration, urgency, saturation)
+  - decision_frame
+  - prioridades y pains
 
-### Tenancy
-- OperatingOrganization define la frontera de memoria
-- MailboxAccount representa buzones/actores dentro de esa empresa
-- Existe tenant simulado separado para futuras pruebas SMLL
+### Memoria
+- `SimulatedPersonaMemory`
+- Persistencia de interacciones
+- Indexación por tipo y salience
 
-### Scoping básico
-- AIRecommendation puede pertenecer a una empresa operadora y a un buzón
-- ExternalActionIntent puede pertenecer a una empresa operadora y a un buzón
-- Action Loop propaga scoping recommendation → intent
+### Engine SMLL V0
+- Entrada: `SimulatedIncomingMessage`
+- Salida: `SimulatedReplyResult`
+- Funcionalidades:
+  - detección de señales
+  - generación de respuesta contextual
+  - actualización de estado
+  - persistencia de memoria
 
-## Estado técnico
-- Dashboard carga correctamente
-- Outbox carga correctamente
-- Admin de intents carga correctamente en lista y detalle
-- El sistema está listo para modelar interlocutores simulados persistentes antes de SMLL
+### Tests
+- tests de modelo
+- tests de runtime
+- cobertura básica completa
+- todos los tests pasan
 
-## Limitaciones actuales
-- El resto del CRM aún no está tenantizado
-- El dedupe por tenant en leads/contactos aún no está implementado
-- No existe aún SimulatedPersona
-- No existe aún SMLL
+## Estado del sistema
+
+[Persona] ✅
+[Engine] ✅
+[Memoria] ✅
+[Estado evolutivo] ✅
+[Tests] ✅
+
+[Email integration] ❌ (siguiente fase)
+
+## Notas clave
+
+- Sistema ya simula comportamiento humano, no solo pipeline
+- Respuestas coherentes con:
+  - estado
+  - señales
+  - perfil
+
+## Riesgos actuales
+
+- Ninguno crítico
+- Pendiente integración con sistema de email
+
+## Siguiente objetivo
+
+SMLL Integration V1:
+- conectar engine con flujo de emailing
+- sin providers reales
+- sin side effects externos
+
