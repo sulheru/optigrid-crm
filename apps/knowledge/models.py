@@ -1,70 +1,63 @@
 from django.db import models
-from django.utils import timezone
 
 
 class KnowledgeCandidate(models.Model):
-
-    class Type(models.TextChoices):
+    class CandidateType(models.TextChoices):
         FAQ = "faq", "FAQ"
         BEHAVIOR = "behavior", "Behavior"
-        CAPABILITY = "capability", "Capability Proposal"
 
     class Status(models.TextChoices):
-        PROPOSED = "proposed", "Proposed"
+        NEW = "new", "New"
         ACCEPTED = "accepted", "Accepted"
         REJECTED = "rejected", "Rejected"
 
-    type = models.CharField(max_length=32, choices=Type.choices)
-
+    type = models.CharField(max_length=50, choices=CandidateType.choices)
+    candidate_type = models.CharField(max_length=50, choices=CandidateType.choices)
     content = models.TextField()
 
+    source = models.CharField(max_length=255, default="system")
+
     confidence_score = models.FloatField(default=0.0)
+    metadata = models.JSONField(default=dict, blank=True)
+    source_signature = models.CharField(max_length=255, blank=True, default="")
 
-    source_examples = models.TextField(blank=True, default="")
-
-    status = models.CharField(
-        max_length=16,
-        choices=Status.choices,
-        default=Status.PROPOSED,
-    )
-
-    metadata = models.JSONField(blank=True, null=True)
-
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.type} | {self.status} | {self.content[:60]}"
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.NEW)
 
 
-class KnowledgeEmbedding(models.Model):
-
-    candidate = models.ForeignKey(
-        KnowledgeCandidate,
-        on_delete=models.CASCADE,
-        related_name="embeddings",
-    )
-
-    vector = models.JSONField()
-
-    created_at = models.DateTimeField(default=timezone.now)
+class BehaviorEntry(models.Model):
+    key = models.CharField(max_length=255)
+    value = models.TextField()
 
 
-class FAQ(models.Model):
+class FAQEntry(models.Model):
     question = models.TextField()
     answer = models.TextField()
 
-    is_active = models.BooleanField(default=True)
 
-    version = models.IntegerField(default=1)
+class VectorMemoryItem(models.Model):
+    namespace = models.CharField(max_length=100)
+    key = models.CharField(max_length=255)
+    content = models.TextField()
+    embedding = models.JSONField()
 
-    created_at = models.DateTimeField(default=timezone.now)
+    # 🔴 NUEVO CAMPO
+    metadata = models.JSONField(default=dict, blank=True)
+
+    source_model = models.CharField(max_length=100, blank=True, default="")
+    source_pk = models.CharField(max_length=100, blank=True, default="")
 
 
-class Behavior(models.Model):
-    description = models.TextField()
+class KnowledgeEmbedding(models.Model):
+    content = models.TextField(blank=True, default="")
+    vector = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    is_active = models.BooleanField(default=True)
 
-    version = models.IntegerField(default=1)
+class Behavior(BehaviorEntry):
+    class Meta:
+        proxy = True
 
-    created_at = models.DateTimeField(default=timezone.now)
+
+class FAQ(FAQEntry):
+    class Meta:
+        proxy = True

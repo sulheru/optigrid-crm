@@ -1,70 +1,55 @@
 import math
-import re
-from typing import Iterable, List
+import hashlib
 
 from apps.knowledge.models import VectorMemoryItem
 
 
-TOKEN_RE = re.compile(r"[a-z0-9áéíóúüñ]{2,}", re.IGNORECASE)
-DEFAULT_DIMENSIONS = 128
+def embed_text(text: str):
+    return [float(ord(c)) for c in text[:50]]
 
 
-def tokenize(text: str) -> List[str]:
-    if not text:
-        return []
-    return [m.group(0).lower() for m in TOKEN_RE.finditer(text)]
-
-
-def embed_text(text: str, dimensions: int = DEFAULT_DIMENSIONS) -> List[float]:
-    tokens = tokenize(text)
-    if not tokens:
-        return [0.0] * dimensions
-
-    vector = [0.0] * dimensions
-    for token in tokens:
-        idx = hash(token) % dimensions
-        vector[idx] += 1.0
-
-    norm = math.sqrt(sum(v * v for v in vector))
-    if norm == 0:
-        return vector
-
-    return [v / norm for v in vector]
-
-
-def cosine_similarity(left: Iterable[float], right: Iterable[float]) -> float:
-    left = list(left)
-    right = list(right)
-    if not left or not right or len(left) != len(right):
+def cosine_similarity(a, b):
+    if not a or not b:
         return 0.0
 
-    num = sum(a * b for a, b in zip(left, right))
-    left_norm = math.sqrt(sum(a * a for a in left))
-    right_norm = math.sqrt(sum(b * b for b in right))
+    min_len = min(len(a), len(b))
+    a = a[:min_len]
+    b = b[:min_len]
 
-    if left_norm == 0 or right_norm == 0:
+    dot = sum(x * y for x, y in zip(a, b))
+    norm_a = math.sqrt(sum(x * x for x in a))
+    norm_b = math.sqrt(sum(y * y for y in b))
+
+    if norm_a == 0 or norm_b == 0:
         return 0.0
 
-    return num / (left_norm * right_norm)
+    return dot / (norm_a * norm_b)
 
 
-def upsert_vector_memory(
-    *,
-    namespace: str,
-    source_model: str,
-    source_pk: str,
-    source_text: str,
-    metadata: dict | None = None,
-) -> VectorMemoryItem:
-    embedding = embed_text(source_text)
+def _generate_key(namespace, content):
+    base = f"{namespace}:{content or ''}"
+    return hashlib.sha256(base.encode()).hexdigest()
+
+
+def upsert_vector_memory(*args, **kwargs):
+    namespace = kwargs.get("namespace") or (args[0] if len(args) > 0 else "default")
+
+    content = kwargs.get("content") or (args[1] if len(args) > 1 else "")
+    embedding = kwargs.get("embedding") or embed_text(content)
+
+    metadata = kwargs.get("metadata", {})
+
+    key = kwargs.get("key") or _generate_key(namespace, content)
+
     obj, _ = VectorMemoryItem.objects.update_or_create(
         namespace=namespace,
-        source_model=source_model,
-        source_pk=str(source_pk),
+        key=key,
         defaults={
-            "source_text": source_text,
+            "content": content,
             "embedding": embedding,
-            "metadata": metadata or {},
+            "metadata": metadata,  # 🔴 FIX CLAVE
+            "source_model": kwargs.get("source_model", ""),
+            "source_pk": str(kwargs.get("source_pk", "")),
         },
     )
     return obj

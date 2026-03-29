@@ -1,58 +1,63 @@
 # HANDOFF — CURRENT STATE
 
 ## Estado general
+El sistema OptiGrid CRM ha completado la integración del Mail Provider Layer en el flujo real de ejecución.
 
-El sistema ha completado la estabilización del CORE CONTROL LAYER.
+## Capacidades activas
 
-El flujo principal es ahora:
+### Knowledge
+- Modelos estabilizados
+- Tests en verde
+- Migraciones coherentes
 
-Recommendation → Execution → ExternalActionIntent → (Approval → Dispatch)
+### Recommendations → External Actions
+- Generación de intents automática desde recommendations
+- Soporte para:
+  - followup
+  - reply_strategy
+  - contact_strategy
 
-## Componentes clave
+### Mail Provider Layer
+- Payload provider-aware
+- Multi-account ready
+- Thread-aware
 
-### Recommendations
-- Creación centralizada en:
-  apps/recommendations/services/factory.py
-- Eliminadas rutas paralelas en producción
+### Resolución dinámica
+- account_key heredado desde:
+  - recommendation
+  - metadata
+  - inbound_email
+  - thread
+- thread_ref heredado desde inbound
 
-### Execution Layer
-- Punto único:
-  execute_recommendation_service
-- Acciones soportadas:
-  - reply_strategy → draft + external intent
-  - followup → task
-  - contact_strategy → task
-  - opportunity_review → task (+ posible promoción)
-  - advance_opportunity → stage++
-  - mark_lost → stage=lost
+### Observabilidad
+- normalized_preview implementado
+- incluye:
+  - provider
+  - account_key
+  - destinatarios
+  - subject
+  - thread_ref
+  - provider_status
 
-### Inbound Pipeline
-- Restaurado correctamente
-- scope_type = inbound_email
-- Mapping action → recommendation consistente
+### Guardrails
+- email.send bloqueado globalmente
+- solo se generan drafts
 
-### External Actions
-- Flujo completo:
-  - create intent
-  - approve
-  - dispatch
-- email.send sigue bloqueado (guardrail activo)
+## Flujo actual
 
-## Estado de tests
+Recommendation
+→ ExternalActionIntent
+→ Provider Context
+→ Dispatcher (stub)
 
-- Core tests: OK
-- Emailing tests: OK
-- External actions: OK
-- Único fallo:
-  apps.knowledge.tests (ImportError)
+## Estado técnico
+- Tests globales: OK
+- Sin errores en runtime
+- Sistema estable
 
-## Riesgos conocidos
+## Limitaciones actuales
+- Provider real no conectado (stub)
+- UI no muestra aún normalized_preview
+- Resolución inbound basada en heurísticas
 
-- Módulo knowledge desalineado (no bloqueante)
-- Observabilidad limitada (logs básicos)
-
-## Conclusión
-
-Sistema estable y preparado para integración de:
-- Mail real (controlado)
-- LLM

@@ -35,6 +35,28 @@ def get_runtime_setting(key: str, default: Any = None) -> Any:
     return getattr(settings, key, default)
 
 
+def get_runtime_json_setting(key: str, default: dict | None = None) -> dict:
+    fallback = default or {}
+    value = get_runtime_setting(key, fallback)
+
+    if isinstance(value, dict):
+        return value
+
+    if not isinstance(value, str):
+        return fallback
+
+    raw = value.strip()
+    if not raw:
+        return fallback
+
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        return fallback
+
+    return parsed if isinstance(parsed, dict) else fallback
+
+
 def get_runtime_str_setting(key: str, default: str = "") -> str:
     value = get_runtime_setting(key, default)
     if value is None:

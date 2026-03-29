@@ -1,24 +1,21 @@
 from __future__ import annotations
 
-from .base import MailProvider
+from apps.providers.mail_provider import DraftEnvelope, MailAccountRef, ProviderDraftResult
 
 
-class EmbeddedMailProvider(MailProvider):
+class EmbeddedMailProvider:
+    provider_key = "embedded"
 
-    def create_draft(self, *, to: str, subject: str, body: str) -> dict:
-        return {
-            "provider": "embedded",
-            "status": "draft_created",
-            "to": to,
-            "subject": subject,
-        }
-
-    def send_email(self, *, draft_id: str | None = None) -> dict:
-        return {
-            "provider": "embedded",
-            "status": "sent",
-            "draft_id": draft_id,
-        }
-
-    def fetch_inbox(self) -> list[dict]:
-        return []
+    def create_draft(self, *, account: MailAccountRef, envelope: DraftEnvelope) -> ProviderDraftResult:
+        return ProviderDraftResult(
+            provider=self.provider_key,
+            account_key=account.account_key,
+            external_draft_id=None,
+            status="draft_created",
+            payload={
+                "mode": "local_embedded",
+                "mailbox": account.mailbox,
+                "subject": envelope.subject,
+                "to": envelope.to,
+            },
+        )

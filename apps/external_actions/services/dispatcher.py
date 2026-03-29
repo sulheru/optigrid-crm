@@ -39,9 +39,22 @@ def _ensure_dispatchable(intent: ExternalActionIntent) -> None:
 
 
 def _perform_dispatch(intent: ExternalActionIntent) -> None:
-    # Stub canónico único para esta fase.
-    # Mantiene compatibilidad con los tests actuales y evita múltiples rutas activas.
-    send_email_draft(intent.payload)
+    payload = intent.payload or {}
+
+    provider = payload.get("mail_provider")
+    account_key = payload.get("mail_account_key")
+
+    if intent.intent_type == ExternalActionIntent.IntentType.EMAIL_SEND:
+        raise ValueError("email_send bloqueado por guardrail")
+
+    send_email_draft(
+        {
+            **payload,
+            "provider": provider,
+            "account_key": account_key,
+            "dispatch_mode": "stub_guarded",
+        }
+    )
 
 
 def dispatch_external_action_intent(intent: ExternalActionIntent) -> ExternalActionIntent:

@@ -1,37 +1,32 @@
-# NEXT SESSION — MAIL PORT MULTI-ACCOUNT READY
+# NEXT SESSION OBJECTIVES
 
-## Objetivo
+## Objetivo principal
+Mejorar visibilidad y comenzar transición a ejecución real controlada.
 
-Diseñar e implementar el Mail Provider Layer.
+## Prioridad 1 — Observabilidad (UI/Admin)
+- Mostrar normalized_preview en admin
+- Vista clara de:
+  - provider
+  - account_key
+  - subject
+  - recipients
+  - thread_ref
 
-## Requisitos
+## Prioridad 2 — Logging estructurado
+- Añadir logs de:
+  - draft creation
+  - dispatch events
+- Preparar base para auditoría
 
-- Abstracción de proveedor (SMTP / Microsoft / etc)
-- Soporte multi-cuenta
-- Configuración dinámica (runtime settings)
-- Integración con ExternalActionIntent
+## Prioridad 3 — Provider real (solo draft)
+- Integrar M365 draft API
+- Mantener bloqueo de send
 
-## Restricciones
+## Prioridad 4 — Refinamiento LLM (opcional)
+- Permitir re-generación de drafts antes de ejecución
 
-- NO envío automático de emails
-- Solo creación de drafts
-- Dispatch debe seguir bloqueado
+## No hacer aún
+- No activar email.send
+- No automatizar dispatch real
+- No UI compleja
 
-## Entregables
-
-- mail_provider interface
-- implementación dummy/provider base
-- integración con execution_adapters
-- settings configurables
-
-## No incluir
-
-- UI
-- envío real
-- autenticación compleja
-
-## Validación
-
-- Tests siguen en verde
-- Drafts siguen funcionando
-- External intents siguen generándose

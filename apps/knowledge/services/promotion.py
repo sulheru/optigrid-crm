@@ -1,26 +1,30 @@
-from apps.knowledge.models import KnowledgeCandidate, FAQ, Behavior
+from apps.knowledge.models import (
+    KnowledgeCandidate,
+    BehaviorEntry,
+    FAQEntry,
+)
 
 
 def accept_candidate(candidate: KnowledgeCandidate):
-
-    if candidate.type == KnowledgeCandidate.Type.FAQ:
-        FAQ.objects.create(
+    if candidate.candidate_type == KnowledgeCandidate.CandidateType.FAQ:
+        obj = FAQEntry.objects.create(
             question=candidate.content,
-            answer="TO_BE_DEFINED",
+            answer="",
         )
-
-    elif candidate.type == KnowledgeCandidate.Type.BEHAVIOR:
-        Behavior.objects.create(
-            description=candidate.content,
+    elif candidate.candidate_type == KnowledgeCandidate.CandidateType.BEHAVIOR:
+        obj = BehaviorEntry.objects.create(
+            key=candidate.content,
+            value="",
         )
+    else:
+        return None
 
     candidate.status = KnowledgeCandidate.Status.ACCEPTED
-    candidate.save()
-
-    return candidate
+    candidate.save(update_fields=["status"])
+    return obj
 
 
 def reject_candidate(candidate: KnowledgeCandidate):
     candidate.status = KnowledgeCandidate.Status.REJECTED
-    candidate.save()
+    candidate.save(update_fields=["status"])
     return candidate
