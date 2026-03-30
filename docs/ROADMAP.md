@@ -1,79 +1,59 @@
 # ROADMAP — OPTIGRID CRM
 
-## Fase actual
-TENANT + MAILBOX SCOPING V1 COMPLETADA
+## Estado actual
+SMLL STABLE + DJANGO CORE VERIFIED
 
 ---
 
-## Fase siguiente — SIMULATED PERSONA V1
+## Fase siguiente — IDENTITY & CORPORATION LAYER V1
 
 ### Objetivo
-Crear la base persistente de interlocutores simulados antes de implementar SMLL.
+
+Construir capa de identidad y corporación sobre tenancy existente.
+
+---
+
+### Principio clave
+
+NO duplicar entidades existentes  
+EXTENDER tenancy  
+UNIFICAR modelo  
+
+---
 
 ### Entregables
-- Modelo SimulatedPersona
-- Identidad del personaje:
-  - nombre completo
-  - cargo
-  - empresa
-  - seniority
-- Perfil conductual:
-  - formalidad
-  - estilo de respuesta
-  - tolerancia al riesgo
-  - apertura al cambio
-  - paciencia
-- Contexto profesional:
-  - objetivos
-  - pains
-  - prioridades
-  - presupuesto implícito
-- Estado dinámico:
-  - interés
-  - confianza
-  - saturación
-  - urgencia
-  - frustración
-- Base de prompt builder para respuestas futuras
-- Vínculo con tenant simulado y mailbox simulado
+
+- Corporation
+- CorporateDomain
+- CorporateMembership
 
 ---
 
-## Fase siguiente — SMLL (Simulated Mail with LLM)
+### Integración
 
-### Definición
-Mail Provider implementado mediante LLM, apoyado sobre tenant simulado propio y personajes persistentes.
+- MailboxAccount (tenancy) ← extendido
+- Resolución email → domain → corporation
+- Contexto disponible para SMLL
 
-### Objetivo
-Permitir pruebas end-to-end completas sin interacción con el mundo real y sin mezclar memoria con tenants reales.
+---
 
-### Componentes
-- Simulated tenant
-- Simulated mailbox accounts
-- Simulated persona engine
-- Simulated threads/messages
-- Timing realista
-- Respuestas coherentes con estado interno
+## Fase siguiente — MULTI-TURN SMLL
+
+- Persistencia de estado conversacional
+- Evolución de confianza/interés
 
 ---
 
 ## Fase siguiente — PROVIDER REAL (M365)
 
-### Objetivo
-Conectar ejecución real manteniendo control.
-
-### Alcance inicial
-- SOLO draft creation (no send)
-
-### Restricciones
-- email.send sigue bloqueado
-- ejecución bajo supervisión
+- SOLO draft creation
+- ejecución supervisada
 
 ---
 
-## Principio clave
+## Principio global
 
-Compartir dentro de la empresa operadora.
-Aislar entre empresas operadoras.
-Simulador = tenant propio.
-Persona simulada antes que correo simulado.
+Compartir dentro de empresa  
+Aislar entre empresas  
+Simulador = tenant propio  
+

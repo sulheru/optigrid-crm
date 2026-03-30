@@ -30,3 +30,22 @@
 
 ### Notes
 El sistema ya permite simulación end-to-end sin dependencias externas.
+
+## [Django Core Audit & Identity Cleanup]
+
+### Fixed
+- Eliminadas referencias inválidas a app 'identity'
+- Eliminado MailboxAccount duplicado en emailing
+- Eliminado servicio huérfano mailbox_identity
+
+### Changed
+- Se reconoce apps.tenancy.MailboxAccount como entidad canónica
+
+### Validated
+- Integridad completa del motor Django
+- System check sin errores
+
+### Architectural Notes
+- Identity Layer debe construirse sobre tenancy
+- Prohibido duplicar MailboxAccount en futuras fases
+

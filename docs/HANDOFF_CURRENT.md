@@ -1,57 +1,62 @@
-# HANDOFF CURRENT — SMLL Integration Stabilized
+# HANDOFF CURRENT — Post Audit Stable State
 
 ## Estado actual
 
-El sistema ha alcanzado un estado estable tras completar la integración de SMLL dentro del pipeline de emailing.
+Sistema Django completamente estable tras auditoría técnica.
 
-### Flujo funcional confirmado
+SMLL sigue funcionando correctamente.
 
-InboundEmail
-→ process_incoming_email
-→ Provider Router
-→ SMLL Adapter
-→ SMLL Engine (persona + memoria + LLM)
-→ OutboundEmail (simulado)
-→ (CRM Update Engine pendiente)
+---
 
-Tests:
-- apps.simulated_personas.tests_runtime ✔
-- apps.emailing.tests_smll_integration ✔
+## Corrección clave introducida
 
-## Cambios clave de la sesión
+MailboxAccount ya existe y es canónico en:
 
-1. Eliminación de suposiciones en integración
-2. Introducción de contexto explícito:
-   - mailbox_account
-   - operating_organization
-3. Refactor del bootstrap:
-   - creación automática de organización
-   - creación automática de mailbox
-   - creación automática de persona genérica
-4. Corrección del fallo crítico:
-   - dependencia de MailboxAccount inexistente en tests
+apps.tenancy.models
 
-## Estado de SMLL
+Cualquier nueva capa debe construirse sobre esta base.
 
-- Engine: estable
-- Adapter: funcional
-- Router: operativo
-- Bootstrap: autónomo
-- Multi-turn: no implementado
-- CRM Update Engine: no integrado
+---
+
+## Eliminado en esta sesión
+
+- MailboxAccount duplicado en emailing
+- Servicios dependientes de identity
+- Referencias a app inexistente
+
+---
+
+## Estado del sistema
+
+✔ Django core estable  
+✔ SMLL estable  
+✔ Pipeline intacto  
+✔ Sin errores en checks  
+
+---
 
 ## Limitaciones actuales
 
-- No existe capa de corporación/dominio
-- No existe modelo de identidad
-- El contexto de tenancy no está persistido en emailing
-- Pipeline se detiene tras outbound
+- No existe Identity Layer
+- No existe Corporation Layer
+- No hay resolución por dominio
+- No hay multi-corporación real
 
-## Conclusión
+---
 
-SMLL está correctamente integrado como provider interno.
-El sistema está listo para evolucionar hacia:
+## Próximo paso real
 
-- Identity & Corporation Layer
-- Multi-turn simulation
-- CRM Update Engine
+Implementar:
+
+Identity & Corporation Layer V1
+
+sobre tenancy existente
+
+---
+
+## Regla crítica
+
+NO duplicar MailboxAccount  
+NO crear modelos paralelos  
+EXTENDER, no reemplazar  
+

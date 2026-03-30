@@ -1,69 +1,76 @@
-# NEXT SESSION — Identity & Corporation Layer V1
+# NEXT SESSION — Identity & Corporation Layer V1 (Corrected)
 
 ## Objetivo
 
-Implementar la capa fundacional de identidad y corporación que permitirá:
+Implementar la capa de identidad y corporación sobre el sistema real existente.
 
-- login corporativo
-- múltiples empresas
-- coherencia en SMLL
-- base para providers reales (M365, SMTP)
+---
+
+## Contexto actualizado
+
+MailboxAccount ya existe en tenancy.
+
+La nueva capa debe integrarse sobre él.
 
 ---
 
 ## Alcance
 
-### 1. Modelos mínimos
+### Modelos a crear
 
 - Corporation
 - CorporateDomain
 - CorporateMembership
 
-(opcionalmente IdentityEntity en versión simplificada)
+(opcional: IdentityEntity simplificado)
 
 ---
 
-### 2. Relaciones
+## Relaciones
 
 - Corporation → Domains
-- Domain → Mailboxes
-- Identity → Membership → Corporation
+- Domain → MailboxAccount (existente)
+- Membership → Corporation
 
 ---
 
-### 3. Resolución por dominio
-
-Implementar:
+## Resolución clave
 
 email → domain → corporation
 
 ---
 
-### 4. Integración mínima con sistema actual
+## Integración
 
-- MailboxAccount debe referenciar dominio o corporación
-- SMLL debe poder acceder a CorporationProfile
+- MailboxAccount debe:
+  - referenciar dominio o corporación
+- SMLL debe:
+  - poder acceder a Corporation context
 
 ---
 
-### 5. No hacer en esta sesión
+## Restricciones
 
-- UI
-- CRM Update Engine
-- Providers reales
-- Multi-turn simulation
+NO:
+- crear MailboxAccount nuevo
+- tocar UI
+- tocar providers reales
+- implementar CRM Update Engine
 
 ---
 
 ## Resultado esperado
 
-- Soporte multi-corporación
+- Multi-corporation base funcional
+- Resolución por dominio operativa
+- SMLL contextualizado por empresa
 - Base para login corporativo
-- Estructura coherente para dominios y buzones
-- SMLL contextualizado a nivel empresa
 
 ---
 
-## Nota clave
+## Nota crítica
 
-Esta fase es fundacional. No debe mezclarse con UI ni providers.
+Esta sesión es fundacional.
+
+Errores aquí comprometen todo el sistema.
+
