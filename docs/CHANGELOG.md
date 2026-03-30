@@ -1,69 +1,32 @@
 # CHANGELOG
 
-## [Session] Action Loop V1 + Operability + Tenant Scoping
+## [SMLL Integration Stabilization]
 
 ### Added
-- Action Loop V1 desde dashboard:
-  - approve
-  - dismiss
-- Servicio de materialización recommendation → ExternalActionIntent
-- Nueva app tenancy
-- Modelo OperatingOrganization
-- Modelo MailboxAccount
-- Seed inicial:
-  - OptiGrid IT
-  - OptiGrid Simulation Lab
+- Bootstrap automático de:
+  - OperatingOrganization
+  - MailboxAccount
+  - SimulatedPersona
+- Context injection en process_incoming_email
+- Integración completa SMLL dentro de emailing pipeline
 
 ### Changed
-- AIRecommendation ahora admite:
+- Eliminada dependencia implícita de mailbox en tests
+- Provider Router ahora pasa:
   - operating_organization
   - mailbox_account
-- ExternalActionIntent ahora admite:
-  - operating_organization
-  - mailbox_account
-- Action Loop propaga scoping desde recommendation a intent
-- Admin de ExternalActionIntent alineado con el modelo real
-
-### Improved
-- Observabilidad real de intents
-- Human-in-the-loop funcional
-- Frontera de memoria por empresa operadora
-- Base para varios buzones dentro del mismo tenant
-- Aislamiento preparado entre tenants distintos
-- Base correcta para SMLL posterior
+- Adapter respeta contrato real del engine
 
 ### Fixed
-- Errores del admin por campos asumidos incorrectamente
-- Errores de render en lista de intents
-- Errores de importación de tenancy
+- Error crítico:
+  "No existe ningún MailboxAccount activo para SMLL"
+- Tests fallando por falta de datos iniciales
 
-### Guardrails
-- Sin provider real
-- Sin envío real
-- email.send sigue bloqueado
+### Known limitations
+- CRM Update Engine no implementado
+- No multi-turn simulation
+- No identity/corporation layer
+- No UI
 
-## [SMLL V0] — Simulated Persona Runtime
-
-### Added
-- SimulatedPersona model (multi-tenant + mailbox scoped)
-- SimulatedPersonaMemory
-- SMLL Engine V0:
-  - signal detection
-  - reply generation
-  - state evolution
-  - memory persistence
-
-### Tests
-- Model tests
-- Runtime tests
-- Robust test setup (schema-agnostic org/mailbox creation)
-
-### Improvements
-- Flexible test assertions (semantic instead of literal)
-- Compatibility layer for tenancy/mailbox schemas
-
-### Status
-- Fully functional
-- All tests passing
-- Ready for integration phase
-
+### Notes
+El sistema ya permite simulación end-to-end sin dependencias externas.

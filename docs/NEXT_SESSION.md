@@ -1,45 +1,69 @@
-# NEXT SESSION — SMLL Integration V1
+# NEXT SESSION — Identity & Corporation Layer V1
 
 ## Objetivo
-Integrar el SMLL Engine dentro del sistema de emailing sin usar providers reales.
+
+Implementar la capa fundacional de identidad y corporación que permitirá:
+
+- login corporativo
+- múltiples empresas
+- coherencia en SMLL
+- base para providers reales (M365, SMTP)
+
+---
 
 ## Alcance
 
-### 1. Simulated Email Adapter
-- mapear EmailMessage → SimulatedIncomingMessage
-- mapear SimulatedReplyResult → EmailMessage
+### 1. Modelos mínimos
 
-### 2. Provider Hook
+- Corporation
+- CorporateDomain
+- CorporateMembership
 
-Condición:
-email.provider == "mail_embedded"
+(opcionalmente IdentityEntity en versión simplificada)
 
-Acción:
-- usar SMLL engine
-- evitar providers reales
+---
 
-### 3. Persistencia
+### 2. Relaciones
 
-- inbound simulated emails
-- outbound simulated replies
-- usar modelos existentes (no duplicar)
+- Corporation → Domains
+- Domain → Mailboxes
+- Identity → Membership → Corporation
 
-### 4. Flags
+---
 
-- marcar emails como:
-  - simulated
-  - source = smll
+### 3. Resolución por dominio
 
-## Restricciones
+Implementar:
 
-- NO side effects externos
-- NO envío real de correos
-- mantener compatibilidad con pipeline existente
+email → domain → corporation
+
+---
+
+### 4. Integración mínima con sistema actual
+
+- MailboxAccount debe referenciar dominio o corporación
+- SMLL debe poder acceder a CorporationProfile
+
+---
+
+### 5. No hacer en esta sesión
+
+- UI
+- CRM Update Engine
+- Providers reales
+- Multi-turn simulation
+
+---
 
 ## Resultado esperado
 
-Sistema capaz de:
-- simular conversación completa
-- alimentar pipeline CRM
-- generar recomendaciones reales
+- Soporte multi-corporación
+- Base para login corporativo
+- Estructura coherente para dominios y buzones
+- SMLL contextualizado a nivel empresa
 
+---
+
+## Nota clave
+
+Esta fase es fundacional. No debe mezclarse con UI ni providers.

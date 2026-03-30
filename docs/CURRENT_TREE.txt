@@ -108,18 +108,22 @@
 │   │   │       ├── 0009_merge_0008_emailing_branches.cpython-312.pyc
 │   │   │       ├── 00XX_inbounddecision_apply_fields.cpython-312.pyc
 │   │   │       └── __init__.cpython-312.pyc
+│   │   ├── models_patch_smll.py
 │   │   ├── models.py
 │   │   ├── __pycache__
 │   │   │   ├── admin.cpython-312.pyc
 │   │   │   ├── apps.cpython-312.pyc
 │   │   │   ├── __init__.cpython-312.pyc
 │   │   │   ├── models.cpython-312.pyc
+│   │   │   ├── smll_adapter.cpython-312.pyc
 │   │   │   ├── tests.cpython-312.pyc
 │   │   │   ├── tests_inbound_apply.cpython-312.pyc
+│   │   │   ├── tests_smll_integration.cpython-312.pyc
 │   │   │   ├── urls.cpython-312.pyc
 │   │   │   └── views.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── decision_automation.py
+│   │   │   ├── email_processing_patch.py
 │   │   │   ├── inbound_analysis_service.py
 │   │   │   ├── inbound_decision_apply_service.py
 │   │   │   ├── inbound_decision_engine.py
@@ -127,8 +131,10 @@
 │   │   │   ├── inbound_simulator.py
 │   │   │   ├── mail_provider_service.py
 │   │   │   ├── outbound_sender.py
+│   │   │   ├── provider_router.py
 │   │   │   ├── __pycache__
 │   │   │   │   ├── decision_automation.cpython-312.pyc
+│   │   │   │   ├── email_processing_patch.cpython-312.pyc
 │   │   │   │   ├── inbound_analysis_service.cpython-312.pyc
 │   │   │   │   ├── inbound_decision_apply_service.cpython-312.pyc
 │   │   │   │   ├── inbound_decision_engine.cpython-312.pyc
@@ -136,13 +142,18 @@
 │   │   │   │   ├── inbound_simulator.cpython-312.pyc
 │   │   │   │   ├── mail_provider_service.cpython-312.pyc
 │   │   │   │   ├── outbound_sender.cpython-312.pyc
+│   │   │   │   ├── provider_router.cpython-312.pyc
 │   │   │   │   ├── recommendation_bridge.cpython-312.pyc
-│   │   │   │   └── reply_generator.cpython-312.pyc
+│   │   │   │   ├── reply_generator.cpython-312.pyc
+│   │   │   │   └── smll_bootstrap.cpython-312.pyc
 │   │   │   ├── recommendation_bridge.py
-│   │   │   └── reply_generator.py
+│   │   │   ├── reply_generator.py
+│   │   │   └── smll_bootstrap.py
+│   │   ├── smll_adapter.py
 │   │   ├── templates
 │   │   │   └── emailing
 │   │   ├── tests.py
+│   │   ├── tests_smll_integration.py
 │   │   ├── urls.py
 │   │   └── views.py
 │   ├── events
@@ -725,6 +736,7 @@
 │   ├── SESSION_LOG_2026_03_27.md
 │   ├── SESSION_LOG_2026_03_28.md
 │   ├── SESSION_LOG_2026_03_29.md
+│   ├── SESSION_LOG_2026_03_30.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -902,7 +914,8 @@
 │   │   └── chat.html
 │   └── tasks
 │       └── list.html
+├── testing.py
 ├── tests
 └── tmp
 
-166 directories, 740 files
+166 directories, 753 files

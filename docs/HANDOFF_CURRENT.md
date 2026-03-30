@@ -1,72 +1,57 @@
-# HANDOFF — CURRENT STATE
-
-## Proyecto
-OptiGrid CRM — AI Commercial Operating System
+# HANDOFF CURRENT — SMLL Integration Stabilized
 
 ## Estado actual
-SMLL (Simulated Mail with LLM) — Fase V0 completada
 
-## Componentes implementados
+El sistema ha alcanzado un estado estable tras completar la integración de SMLL dentro del pipeline de emailing.
 
-### Simulated Personas
-- Modelo `SimulatedPersona` completo
-- Scope por:
-  - OperatingOrganization
-  - MailboxAccount
-- Atributos:
-  - identidad (nombre, rol, empresa)
-  - estilo (formality, communication_style)
-  - estado (interest, trust, frustration, urgency, saturation)
-  - decision_frame
-  - prioridades y pains
+### Flujo funcional confirmado
 
-### Memoria
-- `SimulatedPersonaMemory`
-- Persistencia de interacciones
-- Indexación por tipo y salience
+InboundEmail
+→ process_incoming_email
+→ Provider Router
+→ SMLL Adapter
+→ SMLL Engine (persona + memoria + LLM)
+→ OutboundEmail (simulado)
+→ (CRM Update Engine pendiente)
 
-### Engine SMLL V0
-- Entrada: `SimulatedIncomingMessage`
-- Salida: `SimulatedReplyResult`
-- Funcionalidades:
-  - detección de señales
-  - generación de respuesta contextual
-  - actualización de estado
-  - persistencia de memoria
+Tests:
+- apps.simulated_personas.tests_runtime ✔
+- apps.emailing.tests_smll_integration ✔
 
-### Tests
-- tests de modelo
-- tests de runtime
-- cobertura básica completa
-- todos los tests pasan
+## Cambios clave de la sesión
 
-## Estado del sistema
+1. Eliminación de suposiciones en integración
+2. Introducción de contexto explícito:
+   - mailbox_account
+   - operating_organization
+3. Refactor del bootstrap:
+   - creación automática de organización
+   - creación automática de mailbox
+   - creación automática de persona genérica
+4. Corrección del fallo crítico:
+   - dependencia de MailboxAccount inexistente en tests
 
-[Persona] ✅
-[Engine] ✅
-[Memoria] ✅
-[Estado evolutivo] ✅
-[Tests] ✅
+## Estado de SMLL
 
-[Email integration] ❌ (siguiente fase)
+- Engine: estable
+- Adapter: funcional
+- Router: operativo
+- Bootstrap: autónomo
+- Multi-turn: no implementado
+- CRM Update Engine: no integrado
 
-## Notas clave
+## Limitaciones actuales
 
-- Sistema ya simula comportamiento humano, no solo pipeline
-- Respuestas coherentes con:
-  - estado
-  - señales
-  - perfil
+- No existe capa de corporación/dominio
+- No existe modelo de identidad
+- El contexto de tenancy no está persistido en emailing
+- Pipeline se detiene tras outbound
 
-## Riesgos actuales
+## Conclusión
 
-- Ninguno crítico
-- Pendiente integración con sistema de email
+SMLL está correctamente integrado como provider interno.
+El sistema está listo para evolucionar hacia:
 
-## Siguiente objetivo
-
-SMLL Integration V1:
-- conectar engine con flujo de emailing
-- sin providers reales
-- sin side effects externos
-
+- Identity & Corporation Layer
+- Multi-turn simulation
+- CRM Update Engine
