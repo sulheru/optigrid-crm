@@ -34,6 +34,11 @@
 │   │   │   ├── __init__.py
 │   │   │   └── label_filters.py
 │   │   └── ui_semantics.py
+│   ├── crm_update_engine
+│   │   ├── entrypoints.py
+│   │   ├── events.py
+│   │   ├── __init__.py
+│   │   └── services.py
 │   ├── dashboard_views.py
 │   ├── emailing
 │   │   ├── admin.py
@@ -76,6 +81,7 @@
 │   │   ├── smll_adapter.py
 │   │   ├── templates
 │   │   │   └── emailing
+│   │   ├── tests_crm_update_engine.py
 │   │   ├── tests.py
 │   │   ├── tests_smll_integration.py
 │   │   ├── urls.py
@@ -123,8 +129,10 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_remove_factrecord_confidence_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
+│   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── inferences
@@ -133,6 +141,7 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_remove_inferencerecord_inference_value_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services.py
@@ -259,6 +268,7 @@
 │   │   │   ├── external_actions.py
 │   │   │   ├── factory.py
 │   │   │   └── __init__.py
+│   │   ├── services_engine.py
 │   │   ├── services_llm.py
 │   │   ├── services.py
 │   │   ├── simulation.py
@@ -328,6 +338,7 @@
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_seed_default_orgs.py
 │   │   │   ├── 0003_identity_and_corporate_domains.py
+│   │   │   ├── 0004_alter_corporatedomain_options_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services
@@ -340,8 +351,10 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_remove_crmupdateproposal_approval_required_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
+│   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
 │   └── users
@@ -359,6 +372,7 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
+├── ch_test.sh
 ├── cleansession.sh
 ├── cleartmp.sh
 ├── config
@@ -383,9 +397,11 @@
 │   ├── CURRENT_TREE.md
 │   ├── CURRENT_TREE.txt
 │   ├── DASHBOARD_STATUS_UPDATE.md
+│   ├── GIT_STATUS.md
 │   ├── HANDOFF_CURRENT.md
 │   ├── NEXT_SESSION.md
 │   ├── PROJECT_HEALTH_REPORT.md
+│   ├── REQUIREMENTS_SNAPSHOT.txt
 │   ├── ROADMAP_AI_COMMERCIAL_OS.md
 │   ├── ROADMAP.md
 │   ├── ROADMAP_V2_AI_COMMERCIAL_OS.md
@@ -413,6 +429,7 @@
 ├── flog.sh
 ├── frun.sh
 ├── manage.py
+├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
@@ -554,4 +571,4 @@
 ├── testing.py
 └── tests
 
-98 directories, 457 files
+99 directories, 473 files

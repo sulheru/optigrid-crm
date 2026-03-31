@@ -1,43 +1,246 @@
-# ROADMAP
+# ROADMAP — OPTIGRID CRM (IA-FIRST)
 
-## Estado actual
-Base fundacional de tenancy/corporation consolidada y estable.
+## VISIÓN
 
-## Decisiones ya cerradas
-- `OperatingOrganization` es la corporation canónica del sistema.
-- `MailboxAccount` sigue siendo la entidad canónica de buzón.
-- Se añade capa fundacional de tenancy con:
-  - `CorporateDomain`
-  - `Identity`
-  - `CorporateMembership`
-- La resolución por dominio existe en:
-  - `apps.tenancy.services.domain_resolution`
-- El provider layer SMLL mantiene control estricto:
-  - requiere `mailbox_account` explícito
-  - o una dirección de mailbox del sistema resoluble de forma segura
-- No se infiere tenant desde el remitente externo del cliente.
-- No se implementa envío automático de emails bajo ninguna circunstancia.
+Construir un CRM IA-first donde:
 
-## Lo completado en esta sesión
-- estabilización completa de `apps/tenancy/models.py`
-- coherencia entre tenancy y SMLL
-- corrección del `prompt_builder` para usar el campo real `mailbox_account.email`
-- alineación del bootstrap SMLL con `CorporateDomain`
-- refuerzo del provider layer con resolución segura de mailbox
-- validación completa:
-  - tests verdes
-  - `manage.py check` limpio
+Signals → Reasoning → Decisions → Actions
 
-## Próximos pasos recomendados
-1. Implementar `apps.crm_update_engine.entrypoints.process_email`
-2. Conectar ese entrypoint con el pipeline actual
-3. Persistir tenant scope/mailbox scope en entidades de emailing
-4. Reducir dependencia de `mailbox_account` inyectado externamente
-5. Preparar futura integración con providers reales sin romper SMLL
+El sistema no es una base de datos, es un motor de interpretación y acción.
 
-## Fuera de alcance inmediato
-- UI de tenancy / identity
-- login corporativo real
-- providers M365/Gmail reales
-- autoenvío
-- refactor masivo de emailing
+---
+
+# 🧱 FASE 0 — FOUNDATION (COMPLETADA)
+
+## Objetivo
+Pipeline mínimo funcional y estable
+
+## Entregado
+
+- CRM Update Engine V1
+  - FactRecord
+  - InferenceRecord
+  - CRMUpdateProposal
+  - AIRecommendation
+
+- Pipeline:
+  email → fact → inference → proposal → recommendation
+
+- Idempotencia garantizada
+- Tests de integración pasando
+- Señales básicas (pricing)
+
+## Estado
+
+🟢 COMPLETADO
+
+---
+
+# ⚙️ FASE 1 — RULE ENGINE (SIGUIENTE)
+
+## Objetivo
+
+Desacoplar lógica de negocio del código
+
+## Entregables
+
+- Estructura RULES declarativa
+- Rule evaluator
+- Integración con proposals
+- Compatibilidad con tests actuales
+
+## Resultado esperado
+
+Signals → Rules → Proposals
+
+## Estado
+
+🟡 INMEDIATO
+
+---
+
+# 🧠 FASE 2 — KNOWLEDGE LAYER
+
+## Objetivo
+
+Persistir conocimiento útil para decisiones
+
+## Entregables
+
+- Knowledge storage (vectorial o estructurado)
+- Enriquecimiento de contexto
+- Reutilización de patrones
+
+## Ejemplo
+
+"He aprendido a responder pricing → reutilizar estrategia"
+
+## Estado
+
+🟡 CORTO PLAZO
+
+---
+
+# 🤖 FASE 3 — LLM INTEGRATION (SMLL → REAL)
+
+## Objetivo
+
+Introducir razonamiento dinámico
+
+## Entregables
+
+- LLM para:
+  - generación de respuestas
+  - interpretación avanzada
+  - sugerencias
+
+- Integración con:
+  - proposals
+  - recommendations
+
+## Notas
+
+- Mantener fallback determinista
+- No romper pipeline
+
+## Estado
+
+🟡 MEDIO PLAZO
+
+---
+
+# 📬 FASE 4 — MAIL PROVIDERS (REAL WORLD)
+
+## Objetivo
+
+Conectar con el mundo real
+
+## Entregables
+
+- Microsoft 365
+- Gmail
+- Sync bidireccional
+
+## Estado
+
+🟡 MEDIO PLAZO
+
+---
+
+# 🧩 FASE 5 — UI CONFIGURACIÓN
+
+## Objetivo
+
+Control humano del sistema
+
+## Entregables
+
+- Configuración de:
+  - LLM
+  - reglas
+  - automatizaciones
+  - providers
+
+## Estado
+
+🟡 MEDIO PLAZO
+
+---
+
+# 🧠 FASE 6 — AUTONOMOUS LAYER
+
+## Objetivo
+
+Sistema proactivo
+
+## Entregables
+
+- Sugerencias automáticas
+- Auto-acciones (con aprobación)
+- Aprendizaje continuo
+
+## Ejemplo
+
+"He aprendido X → ¿quieres automatizarlo?"
+
+## Estado
+
+🔵 LARGO PLAZO
+
+---
+
+# 🔐 FASE 7 — SAFETY & CONTROL
+
+## Objetivo
+
+Evitar decisiones irreversibles sin control
+
+## Entregables
+
+- Approval system (ya iniciado)
+- Policy engine
+- Risk model
+
+## Regla clave
+
+Acciones irreversibles → requieren aprobación
+
+## Estado
+
+🟡 CONTINUO
+
+---
+
+# 🏢 FASE 8 — MULTI-CORPORATION
+
+## Objetivo
+
+Escalar a múltiples empresas
+
+## Entregables
+
+- Identity layer
+- Corporate domains
+- Context isolation
+
+## Estado
+
+🟡 EN PROGRESO (base ya creada)
+
+---
+
+# 📊 FASE 9 — OBSERVABILITY
+
+## Objetivo
+
+Entender el sistema
+
+## Entregables
+
+- Métricas de pipeline
+- Logs estructurados
+- Debugging avanzado
+
+## Estado
+
+🟡 FUTURO CERCANO
+
+---
+
+# 🧭 PRINCIPIOS
+
+- IA-first, no CRUD-first
+- Determinismo antes que magia
+- Automatizar solo lo reversible
+- No romper pipeline existente
+- Simplicidad > sobreingeniería
+
+---
+
+# 🟢 ESTADO GLOBAL
+
+Foundation sólida completada.
+
+Siguiente paso natural:
+👉 RULE ENGINE
+

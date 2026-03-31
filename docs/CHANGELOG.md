@@ -1,36 +1,31 @@
 # CHANGELOG
 
-## 2026-03-31 — Identity & Corporation Layer V1 estabilizado
+## [CRM Update Engine V1 — Pipeline completo]
 
-### Hecho
-- Se consolida `OperatingOrganization` como corporation canónica.
-- Se mantiene `MailboxAccount` como entidad canónica de buzón.
-- Se estabilizan los modelos de tenancy:
-  - `OperatingOrganization`
-  - `CorporateDomain`
-  - `Identity`
-  - `CorporateMembership`
-  - `MailboxAccount`
-- Se deja operativa la resolución:
-  - `email -> domain -> CorporateDomain -> OperatingOrganization`
-- Se corrige `apps/simulated_personas/services/prompt_builder.py`:
-  - uso correcto de `mailbox_account.email`
-- Se corrige `apps/emailing/services/smll_bootstrap.py`:
-  - simulation lab alineada con `CorporateDomain`
-  - dominio `simulation.local` asegurado
-- Se refuerza `apps/emailing/services/provider_router.py`:
-  - resolución segura de mailbox
-  - sin inferencia peligrosa desde remitente externo
-- Se valida la fase con:
-  - `python manage.py test apps.tenancy apps.simulated_personas apps.emailing`
-  - `python manage.py check`
+### Añadido
+- Pipeline completo:
+  - FactRecord
+  - InferenceRecord
+  - CRMUpdateProposal
+  - AIRecommendation
 
-### Resultado
-- 25 tests OK
-- system check OK
-- tenancy + SMLL + provider layer consistentes
+### Añadido
+- create_email_fact()
+- create_basic_proposal()
+- create_basic_email_recommendation()
 
-### Pendiente
-- crear `apps.crm_update_engine.entrypoints.process_email`
-- persistir tenant/mailbox scope en emailing
-- limpiar drift de migraciones no relacionadas (`knowledge`, futuros ajustes tenancy)
+### Mejorado
+- Entry point ahora orquesta todo el pipeline
+
+### Añadido
+- Lógica semántica:
+  - pricing_interest_signal → prepare_pricing_response
+
+### Corregido
+- Inconsistencia de source_id (string vs int)
+
+### Validado
+- Tests de integración pasan (idempotencia + pricing)
+
+## Estado
+Pipeline funcional, coherente y estable

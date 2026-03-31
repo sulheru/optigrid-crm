@@ -1,48 +1,43 @@
-# NEXT SESSION
+# NEXT SESSION — CRM UPDATE ENGINE V2
 
-## Objetivo principal
-Implementar el entrypoint mínimo del CRM Update Engine para cerrar el loop del pipeline actual.
+## Objetivo
 
-## Contexto real
-- Tenancy/corporation layer estable
-- Domain resolution implementado
-- SMLL estable
-- Provider layer reforzado
-- Tests verdes
-- `manage.py check` limpio
+Introducir un Rule Engine para desacoplar la lógica de negocio.
 
 ## Problema actual
-El pipeline de emailing intenta llamar a:
-- `apps.crm_update_engine.entrypoints.process_email`
 
-pero el módulo no existe en la ruta esperada.
+La lógica está hardcodeada:
 
-## Objetivo técnico concreto
-Crear:
-- `apps/crm_update_engine/entrypoints.py`
+if has_pricing_signal:
+    proposal_type = "prepare_pricing_response"
 
-Con al menos:
-- `process_email(email)`
+Esto limita:
+- escalabilidad
+- configurabilidad
+- integración futura con LLM
 
-## Requisitos
-- no romper tests existentes
-- no tocar providers reales
-- no meter UI
-- no meter envío automático
-- mantener diseño IA-first
-- mantener separación entre core y adaptadores
+## Objetivo técnico
+
+Crear un sistema:
+
+Signals → Rules → Proposals
+
+## Alcance
+
+- Definir estructura RULES
+- Implementar rule evaluator
+- Integrar con create_basic_proposal
+- Mantener compatibilidad con tests actuales
+
+## No hacer
+
+- No introducir UI
+- No introducir LLM todavía
+- No romper pipeline existente
 
 ## Resultado esperado
-- pipeline ya no cae en `ModuleNotFoundError`
-- existe un entrypoint canónico para evolución futura
-- queda preparado el siguiente paso:
-  - persistir tenant/mailbox scope en emailing
 
-## Ficheros previsibles a tocar
-- `apps/crm_update_engine/entrypoints.py`
-- posible `apps/crm_update_engine/__init__.py`
-- posible wiring mínimo con servicios existentes
+- Lógica desacoplada
+- Sistema extensible
+- Base preparada para IA
 
-## Validación esperada
-- `python manage.py test apps.tenancy apps.simulated_personas apps.emailing`
-- `python manage.py check`

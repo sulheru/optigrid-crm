@@ -1,23 +1,25 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/updates/models.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.db import models
 
 
 class CRMUpdateProposal(models.Model):
+    """
+    V0 mínimo:
+    - propuesta generada por el engine
+    - no ejecuta nada todavía
+    """
 
-    target_entity_type = models.CharField(max_length=50)
+    source_type = models.CharField(max_length=50)
+    source_id = models.IntegerField()
 
-    target_entity_id = models.CharField(max_length=100)
+    proposal_type = models.CharField(max_length=100)
+    payload = models.JSONField(default=dict, blank=True)
 
-    proposed_change_type = models.CharField(max_length=100)
-
-    proposed_payload = models.JSONField()
-
-    confidence = models.FloatField()
-
-    approval_required = models.BooleanField(default=True)
-
-    proposal_status = models.CharField(max_length=50, default="proposed")
+    status = models.CharField(
+        max_length=50,
+        default="proposed",  # proposed | approved | rejected | applied
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.proposal_type} ({self.source_type}:{self.source_id})"
