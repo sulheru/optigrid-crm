@@ -36,6 +36,9 @@ class OperatingOrganization(models.Model):
         verbose_name_plural = "Operating Organizations"
 
     def save(self, *args, **kwargs):
+        if self.primary_domain:
+            self.primary_domain = self.primary_domain.strip().lower()
+
         if not self.slug:
             base = slugify(self.name)[:100] or "org"
             slug = base
@@ -45,11 +48,129 @@ class OperatingOrganization(models.Model):
                 slug = f"{base[: max(1, 120 - len(suffix))]}{suffix}"
                 i += 1
             self.slug = slug
+
         super().save(*args, **kwargs)
+
+    @property
+    def corporation(self):
+        return self
 
     def __str__(self):
         sim = " [SIM]" if self.is_simulated else ""
         return f"{self.name}{sim}"
+
+
+class CorporateDomain(models.Model):
+    operating_organization = models.ForeignKey(
+        OperatingOrganization,
+        on_delete=models.CASCADE,
+        related_name="corporate_domains",
+    )
+    domain = models.CharField(max_length=255, unique=True)
+    is_primary = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["domain"]
+        verbose_name = "Corporate Domain"
+        verbose_name_plural = "Corporate Domains"
+        indexes = [
+            models.Index(fields=["domain"], name="cd_dom_idx"),
+            models.Index(fields=["operating_organization", "is_active"], name="cd_org_act_idx"),
+        ]
+
+    def save(self, *args, **kwargs):
+        self.domain = self.domain.strip().lower()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.domain} → {self.operating_organization.name}"
+
+
+class Identity(models.Model):
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        DISABLED = "disabled", "Disabled"
+        ARCHIVED = "archived", "Archived"
+
+    email = models.EmailField(unique=True)
+    display_name = models.CharField(max_length=200, blank=True)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
+    metadata = models.JSONField(default=dict, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["email"]
+        verbose_name = "Identity"
+        verbose_name_plural = "Identities"
+
+    def save(self, *args, **kwargs):
+        self.email = self.email.strip().lower()
+        super().save(*args, **kwargs)
+
+    @property
+    def email_domain(self) -> str:
+        if "@" not in self.email:
+            return ""
+        return self.email.split("@", 1)[1].strip().lower()
+
+    def __str__(self):
+        return self.display_name or self.email
+
+
+class CorporateMembership(models.Model):
+    class Role(models.TextChoices):
+        OWNER = "owner", "Owner"
+        ADMIN = "admin", "Admin"
+        MEMBER = "member", "Member"
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        INVITED = "invited", "Invited"
+        DISABLED = "disabled", "Disabled"
+        ARCHIVED = "archived", "Archived"
+
+    identity = models.ForeignKey(
+        Identity,
+        on_delete=models.CASCADE,
+        related_name="memberships",
+    )
+    operating_organization = models.ForeignKey(
+        OperatingOrganization,
+        on_delete=models.CASCADE,
+        related_name="memberships",
+    )
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.MEMBER)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
+    is_default = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["operating_organization__name", "identity__email"]
+        verbose_name = "Corporate Membership"
+        verbose_name_plural = "Corporate Memberships"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["identity", "operating_organization"],
+                name="uniq_id_org",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["operating_organization", "status"], name="cm_org_st_idx"),
+            models.Index(fields=["identity", "status"], name="cm_id_st_idx"),
+        ]
+
+    def __str__(self):
+        return f"{self.identity.email} @ {self.operating_organization.name} [{self.role}]"
 
 
 class MailboxAccount(models.Model):
@@ -91,6 +212,20 @@ class MailboxAccount(models.Model):
         )
         verbose_name = "Mailbox Account"
         verbose_name_plural = "Mailbox Accounts"
+
+    def save(self, *args, **kwargs):
+        self.email = self.email.strip().lower()
+        super().save(*args, **kwargs)
+
+    @property
+    def corporation(self):
+        return self.operating_organization
+
+    @property
+    def email_domain(self) -> str:
+        if "@" not in self.email:
+            return ""
+        return self.email.split("@", 1)[1].strip().lower()
 
     def __str__(self):
         label = self.display_name or self.email

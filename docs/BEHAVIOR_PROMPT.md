@@ -181,7 +181,7 @@ Validar coherencia entre:
 
 ### 3. COMMIT
 
-git commit -m "mensaje claro y estratégico"
+./cleansession.sh "mensaje claro y estratégico"
 
 ---
 

@@ -3,6 +3,18 @@ from typing import Any
 from apps.simulated_personas.models import SimulatedPersona
 
 
+def _resolve_mailbox_email(persona: SimulatedPersona) -> str:
+    if not persona.mailbox_account_id or persona.mailbox_account is None:
+        return ""
+
+    for attr in ("email", "email_address", "address"):
+        value = getattr(persona.mailbox_account, attr, "")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+    return ""
+
+
 def build_simulated_persona_prompt_context(persona: SimulatedPersona) -> dict[str, Any]:
     active_memories = list(
         persona.memories.filter(is_active=True)
@@ -10,9 +22,7 @@ def build_simulated_persona_prompt_context(persona: SimulatedPersona) -> dict[st
         .values("kind", "title", "content", "salience", "source")
     )
 
-    mailbox_email = ""
-    if persona.mailbox_account_id and hasattr(persona.mailbox_account, "email_address"):
-        mailbox_email = persona.mailbox_account.email_address or ""
+    mailbox_email = _resolve_mailbox_email(persona)
 
     operating_org_name = ""
     if persona.operating_organization_id and hasattr(persona.operating_organization, "name"):
@@ -23,6 +33,7 @@ def build_simulated_persona_prompt_context(persona: SimulatedPersona) -> dict[st
         "tenant_scope": {
             "operating_organization_id": persona.operating_organization_id,
             "operating_organization_name": operating_org_name,
+            "corporation_name": operating_org_name,
             "mailbox_account_id": persona.mailbox_account_id,
             "mailbox_email_address": mailbox_email,
         },
@@ -67,7 +78,9 @@ def build_simulated_persona_system_prompt(persona: SimulatedPersona) -> str:
 
 TENANT BOUNDARY
 - operating_organization_id: {ctx['tenant_scope']['operating_organization_id']}
+- operating_organization_name: {ctx['tenant_scope']['operating_organization_name']}
 - mailbox_account_id: {ctx['tenant_scope']['mailbox_account_id']}
+- mailbox_email_address: {ctx['tenant_scope']['mailbox_email_address']}
 - Never use memories or assumptions from other tenants.
 - Never behave as a real provider or perform real send actions.
 

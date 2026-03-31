@@ -5,20 +5,48 @@ from django.utils import timezone
 from apps.emailing.models import InboundEmail
 from apps.opportunities.models import Opportunity
 from apps.simulated_personas.models import SimulatedPersona
-from apps.tenancy.models import MailboxAccount, OperatingOrganization
+from apps.tenancy.models import CorporateDomain, MailboxAccount, OperatingOrganization
+
+
+SIMULATION_DOMAIN = "simulation.local"
+
+
+def _ensure_simulation_domain(org: OperatingOrganization) -> None:
+    updates = []
+
+    if not org.primary_domain:
+        org.primary_domain = SIMULATION_DOMAIN
+        updates.append("primary_domain")
+
+    if updates:
+        org.save(update_fields=updates + ["updated_at"])
+
+    CorporateDomain.objects.get_or_create(
+        operating_organization=org,
+        domain=SIMULATION_DOMAIN,
+        defaults={
+            "is_primary": True,
+            "is_active": True,
+            "notes": "Default domain for embedded SMLL simulation runtime.",
+        },
+    )
 
 
 def get_or_create_default_org():
     org = OperatingOrganization.objects.filter(slug="optigrid-simulation-lab").first()
     if org is not None:
+        _ensure_simulation_domain(org)
         return org
 
-    return OperatingOrganization.objects.create(
+    org = OperatingOrganization.objects.create(
         name="OptiGrid Simulation Lab",
         slug="optigrid-simulation-lab",
+        primary_domain=SIMULATION_DOMAIN,
         is_simulated=True,
         status=OperatingOrganization.Status.ACTIVE,
     )
+    _ensure_simulation_domain(org)
+    return org
 
 
 def get_default_mailbox():
@@ -35,7 +63,7 @@ def get_default_mailbox():
     return MailboxAccount.objects.create(
         operating_organization=org,
         display_name="Runtime Mailbox",
-        email="runtime@simulation.local",
+        email=f"runtime@{SIMULATION_DOMAIN}",
         account_key="runtime-simulation-mailbox",
         provider="mail_embedded",
         is_primary=True,

@@ -1,62 +1,72 @@
-# HANDOFF CURRENT — Post Audit Stable State
+# HANDOFF CURRENT
 
-## Estado actual
+## Fecha
+2026-03-31
 
-Sistema Django completamente estable tras auditoría técnica.
+## Estado funcional
+La capa fundacional de corporation/tenancy está estable y validada.
 
-SMLL sigue funcionando correctamente.
+## Decisión arquitectónica clave
+- `OperatingOrganization = Corporation`
+- No se introduce un modelo `Corporation` separado.
+- `MailboxAccount` no se duplica ni se reemplaza.
 
----
+## Estado de tenancy
+Modelos activos y estables:
+- `OperatingOrganization`
+- `CorporateDomain`
+- `Identity`
+- `CorporateMembership`
+- `MailboxAccount`
 
-## Corrección clave introducida
+## Estado de resolución por dominio
+Existe y funciona en:
+- `apps.tenancy.services.domain_resolution`
 
-MailboxAccount ya existe y es canónico en:
+Regla actual:
+- se puede resolver organización a partir de dominio
+- pero el provider layer no debe inferir tenant a partir del remitente externo del inbound
 
-apps.tenancy.models
+## Estado de SMLL
+- SMLL sigue funcionando
+- Tests de SMLL verdes
+- `prompt_builder` ya usa el campo real `mailbox_account.email`
+- `smll_bootstrap` ya asegura `simulation.local` como dominio de la simulation lab
 
-Cualquier nueva capa debe construirse sobre esta base.
+## Estado de provider layer
+Archivo clave:
+- `apps/emailing/services/provider_router.py`
 
----
+Situación actual:
+- acepta `mailbox_account` explícito
+- tiene fallback seguro usando dirección de mailbox del sistema
+- no usa heurísticas ambiguas con el remitente externo
 
-## Eliminado en esta sesión
+## Estado del pipeline
+`apps/emailing/services/email_processing_patch.py` sigue intentando llamar a:
+- `from apps.crm_update_engine.entrypoints import process_email`
 
-- MailboxAccount duplicado en emailing
-- Servicios dependientes de identity
-- Referencias a app inexistente
+Pero ese módulo/entrypoint real aún no existe en la ruta esperada.
 
----
+Esto no rompe tests actuales porque el pipeline degrada con:
+- `[SMLL] CRM Update Engine no disponible, pipeline detenido aquí`
 
-## Estado del sistema
+## Riesgos controlados
+- no autoenvío
+- no providers reales
+- no acoplamiento fuerte con M365 todavía
+- no inferencia insegura de tenant
 
-✔ Django core estable  
-✔ SMLL estable  
-✔ Pipeline intacto  
-✔ Sin errores en checks  
+## Siguiente paso recomendado
+Implementar un entrypoint mínimo y canónico:
+- `apps/crm_update_engine/entrypoints.py`
+- función `process_email(email)`
 
----
+Objetivo:
+- cerrar el loop del pipeline sin tocar UI ni providers reales
 
-## Limitaciones actuales
-
-- No existe Identity Layer
-- No existe Corporation Layer
-- No hay resolución por dominio
-- No hay multi-corporación real
-
----
-
-## Próximo paso real
-
-Implementar:
-
-Identity & Corporation Layer V1
-
-sobre tenancy existente
-
----
-
-## Regla crítica
-
-NO duplicar MailboxAccount  
-NO crear modelos paralelos  
-EXTENDER, no reemplazar  
-
+## No hacer en la siguiente sesión
+- no meter UI
+- no meter login real
+- no reabrir el debate `OperatingOrganization` vs `Corporation`
+- no tocar envío real de correo

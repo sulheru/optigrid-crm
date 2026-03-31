@@ -1,29 +1,38 @@
 #!/bin/bash
 
-echo "Limpiando sesión"
+echo "🧹 Limpiando sesión..."
+
+# 1. Limpiar temporales
 rm -rf tmp/*
+mkdir -p tmp
 
-echo "Creando huella de arbol de ficheros"
-tree > docs/CURRENT_TREE.txt
+# 2. Limpiar __pycache__ (ruido típico)
+find . -type d -name "__pycache__" -exec rm -rf {} +
 
-echo "Generando Commit"
+# 3. Snapshot del árbol del proyecto
+echo "🌳 Generando árbol de ficheros..."
+tree -I ".git|__pycache__|tmp|.venv" > docs/CURRENT_TREE.md
 
-git add .
+# 4. Estado de git
+echo "📊 Guardando estado git..."
+git status > docs/GIT_STATUS.md
 
-# Validación mensaje
+# 5. (Opcional) freeze de dependencias
+if [ -f ".venv/bin/activate" ]; then
+    echo "📦 Guardando dependencias..."
+    source .venv/bin/activate
+    pip freeze > docs/REQUIREMENTS_SNAPSHOT.txt
+fi
+
+# 6. Commit con mensaje dinámico
 if [ -z "$1" ]; then
-  echo "❌ Debes proporcionar un mensaje de commit"
-  echo "Uso: ./cleansession.sh \"mensaje del commit\""
-  exit 1
+    echo "❌ Debes pasar un mensaje de commit"
+    echo "Uso: ./cleansession.sh \"mensaje\""
+    exit 1
 fi
 
-# Evitar commit vacío
-if git diff --cached --quiet; then
-  echo "⚠️ No hay cambios para commitear"
-  exit 0
-fi
+echo "📝 Creando commit..."
+git add .
+git commit -m "$1"
 
-# Commit con timestamp
-git commit -m "$(date '+%Y-%m-%d %H:%M') — $1"
-
-echo "Finalizado"
+echo "✅ Sesión cerrada correctamente"

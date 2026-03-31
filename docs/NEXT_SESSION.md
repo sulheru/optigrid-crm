@@ -1,76 +1,48 @@
-# NEXT SESSION — Identity & Corporation Layer V1 (Corrected)
+# NEXT SESSION
 
-## Objetivo
+## Objetivo principal
+Implementar el entrypoint mínimo del CRM Update Engine para cerrar el loop del pipeline actual.
 
-Implementar la capa de identidad y corporación sobre el sistema real existente.
+## Contexto real
+- Tenancy/corporation layer estable
+- Domain resolution implementado
+- SMLL estable
+- Provider layer reforzado
+- Tests verdes
+- `manage.py check` limpio
 
----
+## Problema actual
+El pipeline de emailing intenta llamar a:
+- `apps.crm_update_engine.entrypoints.process_email`
 
-## Contexto actualizado
+pero el módulo no existe en la ruta esperada.
 
-MailboxAccount ya existe en tenancy.
+## Objetivo técnico concreto
+Crear:
+- `apps/crm_update_engine/entrypoints.py`
 
-La nueva capa debe integrarse sobre él.
+Con al menos:
+- `process_email(email)`
 
----
-
-## Alcance
-
-### Modelos a crear
-
-- Corporation
-- CorporateDomain
-- CorporateMembership
-
-(opcional: IdentityEntity simplificado)
-
----
-
-## Relaciones
-
-- Corporation → Domains
-- Domain → MailboxAccount (existente)
-- Membership → Corporation
-
----
-
-## Resolución clave
-
-email → domain → corporation
-
----
-
-## Integración
-
-- MailboxAccount debe:
-  - referenciar dominio o corporación
-- SMLL debe:
-  - poder acceder a Corporation context
-
----
-
-## Restricciones
-
-NO:
-- crear MailboxAccount nuevo
-- tocar UI
-- tocar providers reales
-- implementar CRM Update Engine
-
----
+## Requisitos
+- no romper tests existentes
+- no tocar providers reales
+- no meter UI
+- no meter envío automático
+- mantener diseño IA-first
+- mantener separación entre core y adaptadores
 
 ## Resultado esperado
+- pipeline ya no cae en `ModuleNotFoundError`
+- existe un entrypoint canónico para evolución futura
+- queda preparado el siguiente paso:
+  - persistir tenant/mailbox scope en emailing
 
-- Multi-corporation base funcional
-- Resolución por dominio operativa
-- SMLL contextualizado por empresa
-- Base para login corporativo
+## Ficheros previsibles a tocar
+- `apps/crm_update_engine/entrypoints.py`
+- posible `apps/crm_update_engine/__init__.py`
+- posible wiring mínimo con servicios existentes
 
----
-
-## Nota crítica
-
-Esta sesión es fundacional.
-
-Errores aquí comprometen todo el sistema.
-
+## Validación esperada
+- `python manage.py test apps.tenancy apps.simulated_personas apps.emailing`
+- `python manage.py check`

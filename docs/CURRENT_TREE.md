@@ -6,17 +6,8 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── contacts
@@ -25,17 +16,8 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── core
@@ -45,26 +27,12 @@
 │   │   ├── labels.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── labels.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── runtime_settings.cpython-312.pyc
-│   │   │   └── ui_semantics.cpython-312.pyc
 │   │   ├── runtime_settings.py
 │   │   ├── templatetags
 │   │   │   ├── __init__.py
-│   │   │   ├── label_filters.py
-│   │   │   └── __pycache__
-│   │   │       ├── __init__.cpython-312.pyc
-│   │   │       └── label_filters.cpython-312.pyc
+│   │   │   └── label_filters.py
 │   │   └── ui_semantics.py
 │   ├── dashboard_views.py
 │   ├── emailing
@@ -75,14 +43,8 @@
 │   │   │   ├── commands
 │   │   │   │   ├── crm_pipeline_report.py
 │   │   │   │   ├── demo_email_flow.py
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── __pycache__
-│   │   │   │       ├── crm_pipeline_report.cpython-312.pyc
-│   │   │   │       ├── demo_email_flow.cpython-312.pyc
-│   │   │   │       └── __init__.cpython-312.pyc
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   │   └── __init__.py
+│   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_remove_emailthread_linked_company_and_more.py
@@ -94,53 +56,28 @@
 │   │   │   ├── 0008_inbounddecision_automation_fields.py
 │   │   │   ├── 0008_outboundemail_source_recommendation.py
 │   │   │   ├── 0009_merge_0008_emailing_branches.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_remove_emailthread_linked_company_and_more.cpython-312.pyc
-│   │   │       ├── 0003_alter_outboundemail_options_and_more.cpython-312.pyc
-│   │   │       ├── 0004_outboundemail_email_type.cpython-312.pyc
-│   │   │       ├── 0005_inboundemail.cpython-312.pyc
-│   │   │       ├── 0006_outboundemail_source_inbound.cpython-312.pyc
-│   │   │       ├── 0007_inboundinterpretation_inbounddecision.cpython-312.pyc
-│   │   │       ├── 0008_inbounddecision_automation_fields.cpython-312.pyc
-│   │   │       ├── 0008_outboundemail_source_recommendation.cpython-312.pyc
-│   │   │       ├── 0009_merge_0008_emailing_branches.cpython-312.pyc
-│   │   │       ├── 00XX_inbounddecision_apply_fields.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
+│   │   ├── models_patch_smll.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── tests.cpython-312.pyc
-│   │   │   ├── tests_inbound_apply.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── decision_automation.py
+│   │   │   ├── email_processing_patch.py
 │   │   │   ├── inbound_analysis_service.py
 │   │   │   ├── inbound_decision_apply_service.py
 │   │   │   ├── inbound_decision_engine.py
 │   │   │   ├── inbound_interpreter.py
 │   │   │   ├── inbound_simulator.py
+│   │   │   ├── mail_provider_service.py
 │   │   │   ├── outbound_sender.py
-│   │   │   ├── __pycache__
-│   │   │   │   ├── decision_automation.cpython-312.pyc
-│   │   │   │   ├── inbound_analysis_service.cpython-312.pyc
-│   │   │   │   ├── inbound_decision_apply_service.cpython-312.pyc
-│   │   │   │   ├── inbound_decision_engine.cpython-312.pyc
-│   │   │   │   ├── inbound_interpreter.cpython-312.pyc
-│   │   │   │   ├── inbound_simulator.cpython-312.pyc
-│   │   │   │   ├── outbound_sender.cpython-312.pyc
-│   │   │   │   ├── recommendation_bridge.cpython-312.pyc
-│   │   │   │   └── reply_generator.cpython-312.pyc
+│   │   │   ├── provider_router.py
 │   │   │   ├── recommendation_bridge.py
-│   │   │   └── reply_generator.py
+│   │   │   ├── reply_generator.py
+│   │   │   └── smll_bootstrap.py
+│   │   ├── smll_adapter.py
 │   │   ├── templates
 │   │   │   └── emailing
 │   │   ├── tests.py
+│   │   ├── tests_smll_integration.py
 │   │   ├── urls.py
 │   │   └── views.py
 │   ├── events
@@ -150,18 +87,8 @@
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_activityevent_delete_event.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_activityevent_delete_event.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
@@ -173,40 +100,17 @@
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   ├── 0003_externalactionintent_tenant_scope.py
+│   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── providers
 │   │   │   ├── email_stub.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── email_stub.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── dispatcher.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── services.cpython-312.pyc
-│   │   │   ├── tests_approval.cpython-312.pyc
-│   │   │   ├── tests.cpython-312.pyc
-│   │   │   ├── tests_dispatcher.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── services
 │   │   │   ├── approval.py
 │   │   │   ├── core.py
 │   │   │   ├── dispatcher.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── approval.cpython-312.pyc
-│   │   │       ├── core.cpython-312.pyc
-│   │   │       ├── dispatcher.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── services_legacy.py
 │   │   ├── tests_approval.py
 │   │   ├── tests_dispatcher.py
@@ -219,17 +123,8 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── tests.py
 │   │   └── views.py
 │   ├── inferences
@@ -238,18 +133,8 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── services.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── services.py
 │   │   ├── tests.py
 │   │   └── views.py
@@ -263,30 +148,12 @@
 │   │   │   ├── commands
 │   │   │   │   ├── harvest_knowledge.py
 │   │   │   │   ├── __init__.py
-│   │   │   │   ├── __pycache__
-│   │   │   │   │   ├── harvest_knowledge.cpython-312.pyc
-│   │   │   │   │   ├── __init__.cpython-312.pyc
-│   │   │   │   │   └── review_knowledge_candidate.cpython-312.pyc
 │   │   │   │   └── review_knowledge_candidate.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_behavior_faq_knowledgeembedding_and_more.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_behavior_faq_knowledgeembedding_and_more.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── signals.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── candidate_generator.py
 │   │   │   ├── email_knowledge_extractor.py
@@ -297,17 +164,6 @@
 │   │   │   ├── hooks.py
 │   │   │   ├── __init__.py
 │   │   │   ├── promotion.py
-│   │   │   ├── __pycache__
-│   │   │   │   ├── candidate_generator.cpython-312.pyc
-│   │   │   │   ├── email_knowledge_extractor.cpython-312.pyc
-│   │   │   │   ├── embeddings.cpython-312.pyc
-│   │   │   │   ├── embedding_service.cpython-312.pyc
-│   │   │   │   ├── extraction.cpython-312.pyc
-│   │   │   │   ├── generator.cpython-312.pyc
-│   │   │   │   ├── hooks.cpython-312.pyc
-│   │   │   │   ├── __init__.cpython-312.pyc
-│   │   │   │   ├── promotion.cpython-312.pyc
-│   │   │   │   └── vector_memory.cpython-312.pyc
 │   │   │   └── vector_memory.py
 │   │   ├── signals.py
 │   │   └── tests.py
@@ -316,24 +172,11 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── schemas.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
 │   │   ├── schemas.py
 │   │   ├── services
 │   │   │   ├── lead_promotion.py
-│   │   │   ├── __pycache__
-│   │   │   │   ├── lead_promotion.cpython-312.pyc
-│   │   │   │   └── signal_discovery.cpython-312.pyc
 │   │   │   └── signal_discovery.py
 │   │   ├── tasks.py
 │   │   ├── urls.py
@@ -348,37 +191,15 @@
 │   │   │   │   ├── analyze_opportunity.py
 │   │   │   │   ├── enrich_opportunities.py
 │   │   │   │   ├── __init__.py
-│   │   │   │   ├── promote_tasks.py
-│   │   │   │   └── __pycache__
-│   │   │   │       ├── analyze_open_opportunities.cpython-312.pyc
-│   │   │   │       ├── analyze_opportunity.cpython-312.pyc
-│   │   │   │       ├── enrich_opportunities.cpython-312.pyc
-│   │   │   │       ├── __init__.cpython-312.pyc
-│   │   │   │       └── promote_tasks.cpython-312.pyc
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   │   └── promote_tasks.py
+│   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_initial.py
 │   │   │   ├── 0003_opportunity_source_recommendation.py
 │   │   │   ├── 0004_opportunity_last_analyzed_at.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_initial.cpython-312.pyc
-│   │   │       ├── 0003_opportunity_source_recommendation.cpython-312.pyc
-│   │   │       ├── 0004_opportunity_last_analyzed_at.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── tests.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views_prioritized.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── autotasker.py
 │   │   │   ├── context_builder.py
@@ -386,15 +207,7 @@
 │   │   │   ├── __init__.py
 │   │   │   ├── opportunity_analyzer.py
 │   │   │   ├── prioritization.py
-│   │   │   ├── promote.py
-│   │   │   └── __pycache__
-│   │   │       ├── autotasker.cpython-312.pyc
-│   │   │       ├── context_builder.cpython-312.pyc
-│   │   │       ├── enrichment.cpython-312.pyc
-│   │   │       ├── __init__.cpython-312.pyc
-│   │   │       ├── opportunity_analyzer.cpython-312.pyc
-│   │   │       ├── prioritization.cpython-312.pyc
-│   │   │       └── promote.cpython-312.pyc
+│   │   │   └── promote.py
 │   │   ├── tasks.py
 │   │   ├── tests.py
 │   │   ├── urls.py
@@ -407,18 +220,13 @@
 │   │   ├── llm_gemini.py
 │   │   ├── mail_embedded.py
 │   │   ├── mail_m365.py
-│   │   ├── __pycache__
-│   │   │   ├── base.cpython-312.pyc
-│   │   │   ├── calendar_placeholder.cpython-312.pyc
-│   │   │   ├── llm_embedded.cpython-312.pyc
-│   │   │   ├── llm_gemini.cpython-312.pyc
-│   │   │   ├── mail_embedded.cpython-312.pyc
-│   │   │   ├── mail_m365.cpython-312.pyc
-│   │   │   └── registry.cpython-312.pyc
-│   │   └── registry.py
-│   ├── __pycache__
-│   │   ├── dashboard_views.cpython-312.pyc
-│   │   └── __init__.cpython-312.pyc
+│   │   ├── mail_provider.py
+│   │   ├── mail_registry_v2.py
+│   │   ├── mail_runtime.py
+│   │   ├── registry.py
+│   │   └── tests
+│   │       ├── test_mail_provider_service.py
+│   │       └── test_mail_runtime.py
 │   ├── recommendations
 │   │   ├── admin.py
 │   │   ├── apps.py
@@ -432,61 +240,25 @@
 │   │   │   │   ├── backfill_opportunity_reviews.py
 │   │   │   │   ├── crm_pipeline_report.py
 │   │   │   │   ├── detect_opportunity_signals.py
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── __pycache__
-│   │   │   │       ├── backfill_opportunity_reviews.cpython-312.pyc
-│   │   │   │       ├── crm_pipeline_report.cpython-312.pyc
-│   │   │   │       ├── detect_opportunity_signals.cpython-312.pyc
-│   │   │   │       └── __init__.cpython-312.pyc
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   │   └── __init__.py
+│   │   │   └── __init__.py
 │   │   ├── merge.py
 │   │   ├── merge_runtime.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_alter_airecommendation_status.py
 │   │   │   ├── 0003_airecommendation_source.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_alter_airecommendation_status.cpython-312.pyc
-│   │   │       ├── 0003_airecommendation_source.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   ├── 0004_airecommendation_tenant_scope.py
+│   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── nba.py
 │   │   ├── opportunity_intelligence.py
 │   │   ├── priority.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── execution_actions.cpython-312.pyc
-│   │   │   ├── execution_adapters.cpython-312.pyc
-│   │   │   ├── execution_application.cpython-312.pyc
-│   │   │   ├── execution.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── merge.cpython-312.pyc
-│   │   │   ├── merge_runtime.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── nba.cpython-312.pyc
-│   │   │   ├── opportunity_intelligence.cpython-312.pyc
-│   │   │   ├── priority.cpython-312.pyc
-│   │   │   ├── ranking_engine.cpython-312.pyc
-│   │   │   ├── services.cpython-312.pyc
-│   │   │   ├── services_llm.cpython-312.pyc
-│   │   │   ├── simulation.cpython-312.pyc
-│   │   │   ├── tests.cpython-312.pyc
-│   │   │   ├── tests_merge.cpython-312.pyc
-│   │   │   ├── tests_nba.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   ├── views.cpython-312.pyc
-│   │   │   └── views_simulation.cpython-312.pyc
 │   │   ├── services
+│   │   │   ├── action_loop.py
 │   │   │   ├── external_actions.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── external_actions.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   ├── factory.py
+│   │   │   └── __init__.py
 │   │   ├── services_llm.py
 │   │   ├── services.py
 │   │   ├── simulation.py
@@ -496,26 +268,31 @@
 │   │   ├── urls.py
 │   │   ├── views.py
 │   │   └── views_simulation.py
+│   ├── simulated_personas
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_rename_sim_persona_org_active_idx_simulated_p_operati_be4ec5_idx_and_more.py
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── runtime
+│   │   │   ├── __init__.py
+│   │   │   └── smll_engine.py
+│   │   ├── services
+│   │   │   ├── __init__.py
+│   │   │   └── prompt_builder.py
+│   │   ├── tests.py
+│   │   └── tests_runtime.py
 │   ├── strategy
 │   │   ├── apps.py
 │   │   ├── __init__.py
-│   │   ├── __pycache__
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
 │   │   ├── services
 │   │   │   ├── context_builder.py
 │   │   │   ├── __init__.py
 │   │   │   ├── llm_backends.py
 │   │   │   ├── prompt_builder.py
-│   │   │   ├── __pycache__
-│   │   │   │   ├── context_builder.cpython-312.pyc
-│   │   │   │   ├── __init__.cpython-312.pyc
-│   │   │   │   ├── llm_backends.cpython-312.pyc
-│   │   │   │   ├── prompt_builder.cpython-312.pyc
-│   │   │   │   ├── rule_based_engine.cpython-312.pyc
-│   │   │   │   └── strategy_engine.cpython-312.pyc
 │   │   │   ├── rule_based_engine.py
 │   │   │   └── strategy_engine.py
 │   │   ├── urls.py
@@ -529,60 +306,42 @@
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── materialize_open_recommendations.py
 │   │   │   │   ├── materialize_recommendations.py
-│   │   │   │   ├── __pycache__
-│   │   │   │   │   ├── __init__.cpython-312.pyc
-│   │   │   │   │   ├── materialize_open_recommendations.cpython-312.pyc
-│   │   │   │   │   ├── materialize_recommendations.cpython-312.pyc
-│   │   │   │   │   └── reclassify_manual_tasks.cpython-312.pyc
 │   │   │   │   └── reclassify_manual_tasks.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_alter_crmtask_task_type.py
 │   │   │   ├── 0003_crmtask_opportunity_crmtask_source_and_more.py
 │   │   │   ├── 0004_crmtask_is_revoked.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       ├── 0002_alter_crmtask_task_type.cpython-312.pyc
-│   │   │       ├── 0003_crmtask_opportunity_crmtask_source_and_more.cpython-312.pyc
-│   │   │       ├── 0004_crmtask_is_revoked.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   ├── tests.cpython-312.pyc
-│   │   │   ├── urls.cpython-312.pyc
-│   │   │   └── views.cpython-312.pyc
 │   │   ├── services
-│   │   │   ├── materialize.py
-│   │   │   └── __pycache__
-│   │   │       └── materialize.cpython-312.pyc
+│   │   │   └── materialize.py
 │   │   ├── tests.py
 │   │   ├── urls.py
 │   │   └── views.py
+│   ├── tenancy
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_seed_default_orgs.py
+│   │   │   ├── 0003_identity_and_corporate_domains.py
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── services
+│   │   │   ├── domain_resolution.py
+│   │   │   └── __init__.py
+│   │   └── tests_identity.py
 │   ├── updates
 │   │   ├── admin.py
 │   │   ├── apps.py
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       ├── 0001_initial.cpython-312.pyc
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── models.py
-│   │   ├── __pycache__
-│   │   │   ├── admin.cpython-312.pyc
-│   │   │   ├── apps.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── models.cpython-312.pyc
-│   │   │   └── tests.cpython-312.pyc
 │   │   ├── tests.py
 │   │   └── views.py
 │   └── users
@@ -590,33 +349,22 @@
 │       ├── apps.py
 │       ├── __init__.py
 │       ├── migrations
-│       │   ├── __init__.py
-│       │   └── __pycache__
-│       │       └── __init__.cpython-312.pyc
+│       │   └── __init__.py
 │       ├── models.py
-│       ├── __pycache__
-│       │   ├── __init__.cpython-312.pyc
-│       │   └── tests.cpython-312.pyc
 │       ├── tests.py
 │       └── views.py
+├── apps.knowledge
 ├── autoheaders.py
 ├── backups
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
-├── cd
 ├── cleansession.sh
 ├── cleartmp.sh
 ├── config
 │   ├── asgi.py
 │   ├── celery.py
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── celery.cpython-312.pyc
-│   │   ├── __init__.cpython-312.pyc
-│   │   ├── settings.cpython-312.pyc
-│   │   ├── urls.cpython-312.pyc
-│   │   └── wsgi.cpython-312.pyc
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
@@ -652,6 +400,11 @@
 │   ├── SESSION_LOG_2026_03_25.md
 │   ├── SESSION_LOG_2026_03_26.md
 │   ├── SESSION_LOG_2026_03_27.md
+│   ├── SESSION_LOG_2026_03_28.md
+│   ├── SESSION_LOG_2026_03_29.md
+│   ├── SESSION_LOG_2026_03_30_AUDIT.md
+│   ├── SESSION_LOG_2026_03_30.md
+│   ├── SESSION_LOG_2026_03_31.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -668,33 +421,20 @@
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
 │   └── base.txt
-├── rg
 ├── runserver.log
 ├── scripts
-├── sed
 ├── services
 │   ├── adapters
 │   │   ├── __init__.py
-│   │   ├── m365
-│   │   │   ├── calendar.py
-│   │   │   ├── __init__.py
-│   │   │   ├── mail.py
-│   │   │   └── __pycache__
-│   │   │       ├── calendar.cpython-312.pyc
-│   │   │       ├── __init__.cpython-312.pyc
-│   │   │       └── mail.cpython-312.pyc
-│   │   └── __pycache__
-│   │       └── __init__.cpython-312.pyc
+│   │   └── m365
+│   │       ├── calendar.py
+│   │       ├── __init__.py
+│   │       └── mail.py
 │   ├── ai
 │   │   ├── agents
-│   │   │   ├── __init__.py
-│   │   │   └── __pycache__
-│   │   │       └── __init__.cpython-312.pyc
+│   │   │   └── __init__.py
 │   │   ├── __init__.py
-│   │   ├── llm_client.py
-│   │   └── __pycache__
-│   │       ├── __init__.cpython-312.pyc
-│   │       └── llm_client.cpython-312.pyc
+│   │   └── llm_client.py
 │   ├── email_ingest.py
 │   ├── events.py
 │   ├── fact_extraction.py
@@ -702,38 +442,18 @@
 │   ├── __init__.py
 │   ├── m365
 │   │   ├── graph_client.py
-│   │   ├── __init__.py
-│   │   └── __pycache__
-│   │       ├── graph_client.cpython-312.pyc
-│   │       └── __init__.cpython-312.pyc
+│   │   └── __init__.py
 │   ├── ports
 │   │   ├── contracts.py
 │   │   ├── idempotency.py
 │   │   ├── __init__.py
 │   │   ├── policy.py
-│   │   ├── __pycache__
-│   │   │   ├── contracts.cpython-312.pyc
-│   │   │   ├── idempotency.cpython-312.pyc
-│   │   │   ├── __init__.cpython-312.pyc
-│   │   │   ├── policy.cpython-312.pyc
-│   │   │   ├── registry.cpython-312.pyc
-│   │   │   ├── router.cpython-312.pyc
-│   │   │   └── types.cpython-312.pyc
 │   │   ├── registry.py
 │   │   ├── router.py
 │   │   └── types.py
-│   ├── __pycache__
-│   │   ├── email_ingest.cpython-312.pyc
-│   │   ├── events.cpython-312.pyc
-│   │   ├── fact_extraction.cpython-312.pyc
-│   │   ├── inference_engine.cpython-312.pyc
-│   │   ├── __init__.cpython-312.pyc
-│   │   └── update_proposals.cpython-312.pyc
 │   ├── update_proposals.py
 │   └── workflows
-│       ├── __init__.py
-│       └── __pycache__
-│           └── __init__.cpython-312.pyc
+│       └── __init__.py
 ├── static
 │   └── app_ui
 │       ├── css
@@ -767,6 +487,7 @@
 │       │   ├── arrow-right.png
 │       │   ├── bg.jpg
 │       │   ├── cloud.png
+│       │   ├── favicon.ico
 │       │   ├── logo.png
 │       │   ├── pic1.png
 │       │   ├── pic2.png
@@ -795,7 +516,8 @@
 │   │   └── partials
 │   │       ├── decision_transparency.html
 │   │       ├── insight_list.html
-│   │       └── next_best_action.html
+│   │       ├── next_best_action.html
+│   │       └── recommendation_card.html
 │   ├── emailing
 │   │   ├── email_detail.html.legacy
 │   │   ├── email_list.html.legacy
@@ -829,7 +551,7 @@
 │   │   └── chat.html
 │   └── tasks
 │       └── list.html
-├── tests
-└── tmp
+├── testing.py
+└── tests
 
-153 directories, 680 files
+98 directories, 457 files
