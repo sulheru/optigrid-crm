@@ -1,9 +1,9 @@
 # NEXT SESSION
 
-Implementar CRM Update Engine V2.2 — Trace Semantics Refinement.
+Implementar CRM Update Engine V2.3 — Trace Schema Normalization.
 
 ## Contexto
-El Rule Engine ya está operativo y la capa declarativa mínima de condiciones también.
+El Rule Engine ya está operativo, las condiciones declarativas mínimas están establecidas y `RULE_TRACE` ya distingue entre evaluación, selección, descarte y efecto final.
 
 Actualmente el sistema soporta:
 
@@ -11,7 +11,7 @@ Actualmente el sistema soporta:
 - versionado
 - replay
 - diff
-- trazabilidad
+- trazabilidad mejorada
 - condiciones declarativas simples
 
 Condiciones activas:
@@ -20,43 +20,38 @@ Condiciones activas:
 - `inference_exists`
 
 ## Problema actual
-`RULE_TRACE` todavía no expresa con suficiente claridad la diferencia entre:
+El trace ya es semánticamente claro, pero sigue siendo un `dict` libre.
 
-- regla que cumple condiciones
-- regla aplicada finalmente
-- regla descartada por conflicto
-- regla descartada por presencia de regla final
+Eso no rompe nada, pero deja abierta la puerta a:
 
-Esto no rompe el sistema, pero reduce calidad de trazabilidad y auditabilidad.
+- divergencias futuras entre entradas del trace
+- crecimiento desordenado del esquema
+- mayor dificultad para consumirlo desde tooling o UI
 
 ## Objetivo
-Refinar la semántica del trace sin cambiar el comportamiento funcional del motor.
+Normalizar el esquema interno de `RULE_TRACE` sin cambiar el comportamiento funcional del motor.
 
 ## Alcance
-- revisar estructura de entradas del trace
-- distinguir evaluación de condiciones frente a aplicación real
-- registrar de forma explícita los motivos de descarte
-- mantener compatibilidad con:
-  - `create_basic_proposal`
-  - replay
-  - diff
-  - tests actuales
+- definir estructura interna consistente para entradas del trace
+- conservar compatibilidad con logs y tests actuales
+- mantener replay y diff sin cambios funcionales
+- preparar una base mejor para explainability futura
 
 ## Importante
 - no introducir LLM
 - no introducir UI
-- no introducir persistencia de reglas
+- no introducir persistencia nueva
+- no cambiar outputs del motor
 - no sobre-ingeniería
-- no cambiar el comportamiento observable del motor salvo en el contenido del trace
 
 ## Algoritmo de trabajo
 
 Briefing
-- validar el enfoque antes de tocar el motor
+- validar la estructura actual antes de tocar el esquema
 
 Ciclo de implementación
 1. recoger contexto real
-2. implementar mínimo viable
+2. normalizar mínimo viable
 3. probar
 4. iterar
 

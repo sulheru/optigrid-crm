@@ -1,31 +1,31 @@
 # CHANGELOG
 
-## 2026-04-01 — CRM Update Engine V2.1 — Declarative Conditions Layer
+## 2026-04-01 — CRM Update Engine V2.2 — Trace Semantics Refinement
 
-Se completa la primera capa declarativa de condiciones del Rule Engine.
+Se refina la semántica de `RULE_TRACE` sin cambiar los outputs funcionales del motor.
 
 ### Cambios realizados
-- se sustituye la evaluación directa de condiciones Python por un evaluator declarativo
-- se mantiene compatibilidad temporal con condiciones legacy tipo callable
-- se introducen condiciones declarativas mínimas:
-  - `always_true`
-  - `inference_exists`
-- se refactorizan `rules_v1.py` y `rules_v2.py` para usar condiciones declarativas
-- `rule_engine.py` pasa a evaluar condiciones mediante `evaluate_condition`
-- se endurece el manejo de condiciones inválidas o vacías
-- se añaden tests reales en `apps/updates/tests.py`
+- se enriquece el trace con campos semánticos explícitos:
+  - `condition_match`
+  - `rule_selected`
+  - `rule_discarded`
+  - `discard_reason`
+  - `final_effect`
+- se mantiene compatibilidad con la estructura previa del trace:
+  - `rule`
+  - `matched`
+  - `conditions`
+  - `priority`
+- se corrige una incoherencia del motor:
+  - una regla marcada como final ahora bloquea correctamente reglas posteriores
+- se añade cobertura de tests para la nueva semántica del trace
 
 ### Resultado
-- el comportamiento actual del motor se mantiene
+- el comportamiento funcional del motor se mantiene
+- `create_basic_proposal` sigue operativo sin cambios
 - replay sigue operativo
 - diff sigue operativo
-- `create_basic_proposal` sigue operativo
-- `RULE_TRACE` sigue operativo
-- los tests del motor y la integración principal quedan en verde
+- los tests del motor y la integración principal siguen en verde
 
 ### Observación pendiente
-La semántica de `RULE_TRACE` todavía puede afinarse para distinguir mejor entre:
-
-- regla que cumple condiciones
-- regla finalmente aplicada
-- regla descartada por final/conflicto
+La semántica del trace ya es clara, pero el esquema sigue siendo un `dict` libre. El siguiente paso lógico es normalizar el modelo interno del trace sin introducir complejidad innecesaria.

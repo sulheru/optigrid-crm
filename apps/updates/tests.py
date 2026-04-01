@@ -114,3 +114,64 @@ class RuleEngineDeclarativeTests(TestCase):
         )
         self.assertFalse(trace[0]["matched"])
         self.assertTrue(trace[1]["matched"])
+
+class RuleTraceSemanticsV22Tests(TestCase):
+    def test_trace_contains_semantic_fields(self):
+        rules = [
+            {
+                "name": "test_rule",
+                "priority": 10,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "test"},
+            }
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+
+        self.assertEqual(len(matched), 1)
+
+        entry = trace[0]
+
+        self.assertIn("condition_match", entry)
+        self.assertIn("rule_selected", entry)
+        self.assertTrue(entry["rule_selected"])
+
+    def test_trace_marks_discard_reason(self):
+        rules = [
+            {
+                "name": "rule_fail",
+                "priority": 10,
+                "conditions": [
+                    {
+                        "type": "inference_exists",
+                        "params": {"inference_type": "x"},
+                    }
+                ],
+                "proposal": {"proposal_type": "test"},
+            }
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+
+        entry = trace[0]
+
+        self.assertTrue(entry["rule_discarded"])
+        self.assertEqual(entry["discard_reason"], "condition_not_matched")
+
+    def test_trace_final_effect_exists(self):
+        rules = [
+            {
+                "name": "final_rule",
+                "priority": 100,
+                "outcome": "final",
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "x"},
+            }
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+
+        final_entry = trace[-1]
+
+        self.assertTrue(final_entry["final_effect"])
+        self.assertTrue(final_entry["final_matched"])

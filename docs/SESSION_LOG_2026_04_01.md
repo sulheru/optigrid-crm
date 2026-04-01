@@ -4,54 +4,52 @@
 2026-04-01
 
 ## Sesión
-CRM Update Engine V2.1 — Declarative Conditions Layer
+CRM Update Engine V2.2 — Trace Semantics Refinement
 
 ## Objetivo de la sesión
-Sustituir condiciones basadas en funciones Python por una capa declarativa simple, manteniendo el comportamiento actual del Rule Engine y la compatibilidad con replay, diff y trazabilidad.
+Refinar la semántica de `RULE_TRACE` sin cambiar el comportamiento funcional del Rule Engine y manteniendo compatibilidad con replay, diff y tests actuales.
 
 ## Trabajo realizado
-Se revisó primero la estructura real del proyecto y se confirmó que la zona relevante era `apps/updates/`.
+Se revisó primero la implementación real del motor en:
 
-Después se inspeccionaron los ficheros reales del motor:
+- `apps/updates/rule_engine.py`
+- `apps/updates/services.py`
+- `apps/updates/conditions.py`
+- `apps/updates/tests.py`
+- `apps/emailing/tests_crm_update_engine.py`
 
-- `conditions.py`
-- `rule_engine.py`
-- `rules_v1.py`
-- `rules_v2.py`
-- `services.py`
-- `services_replay.py`
-- `services_diff.py`
-- `tests.py`
+Se confirmó que:
 
-Se detectó que:
-
-- el contexto usa `inferences` como lista de strings
-- el engine evaluaba condiciones llamando directamente a `cond(context)`
-- las reglas todavía dependían de lambdas o helpers Python
-- `apps.updates` no tenía tests reales
+- `evaluate_rules` devolvía `matched_rules` + `trace`
+- el trace mezclaba evaluación de condiciones, descarte y selección en una forma poco expresiva
+- los tests existentes dependían de campos legacy como `matched`
+- `create_basic_proposal` persistía el trace sin imponer un esquema rígido
 
 ## Implementación
-Se introdujo un evaluator declarativo en `conditions.py` con soporte para:
+Se refinó `RULE_TRACE` de forma aditiva para no romper compatibilidad.
 
-- `always_true`
-- `inference_exists`
+Se añadieron campos explícitos al trace:
 
-Se mantuvo compatibilidad con callables legacy para no romper transición.
+- `condition_match`
+- `rule_selected`
+- `rule_discarded`
+- `discard_reason`
+- `final_effect`
 
-Se refactorizó `rule_engine.py` para usar el evaluator declarativo.
+Se mantuvieron intactos los campos previos usados por el sistema y por los tests:
 
-Se refactorizaron `rules_v1.py` y `rules_v2.py` para expresar condiciones como dicts declarativos.
-
-Se añadieron tests reales a `apps/updates/tests.py`.
+- `rule`
+- `matched`
+- `conditions`
+- `priority`
 
 ## Incidencia encontrada
-En la primera iteración, `always_true` no estaba resolviendo correctamente en el flujo real y el fallback no generaba proposals.
+Durante la validación apareció una incoherencia real del motor:
 
-Se corrigió endureciendo:
+- una regla final seleccionada no estaba bloqueando correctamente reglas posteriores
+- eso permitía que un fallback quedara seleccionado incluso después de una regla final
 
-- el manejo de condiciones nulas o inválidas
-- la lógica de evaluación por defecto
-- la compatibilidad entre reglas legacy y declarativas
+Se corrigió introduciendo un hard stop real tras `final_matched`.
 
 ## Validación
 Se ejecutaron:
@@ -60,13 +58,19 @@ Se ejecutaron:
 - `python manage.py test apps.emailing.tests_crm_update_engine`
 
 Resultado final:
-todos los tests ejecutados pasaron correctamente.
+- todos los tests ejecutados pasaron correctamente
+- el trace refleja ya la causalidad correcta del motor
 
 ## Estado de salida
-La sesión termina con V2.1 operativo.
+La sesión termina con V2.2 operativo.
 
-El Rule Engine ya no depende internamente de condiciones Python como mecanismo principal.
-La capa declarativa mínima queda establecida y probada.
+El Rule Engine conserva su comportamiento funcional, pero ahora explica con mucha más claridad:
+
+- qué condición hizo match
+- qué regla fue seleccionada
+- qué regla fue descartada
+- por qué fue descartada
+- cuál fue el efecto final del motor
 
 ## Siguiente paso recomendado
-Implementar V2.2 centrado en mejorar la semántica de `RULE_TRACE` y normalizar el esquema interno de reglas sin aumentar complejidad.
+Implementar V2.3 centrado en normalizar el esquema interno del trace para consolidar esta mejora semántica sin añadir complejidad innecesaria.

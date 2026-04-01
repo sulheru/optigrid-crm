@@ -389,6 +389,7 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
+├── CHANGELOG.md
 ├── ch_test.sh
 ├── cleansession.sh
 ├── cleartmp.sh
@@ -446,7 +447,9 @@
 ├── fix_django_app_names.sh
 ├── flog.sh
 ├── frun.sh
+├── HANDOFF_CURRENT.md
 ├── manage.py
+├── NEXT_SESSION.md
 ├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
@@ -589,4 +592,4 @@
 ├── testing.py
 └── tests
 
-101 directories, 489 files
+101 directories, 492 files

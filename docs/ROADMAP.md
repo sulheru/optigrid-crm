@@ -7,17 +7,17 @@ El sistema dispone ya de:
 
 - Rule Engine desacoplado
 - versionado de reglas
-- loader dinámico
 - replay de decisiones
 - diff entre versiones
-- trazabilidad mediante RULE_TRACE
 - capa de condiciones declarativas mínima operativa
+- trazabilidad semánticamente refinada mediante `RULE_TRACE`
 
 ## Estado de la fase V2.x
 Completado:
 
 - V2 — Rule Engine desacoplado
 - V2.1 — Declarative Conditions Layer mínima
+- V2.2 — Trace Semantics Refinement
 
 Actualmente soportado en condiciones declarativas:
 
@@ -25,20 +25,21 @@ Actualmente soportado en condiciones declarativas:
 - `inference_exists`
 
 ## Objetivo inmediato siguiente
-Refinar la capa declarativa sin aumentar complejidad innecesaria.
+Refinar el esquema interno del motor sin aumentar complejidad innecesaria.
 
 Línea prioritaria recomendada:
 
-### V2.2 — Trace Semantics Refinement
+### V2.3 — Trace Schema Normalization
 Objetivo:
-hacer que `RULE_TRACE` distinga con claridad entre:
+normalizar la estructura de `RULE_TRACE` para que el trace deje de crecer como `dict` libre y gane consistencia interna.
 
-- regla que cumple condiciones
-- regla aplicada efectivamente
-- regla descartada por conflicto
-- regla descartada por existencia de regla final
+Puntos previstos:
 
-### V2.3 — Rule Schema Normalization
+- unificar forma de las entradas del trace
+- mantener compatibilidad con replay y diff
+- preparar base para explainability futura
+
+### V2.4 — Rule Schema Normalization
 Objetivo:
 reducir ambigüedad interna del esquema de reglas.
 
@@ -53,6 +54,7 @@ Puntos previstos:
 - no introducir UI de edición de reglas
 - no introducir DSL compleja
 - no añadir tipos de condición sin caso real
+- no introducir persistencia de reglas
 
 ## Criterio de avance
 La fase V2.x avanzará correctamente si:
@@ -60,4 +62,5 @@ La fase V2.x avanzará correctamente si:
 - las reglas siguen siendo reproducibles
 - el comportamiento sigue siendo trazable
 - las condiciones pueden serializarse
+- el trace puede explicarse con claridad
 - la complejidad del motor se mantiene baja
