@@ -348,13 +348,30 @@
 │   ├── updates
 │   │   ├── admin.py
 │   │   ├── apps.py
+│   │   ├── conditions.py
 │   │   ├── __init__.py
+│   │   ├── management
+│   │   │   └── commands
+│   │   │       ├── replay_diff.py
+│   │   │       ├── replay_email.py
+│   │   │       └── replay_version.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_remove_crmupdateproposal_approval_required_and_more.py
+│   │   │   ├── 0003_ruleevaluationlog_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
+│   │   ├── rule_engine.py
+│   │   ├── rule_sets.py
+│   │   ├── rules_loader.py
+│   │   ├── rules.py
+│   │   ├── rules_registry.py
+│   │   ├── rules_v1.py
+│   │   ├── rules_v2.py
+│   │   ├── services_diff.py
 │   │   ├── services.py
+│   │   ├── services_replay.py
+│   │   ├── simulation.py
 │   │   ├── tests.py
 │   │   └── views.py
 │   └── users
@@ -421,6 +438,7 @@
 │   ├── SESSION_LOG_2026_03_30_AUDIT.md
 │   ├── SESSION_LOG_2026_03_30.md
 │   ├── SESSION_LOG_2026_03_31.md
+│   ├── SESSION_LOG_2026_04_01.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -571,4 +589,4 @@
 ├── testing.py
 └── tests
 
-99 directories, 473 files
+101 directories, 489 files
