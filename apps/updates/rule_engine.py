@@ -1,12 +1,17 @@
 from typing import List, Dict, Any, Tuple
 
+from .conditions import evaluate_condition
+
 
 def evaluate_rules(
     rules: List[Dict],
     context: Dict[str, Any],
 ) -> Tuple[List[Dict], List[Dict]]:
-
-    sorted_rules = sorted(rules, key=lambda r: r.get("priority", 0), reverse=True)
+    sorted_rules = sorted(
+        rules,
+        key=lambda r: r.get("priority", 0),
+        reverse=True,
+    )
 
     matched_rules = []
     trace = []
@@ -17,19 +22,24 @@ def evaluate_rules(
     for rule in sorted_rules:
         conditions = rule.get("conditions", [])
 
-        results = []
-        for cond in conditions:
-            try:
-                results.append(cond(context))
-            except Exception:
-                results.append(False)
+        # Compatibilidad: [] => match por defecto
+        if not conditions:
+            results = []
+            is_match = True
+        else:
+            results = []
+            for cond in conditions:
+                try:
+                    result = evaluate_condition(cond, context)
+                except Exception:
+                    result = False
+                results.append(bool(result))
 
-        is_match = all(results) if conditions else True
+            is_match = all(results)
 
         proposal_type = rule.get("proposal", {}).get("proposal_type")
         outcome = rule.get("outcome", "normal")
 
-        # --- si ya hay regla final → ignorar fallback
         if final_matched and outcome == "fallback":
             trace.append({
                 "rule": rule.get("name"),
@@ -52,7 +62,7 @@ def evaluate_rules(
             matched_rules.append(rule)
             matched_proposal_types.add(proposal_type)
 
-            if outcome == "final":
+            if outcome == "final" or rule.get("final") is True:
                 final_matched = True
 
         trace.append({

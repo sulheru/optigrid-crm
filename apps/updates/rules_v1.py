@@ -1,37 +1,26 @@
-from .conditions import has_inference
-
-
-PRICING_RULES = [
-    {
-        "name": "pricing_interest_detected",
-        "priority": 100,
-        "outcome": "final",
-        "conditions": [
-            has_inference("pricing_interest_signal")
-        ],
-        "proposal": {
-            "proposal_type": "prepare_pricing_response",
-            "payload": {},
-        },
-    },
-]
-
-
-FALLBACK_RULES = [
-    {
-        "name": "default_fallback",
-        "priority": 0,
-        "outcome": "fallback",
-        "conditions": [],
-        "proposal": {
-            "proposal_type": "review_manually",
-            "payload": {},
-        },
-    },
-]
+from .conditions import always_true, has_inference
 
 
 RULES = [
-    *PRICING_RULES,
-    *FALLBACK_RULES,
+    {
+        "name": "pricing_interest_detected",
+        "priority": 100,
+        "conditions": [
+            has_inference("pricing_interest_signal"),
+        ],
+        "proposal": {
+            "proposal_type": "prepare_pricing_response",
+        },
+        "final": True,
+    },
+    {
+        "name": "default_fallback",
+        "priority": 0,
+        "conditions": [
+            always_true(),
+        ],
+        "proposal": {
+            "proposal_type": "followup",
+        },
+    },
 ]
