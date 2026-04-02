@@ -1,59 +1,54 @@
-# HANDOFF CURRENT
+# HANDOFF CURRENT — CRM Update Engine V2.3
 
 ## Estado actual
-El CRM Update Engine V2.2 ha quedado operativo.
 
-La sesión ha refinado la trazabilidad del Rule Engine sin cambiar el comportamiento observable del motor.
+El CRM Update Engine ha evolucionado a V2.3 con éxito.
 
-## Qué está hecho
-El sistema soporta ahora:
+El sistema es ahora:
 
-- Rule Engine desacoplado
-- versionado de reglas
-- replay de decisiones
-- diff entre versiones
-- condiciones declarativas mínimas
-- trazabilidad semánticamente enriquecida en `RULE_TRACE`
+- determinista
+- desacoplado mediante Rule Engine
+- declarativo en condiciones
+- trazable semántica y estructuralmente
 
-Campos semánticos activos en el trace:
+## Mejora clave introducida
 
-- `condition_match`
-- `rule_selected`
-- `rule_discarded`
-- `discard_reason`
+Se ha añadido `event_type` en cada entrada de `RULE_TRACE`.
+
+Tipos actualmente usados:
+
+- `rule_selection`
+- `rule_discard`
 - `final_effect`
 
-## Qué se ha cambiado en esta sesión
-Se han tocado los ficheros principales de `apps/updates`:
+La estructura sigue siendo compatible con el formato anterior.
 
-- `rule_engine.py`
-- `tests.py`
+## Propiedades garantizadas
 
-## Estado funcional comprobado
-Validado con éxito:
+- compatibilidad total hacia atrás
+- sin cambios en comportamiento
+- `create_basic_proposal` intacto
+- replay y diff sin impacto funcional
+- tests en verde
 
-- `python manage.py test apps.updates`
-- `python manage.py test apps.emailing.tests_crm_update_engine`
+## Estado arquitectónico
 
-Resultado:
-los tests ejecutados han pasado correctamente.
+`RULE_TRACE` queda preparado para:
 
-## Decisión arquitectónica consolidada
-`RULE_TRACE` debe distinguir con claridad entre:
+- consumo por otros módulos
+- explainability futura
+- integración con Chat Console
 
-- evaluación de condiciones
-- selección efectiva de regla
-- descarte de regla
-- efecto final del motor
+## Limitaciones actuales
 
-Además, una regla final seleccionada debe bloquear realmente reglas posteriores. Esa coherencia ya queda implementada y validada.
+- `event_type` aún es relativamente genérico
+- no existe capa helper/query sobre trace
+- no hay schema formal tipado, solo normalización estructural mínima
 
-## Punto importante detectado
-Aunque el trace ya es mucho más expresivo, su estructura sigue siendo flexible y no tipada. Eso no bloquea la operación, pero sí marca el siguiente ajuste lógico.
+## Siguiente paso recomendado
 
-## Recomendación para la siguiente sesión
-Implementar una iteración corta centrada en normalización interna del trace:
+Implementar V2.4 centrado en:
 
-1. definir un esquema más formal del decision trace
-2. mantener compatibilidad con logs actuales
-3. preparar consumo futuro desde replay, diff o consola explicativa
+- normalización adicional del trace
+- helpers de consulta
+- preparación de consumo interno sin tocar el comportamiento del motor
