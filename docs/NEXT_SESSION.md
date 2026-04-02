@@ -1,97 +1,32 @@
-# NEXT SESSION
-
-Implementar CRM Update Engine V2.6 — Decision Output Layer.
-
-## Contexto
-El Rule Engine ya está operativo y estable.
-
-`RULE_TRACE` ya dispone de:
-
-- semántica de selección y descarte
-- `event_type` refinado
-- helpers de consulta
-
-Además, ahora el sistema ya soporta:
-
-- explainability determinista sobre trace
-
-Actualmente el sistema dispone de:
-
-- reglas desacopladas
-- versionado
-- replay
-- diff
-- trazabilidad semántica
-- query layer sobre trace
-- explainability legible
-
-Condiciones activas:
-
-- `always_true`
-- `inference_exists`
-
-## Problema actual
-El sistema ya decide bien y ya explica bien, pero aún no expone una estructura unificada y estable lista para consumo por UI o Chat Console.
-
-Eso bloquea la primera capa real de presentación.
+# NEXT SESSION — V2.7 Decision UI Integration
 
 ## Objetivo
-Construir una capa de salida estructurada sobre trace + helpers + explainability.
 
-## Alcance
-- introducir:
-  - `build_decision_output(trace) -> Dict`
-- incluir en el output:
-  - `selected_rules`
-  - `discarded_rules`
-  - `final_effect`
-  - `explanation`
-- reutilizar:
-  - `get_selected_rules`
-  - `get_discarded_rules`
-  - `get_final_effect`
-  - `explain_trace`
-- no duplicar lógica
-- no reparsear el motor
-- preparar base directa para UI y Chat Console
+Consumir Decision Output desde UI / Chat Console.
 
-## Importante
-- no modificar `evaluate_rules`
-- no modificar `create_basic_proposal`
-- no cambiar outputs funcionales del motor
-- no tocar explainability salvo necesidad mínima de integración
-- no introducir LLM
-- no introducir persistencia nueva
-- no sobre-ingeniería
+## Scope
 
-## Decisión de producto/UI ya tomada
-La primera UI útil será:
+- crear función:
+  get_email_decision_view(email_id)
 
-### Email Decision Detail
+- integrar:
+  build_decision_output(trace)
 
-No hacer todavía:
+- renderizar:
+  - selected rules
+  - discarded rules
+  - explanation
+  - final effect
 
-- dashboard global
-- editor de reglas
-- UI genérica del sistema
-- CRUD pesado
+## Restricciones
 
-## Algoritmo de trabajo
+- no modificar motor
+- no modificar helpers
+- no modificar explainability
+- solo capa de consumo
 
-Briefing
-- validar estructura real de trace, helpers y explainability
+## Criterio de éxito
 
-Ciclo de implementación
-1. construir decision output layer mínima
-2. probar
-3. validar consistencia con explainability
-4. dejar payload listo para presentación
-
-Debriefing
-- resumir V2.6
-- preparar salto a la primera UI útil
-
-## Formato de respuesta
-Introducción breve
-código
-siguiente paso
+- UI muestra decisión completa
+- coherente con trace real
+- útil para debugging humano

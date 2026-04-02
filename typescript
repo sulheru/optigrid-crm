@@ -1,0 +1,366 @@
+Script iniciado en 2026-04-02 19:56:14+02:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="184" LINES="52"]
+[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ exit[2PPY    }    "explanation": explanation,final_effect": final_effect,[2Pexplanation": explanation,}[K[3PPYexit[Kscript tmp/output.txt 
+[?2004lScript iniciado, el fichero de anotación de salida es 'tmp/output.txt'.
+[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mpython manage.py test apps.updates[27m
+[7mpython manage.py test apps.emailing.test_decision_detail[27m[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ python manage.py test apps.updates
+python manage.py test apps.emailing.test_decision_detail
+[?2004lFound 12 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.012s
+
+OK
+Destroying test database for alias 'default'...
+Found 2 test(s).
+System check identified no issues (0 silenced).
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ exit
+[?2004lexit
+Script finalizado.
+[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mcat > docs/HANDOFF_CURRENT.md << 'MD'[27m
+[7m# HANDOFF — CRM Update Engine V2.6[27m
+
+[7m## Estado actual[27m
+
+[7mEl sistema dispone ahora de una capa completa de decisión estructurada:[27m
+
+[7m- RULE_TRACE estructurado (V2.3)[27m
+[7m- Query helpers (V2.4)[27m
+[7m- Explainability (V2.5)[27m
+[7m- Decision Output Layer (V2.6)[27m
+
+[7m## Nueva capacidad[27m
+
+[7mSe ha introducido:[27m
+
+[7mbuild_decision_output(trace)[27m
+
+[7mOutput:[27m
+
+[7m{[27m
+[7m  selected_rules: [{rule: str}],[27m
+[7m  discarded_rules: [{rule: str}],[27m
+[7m  final_effect: dict,[27m
+[7m  explanation: List[str][27m
+[7m}[27m
+
+[7m## Propósito[27m
+
+[7mUnificar la salida del motor para:[27m
+
+[7m- UI[27m
+[7m- Chat Console[27m
+[7m- debugging[27m
+[7m- auditoría[27m
+
+[7m## Arquitectura[27m
+
+[7mRULE ENGINE → TRACE → HELPERS → EXPLAINABILITY → DECISION OUTPUT → UI[27m
+
+[7m## Estado[27m
+
+[7m- determinista[27m
+[7m- desacoplado[27m
+[7m- validado por tests[27m
+[7mMD[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/HANDOFF_CURRENT.md << 'MD'
+# HANDOFF — CRM Update Engine V2.6
+
+## Estado actual
+
+El sistema dispone ahora de una capa completa de decisión estructurada:
+
+- RULE_TRACE estructurado (V2.3)
+- Query helpers (V2.4)
+- Explainability (V2.5)
+- Decision Output Layer (V2.6)
+
+## Nueva capacidad
+
+Se ha introducido:
+
+build_decision_output(trace)
+
+Output:
+
+{
+  selected_rules: [{rule: str}],
+  discarded_rules: [{rule: str}],
+  final_effect: dict,
+  explanation: List[str]
+}
+
+## Propósito
+
+Unificar la salida del motor para:
+
+- UI
+- Chat Console
+- debugging
+- auditoría
+
+## Arquitectura
+
+RULE ENGINE → TRACE → HELPERS → EXPLAINABILITY → DECISION OUTPUT → UI
+
+## Estado
+
+- determinista
+- desacoplado
+- validado por tests
+MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mcat >> docs/CHANGELOG.md << 'MD'[27m
+
+[7m## V2.6 — Decision Output Layer[27m
+
+[7m### Added[27m
+[7m- build_decision_output(trace)[27m
+
+[7m### Features[27m
+[7m- selected_rules[27m
+[7m- discarded_rules[27m
+[7m- final_effect[27m
+[7m- explanation[27m
+
+[7m### Improvements[27m
+[7m- Output normalizado para consumo UI[27m
+[7m- Separación estricta entre capas[27m
+
+[7m### Fixes[27m
+[7m- Alineación de tests con RULE_TRACE real[27m
+
+[7m### Status[27m
+[7m- Tests passing[27m
+[7m- Ready for UI consumption[27m
+[7mMD[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat >> docs/CHANGELOG.md << 'MD'
+
+## V2.6 — Decision Output Layer
+
+### Added
+- build_decision_output(trace)
+
+### Features
+- selected_rules
+- discarded_rules
+- final_effect
+- explanation
+
+### Improvements
+- Output normalizado para consumo UI
+- Separación estricta entre capas
+
+### Fixes
+- Alineación de tests con RULE_TRACE real
+
+### Status
+- Tests passing
+- Ready for UI consumption
+MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mcat > docs/NEXT_SESSION.md << 'MD'[27m
+[7m# NEXT SESSION — V2.7 Decision UI Integration[27m
+
+[7m## Objetivo[27m
+
+[7mConsumir Decision Output desde UI / Chat Console.[27m
+
+[7m## Scope[27m
+
+[7m- crear función:[27m
+[7m  get_email_decision_view(email_id)[27m
+
+[7m- integrar:[27m
+[7m  build_decision_output(trace)[27m
+
+[7m- renderizar:[27m
+[7m  - selected rules[27m
+[7m  - discarded rules[27m
+[7m  - explanation[27m
+[7m  - final effect[27m
+
+[7m## Restricciones[27m
+
+[7m- no modificar motor[27m
+[7m- no modificar helpers[27m
+[7m- no modificar explainability[27m
+[7m- solo capa de consumo[27m
+
+[7m## Criterio de éxito[27m
+
+[7m- UI muestra decisión completa[27m
+[7m- coherente con trace real[27m
+[7m- útil para debugging humano[27m
+[7mMD[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/NEXT_SESSION.md << 'MD'
+# NEXT SESSION — V2.7 Decision UI Integration
+
+## Objetivo
+
+Consumir Decision Output desde UI / Chat Console.
+
+## Scope
+
+- crear función:
+  get_email_decision_view(email_id)
+
+- integrar:
+  build_decision_output(trace)
+
+- renderizar:
+  - selected rules
+  - discarded rules
+  - explanation
+  - final effect
+
+## Restricciones
+
+- no modificar motor
+- no modificar helpers
+- no modificar explainability
+- solo capa de consumo
+
+## Criterio de éxito
+
+- UI muestra decisión completa
+- coherente con trace real
+- útil para debugging humano
+MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mcat > docs/SESSION_LOG_2026_04_02_V2_6.md << 'MD'[27m
+[7m# SESSION LOG — 2026-04-02 — V2.6 Decision Output[27m
+
+[7m## Objetivo[27m
+[7mIntroducir capa de salida estructurada del motor de decisión.[27m
+
+[7m## Trabajo realizado[27m
+
+[7m- Implementación de build_decision_output[27m
+[7m- Integración con helpers existentes[27m
+[7m- Integración con explain_trace[27m
+[7m- Detección de mismatch en tests[27m
+[7m- Corrección de formato de trace en tests[27m
+[7m- Introducción de normalización de reglas[27m
+
+[7m## Problemas encontrados[27m
+
+[7m- helpers devuelven strings, no dicts[27m
+[7m- tests usaban formato incorrecto[27m
+
+[7m## Resolución[27m
+
+[7m- adaptación en Decision Output Layer (no en helpers)[27m
+[7m- alineación con contrato real del motor[27m
+
+[7m## Resultado[27m
+
+[7m- sistema consistente[27m
+[7m- tests passing[27m
+[7m- output listo para UI[27m
+
+[7m## Estado[27m
+
+[7mREADY FOR UI INTEGRATION[27m
+[7mMD[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/SESSION_LOG_2026_04_02_V2_6.md << 'MD'
+# SESSION LOG — 2026-04-02 — V2.6 Decision Output
+
+## Objetivo
+Introducir capa de salida estructurada del motor de decisión.
+
+## Trabajo realizado
+
+- Implementación de build_decision_output
+- Integración con helpers existentes
+- Integración con explain_trace
+- Detección de mismatch en tests
+- Corrección de formato de trace en tests
+- Introducción de normalización de reglas
+
+## Problemas encontrados
+
+- helpers devuelven strings, no dicts
+- tests usaban formato incorrecto
+
+## Resolución
+
+- adaptación en Decision Output Layer (no en helpers)
+- alineación con contrato real del motor
+
+## Resultado
+
+- sistema consistente
+- tests passing
+- output listo para UI
+
+## Estado
+
+READY FOR UI INTEGRATION
+MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [7mcat > docs/decision_output.md << 'MD'[27m
+[7m# Decision Output Layer[27m
+
+[7m## Función[27m
+
+[7mbuild_decision_output(trace)[27m
+
+[7m## Propósito[27m
+
+[7mConvertir trace interno en payload consumible por UI.[27m
+
+[7m## Output[27m
+
+[7m{[27m
+[7m  selected_rules: [{rule: str}],[27m
+[7m  discarded_rules: [{rule: str}],[27m
+[7m  final_effect: dict,[27m
+[7m  explanation: List[str][27m
+[7m}[27m
+
+[7m## Notas[27m
+
+[7m- NO evalúa reglas[27m
+[7m- NO modifica trace[27m
+[7m- SOLO adapta formato[27m
+
+[7m## Arquitectura[27m
+
+[7mMotor → Trace → Helpers → Output → UI[27m
+[7mMD[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/decision_output.md << 'MD'
+# Decision Output Layer
+
+## Función
+
+build_decision_output(trace)
+
+## Propósito
+
+Convertir trace interno en payload consumible por UI.
+
+## Output
+
+{
+  selected_rules: [{rule: str}],
+  discarded_rules: [{rule: str}],
+  final_effect: dict,
+  explanation: List[str]
+}
+
+## Notas
+
+- NO evalúa reglas
+- NO modifica trace
+- SOLO adapta formato
+
+## Arquitectura
+
+Motor → Trace → Helpers → Output → UI
+MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ ./cleansession.sh [7m"CRM Update Engine V2.6 — Decision Output Layer[27m
+
+[7m- Added build_decision_output(trace)[27m
+[7m- Integrated selected_rules, discarded_rules, final_effect, explanation[27m
+[7m- Introduced normalization layer for UI consumption[27m
+[7m- Maintained strict separation: engine / helpers / explainability / output[27m
+[7m- Fixed test alignment with real RULE_TRACE structure[27m
+[7m- All tests passing (updates + emailing decision detail)"[27m[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C"CRM Update Engine V2.6 — Decision Output L

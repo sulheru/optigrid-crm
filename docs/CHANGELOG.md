@@ -38,3 +38,25 @@ La siguiente capa natural ya no es del motor ni de explainability, sino del outp
 - construir `build_decision_output(trace)`
 - exponer un payload estable
 - preparar la primera UI útil sobre decisiones reales
+
+## V2.6 — Decision Output Layer
+
+### Added
+- build_decision_output(trace)
+
+### Features
+- selected_rules
+- discarded_rules
+- final_effect
+- explanation
+
+### Improvements
+- Output normalizado para consumo UI
+- Separación estricta entre capas
+
+### Fixes
+- Alineación de tests con RULE_TRACE real
+
+### Status
+- Tests passing
+- Ready for UI consumption

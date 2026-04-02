@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2>Decision Detail</h2>
+      <p class="text-muted mb-4">
+        Transparencia de decisión basada en RULE_TRACE real.
+      </p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Email</h5>
+          <div><strong>ID:</strong> {{ email.id }}</div>
+          {% if email.subject %}
+            <div><strong>Asunto:</strong> {{ email.subject }}</div>
+          {% endif %}
+          {% if email.sender %}
+            <div><strong>Remitente:</strong> {{ email.sender }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if has_decision_trace %}
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Selected Rules</h5>
+            {% if decision_output.selected_rules %}
+              <ul class="mb-0">
+                {% for item in decision_output.selected_rules %}
+                  <li>
+                    <strong>{{ item.rule }}</strong>
+                    {% if item.selection_priority is not None %}
+                      — priority {{ item.selection_priority }}
+                    {% endif %}
+                    {% if item.is_final %}
+                      — final
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted mb-0">No selected rules.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Discarded Rules</h5>
+            {% if decision_output.discarded_rules %}
+              <ul class="mb-0">
+                {% for item in decision_output.discarded_rules %}
+                  <li>
+                    <strong>{{ item.rule }}</strong>
+                    {% if item.discard_reason %}
+                      — {{ item.discard_reason }}
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted mb-0">No discarded rules.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Explanation</h5>
+            {% if decision_output.explanation %}
+              <ol class="mb-0">
+                {% for line in decision_output.explanation %}
+                  <li>{{ line }}</li>
+                {% endfor %}
+              </ol>
+            {% else %}
+              <p class="text-muted mb-0">No explanation available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Final Effect</h5>
+            {% if decision_output.final_effect %}
+              <pre class="mb-0" style="white-space: pre-wrap;">{{ decision_output.final_effect }}</pre>
+            {% else %}
+              <p class="text-muted mb-0">No final effect available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Raw Trace</h5>
+            <pre class="mb-0" style="white-space: pre-wrap;">{{ trace }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="row">
+      <div class="col-12">
+        <div class="alert alert-secondary mb-0">
+          Este email todavía no expone un RULE_TRACE disponible para presentación.
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

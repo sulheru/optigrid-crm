@@ -43,6 +43,7 @@
 │   ├── emailing
 │   │   ├── admin.py
 │   │   ├── apps.py
+│   │   ├── decision_detail.py
 │   │   ├── __init__.py
 │   │   ├── management
 │   │   │   ├── commands
@@ -81,10 +82,12 @@
 │   │   ├── smll_adapter.py
 │   │   ├── templates
 │   │   │   └── emailing
+│   │   ├── test_decision_detail.py
 │   │   ├── tests_crm_update_engine.py
 │   │   ├── tests.py
 │   │   ├── tests_smll_integration.py
 │   │   ├── urls.py
+│   │   ├── views_decision.py
 │   │   └── views.py
 │   ├── events
 │   │   ├── admin.py
@@ -349,6 +352,7 @@
 │   │   ├── admin.py
 │   │   ├── apps.py
 │   │   ├── conditions.py
+│   │   ├── decision_output.py
 │   │   ├── explainability.py
 │   │   ├── __init__.py
 │   │   ├── management
@@ -373,6 +377,7 @@
 │   │   ├── services.py
 │   │   ├── services_replay.py
 │   │   ├── simulation.py
+│   │   ├── test_decision_output.py
 │   │   ├── tests.py
 │   │   └── views.py
 │   └── users
@@ -416,6 +421,7 @@
 │   ├── CURRENT_TREE.md
 │   ├── CURRENT_TREE.txt
 │   ├── DASHBOARD_STATUS_UPDATE.md
+│   ├── decision_output.md
 │   ├── GIT_STATUS.md
 │   ├── HANDOFF_CURRENT.md
 │   ├── NEXT_SESSION.md
@@ -442,6 +448,7 @@
 │   ├── SESSION_LOG_2026_03_31.md
 │   ├── SESSION_LOG_2026_04_01.md
 │   ├── SESSION_LOG_2026_04_02.md
+│   ├── SESSION_LOG_2026_04_02_V2_6.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -559,6 +566,7 @@
 │   │       ├── next_best_action.html
 │   │       └── recommendation_card.html
 │   ├── emailing
+│   │   ├── decision_detail.html
 │   │   ├── email_detail.html.legacy
 │   │   ├── email_list.html.legacy
 │   │   ├── inbox.html
@@ -592,6 +600,7 @@
 │   └── tasks
 │       └── list.html
 ├── testing.py
-└── tests
+├── tests
+└── typescript
 
-101 directories, 494 files
+101 directories, 503 files
