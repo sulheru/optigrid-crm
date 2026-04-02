@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from .conditions import evaluate_condition
+from .explainability import explain_trace
 from .rule_engine import (
     evaluate_rules,
     get_selected_rules,
@@ -106,3 +107,108 @@ class RuleTraceV24HelpersTests(TestCase):
         self.assertIn("rule_b", [d["rule"] for d in discarded])
 
         self.assertTrue(final["final_effect"])
+
+
+class RuleTraceV25ExplainabilityTests(TestCase):
+    def test_explain_trace_selected_discarded_and_final_effect(self):
+        rules = [
+            {
+                "name": "rule_a",
+                "priority": 10,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "a"},
+            },
+            {
+                "name": "rule_b",
+                "priority": 5,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "a"},  # conflicto por duplicado
+            },
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+        lines = explain_trace(trace)
+
+        self.assertEqual(len(matched), 1)
+        self.assertTrue(
+            any("Se seleccionó la regla 'rule_a'" in line for line in lines)
+        )
+        self.assertTrue(
+            any("Se descartó la regla 'rule_b'" in line for line in lines)
+        )
+        self.assertTrue(
+            any("El efecto final indica" in line for line in lines)
+        )
+
+    def test_explain_trace_condition_failed(self):
+        rules = [
+            {
+                "name": "rule_needs_signal",
+                "priority": 10,
+                "conditions": [
+                    {
+                        "type": "inference_exists",
+                        "params": {"inference_type": "pricing_interest_signal"},
+                    }
+                ],
+                "proposal": {"proposal_type": "prepare_pricing_response"},
+            }
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+        lines = explain_trace(trace)
+
+        self.assertEqual(len(matched), 0)
+        self.assertTrue(
+            any(
+                "Se descartó la regla 'rule_needs_signal' porque no se cumplieron sus condiciones."
+                in line
+                for line in lines
+            )
+        )
+
+    def test_explain_trace_shadowed_by_final_rule(self):
+        rules = [
+            {
+                "name": "final_rule",
+                "priority": 100,
+                "outcome": "final",
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "prepare_pricing_response"},
+            },
+            {
+                "name": "shadowed_rule",
+                "priority": 10,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "review_manually"},
+            },
+        ]
+
+        matched, trace = evaluate_rules(rules, {"inferences": []})
+        lines = explain_trace(trace)
+
+        self.assertEqual(len(matched), 1)
+        self.assertTrue(
+            any("Se seleccionó la regla 'final_rule'" in line for line in lines)
+        )
+        self.assertTrue(
+            any(
+                "Se descartó la regla 'shadowed_rule' porque una regla final anterior bloqueó la evaluación efectiva del resto."
+                in line
+                for line in lines
+            )
+        )
+        self.assertTrue(
+            any(
+                "El efecto final indica que se alcanzó una regla final"
+                in line
+                for line in lines
+            )
+        )
+
+    def test_explain_trace_empty(self):
+        lines = explain_trace([])
+        self.assertEqual(
+            lines,
+            ["No hay decisiones registradas en el trace."],
+        )

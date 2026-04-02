@@ -9,10 +9,10 @@ El sistema dispone ya de:
 - versionado de reglas
 - replay de decisiones
 - diff entre versiones
-- capa de condiciones declarativas mínima operativa
+- condiciones declarativas mínimas operativas
 - trazabilidad semánticamente refinada
-- trazabilidad estructurada mínima mediante `event_type`
-- normalización del trace y capa helper/query
+- trace estructurado y consultable
+- Explainability Layer determinista
 
 ## Estado de la fase V2.x
 Completado:
@@ -22,6 +22,7 @@ Completado:
 - V2.2 — Trace Semantics Refinement
 - V2.3 — Structured Trace & Decision Model
 - V2.4 — Trace Normalization & Query Layer
+- V2.5 — Explainability Layer
 
 Actualmente soportado en condiciones declarativas:
 
@@ -29,62 +30,56 @@ Actualmente soportado en condiciones declarativas:
 - `inference_exists`
 
 ## Objetivo inmediato siguiente
-Convertir el trace ya normalizado en explainability consumible y preparar la primera UI útil del motor.
+Convertir trace + explainability en un payload estable y consumible por UI y Chat Console.
 
 Línea prioritaria recomendada:
 
-### V2.5 — Explainability Layer
+### V2.6 — Decision Output Layer
 Objetivo:
-traducir `RULE_TRACE` a explicación determinista y legible para humanos.
+construir una capa de salida estructurada lista para consumo por presentación.
 
 Puntos previstos:
 
-- introducir `explain_trace(trace) -> List[str]`
-- explicar:
-  - reglas seleccionadas
-  - reglas descartadas
-  - motivo de descarte
-  - efecto final
-- reutilizar helpers existentes
-- no modificar el comportamiento del motor
-- preparar consumo por Chat Console y UI
-
-### V2.6 — Presentation Payload for Decision UI
-Objetivo:
-exponer un payload estable y renderizable para la primera pantalla de supervisión.
-
-Puntos previstos:
-
-- definir estructura mínima de presentación
+- introducir `build_decision_output(trace) -> Dict`
 - incluir:
-  - selected_rules
-  - discarded_rules
-  - final_effect
-  - explanation_lines
+  - `selected_rules`
+  - `discarded_rules`
+  - `final_effect`
+  - `explanation`
+- reutilizar:
+  - `get_selected_rules`
+  - `get_discarded_rules`
+  - `get_final_effect`
+  - `explain_trace`
 - mantener separación:
   - motor
   - explainability
-  - presentación
+  - output/presentación
+- no modificar comportamiento del motor
 
-### Primera UI recomendada — Email Decision Detail
+### V2.7 — Presentation Layer for Email Decision Detail
 Objetivo:
-mostrar de forma clara cómo se tomó la decisión sobre un email concreto.
+mostrar una primera vista útil de decisión sobre emails reales.
 
-La pantalla debería enseñar:
+Puntos previstos:
 
-- propuesta resultante
-- reglas seleccionadas
-- reglas descartadas
-- explicación legible
-- efecto final
+- vista de detalle de decisión por email
+- presentación de:
+  - reglas seleccionadas
+  - reglas descartadas
+  - explicación legible
+  - efecto final
+- consumo del Decision Output Layer
+- base directa para Chat Console
 
 ## No hacer todavía
-- no introducir LLM en el motor de reglas
-- no introducir UI global de dashboard de decisiones
-- no introducir editor visual de reglas
+- no introducir LLM en explainability
+- no tocar `evaluate_rules`
+- no construir dashboard global
+- no construir editor visual de reglas
 - no introducir persistencia nueva del trace
-- no tipar en exceso el trace todavía
-- no construir CRUD-first UI
+- no sobre-tipar todavía el trace
+- no meter HTMX/UI antes del output estable
 
 ## Criterio de avance
 La fase V2.x avanzará correctamente si:
@@ -92,5 +87,6 @@ La fase V2.x avanzará correctamente si:
 - las reglas siguen siendo reproducibles
 - el comportamiento sigue siendo trazable
 - el trace puede explicarse de forma legible
+- existe un output estable listo para UI
 - la primera UI muestra decisiones reales sin heurísticas frágiles
 - la complejidad del motor se mantiene baja

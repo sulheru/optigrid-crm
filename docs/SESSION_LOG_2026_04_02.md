@@ -4,83 +4,80 @@
 2026-04-02
 
 ## Sesión
-CRM Update Engine V2.4 — Trace Normalization & Query Layer
+CRM Update Engine V2.5 — Explainability Layer
 
 ## Objetivo de la sesión
-Refinar el modelo de decisión del trace y habilitar una capa de acceso estructurado sin romper compatibilidad ni cambiar el comportamiento funcional del motor.
+Construir una capa de explainability sobre `RULE_TRACE` que traduzca decisiones del motor a una explicación legible para humanos, sin cambiar comportamiento ni mezclar explicación con ejecución.
 
 ## Trabajo realizado
 Se revisó la implementación real de:
 
 - `apps/updates/rule_engine.py`
 - `apps/updates/tests.py`
-- `apps/emailing/tests_crm_update_engine.py`
-- `apps/updates/services_replay.py`
-- `apps/updates/services_diff.py`
 
 Se confirmó que:
 
-- el motor ya era determinista
-- `RULE_TRACE` ya tenía `event_type`
-- replay y diff no debían verse afectados
-- `create_basic_proposal` no debía tocarse
+- `RULE_TRACE` es una lista de dicts
+- ya existían helpers reales:
+  - `get_selected_rules(trace)`
+  - `get_discarded_rules(trace)`
+  - `get_final_effect(trace)`
+- no debía tocarse `evaluate_rules`
+- no debía tocarse el comportamiento del motor
 
 ## Implementación
-Se refinó `event_type` para distinguir mejor los descartes y se añadieron helpers de consulta del trace.
+Se añadió:
 
-Semántica relevante resultante:
+- `apps/updates/explainability.py`
 
-- `rule_selection`
-- `rule_discard_condition_failed`
-- `rule_discard_shadowed`
-- `rule_discard_conflict`
-- `final_effect`
+Con la función:
 
-Helpers introducidos:
+- `explain_trace(trace) -> List[str]`
 
-- `get_selected_rules(trace)`
-- `get_discarded_rules(trace)`
-- `get_final_effect(trace)`
+La explainability introducida:
+
+- reutiliza los helpers existentes
+- no reevalúa reglas
+- no reinterpreta el motor
+- traduce a texto legible:
+  - reglas seleccionadas
+  - reglas descartadas
+  - efecto final
 
 ## Validación
-Se mantuvo el contrato funcional del motor.
+Se ampliaron tests de `apps.updates` para cubrir explainability.
 
-Resultado esperado de la sesión:
+Se validó además integración con el pipeline real del CRM Update Engine.
 
-- sin regresiones funcionales
-- sin impacto en replay
-- sin impacto en diff
-- trace más expresivo
-- trace consumible mediante query layer
+Resultado observado:
+
+- tests de `apps.updates` en verde
+- tests de `apps.emailing.tests_crm_update_engine` en verde
+- `RULE_TRACE` real en logs coherente con:
+  - `rule_selection`
+  - `rule_discard_condition_failed`
+  - `rule_discard_shadowed`
+  - `final_effect`
 
 ## Decisión arquitectónica tomada
-No empezar todavía una UI general.
+No seguir profundizando todavía en explainability semántica avanzada.
 
 Se decide el siguiente orden:
 
-1. Explainability Layer
-2. Presentation payload
-3. Primera UI útil
-
-## Primera UI objetivo elegida
-### Email Decision Detail
-
-Motivo:
-
-- máxima reutilización del trabajo ya hecho en trace
-- valor inmediato para supervisión
-- base directa para Chat Console
-- menor riesgo que intentar un dashboard global
+1. output estructurado para consumo
+2. primera UI útil
+3. consumo por Chat Console
 
 ## Estado de salida
-La sesión termina con V2.4 como capa de transición entre:
+La sesión termina con V2.5 como transición entre:
 
 - motor de decisión
-- explainability
-- futura UI
+- trace consultable
+- explainability determinista
+- futura presentación/UI
 
-El sistema ya no solo decide:
-ahora empieza a estar preparado para explicar y mostrar cómo decide.
+El sistema ya no solo decide ni solo traza:
+ahora también explica.
 
 ## Siguiente paso recomendado
-Implementar V2.5 — Explainability Layer.
+Implementar V2.6 — Decision Output Layer.
