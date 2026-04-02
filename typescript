@@ -363,4 +363,134 @@ Script finalizado.
 [7m- Introduced normalization layer for UI consumption[27m
 [7m- Maintained strict separation: engine / helpers / explainability / output[27m
 [7m- Fixed test alignment with real RULE_TRACE structure[27m
-[7m- All tests passing (updates + emailing decision detail)"[27m[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C"CRM Update Engine V2.6 — Decision Output L
+[7m- All tests passing (updates + emailing decision detail)"[27m[A[A[A[A[A[A[A]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C"CRM Update Engine V2.6 — Decision Output Layer
+
+- Added build_decision_output(trace)
+- Integrated selected_rules, discarded_rules, final_effect, explanation
+- Introduced normalization layer for UI consumption
+- Maintained strict separation: engine / helpers / explainability / output
+- Fixed test alignment with real RULE_TRACE structure
+- All tests passing (updates + emailing decision detail)"
+[?2004l🧹 Limpiando sesión...
+🌳 Generando árbol de ficheros...
+📊 Guardando estado git...
+📦 Guardando dependencias...
+📝 Creando commit...
+[main e1d9bee] CRM Update Engine V2.6 — Decision Output Layer
+ 14 files changed, 923 insertions(+), 176 deletions(-)
+ create mode 100644 apps/emailing/decision_detail.py
+ create mode 100644 apps/emailing/test_decision_detail.py
+ create mode 100644 apps/emailing/views_decision.py
+ create mode 100644 apps/updates/decision_output.py
+ create mode 100644 apps/updates/test_decision_output.py
+ create mode 100644 docs/SESSION_LOG_2026_04_02_V2_6.md
+ create mode 100644 docs/decision_output.md
+ create mode 100644 templates/emailing/decision_detail.html
+ create mode 100644 typescript
+✅ Sesión cerrada correctamente
+[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/ROADMAP.md << 'MD'
+# ROADMAP — OptiGrid CRM (IA-First Decision System)
+
+## Estado actual
+
+El sistema dispone de un motor de decisión completamente estructurado:
+
+V2.0 → Rule Engine (desacople lógica)
+V2.1 → Declarative Conditions
+V2.2 → Trace Semantics
+V2.3 → Structured Trace Model
+V2.4 → Query Layer (helpers)
+V2.5 → Explainability Layer
+V2.6 → Decision Output Layer
+
+Estado: ✅ CORE DECISION SYSTEM COMPLETO
+
+---
+
+## Fase actual
+
+### V2.7 — Decision UI Integration (INMEDIATO)
+
+Objetivo:
+Exponer decisiones en UI / Chat Console.
+
+Incluye:
+- get_email_decision_view(email_id)
+- consumo de build_decision_output
+- render de:
+  - selected_rules
+  - discarded_rules
+  - explanation
+  - final_effect
+
+Resultado esperado:
+- debugging humano viable
+- validación de decisiones
+- transparencia operativa
+
+---
+
+## Próxima fase
+
+### V2.8 — Interactive Decision UI
+
+Objetivo:
+Hacer la decisión navegable y explorable.
+
+Incluye:
+- click en regla → detalle
+- mostrar condiciones evaluadas
+- mostrar discard_reason- highlight de regla final- agrupación por tipo de descarteResultado:- UI explicativa real- herramienta de análisis---### V2.9 — Decision Persistence (Audit Layer)Objetivo:Persistir decisiones para auditoría.Incluye:- modelo DecisionSnapshot- almacenamiento de:  - trace  - decision_output- versionado de decisionesResultado:- auditoría histórica- reproducibilidad---### V3.0 — Feedback Loop (Human-in-the-loop)Objetivo:Permitir corrección humana de decisiones.Incluye:- override manual- marcar decisión correcta/incorrecta- feedback estructuradoResultado:- base para aprendizaje futuro- mejora continua---### V3.1 — Adaptive Rule SystemObjetivo:Sistema semi-dinámico de reglas.Incluye:- reglas parametrizables- activación/desactivación- priorización configurableResultado:- flexibilidad sin romper determinismo---[7m### V3.2 — AI-Augmented Decisions (SAFE MODE)[27m[7mObjetivo:[27m[7mIntroducir IA sin perder control.[27m[7mIncluye:[27m[7m- sugerencias IA (NO ejecución)[27m[7m- comparación:[27m[7m  - decisión rule-based[27m[7m  - sugerencia IA[27m[7m- flag de divergencia[27m[7mResultado:[27m[7m- validación antes de automatización[27m[7m---[27m[7m### V3.3 — Auto-Optimization Layer[27m[7mObjetivo:[27m[7mQue el sistema proponga mejoras.[27m[7mIncluye:[27m[7m- detección de patrones[27m[7m- sugerencias tipo:[27m[7m  "He aprendido a hacer X, ¿activar?"[27m[7mResultado:[27m[7m- sistema evolutivo[27m[7m---[27m[7m## Principios del roadmap[27m[7m1. Determinismo primero[27m[7m2. Explicabilidad antes que automatización[27m[7m3. UI como herramienta de validación[27m[7m4. IA como asistente, no decisor inicial[27m[7m5. Separación estricta de capas[27m[7m---[27m[7m## Estado global[27m[7mCORE ENGINE: ✅[27m[7mTRACEABILITY: ✅[27m[7mEXPLAINABILITY: ✅[27m[7mOUTPUT: ✅[27m[7mUI: ⏳ (V2.7)[27m[7mINTELLIGENCE LOOP: 🔜[27m[7mMD[27m### V3.2 — AI-Augmented Decisions (SAFE MODE)Objetivo:Introducir IA sin perder control.Incluye:- sugerencias IA (NO ejecución)- comparación:  - decisión rule-based  - sugerencia IA- flag de divergenciaResultado:- validación antes de automatización---### V3.3 — Auto-Optimization LayerObjetivo:Que el sistema proponga mejoras.Incluye:- detección de patrones- sugerencias tipo:  "He aprendido a hacer X, ¿activar?"Resultado:- sistema evolutivo---## Principios del roadmap1. Determinismo primero2. Explicabilidad antes que automatización3. UI como herramienta de validación4. IA como asistente, no decisor inicial5. Separación estricta de capas---## Estado globalCORE ENGINE: ✅TRACEABILITY: ✅EXPLAINABILITY: ✅OUTPUT: ✅UI: ⏳ (V2.7)INTELLIGENCE LOOP: 🔜MD
+[?2004l[?2004h]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ cat > docs/ROADMAP.md << 'MD'
+# ROADMAP — OptiGrid CRM (IA-First Decision System)
+
+## Estado actual
+
+El sistema dispone de un motor de decisión completamente estructurado:
+
+V2.0 → Rule Engine (desacople lógica)
+V2.1 → Declarative Conditions
+V2.2 → Trace Semantics
+V2.3 → Structured Trace Model
+V2.4 → Query Layer (helpers)
+V2.5 → Explainability Layer
+V2.6 → Decision Output Layer
+
+Estado: ✅ CORE DECISION SYSTEM COMPLETO
+
+---
+
+## Fase actual
+
+### V2.7 — Decision UI Integration (INMEDIATO)
+
+Objetivo:
+Exponer decisiones en UI / Chat Console.
+
+Incluye:
+- get_email_decision_view(email_id)
+- consumo de build_decision_output
+- render de:
+  - selected_rules
+  - discarded_rules
+  - explanation
+  - final_effect
+
+Resultado esperado:
+- debugging humano viable
+- validación de decisiones
+- transparencia operativa
+
+---
+
+## Próxima fase
+
+### V2.8 — Interactive Decision UI
+
+Objetivo:
+Hacer la decisión navegable y explorable.
+
+Incluye:
+- click en regla → detalle
+- mostrar condiciones evaluadas
+- mostrar discard_reason- highlight de regla final- agrupación por tipo de descarteResultado:- UI explicativa real- herramienta de análisis---### V2.9 — Decision Persistence (Audit Layer)Objetivo:Persistir decisiones para auditoría.Incluye:- modelo DecisionSnapshot- almacenamiento de:  - trace  - decision_output- versionado de decisionesResultado:- auditoría histórica- reproducibilidad---### V3.0 — Feedback Loop (Human-in-the-loop)Objetivo:Permitir corrección humana de decisiones.Incluye:- override manual- marcar decisión correcta/incorrecta- feedback estructuradoResultado:- base para aprendizaje futuro- mejora continua---### V3.1 — Adaptive Rule SystemObjetivo:Sistema semi-dinámico de reglas.Incluye:- reglas parametrizables- activación/desactivación- priorización configurableResultado:- flexibilidad sin romper determinismo---### V3.2 — AI-Augmented Decisions (SAFE MODE)Objetivo:Introducir IA sin perder control.Incluye:- sugerencias IA (NO ejecución)- comparación:  - decisión rule-based  - sugerencia IA- flag de divergenciaResultado:- validación antes de automatización---### V3.3 — Auto-Optimization LayerObjetivo:Que el sistema proponga mejoras.Incluye:- detección de patrones- sugerencias tipo:  "He aprendido a hacer X, ¿activar?"Resultado:- sistema evolutivo---## Principios del roadmap1. Determinismo primero2. Explicabilidad antes que automatización3. UI como herramienta de validación4. IA como asistente, no decisor inicial5. Separación estricta de capas---## Estado globalCORE ENGINE: ✅TRACEABILITY: ✅

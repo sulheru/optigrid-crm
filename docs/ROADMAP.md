@@ -1,92 +1,161 @@
-# ROADMAP — OptiGrid CRM
+# ROADMAP — OptiGrid CRM (IA-First Decision System)
 
 ## Estado actual
-Fase activa: CRM Update Engine V2.x
 
-El sistema dispone ya de:
+El sistema dispone de un motor de decisión completamente estructurado:
 
-- Rule Engine desacoplado
-- versionado de reglas
-- replay de decisiones
-- diff entre versiones
-- condiciones declarativas mínimas operativas
-- trazabilidad semánticamente refinada
-- trace estructurado y consultable
-- Explainability Layer determinista
+V2.0 → Rule Engine (desacople lógica)
+V2.1 → Declarative Conditions
+V2.2 → Trace Semantics
+V2.3 → Structured Trace Model
+V2.4 → Query Layer (helpers)
+V2.5 → Explainability Layer
+V2.6 → Decision Output Layer
 
-## Estado de la fase V2.x
-Completado:
+Estado: ✅ CORE DECISION SYSTEM COMPLETO
 
-- V2 — Rule Engine desacoplado
-- V2.1 — Declarative Conditions Layer mínima
-- V2.2 — Trace Semantics Refinement
-- V2.3 — Structured Trace & Decision Model
-- V2.4 — Trace Normalization & Query Layer
-- V2.5 — Explainability Layer
+---
 
-Actualmente soportado en condiciones declarativas:
+## Fase actual
 
-- `always_true`
-- `inference_exists`
+### V2.7 — Decision UI Integration (INMEDIATO)
 
-## Objetivo inmediato siguiente
-Convertir trace + explainability en un payload estable y consumible por UI y Chat Console.
-
-Línea prioritaria recomendada:
-
-### V2.6 — Decision Output Layer
 Objetivo:
-construir una capa de salida estructurada lista para consumo por presentación.
+Exponer decisiones en UI / Chat Console.
 
-Puntos previstos:
+Incluye:
+- get_email_decision_view(email_id)
+- consumo de build_decision_output
+- render de:
+  - selected_rules
+  - discarded_rules
+  - explanation
+  - final_effect
 
-- introducir `build_decision_output(trace) -> Dict`
-- incluir:
-  - `selected_rules`
-  - `discarded_rules`
-  - `final_effect`
-  - `explanation`
-- reutilizar:
-  - `get_selected_rules`
-  - `get_discarded_rules`
-  - `get_final_effect`
-  - `explain_trace`
-- mantener separación:
-  - motor
-  - explainability
-  - output/presentación
-- no modificar comportamiento del motor
+Resultado esperado:
+- debugging humano viable
+- validación de decisiones
+- transparencia operativa
 
-### V2.7 — Presentation Layer for Email Decision Detail
+---
+
+## Próxima fase
+
+### V2.8 — Interactive Decision UI
+
 Objetivo:
-mostrar una primera vista útil de decisión sobre emails reales.
+Hacer la decisión navegable y explorable.
 
-Puntos previstos:
+Incluye:
+- click en regla → detalle
+- mostrar condiciones evaluadas
+- mostrar discard_reason
+- highlight de regla final
+- agrupación por tipo de descarte
 
-- vista de detalle de decisión por email
-- presentación de:
-  - reglas seleccionadas
-  - reglas descartadas
-  - explicación legible
-  - efecto final
-- consumo del Decision Output Layer
-- base directa para Chat Console
+Resultado:
+- UI explicativa real
+- herramienta de análisis
 
-## No hacer todavía
-- no introducir LLM en explainability
-- no tocar `evaluate_rules`
-- no construir dashboard global
-- no construir editor visual de reglas
-- no introducir persistencia nueva del trace
-- no sobre-tipar todavía el trace
-- no meter HTMX/UI antes del output estable
+---
 
-## Criterio de avance
-La fase V2.x avanzará correctamente si:
+### V2.9 — Decision Persistence (Audit Layer)
 
-- las reglas siguen siendo reproducibles
-- el comportamiento sigue siendo trazable
-- el trace puede explicarse de forma legible
-- existe un output estable listo para UI
-- la primera UI muestra decisiones reales sin heurísticas frágiles
-- la complejidad del motor se mantiene baja
+Objetivo:
+Persistir decisiones para auditoría.
+
+Incluye:
+- modelo DecisionSnapshot
+- almacenamiento de:
+  - trace
+  - decision_output
+- versionado de decisiones
+
+Resultado:
+- auditoría histórica
+- reproducibilidad
+
+---
+
+### V3.0 — Feedback Loop (Human-in-the-loop)
+
+Objetivo:
+Permitir corrección humana de decisiones.
+
+Incluye:
+- override manual
+- marcar decisión correcta/incorrecta
+- feedback estructurado
+
+Resultado:
+- base para aprendizaje futuro
+- mejora continua
+
+---
+
+### V3.1 — Adaptive Rule System
+
+Objetivo:
+Sistema semi-dinámico de reglas.
+
+Incluye:
+- reglas parametrizables
+- activación/desactivación
+- priorización configurable
+
+Resultado:
+- flexibilidad sin romper determinismo
+
+---
+
+### V3.2 — AI-Augmented Decisions (SAFE MODE)
+
+Objetivo:
+Introducir IA sin perder control.
+
+Incluye:
+- sugerencias IA (NO ejecución)
+- comparación:
+  - decisión rule-based
+  - sugerencia IA
+- flag de divergencia
+
+Resultado:
+- validación antes de automatización
+
+---
+
+### V3.3 — Auto-Optimization Layer
+
+Objetivo:
+Que el sistema proponga mejoras.
+
+Incluye:
+- detección de patrones
+- sugerencias tipo:
+  "He aprendido a hacer X, ¿activar?"
+
+Resultado:
+- sistema evolutivo
+
+---
+
+## Principios del roadmap
+
+1. Determinismo primero
+2. Explicabilidad antes que automatización
+3. UI como herramienta de validación
+4. IA como asistente, no decisor inicial
+5. Separación estricta de capas
+
+---
+
+## Estado global
+
+CORE ENGINE: ✅
+TRACEABILITY: ✅
+EXPLAINABILITY: ✅
+OUTPUT: ✅
+UI: ⏳ (V2.7)
+INTELLIGENCE LOOP: 🔜
+
