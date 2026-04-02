@@ -1,9 +1,15 @@
 # NEXT SESSION
 
-Implementar CRM Update Engine V2.4 — Trace Normalization & Query Layer.
+Implementar CRM Update Engine V2.5 — Explainability Layer.
 
 ## Contexto
-El Rule Engine ya está operativo, las condiciones declarativas mínimas están establecidas y `RULE_TRACE` ya distingue selección, descarte y efecto final mediante `event_type`.
+El Rule Engine ya está operativo y estable.
+
+`RULE_TRACE` ya dispone de:
+
+- semántica de selección y descarte
+- `event_type` refinado
+- helpers de consulta
 
 Actualmente el sistema soporta:
 
@@ -12,7 +18,8 @@ Actualmente el sistema soporta:
 - replay
 - diff
 - trazabilidad semántica
-- trazabilidad estructurada mínima
+- trazabilidad estructurada
+- query layer sobre trace
 
 Condiciones activas:
 
@@ -20,39 +27,59 @@ Condiciones activas:
 - `inference_exists`
 
 ## Problema actual
-El trace ya es consumible de forma más clara, pero `event_type` sigue siendo todavía demasiado genérico y no existen helpers para consultar el modelo de decisión.
+El motor ya decide bien y el trace ya es consumible, pero aún no existe una capa que traduzca esas decisiones a una explicación legible para humanos.
+
+Eso bloquea una UI realmente útil y limita el consumo por Chat Console.
 
 ## Objetivo
-Refinar el modelo del trace y habilitar acceso estructurado sin cambiar el comportamiento funcional del motor.
+Construir una Explainability Layer determinista sobre `RULE_TRACE`.
 
 ## Alcance
-- refinar semánticamente `event_type` si se puede hacer sin romper compatibilidad
-- introducir helpers de lectura del trace
-- conservar compatibilidad con logs y tests actuales
-- mantener replay y diff sin cambios funcionales
-- preparar base mejor para consumo desde Chat Console
+- introducir:
+  - `explain_trace(trace) -> List[str]`
+- explicar:
+  - reglas seleccionadas
+  - reglas descartadas
+  - motivo del descarte
+  - efecto final
+- reutilizar helpers existentes
+- no reparsear el trace manualmente desde cero
+- preparar base para el payload de presentación de la primera UI
 
 ## Importante
-- no introducir LLM
-- no introducir UI
-- no introducir persistencia nueva
+- no modificar `evaluate_rules`
+- no modificar `create_basic_proposal`
 - no cambiar outputs funcionales del motor
+- no introducir LLM
+- no introducir persistencia nueva
 - no sobre-ingeniería
+
+## Decisión de producto/UI ya tomada
+La primera UI útil será:
+
+### Email Decision Detail
+
+No hacer todavía:
+
+- dashboard global
+- editor de reglas
+- UI genérica del sistema
+- CRUD pesado
 
 ## Algoritmo de trabajo
 
 Briefing
-- validar la estructura real antes de tocar helpers o normalización
+- validar estructura real de trace y helpers
 
 Ciclo de implementación
-1. recoger contexto real
-2. normalizar mínimo viable
-3. probar
+1. construir explainability mínima
+2. probar
+3. definir payload de presentación mínimo
 4. iterar
 
 Debriefing
 - resumen de sesión
-- próximos pasos
+- preparar siguiente paso hacia UI
 
 ## Formato de respuesta
 Introducción breve

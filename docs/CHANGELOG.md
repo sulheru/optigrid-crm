@@ -1,31 +1,39 @@
 # CHANGELOG
 
-## 2026-04-02 — CRM Update Engine V2.3 — Structured Trace & Decision Model
+## 2026-04-02 — CRM Update Engine V2.4 — Trace Normalization & Query Layer
 
-Se estructura `RULE_TRACE` sin cambiar el comportamiento funcional del motor.
+Se refina la expresividad de `RULE_TRACE` y se introduce una capa helper/query sin cambiar el comportamiento funcional del motor.
 
 ### Cambios realizados
-- se añade `event_type` a las entradas del trace
-- se conserva compatibilidad con la estructura previa:
-  - `rule`
-  - `matched`
-  - `conditions`
-  - `priority`
-- se mantienen los campos semánticos introducidos en V2.2:
-  - `condition_match`
+- se refina `event_type` en descartes
+- se distinguen explícitamente:
+  - `rule_discard_condition_failed`
+  - `rule_discard_shadowed`
+  - `rule_discard_conflict`
+- se mantiene compatibilidad semántica hacia atrás mediante:
+  - `discard_reason`
   - `rule_selected`
   - `rule_discarded`
-  - `discard_reason`
   - `final_effect`
-- se mantiene el hard stop tras regla final
+- se introducen helpers de consulta:
+  - `get_selected_rules(trace)`
+  - `get_discarded_rules(trace)`
+  - `get_final_effect(trace)`
 - no se modifica `create_basic_proposal`
+- no se modifica replay
+- no se modifica diff
+- no se altera el comportamiento del Rule Engine
 
 ### Resultado
 - el motor sigue siendo determinista
-- la trazabilidad gana estructura explícita
-- replay sigue operativo
-- diff sigue operativo
-- los tests del motor y de integración siguen en verde
+- el trace gana expresividad real
+- el trace pasa a ser consumible como API interna
+- la base para explainability queda preparada
+- la base para Chat Console y futura UI queda preparada
 
 ### Observación pendiente
-`event_type` ya permite distinguir selección, descarte y efecto final, pero todavía conviene refinar el modelo y añadir helpers de consulta del trace.
+La siguiente capa natural ya no es del motor, sino de explainability:
+
+- traducir trace a explicación legible
+- preparar payload de presentación
+- construir primera UI útil sobre decisiones reales

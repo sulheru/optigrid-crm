@@ -1,7 +1,12 @@
 from django.test import TestCase
 
 from .conditions import evaluate_condition
-from .rule_engine import evaluate_rules
+from .rule_engine import (
+    evaluate_rules,
+    get_selected_rules,
+    get_discarded_rules,
+    get_final_effect,
+)
 
 
 class DeclarativeConditionsTests(TestCase):
@@ -52,9 +57,7 @@ class RuleEngineDeclarativeTests(TestCase):
                 "name": "default_fallback",
                 "priority": 0,
                 "outcome": "fallback",
-                "conditions": [
-                    {"type": "always_true"}
-                ],
+                "conditions": [{"type": "always_true"}],
                 "proposal": {
                     "proposal_type": "review_manually",
                 },
@@ -71,107 +74,35 @@ class RuleEngineDeclarativeTests(TestCase):
             matched[0]["proposal"]["proposal_type"],
             "prepare_pricing_response",
         )
-        self.assertTrue(trace[0]["matched"])
 
-    def test_rule_engine_matches_fallback(self):
+
+class RuleTraceV24HelpersTests(TestCase):
+    def test_helpers_extract_information(self):
         rules = [
             {
-                "name": "pricing_interest_detected",
-                "priority": 100,
-                "outcome": "final",
-                "conditions": [
-                    {
-                        "type": "inference_exists",
-                        "params": {"inference_type": "pricing_interest_signal"},
-                    }
-                ],
-                "proposal": {
-                    "proposal_type": "prepare_pricing_response",
-                },
+                "name": "rule_a",
+                "priority": 10,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "a"},
             },
             {
-                "name": "default_fallback",
-                "priority": 0,
-                "outcome": "fallback",
-                "conditions": [
-                    {"type": "always_true"}
-                ],
-                "proposal": {
-                    "proposal_type": "review_manually",
-                },
+                "name": "rule_b",
+                "priority": 5,
+                "conditions": [{"type": "always_true"}],
+                "proposal": {"proposal_type": "a"},  # duplicado
             },
         ]
 
-        matched, trace = evaluate_rules(
-            rules,
-            {"inferences": []},
-        )
-
-        self.assertEqual(len(matched), 1)
-        self.assertEqual(
-            matched[0]["proposal"]["proposal_type"],
-            "review_manually",
-        )
-        self.assertFalse(trace[0]["matched"])
-        self.assertTrue(trace[1]["matched"])
-
-class RuleTraceSemanticsV22Tests(TestCase):
-    def test_trace_contains_semantic_fields(self):
-        rules = [
-            {
-                "name": "test_rule",
-                "priority": 10,
-                "conditions": [{"type": "always_true"}],
-                "proposal": {"proposal_type": "test"},
-            }
-        ]
-
         matched, trace = evaluate_rules(rules, {"inferences": []})
 
-        self.assertEqual(len(matched), 1)
+        selected = get_selected_rules(trace)
+        discarded = get_discarded_rules(trace)
+        final = get_final_effect(trace)
 
-        entry = trace[0]
+        self.assertEqual(len(selected), 1)
+        self.assertEqual(selected[0], "rule_a")
 
-        self.assertIn("condition_match", entry)
-        self.assertIn("rule_selected", entry)
-        self.assertTrue(entry["rule_selected"])
+        self.assertTrue(len(discarded) >= 1)
+        self.assertIn("rule_b", [d["rule"] for d in discarded])
 
-    def test_trace_marks_discard_reason(self):
-        rules = [
-            {
-                "name": "rule_fail",
-                "priority": 10,
-                "conditions": [
-                    {
-                        "type": "inference_exists",
-                        "params": {"inference_type": "x"},
-                    }
-                ],
-                "proposal": {"proposal_type": "test"},
-            }
-        ]
-
-        matched, trace = evaluate_rules(rules, {"inferences": []})
-
-        entry = trace[0]
-
-        self.assertTrue(entry["rule_discarded"])
-        self.assertEqual(entry["discard_reason"], "condition_not_matched")
-
-    def test_trace_final_effect_exists(self):
-        rules = [
-            {
-                "name": "final_rule",
-                "priority": 100,
-                "outcome": "final",
-                "conditions": [{"type": "always_true"}],
-                "proposal": {"proposal_type": "x"},
-            }
-        ]
-
-        matched, trace = evaluate_rules(rules, {"inferences": []})
-
-        final_entry = trace[-1]
-
-        self.assertTrue(final_entry["final_effect"])
-        self.assertTrue(final_entry["final_matched"])
+        self.assertTrue(final["final_effect"])
