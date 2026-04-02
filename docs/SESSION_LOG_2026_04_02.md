@@ -1,83 +1,113 @@
-# SESSION LOG
+# SESSION LOG — 2026-04-02
 
-## Fecha
-2026-04-02
+## Summary
+Session focused on decision-engine UI integration, semantic final-effect propagation, and inbox rendering architecture.
 
-## Sesión
-CRM Update Engine V2.5 — Explainability Layer
+## Work completed
 
-## Objetivo de la sesión
-Construir una capa de explainability sobre `RULE_TRACE` que traduzca decisiones del motor a una explicación legible para humanos, sin cambiar comportamiento ni mezclar explicación con ejecución.
+### 1. Decision detail UI
+Implemented and stabilized the decision detail flow:
+- route
+- view
+- detail template
+- inbox link
+- tests
 
-## Trabajo realizado
-Se revisó la implementación real de:
+Validated:
+- full render
+- empty state
+- 404 behavior
 
-- `apps/updates/rule_engine.py`
-- `apps/updates/tests.py`
+### 2. Decision persistence diagnosis
+Debugged the original "Decision Not Available" issue.
 
-Se confirmó que:
+Key findings:
+- the issue was not the template
+- the issue was not routing
+- raw rule traces were persisted in `RuleEvaluationLog`
+- operational decisions lived in `InboundDecision`
+- the two layers were initially disconnected in consumption flow
 
-- `RULE_TRACE` es una lista de dicts
-- ya existían helpers reales:
-  - `get_selected_rules(trace)`
-  - `get_discarded_rules(trace)`
-  - `get_final_effect(trace)`
-- no debía tocarse `evaluate_rules`
-- no debía tocarse el comportamiento del motor
+### 3. Decision consumption refactor
+Refactored decision reading so the detail view:
+1. prefers persisted `InboundDecision`
+2. falls back to email-level trace if present
+3. falls back to `RuleEvaluationLog`
 
-## Implementación
-Se añadió:
+This aligned decision detail with real persisted system state.
 
-- `apps/updates/explainability.py`
+### 4. Inbound decision persistence alignment
+Confirmed model reality:
+- `InboundDecision` uses `inbound_email`
+- decision data persists in `payload_json`
 
-Con la función:
+Connected rule-engine output to decision persistence via:
+- `build_decision_output(trace)`
+- inbound decision upsert from trace
 
-- `explain_trace(trace) -> List[str]`
+### 5. Semantic final effect
+Extended the final trace event with:
+- `semantic_effect.rule`
+- `semantic_effect.proposal_type`
+- `semantic_effect.payload`
+- `semantic_effect.priority`
+- `semantic_effect.outcome`
+- `semantic_effect.is_final`
 
-La explainability introducida:
+Preserved backwards compatibility with legacy expectations:
+- `final_effect=True`
+- existing tests
 
-- reutiliza los helpers existentes
-- no reevalúa reglas
-- no reinterpreta el motor
-- traduce a texto legible:
-  - reglas seleccionadas
-  - reglas descartadas
-  - efecto final
+### 6. Inbound decision derivation update
+Refactored `inbound_decision_from_trace` so that:
+- semantic effect is the primary source for action type inference
+- helper heuristics remain only as fallback compatibility paths
 
-## Validación
-Se ampliaron tests de `apps.updates` para cubrir explainability.
+### 7. Inbox UI work
+Refactored:
+- `templates/emailing/decision_detail.html`
+- `templates/emailing/partials/inbox_decision_panel.html`
 
-Se validó además integración con el pipeline real del CRM Update Engine.
+Decision detail now shows:
+- operational decision
+- semantic effect
+- selected rules
+- discarded rules
+- final effect
+- explanation
 
-Resultado observado:
+Inbox decision panel now shows:
+- action type
+- status
+- priority
+- score
+- approval requirement
+- automation reason
+- semantic effect summary
+- explanation preview
+- risk flags
 
-- tests de `apps.updates` en verde
-- tests de `apps.emailing.tests_crm_update_engine` en verde
-- `RULE_TRACE` real en logs coherente con:
-  - `rule_selection`
-  - `rule_discard_condition_failed`
-  - `rule_discard_shadowed`
-  - `final_effect`
+## Validation
+Confirmed green:
+- `apps.updates`
+- `apps.updates.test_decision_output`
+- `apps.emailing.tests_crm_update_engine`
+- `manage.py check`
 
-## Decisión arquitectónica tomada
-No seguir profundizando todavía en explainability semántica avanzada.
+Confirmed runtime log includes `semantic_effect`.
 
-Se decide el siguiente orden:
+## Important architectural conclusions
+1. The rule engine is now the semantic source of truth.
+2. `semantic_effect` is the correct downstream contract.
+3. UI and execution should consume decision semantics, not reconstruct them independently.
+4. Inbox rendering still needs one more cleanup pass to fully align with this model.
 
-1. output estructurado para consumo
-2. primera UI útil
-3. consumo por Chat Console
+## Remaining work
+- finalize inbox decision panel wiring in `inbox_email_card.html`
+- review `inbox_view` hydration path
+- reduce manual view-layer patching of latest decision state
+- ensure no template-driven data access patterns regress into ORM coupling
 
-## Estado de salida
-La sesión termina con V2.5 como transición entre:
-
-- motor de decisión
-- trace consultable
-- explainability determinista
-- futura presentación/UI
-
-El sistema ya no solo decide ni solo traza:
-ahora también explica.
-
-## Siguiente paso recomendado
-Implementar V2.6 — Decision Output Layer.
+## Recommended next action
+Start next session with inbox integration cleanup only.
+Do not reopen rule-engine semantics unless a concrete rendering bug appears.

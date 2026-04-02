@@ -71,6 +71,7 @@
 │   │   │   ├── inbound_analysis_service.py
 │   │   │   ├── inbound_decision_apply_service.py
 │   │   │   ├── inbound_decision_engine.py
+│   │   │   ├── inbound_decision_from_trace.py
 │   │   │   ├── inbound_interpreter.py
 │   │   │   ├── inbound_simulator.py
 │   │   │   ├── mail_provider_service.py
@@ -452,6 +453,7 @@
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
+├── fetch_decisions.sh
 ├── fix_dispatcher_module_v1.txt
 ├── fix_django_app_names.sh
 ├── flog.sh
@@ -501,6 +503,7 @@
 │   ├── update_proposals.py
 │   └── workflows
 │       └── __init__.py
+├── start_capture.sh
 ├── static
 │   └── app_ui
 │       ├── css
@@ -603,4 +606,4 @@
 ├── tests
 └── typescript
 
-101 directories, 503 files
+101 directories, 506 files

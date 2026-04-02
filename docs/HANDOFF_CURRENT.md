@@ -1,44 +1,90 @@
-# HANDOFF — CRM Update Engine V2.6
+# HANDOFF CURRENT
 
-## Estado actual
+## Current session closure
+Session closed after stabilizing the Decision Engine UI and semantic final-effect layer.
 
-El sistema dispone ahora de una capa completa de decisión estructurada:
+## Current system state
 
-- RULE_TRACE estructurado (V2.3)
-- Query helpers (V2.4)
-- Explainability (V2.5)
-- Decision Output Layer (V2.6)
+### Rule Engine
+Stable and deterministic.
 
-## Nueva capacidad
+Capabilities currently confirmed:
+- declarative rule evaluation
+- structured trace
+- selected/discarded rule extraction
+- explainability layer
+- decision output layer
+- semantic final effect
 
-Se ha introducido:
+### Decision Trace
+Trace now contains:
+- rule selection / discard events
+- final effect compatibility fields
+- semantic effect payload for downstream consumers
 
-build_decision_output(trace)
-
-Output:
-
-{
-  selected_rules: [{rule: str}],
-  discarded_rules: [{rule: str}],
-  final_effect: dict,
-  explanation: List[str]
-}
-
-## Propósito
-
-Unificar la salida del motor para:
-
+`semantic_effect` is now the intended primary semantic contract between:
+- rule engine
+- decision persistence
 - UI
-- Chat Console
-- debugging
-- auditoría
+- future automation policy
 
-## Arquitectura
+### Decision Persistence
+System now uses:
+- `RuleEvaluationLog` for raw rule trace persistence
+- `InboundDecision` for operational decision persistence
+- `payload_json.decision_output` as persisted UI-ready decision structure
 
-RULE ENGINE → TRACE → HELPERS → EXPLAINABILITY → DECISION OUTPUT → UI
+### Decision UI
+Working:
+- `/inbox/<id>/decision/`
+- decision detail view rendering
+- selected rules
+- discarded rules
+- final effect
+- explanation
+- operational decision metadata
+- semantic effect block
 
-## Estado
+### Inbox UI
+Partially completed:
+- inbox card already links to decision detail
+- inbox decision panel partial has been upgraded
+- final wiring / cleanup of inbox rendering path still pending
+- latest decision hydration is still handled manually in the inbox view
 
-- determinista
-- desacoplado
-- validado por tests
+## Important technical conclusions from this session
+
+### 1. Source of truth
+The rule engine must remain the single source of decision truth.
+
+Target architecture:
+`Email -> Inference -> Rule Engine -> Trace -> Decision Output -> InboundDecision -> UI/Execution`
+
+### 2. Decision semantics
+Downstream services should increasingly consume `semantic_effect` instead of reconstructing intent from helper heuristics.
+
+### 3. Separation preserved
+The session preserved the intended boundaries:
+- engine != explainability
+- explainability != output
+- output != UI
+- UI != execution
+
+## Known remaining issues / cleanup items
+1. Inbox integration still needs final cleanup.
+2. `inbox_view` should be simplified and made more explicit around latest decision hydration.
+3. Potential N+1 risks should be removed by view-level shaping rather than template logic.
+4. `semantic_effect.outcome` may deserve normalization to avoid ambiguity when `is_final=True` but `outcome="normal"`.
+
+## Recommended next session focus
+Primary recommendation:
+- finalize inbox decision panel wiring and rendering cleanup
+
+Secondary recommendation:
+- start Decision -> Action UI closure if inbox cleanup completes early
+
+## Risk status
+Low.
+
+No major architectural regressions detected.
+Tests passed after semantic final-effect refactor.

@@ -1,65 +1,140 @@
-{# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/templates/emailing/partials/inbox_decision_panel.html #}
-{# LLM INFO: Ruta de origen de la plantilla. Django elimina este bloque al renderizar. #}
-<div>
-
-  {% if email.latest_decision %}
-
-    <!-- PRIMARY DECISION -->
-    <div style="margin-bottom: 10px;">
-      <strong>Decision</strong>
-      <div style="margin-top: 6px;">
-        {{ email.latest_decision.action_type }}
-      </div>
-    </div>
-
-    <!-- SUMMARY -->
-    {% if email.latest_decision.summary %}
-      <div class="small" style="margin-bottom: 10px;">
-        {{ email.latest_decision.summary }}
-      </div>
-    {% endif %}
-
-    <!-- SCORE -->
-    <div style="margin-bottom: 10px;">
-      <strong>Score</strong>
-      <div>{{ email.latest_decision.score }}</div>
-    </div>
-
-    <!-- EXECUTION MODE -->
-    <div style="margin-bottom: 10px;">
-      <strong>Execution</strong>
+<div class="app-card">
+  <div class="app-card-body">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
       <div>
-        {% if email.latest_decision.applied_automatically %}
-          <span class="badge badge-auto">Automatic</span>
-        {% else %}
-          <span class="badge badge-manual">Manual</span>
-        {% endif %}
+        <h3 style="margin:0; font-size:16px; font-weight:800; color:#111827;">
+          Decision Engine
+        </h3>
+        <div style="margin-top:4px; font-size:13px; color:#6b7280;">
+          Rule-engine summary and operational decision for this email.
+        </div>
       </div>
+
+      <a
+        href="{% url 'email_decision_detail' email.id %}"
+        class="app-btn-secondary"
+        style="font-size:12px; padding:8px 12px;"
+      >
+        <i class="fa fa-sitemap"></i>
+        <span>Decision detail</span>
+      </a>
     </div>
 
-    <!-- APPROVAL -->
-    <div style="margin-bottom: 10px;">
-      <strong>Requires approval</strong>
-      <div>{{ email.latest_decision.requires_approval|yesno:"Yes,No" }}</div>
-    </div>
+    {% with decision=email.latest_decision %}
+      {% if decision %}
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+          <span class="app-badge app-badge-info">{{ decision.action_type }}</span>
 
-    <!-- RISK FLAGS -->
-    <div style="margin-top: 12px;">
-      <strong class="small">Risk</strong>
+          {% if decision.status == "applied" %}
+            <span class="app-badge app-badge-success">Applied</span>
+          {% elif decision.status == "dismissed" %}
+            <span class="app-badge app-badge-danger">Dismissed</span>
+          {% else %}
+            <span class="app-badge app-badge-warning">Suggested</span>
+          {% endif %}
 
-      <div class="chips" style="margin-top: 6px;">
-        {% if email.latest_decision.risk_flags %}
-          {% for flag in email.latest_decision.risk_flags %}
-            <span class="chip-risk">{{ flag }}</span>
-          {% endfor %}
-        {% else %}
-          <span class="badge badge-linked">No risk</span>
+          {% if decision.priority == "high" %}
+            <span class="app-badge app-badge-danger">High priority</span>
+          {% elif decision.priority == "low" %}
+            <span class="app-badge app-badge-neutral">Low priority</span>
+          {% else %}
+            <span class="app-badge app-badge-warning">Medium priority</span>
+          {% endif %}
+
+          {% if decision.applied_automatically %}
+            <span class="app-badge app-badge-info">Auto</span>
+          {% else %}
+            <span class="app-badge app-badge-neutral">Manual</span>
+          {% endif %}
+        </div>
+
+        {% if decision.summary %}
+          <div style="font-size:14px; line-height:1.6; color:#374151; margin-bottom:14px;">
+            {{ decision.summary }}
+          </div>
         {% endif %}
-      </div>
-    </div>
 
-  {% else %}
-    <p class="small">No decision available.</p>
-  {% endif %}
+        {% with payload=decision.payload_json %}
+          {% with decision_output=payload.decision_output %}
+            {% if decision_output.final_effect.semantic_effect %}
+              <div style="border:1px solid #e5e7eb; border-radius:14px; background:#f8fafc; padding:14px; margin-bottom:14px;">
+                <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:#6b7280; margin-bottom:10px;">
+                  Semantic effect
+                </div>
 
+                <div style="display:grid; grid-template-columns:140px 1fr; gap:8px; font-size:13px; line-height:1.6;">
+                  <div style="color:#6b7280; font-weight:700;">Rule</div>
+                  <div style="color:#111827;">{{ decision_output.final_effect.semantic_effect.rule }}</div>
+
+                  <div style="color:#6b7280; font-weight:700;">Proposal</div>
+                  <div style="color:#111827;">{{ decision_output.final_effect.semantic_effect.proposal_type }}</div>
+
+                  <div style="color:#6b7280; font-weight:700;">Final rule</div>
+                  <div style="color:#111827;">
+                    {{ decision_output.final_effect.semantic_effect.is_final|yesno:"Yes,No" }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            <div style="display:grid; grid-template-columns:120px 1fr; gap:8px; font-size:13px; line-height:1.6; margin-bottom:14px;">
+              <div style="color:#6b7280; font-weight:700;">Score</div>
+              <div style="color:#111827;">{{ decision.score }}</div>
+
+              <div style="color:#6b7280; font-weight:700;">Approval</div>
+              <div style="color:#111827;">{{ decision.requires_approval|yesno:"Required,Not required" }}</div>
+
+              {% if decision.automation_reason %}
+                <div style="color:#6b7280; font-weight:700;">Automation</div>
+                <div style="color:#111827;">{{ decision.automation_reason }}</div>
+              {% endif %}
+            </div>
+
+            {% if decision_output.explanation %}
+              <div style="margin-bottom:14px;">
+                <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:#6b7280; margin-bottom:8px;">
+                  Explanation
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  {% for line in decision_output.explanation|slice:":2" %}
+                    <div style="padding:10px 12px; border:1px solid #e5e7eb; border-radius:12px; background:#ffffff; font-size:13px; line-height:1.6; color:#374151;">
+                      {{ line }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endwith %}
+        {% endwith %}
+
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:#6b7280; margin-bottom:8px;">
+            Risk flags
+          </div>
+
+          {% if decision.risk_flags %}
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              {% for flag in decision.risk_flags %}
+                <span class="app-badge app-badge-danger">{{ flag }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <span class="app-badge app-badge-success">No active risk flags</span>
+          {% endif %}
+        </div>
+      {% else %}
+        <div style="font-size:13px; color:#6b7280; margin-bottom:14px;">
+          No persisted decision available for this email yet.
+        </div>
+
+        <a
+          href="{% url 'email_decision_detail' email.id %}"
+          class="app-btn-secondary"
+        >
+          <i class="fa fa-search"></i>
+          <span>Open decision trace</span>
+        </a>
+      {% endif %}
+    {% endwith %}
+  </div>
 </div>

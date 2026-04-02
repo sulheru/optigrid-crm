@@ -35,6 +35,29 @@ def get_final_effect(trace: List[Dict]) -> Dict[str, Any]:
 
 
 # =========================================================
+# INTERNAL HELPERS
+# =========================================================
+
+def _build_semantic_effect(matched_rules: List[Dict]) -> Dict[str, Any] | None:
+    if not matched_rules:
+        return None
+
+    top_rule = matched_rules[0]
+    proposal = top_rule.get("proposal", {}) or {}
+
+    return {
+        "rule": top_rule.get("name"),
+        "proposal_type": proposal.get("proposal_type"),
+        "payload": proposal.get("payload", {}) or {},
+        "priority": top_rule.get("priority"),
+        "outcome": top_rule.get("outcome", "normal"),
+        "is_final": (
+            top_rule.get("outcome") == "final" or top_rule.get("final") is True
+        ),
+    }
+
+
+# =========================================================
 # CORE ENGINE
 # =========================================================
 
@@ -74,7 +97,8 @@ def evaluate_rules(
 
             is_match = all(results)
 
-        proposal_type = rule.get("proposal", {}).get("proposal_type")
+        proposal = rule.get("proposal", {}) or {}
+        proposal_type = proposal.get("proposal_type")
         outcome = rule.get("outcome", "normal")
 
         # -----------------------------
@@ -139,6 +163,8 @@ def evaluate_rules(
             trace_entry["is_final"] = (
                 outcome == "final" or rule.get("final") is True
             )
+            trace_entry["selected_proposal_type"] = proposal_type
+            trace_entry["selected_payload"] = proposal.get("payload", {}) or {}
 
             trace_entry["event_type"] = "rule_selection"
 
@@ -148,13 +174,20 @@ def evaluate_rules(
         trace.append(trace_entry)
 
     # -----------------------------
-    # FINAL EFFECT
+    # FINAL EFFECT (V2.7 — SEMANTIC)
     # -----------------------------
+    semantic_effect = _build_semantic_effect(matched_rules)
+
     trace.append({
         "event_type": "final_effect",
+
+        # Compatibilidad existente
         "final_effect": True,
         "final_matched": final_matched,
         "matched_rules_count": len(matched_rules),
+
+        # Nuevo efecto semántico
+        "semantic_effect": semantic_effect,
     })
 
     return matched_rules, trace

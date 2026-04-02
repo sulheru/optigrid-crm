@@ -1,5 +1,8 @@
 from typing import Any
 
+from apps.emailing.services.inbound_decision_from_trace import (
+    upsert_inbound_decision_from_trace,
+)
 from apps.inferences.models import InferenceRecord
 
 from .models import CRMUpdateProposal, RuleEvaluationLog
@@ -44,6 +47,7 @@ def create_basic_proposal(
             source_id=source_id,
             trace=trace,
         )
+        upsert_inbound_decision_from_trace(email, trace)
 
     proposals = []
     seen_proposals = set()

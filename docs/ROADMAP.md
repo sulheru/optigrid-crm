@@ -1,161 +1,86 @@
-# ROADMAP — OptiGrid CRM (IA-First Decision System)
+# ROADMAP
 
-## Estado actual
-
-El sistema dispone de un motor de decisión completamente estructurado:
-
-V2.0 → Rule Engine (desacople lógica)
-V2.1 → Declarative Conditions
-V2.2 → Trace Semantics
-V2.3 → Structured Trace Model
-V2.4 → Query Layer (helpers)
-V2.5 → Explainability Layer
-V2.6 → Decision Output Layer
-
-Estado: ✅ CORE DECISION SYSTEM COMPLETO
+## Current phase
+Decision Engine consolidation and UI operationalization.
 
 ---
 
-## Fase actual
+## Completed
 
-### V2.7 — Decision UI Integration (INMEDIATO)
+### CRM Update Engine
+- V2.0 rule-based core
+- V2.1 declarative conditions
+- V2.2 trace semantics refinement
+- V2.3 structured trace and decision model
+- V2.4 trace normalization and query helpers
+- V2.5 explainability layer
+- V2.6 decision output layer
+- V2.7 decision UI integration
+- V2.7.1 decision persistence alignment
+- V2.7.2 semantic final effect
 
-Objetivo:
-Exponer decisiones en UI / Chat Console.
-
-Incluye:
-- get_email_decision_view(email_id)
-- consumo de build_decision_output
-- render de:
-  - selected_rules
-  - discarded_rules
-  - explanation
-  - final_effect
-
-Resultado esperado:
-- debugging humano viable
-- validación de decisiones
-- transparencia operativa
-
----
-
-## Próxima fase
-
-### V2.8 — Interactive Decision UI
-
-Objetivo:
-Hacer la decisión navegable y explorable.
-
-Incluye:
-- click en regla → detalle
-- mostrar condiciones evaluadas
-- mostrar discard_reason
-- highlight de regla final
-- agrupación por tipo de descarte
-
-Resultado:
-- UI explicativa real
-- herramienta de análisis
+### Emailing / Inbox Intelligence
+- inbound interpretation model
+- inbound decision model
+- decision apply / dismiss services
+- decision detail view
+- semantic effect visible in detail UI
+- upgraded inbox decision panel partial
 
 ---
 
-### V2.9 — Decision Persistence (Audit Layer)
+## In progress
 
-Objetivo:
-Persistir decisiones para auditoría.
+### Inbox decision integration cleanup
+Status: active
 
-Incluye:
-- modelo DecisionSnapshot
-- almacenamiento de:
-  - trace
-  - decision_output
-- versionado de decisiones
-
-Resultado:
-- auditoría histórica
-- reproducibilidad
+Pending:
+- finalize decision panel wiring in inbox card composition
+- simplify `inbox_view` data shaping
+- reduce view/template coupling
+- ensure clean latest-decision hydration path
 
 ---
 
-### V3.0 — Feedback Loop (Human-in-the-loop)
+## Next
 
-Objetivo:
-Permitir corrección humana de decisiones.
+### V2.8 — Decision Action UI Closure
+Goal:
+turn suggested decisions into a clean visible action workflow.
 
-Incluye:
-- override manual
-- marcar decisión correcta/incorrecta
-- feedback estructurado
+Expected scope:
+- apply / dismiss state feedback in inbox
+- visible execution state
+- clearer automation visibility
+- refined operational decision presentation
 
-Resultado:
-- base para aprendizaje futuro
-- mejora continua
+### V2.9 — Policy-aware execution
+Goal:
+make execution policy explicit and rule-compatible.
 
----
+Expected scope:
+- approval-aware routing
+- blocked actions visibility
+- action constraints by policy
+- better automation reason surface
 
-### V3.1 — Adaptive Rule System
+### V3.0 — Decision Console / Chat Console foundation
+Goal:
+make decision traces conversationally explorable.
 
-Objetivo:
-Sistema semi-dinámico de reglas.
-
-Incluye:
-- reglas parametrizables
-- activación/desactivación
-- priorización configurable
-
-Resultado:
-- flexibilidad sin romper determinismo
-
----
-
-### V3.2 — AI-Augmented Decisions (SAFE MODE)
-
-Objetivo:
-Introducir IA sin perder control.
-
-Incluye:
-- sugerencias IA (NO ejecución)
-- comparación:
-  - decisión rule-based
-  - sugerencia IA
-- flag de divergencia
-
-Resultado:
-- validación antes de automatización
+Expected scope:
+- trace narrative view
+- semantic effect summary
+- decision history thread
+- human validation support
 
 ---
 
-### V3.3 — Auto-Optimization Layer
+## Long-term direction
+The product is evolving from a CRM with AI features into:
 
-Objetivo:
-Que el sistema proponga mejoras.
+`Decision System with CRM surfaces`
 
-Incluye:
-- detección de patrones
-- sugerencias tipo:
-  "He aprendido a hacer X, ¿activar?"
-
-Resultado:
-- sistema evolutivo
-
----
-
-## Principios del roadmap
-
-1. Determinismo primero
-2. Explicabilidad antes que automatización
-3. UI como herramienta de validación
-4. IA como asistente, no decisor inicial
-5. Separación estricta de capas
-
----
-
-## Estado global
-
-CORE ENGINE: ✅
-TRACEABILITY: ✅
-EXPLAINABILITY: ✅
-OUTPUT: ✅
-UI: ⏳ (V2.7)
-INTELLIGENCE LOOP: 🔜
-
+Core principle:
+- the rule engine remains the deterministic source of truth
+- UI, automation, and future LLM layers consume that truth rather than inventing it

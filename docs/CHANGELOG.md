@@ -1,62 +1,63 @@
 # CHANGELOG
 
-## 2026-04-02 — CRM Update Engine V2.5 — Explainability Layer
+## 2026-04-02 — CRM Update Engine V2.7 / V2.7.1 / V2.7.2
 
-Se introduce una capa de explainability determinista sobre `RULE_TRACE` sin modificar el comportamiento funcional del motor.
+### V2.7 — Decision UI Integration
+- Added `get_email_decision_view(email_id)` as UI-facing decision reader.
+- Added `email_decision_detail` view and route for decision inspection.
+- Added decision-detail navigation from inbox cards.
+- Refactored `templates/emailing/decision_detail.html` to render:
+  - selected rules
+  - discarded rules
+  - final effect
+  - explanation
+- Added dedicated tests for:
+  - decision detail render
+  - empty state
+  - 404 behavior
+  - inbox link visibility
 
-### Cambios realizados
-- se añade `apps/updates/explainability.py`
-- se introduce:
-  - `explain_trace(trace) -> List[str]`
-- la explainability:
-  - reutiliza `get_selected_rules(trace)`
-  - reutiliza `get_discarded_rules(trace)`
-  - reutiliza `get_final_effect(trace)`
-- se generan explicaciones legibles para:
-  - reglas seleccionadas
-  - reglas descartadas
-  - efecto final
-- se mantiene separación estricta:
-  - motor != explicación
-- no se modifica `evaluate_rules`
-- no se modifica `create_basic_proposal`
-- no se introduce LLM
-- no se introduce persistencia
-- se amplían tests del módulo `apps.updates`
-- se valida compatibilidad con tests de integración del CRM Update Engine
+### V2.7.1 — Decision Persistence Alignment
+- Confirmed `RuleEvaluationLog` as source of rule trace persistence.
+- Refactored trace lookup to use `source_type="inbound_email"` and `source_id=str(email.id)`.
+- Confirmed `InboundDecision` uses `inbound_email` and `payload_json`.
+- Refactored decision view consumption to prefer persisted decision data and fallback to rule logs.
 
-### Resultado
-- el motor sigue siendo determinista
-- el trace sigue siendo la fuente de verdad
-- las decisiones ya son explicables en lenguaje legible
-- Chat Console queda más cerca de poder consumir decisiones reales
-- la base para una UI útil queda preparada
+### V2.7.2 — Semantic Final Effect
+- Extended `final_effect` trace event with `semantic_effect`.
+- Preserved compatibility with existing `final_effect=True` behavior.
+- Added semantic fields:
+  - `rule`
+  - `proposal_type`
+  - `payload`
+  - `priority`
+  - `outcome`
+  - `is_final`
+- Updated inbound decision derivation to use semantic effect as primary source.
+- Reduced dependence on downstream heuristics for action type inference.
+- Verified tests remain green across:
+  - `apps.updates`
+  - `apps.updates.test_decision_output`
+  - `apps.emailing.tests_crm_update_engine`
 
-### Observación pendiente
-La siguiente capa natural ya no es del motor ni de explainability, sino del output estructurado para presentación:
+### Inbox UI work completed this session
+- Refactored `templates/emailing/decision_detail.html` to show:
+  - persisted operational decision
+  - semantic effect
+  - explanation
+  - selected/discarded rules
+- Refactored `templates/emailing/partials/inbox_decision_panel.html` to display:
+  - action type
+  - status
+  - priority
+  - score
+  - approval requirement
+  - automation reason
+  - semantic effect summary
+  - top explanation lines
+  - risk flags
 
-- construir `build_decision_output(trace)`
-- exponer un payload estable
-- preparar la primera UI útil sobre decisiones reales
-
-## V2.6 — Decision Output Layer
-
-### Added
-- build_decision_output(trace)
-
-### Features
-- selected_rules
-- discarded_rules
-- final_effect
-- explanation
-
-### Improvements
-- Output normalizado para consumo UI
-- Separación estricta entre capas
-
-### Fixes
-- Alineación de tests con RULE_TRACE real
-
-### Status
-- Tests passing
-- Ready for UI consumption
+### Known remaining work
+- `inbox_decision_panel.html` exists but inbox integration still needs final wiring review.
+- `inbox_view` currently hydrates decision state manually in Python; this should be cleaned up and optimized.
+- Potential N+1 / view-template coupling still needs final cleanup in inbox rendering path.

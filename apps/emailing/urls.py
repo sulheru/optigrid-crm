@@ -1,5 +1,3 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/urls.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
 from django.urls import path
 
 from .views import (
@@ -17,6 +15,7 @@ from .views import (
     send_email,
     update_outbound_email,
 )
+from .views_decision import email_decision_detail
 
 urlpatterns = [
     path("outbox/", outbox_view, name="outbox"),
@@ -33,4 +32,5 @@ urlpatterns = [
     path("inbox/<int:pk>/generate-reply/", generate_reply_draft, name="generate_reply_draft"),
     path("inbox/<int:pk>/apply-decision/", apply_decision, name="apply_decision"),
     path("inbox/<int:pk>/dismiss-decision/", dismiss_decision, name="dismiss_decision"),
+    path("inbox/<int:email_id>/decision/", email_decision_detail, name="email_decision_detail"),
 ]

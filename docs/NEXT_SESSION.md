@@ -1,32 +1,66 @@
-# NEXT SESSION — V2.7 Decision UI Integration
+# NEXT SESSION
 
-## Objetivo
+## Objective
+Finalize inbox integration for the upgraded Decision Engine UI.
 
-Consumir Decision Output desde UI / Chat Console.
+## Context
+The system already has:
+- deterministic rule engine
+- structured trace
+- explainability
+- decision output
+- semantic final effect
+- persisted `InboundDecision`
+- detailed decision page
+- upgraded inbox decision panel partial
+
+What is still incomplete is the final inbox rendering cleanup.
 
 ## Scope
+Focus only on inbox integration and rendering hygiene.
 
-- crear función:
-  get_email_decision_view(email_id)
+### Tasks
+1. Review `apps/emailing/views.py::inbox_view`
+   - clarify hydration of `suggested_decision`
+   - clarify hydration of `latest_decision`
+   - reduce ad hoc looping if possible
+   - keep behavior deterministic
 
-- integrar:
-  build_decision_output(trace)
+2. Review `templates/emailing/inbox.html`
+   - confirm composition path
+   - ensure decision panel is actually rendered in final layout
 
-- renderizar:
-  - selected rules
-  - discarded rules
-  - explanation
-  - final effect
+3. Review `templates/emailing/partials/inbox_email_card.html`
+   - integrate decision panel cleanly
+   - avoid duplicated decision rendering blocks
+   - keep the card readable and compact
 
-## Restricciones
+4. Review `templates/emailing/partials/inbox_decision_panel.html`
+   - confirm it receives the correct object shape
+   - confirm semantic effect summary renders safely
 
-- no modificar motor
-- no modificar helpers
-- no modificar explainability
-- solo capa de consumo
+5. Validate no template-level ORM logic is reintroduced
+   - no query-driven logic in template
+   - view prepares all required data
 
-## Criterio de éxito
+## Constraints
+- do not modify the rule engine unless strictly necessary
+- do not modify explainability logic
+- do not modify decision output format unless a rendering bug forces it
+- avoid broad UI redesign
+- prioritize clean wiring over visual embellishment
 
-- UI muestra decisión completa
-- coherente con trace real
-- útil para debugging humano
+## Success criteria
+- inbox renders decision panel consistently
+- no duplicated decision sections inside inbox cards
+- latest decision data is shaped in the view, not inferred in templates
+- semantic effect is visible from inbox without opening detail page
+- tests and `manage.py check` remain green
+
+## If scope completes early
+Next priority:
+- begin Decision -> Action UI closure
+  - apply
+  - dismiss
+  - decision state feedback
+  - automation visibility
