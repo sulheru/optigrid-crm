@@ -3372,4 +3372,59 @@ Cerrando server
 [7m- validate tests across updates + emailing modules[27m
 
 [7mnotes:[27m
-[7m- rule engine remains deterministic a
+[7m- rule engine remains deterministic and unchanged[27m
+[7m- separation preserved: engine ≠ explainability ≠ output ≠ UI[27m
+[7m- inbox integration partially complete; final wiring pending[27m[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A(.venv) ]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cfeat(decision-engine): semantic final effect + decision UI integration + inbox panel refactor
+
+- extend RULE_TRACE final_effect with semantic_effect payload
+- preserve backward compatibility with existing final_effect behavior
+- refactor inbound_decision_from_trace to use semantic_effect as primary source
+- align decision persistence with InboundDecision + payload_json.decision_output
+- improve decision detail view to render:
+  - operational decision
+  - semantic effect
+  - selected/discarded rules
+  - explanation
+- upgrade inbox_decision_panel to display:
+  - action, status, priority, score
+  - approval + automation info
+  - semantic effect summary
+  - explanation preview
+  - risk flags
+- add get_email_decision_view and decision detail routing
+- refactor decision consumption to prefer persisted decisions with fallback to RuleEvaluationLog
+- validate tests across updates + emailing modules
+
+notes:
+- rule engine remains deterministic and unchanged
+- separation preserved: engine ≠ explainability ≠ output ≠ UI
+- inbox integration partially complete; final wiring pending"
+[?2004l🧹 Limpiando sesión...
+🌳 Generando árbol de ficheros...
+📊 Guardando estado git...
+📦 Guardando dependencias...
+📝 Creando commit...
+[main f36a4c8] feat(decision-engine): semantic final effect + decision UI integration + inbox panel refactor
+ 21 files changed, 4387 insertions(+), 593 deletions(-)
+ create mode 100644 apps/emailing/services/inbound_decision_from_trace.py
+ create mode 100755 fetch_decisions.sh
+ create mode 100755 start_capture.sh
+✅ Sesión cerrada correctamente
+[?2004h(.venv) ]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ git[K[K[Kcat > push_git.sh << 'SH'
+[?2004l[?2004h> git push origin main
+[?2004l[?2004h> SH
+[?2004l[?2004h(.venv) ]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ chmpo[K[Kod +x push_git.sh 
+[?2004l[?2004h(.venv) ]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ pushd [K[K[K[K[K[K./push_git.sh 
+[?2004lEnumerando objetos: 59, listo.
+Contando objetos:   1% (1/59)Contando objetos:   3% (2/59)Contando objetos:   5% (3/59)Contando objetos:   6% (4/59)Contando objetos:   8% (5/59)Contando objetos:  10% (6/59)Contando objetos:  11% (7/59)Contando objetos:  13% (8/59)Contando objetos:  15% (9/59)Contando objetos:  16% (10/59)Contando objetos:  18% (11/59)Contando objetos:  20% (12/59)Contando objetos:  22% (13/59)Contando objetos:  23% (14/59)Contando objetos:  25% (15/59)Contando objetos:  27% (16/59)Contando objetos:  28% (17/59)Contando objetos:  30% (18/59)Contando objetos:  32% (19/59)Contando objetos:  33% (20/59)Contando objetos:  35% (21/59)Contando objetos:  37% (22/59)Contando objetos:  38% (23/59)Contando objetos:  40% (24/59)Contando objetos:  42% (25/59)Contando objetos:  44% (26/59)Contando objetos:  45% (27/59)Contando objetos:  47% (28/59)Contando objetos:  49% (29/59)Contando objetos:  50% (30/59)Contando objetos:  52% (31/59)Contando objetos:  54% (32/59)Contando objetos:  55% (33/59)Contando objetos:  57% (34/59)Contando objetos:  59% (35/59)Contando objetos:  61% (36/59)Contando objetos:  62% (37/59)Contando objetos:  64% (38/59)Contando objetos:  66% (39/59)Contando objetos:  67% (40/59)Contando objetos:  69% (41/59)Contando objetos:  71% (42/59)Contando objetos:  72% (43/59)Contando objetos:  74% (44/59)Contando objetos:  76% (45/59)Contando objetos:  77% (46/59)Contando objetos:  79% (47/59)Contando objetos:  81% (48/59)Contando objetos:  83% (49/59)Contando objetos:  84% (50/59)Contando objetos:  86% (51/59)Contando objetos:  88% (52/59)Contando objetos:  89% (53/59)Contando objetos:  91% (54/59)Contando objetos:  93% (55/59)Contando objetos:  94% (56/59)Contando objetos:  96% (57/59)Contando objetos:  98% (58/59)Contando objetos: 100% (59/59)Contando objetos: 100% (59/59), listo.
+Compresión delta usando hasta 2 hilos
+Comprimiendo objetos:   3% (1/31)Comprimiendo objetos:   6% (2/31)Comprimiendo objetos:   9% (3/31)Comprimiendo objetos:  12% (4/31)Comprimiendo objetos:  16% (5/31)Comprimiendo objetos:  19% (6/31)Comprimiendo objetos:  22% (7/31)Comprimiendo objetos:  25% (8/31)Comprimiendo objetos:  29% (9/31)Comprimiendo objetos:  32% (10/31)Comprimiendo objetos:  35% (11/31)Comprimiendo objetos:  38% (12/31)Comprimiendo objetos:  41% (13/31)Comprimiendo objetos:  45% (14/31)Comprimiendo objetos:  48% (15/31)Comprimiendo objetos:  51% (16/31)Comprimiendo objetos:  54% (17/31)Comprimiendo objetos:  58% (18/31)Comprimiendo objetos:  61% (19/31)Comprimiendo objetos:  64% (20/31)Comprimiendo objetos:  67% (21/31)Comprimiendo objetos:  70% (22/31)Comprimiendo objetos:  74% (23/31)Comprimiendo objetos:  77% (24/31)Comprimiendo objetos:  80% (25/31)Comprimiendo objetos:  83% (26/31)Comprimiendo objetos:  87% (27/31)Comprimiendo objetos:  90% (28/31)Comprimiendo objetos:  93% (29/31)Comprimiendo objetos:  96% (30/31)Comprimiendo objetos: 100% (31/31)Comprimiendo objetos: 100% (31/31), listo.
+Escribiendo objetos:   3% (1/32)Escribiendo objetos:   6% (2/32)Escribiendo objetos:   9% (3/32)Escribiendo objetos:  12% (4/32)Escribiendo objetos:  15% (5/32)Escribiendo objetos:  18% (6/32)Escribiendo objetos:  21% (7/32)Escribiendo objetos:  25% (8/32)Escribiendo objetos:  28% (9/32)Escribiendo objetos:  31% (10/32)Escribiendo objetos:  34% (11/32)Escribiendo objetos:  37% (12/32)Escribiendo objetos:  40% (13/32)Escribiendo objetos:  43% (14/32)Escribiendo objetos:  46% (15/32)Escribiendo objetos:  50% (16/32)Escribiendo objetos:  53% (17/32)Escribiendo objetos:  56% (18/32)Escribiendo objetos:  59% (19/32)Escribiendo objetos:  62% (20/32)Escribiendo objetos:  65% (21/32)Escribiendo objetos:  68% (22/32)Escribiendo objetos:  71% (23/32)Escribiendo objetos:  75% (24/32)Escribiendo objetos:  78% (25/32)Escribiendo objetos:  81% (26/32)Escribiendo objetos:  84% (27/32)Escribiendo objetos:  90% (29/32)Escribiendo objetos:  93% (30/32)Escribiendo objetos:  96% (31/32)Escribiendo objetos: 100% (32/32)Escribiendo objetos: 100% (32/32), 56.53 KiB | 2.46 MiB/s, listo.
+Total 32 (delta 18), reusados 0 (delta 0), pack-reusados 0
+remote: Resolving deltas:   0% (0/18)[Kremote: Resolving deltas:   5% (1/18)[Kremote: Resolving deltas:  11% (2/18)[Kremote: Resolving deltas:  16% (3/18)[Kremote: Resolving deltas:  22% (4/18)[Kremote: Resolving deltas:  27% (5/18)[Kremote: Resolving deltas:  33% (6/18)[Kremote: Resolving deltas:  38% (7/18)[Kremote: Resolving deltas:  44% (8/18)[Kremote: Resolving deltas:  50% (9/18)[Kremote: Resolving deltas:  55% (10/18)[Kremote: Resolving deltas:  61% (11/18)[Kremote: Resolving deltas:  66% (12/18)[Kremote: Resolving deltas:  72% (13/18)[Kremote: Resolving deltas:  77% (14/18)[Kremote: Resolving deltas:  83% (15/18)[Kremote: Resolving deltas:  88% (16/18)[Kremote: Resolving deltas:  94% (17/18)[Kremote: Resolving deltas: 100% (18/18)[Kremote: Resolving deltas: 100% (18/18), completed with 16 local objects.[K
+To github.com:sulheru/optigrid-crm.git
+   cd78db2..f36a4c8  main -> main
+[?2004h(.venv) ]0;sulheru@workstation: ~/OptiGrid_Project/og_pilot/optigrid_crm[01;32msulheru@workstation[00m:[01;34m~/OptiGrid_Project/og_pilot/optigrid_crm[00m$ exit
+[?2004lexit
+
+Script terminado en 2026-04-02 23:58:51+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

@@ -91,68 +91,7 @@
         {% endif %}
       </div>
 
-      <div style="border:1px solid #e5e7eb; border-radius:14px; background:#fff; padding:14px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
-          <h4 style="margin:0; font-size:14px; font-weight:700; color:#111827;">Decision Engine</h4>
-
-          <a
-            href="{% url 'email_decision_detail' email.id %}"
-            style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:10px; border:1px solid #dbeafe; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:700; text-decoration:none;"
-          >
-            <i class="fa fa-search"></i>
-            <span>View decision</span>
-          </a>
-        </div>
-
-        {% if email.latest_decision %}
-          <div style="font-size:14px; color:#111827; margin-bottom:10px;">
-            <strong>Decision:</strong> {{ email.latest_decision.action_type|action_label }}
-          </div>
-
-          {% if email.latest_decision.summary %}
-            <div style="font-size:13px; color:#6b7280; line-height:1.5; margin-bottom:10px;">
-              {{ email.latest_decision.summary }}
-            </div>
-          {% endif %}
-
-          <div style="font-size:13px; color:#6b7280; margin-bottom:6px;">
-            <strong>Score:</strong> {{ email.latest_decision.score }}
-          </div>
-
-          <div style="font-size:13px; color:#6b7280; margin-bottom:6px;">
-            <strong>Requires approval:</strong> {{ email.latest_decision.requires_approval|yesno:"Yes,No" }}
-          </div>
-
-          <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">
-            <strong>Execution:</strong>
-            {% if email.latest_decision.applied_automatically %}Automatic{% else %}Manual{% endif %}
-          </div>
-
-          <div style="display:flex; flex-wrap:wrap; gap:8px;">
-            {% if email.latest_decision.risk_flags %}
-              {% for flag in email.latest_decision.risk_flags %}
-                <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:12px; font-weight:700;">
-                  {{ flag|risk_flag_label }}
-                </span>
-              {% endfor %}
-            {% else %}
-              <span style="display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#dcfce7; color:#15803d; font-size:12px; font-weight:700;">
-                No risk
-              </span>
-            {% endif %}
-          </div>
-        {% else %}
-          <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">No decision available.</div>
-
-          <a
-            href="{% url 'email_decision_detail' email.id %}"
-            style="display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; background:#f9fafb; color:#374151; font-size:12px; font-weight:700; text-decoration:none;"
-          >
-            <i class="fa fa-list-alt"></i>
-            <span>Open decision trace</span>
-          </a>
-        {% endif %}
-      </div>
+      {% include "emailing/partials/inbox_decision_panel.html" with email=email %}
     </div>
 
     <div style="margin-top:16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
@@ -182,7 +121,7 @@
 
         <a class="app-btn-secondary" href="{% url 'email_decision_detail' email.id %}">
           <i class="fa fa-sitemap"></i>
-          <span>Decision detail</span>
+          <span>View decision</span>
         </a>
       </div>
 

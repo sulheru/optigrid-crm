@@ -1,5 +1,4 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/views.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -110,6 +109,107 @@ def bulk_action(request):
     return redirect(f"/outbox/?status={status}&type={email_type}")
 
 
+def _build_inbox_queryset():
+    decisions_qs = (
+        InboundDecision.objects
+        .select_related("interpretation")
+        .order_by("-created_at")
+    )
+
+    return (
+        InboundEmail.objects
+        .select_related(
+            "opportunity",
+            "source_outbound",
+            "ai_interpretation",
+        )
+        .prefetch_related(
+            Prefetch("ai_decisions", queryset=decisions_qs)
+        )
+    )
+
+
+def _get_prefetched_decisions(email):
+    return list(email.ai_decisions.all())
+
+
+def _needs_inbound_analysis(email):
+    interpretation = getattr(email, "ai_interpretation", None)
+    decisions = _get_prefetched_decisions(email)
+    has_suggested_decision = any(
+        decision.status == InboundDecision.STATUS_SUGGESTED
+        for decision in decisions
+    )
+    return interpretation is None or not has_suggested_decision
+
+
+def _hydrate_inbox_email(email):
+    decisions = _get_prefetched_decisions(email)
+
+    suggested_decision = next(
+        (decision for decision in decisions if decision.status == InboundDecision.STATUS_SUGGESTED),
+        None,
+    )
+    latest_non_suggested_decision = decisions[0] if decisions else None
+    latest_decision = suggested_decision or latest_non_suggested_decision
+
+    decision_output = {}
+    semantic_effect = {}
+    explanation_preview = []
+
+    if latest_decision:
+        payload_json = latest_decision.payload_json or {}
+        maybe_decision_output = payload_json.get("decision_output")
+
+        if isinstance(maybe_decision_output, dict):
+            decision_output = maybe_decision_output
+
+        final_effect = decision_output.get("final_effect") or {}
+        maybe_semantic_effect = final_effect.get("semantic_effect") or {}
+        explanation = decision_output.get("explanation") or []
+
+        if isinstance(maybe_semantic_effect, dict):
+            semantic_effect = maybe_semantic_effect
+
+        if isinstance(explanation, list):
+            explanation_preview = explanation[:2]
+
+    email.suggested_decision = suggested_decision
+    email.latest_decision = latest_decision
+    email.latest_decision_output = decision_output
+    email.latest_semantic_effect = semantic_effect
+    email.latest_explanation_preview = explanation_preview
+    return email
+
+
+def _matches_inbox_filters(email, *, decision_status, automation, priority, risk):
+    decision = getattr(email, "latest_decision", None)
+
+    if decision_status != "all":
+        if not decision or decision.status != decision_status:
+            return False
+
+    if automation == "auto":
+        if not decision or not decision.applied_automatically:
+            return False
+    elif automation == "manual":
+        if not decision or decision.applied_automatically:
+            return False
+
+    if priority != "all":
+        if not decision or decision.priority != priority:
+            return False
+
+    if risk == "with_risk":
+        if not decision or not decision.risk_flags:
+            return False
+    elif risk == "without_risk":
+        if not decision or decision.risk_flags:
+            return False
+
+    return True
+
+
 def inbox_view(request):
     status = request.GET.get("status", "all")
     reply_type = request.GET.get("reply_type", "all")
@@ -118,75 +218,41 @@ def inbox_view(request):
     priority = request.GET.get("priority", "all")
     risk = request.GET.get("risk", "all")
 
-    emails = InboundEmail.objects.all().select_related(
-        "opportunity",
-        "source_outbound",
-        "ai_interpretation",
-    ).prefetch_related("ai_decisions")
+    emails_qs = _build_inbox_queryset()
 
     if status != "all":
-        emails = emails.filter(status=status)
+        emails_qs = emails_qs.filter(status=status)
 
     if reply_type != "all":
-        emails = emails.filter(reply_type=reply_type)
+        emails_qs = emails_qs.filter(reply_type=reply_type)
 
-    emails = list(emails.order_by("-received_at", "-created_at")[:200])
+    emails = list(emails_qs.order_by("-received_at", "-created_at")[:200])
 
-    for email in emails:
-        if not hasattr(email, "ai_interpretation"):
-            analyze_inbound_email(email)
-        elif not email.ai_decisions.filter(status=InboundDecision.STATUS_SUGGESTED).exists():
-            analyze_inbound_email(email)
+    emails_requiring_analysis = [email for email in emails if _needs_inbound_analysis(email)]
+    analyzed_ids = []
 
-    emails = list(
-        InboundEmail.objects.all()
-        .select_related("opportunity", "source_outbound", "ai_interpretation")
-        .prefetch_related("ai_decisions")
-        .filter(id__in=[e.id for e in emails])
-        .order_by("-received_at", "-created_at")
-    )
+    for email in emails_requiring_analysis:
+        analyze_inbound_email(email)
+        analyzed_ids.append(email.id)
+
+    if analyzed_ids:
+        emails = list(
+            _build_inbox_queryset()
+            .filter(id__in=[email.id for email in emails])
+            .order_by("-received_at", "-created_at")
+        )
 
     hydrated_emails = []
     for email in emails:
-        suggested_decision = None
-        latest_non_suggested_decision = None
-
-        for decision in email.ai_decisions.all():
-            if decision.status == InboundDecision.STATUS_SUGGESTED:
-                suggested_decision = decision
-                break
-
-        if not suggested_decision:
-            latest_non_suggested_decision = email.ai_decisions.first()
-
-        email.suggested_decision = suggested_decision
-        email.latest_decision = suggested_decision or latest_non_suggested_decision
-
-        decision = email.latest_decision
-
-        if decision_status != "all":
-            if not decision or decision.status != decision_status:
-                continue
-
-        if automation == "auto":
-            if not decision or not decision.applied_automatically:
-                continue
-        elif automation == "manual":
-            if not decision or decision.applied_automatically:
-                continue
-
-        if priority != "all":
-            if not decision or decision.priority != priority:
-                continue
-
-        if risk == "with_risk":
-            if not decision or not decision.risk_flags:
-                continue
-        elif risk == "without_risk":
-            if not decision or decision.risk_flags:
-                continue
-
-        hydrated_emails.append(email)
+        hydrated_email = _hydrate_inbox_email(email)
+        if _matches_inbox_filters(
+            hydrated_email,
+            decision_status=decision_status,
+            automation=automation,
+            priority=priority,
+            risk=risk,
+        ):
+            hydrated_emails.append(hydrated_email)
 
     base_qs = InboundEmail.objects.all()
     decisions_qs = InboundDecision.objects.all()

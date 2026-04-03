@@ -1,90 +1,95 @@
 # HANDOFF CURRENT
 
-## Current session closure
-Session closed after stabilizing the Decision Engine UI and semantic final-effect layer.
+## Proyecto
+OptiGrid CRM
 
-## Current system state
+## Fecha de cierre
+2026-04-03
 
-### Rule Engine
-Stable and deterministic.
+## Fase actual
+Inbox Decision Integration Cleanup cerrado a nivel de inbox y validación runtime básica.
 
-Capabilities currently confirmed:
-- declarative rule evaluation
-- structured trace
-- selected/discarded rule extraction
-- explainability layer
-- decision output layer
-- semantic final effect
+## Estado real alcanzado
 
-### Decision Trace
-Trace now contains:
-- rule selection / discard events
-- final effect compatibility fields
-- semantic effect payload for downstream consumers
+### Cerrado y estable
+- Inbox renderiza correctamente con `inbox_decision_panel`.
+- La integración view/template quedó funcional.
+- Se corrigieron varios problemas de wiring en `apps/emailing/views.py`.
+- Se restauraron views de outbox/inbox que se habían roto durante refactors intermedios.
+- `inbox_email_card.html` quedó alineado con tests en el label **"View decision"**.
+- El script de fetch fue corregido para usar únicamente rutas existentes:
+  - válido: `/inbox/<id>/decision/`
+  - inválido: `/inbox/<id>/`
 
-`semantic_effect` is now the intended primary semantic contract between:
-- rule engine
-- decision persistence
-- UI
-- future automation policy
+### Estado visual validado
+- Las páginas `/inbox/<id>/decision/` cargan correctamente.
+- Se muestra la decisión operativa persistida:
+  - action_type
+  - status
+  - priority
+  - score
+  - requires approval
+  - automatic
+  - automation reason
+  - risk flags
+- Cuando no hay trace enriquecido, la UI ya no dice falsamente "Decision Not Available" mientras sí muestra una decisión.
+- En su lugar muestra el estado correcto:
+  - **Trace Not Available**
 
-### Decision Persistence
-System now uses:
-- `RuleEvaluationLog` for raw rule trace persistence
-- `InboundDecision` for operational decision persistence
-- `payload_json.decision_output` as persisted UI-ready decision structure
+## Problema pendiente principal
+La resolución de `decision_output` / `trace` en `apps/emailing/decision_detail.py` sigue incompleta para datos reales.
 
-### Decision UI
-Working:
-- `/inbox/<id>/decision/`
-- decision detail view rendering
-- selected rules
-- discarded rules
-- final effect
-- explanation
-- operational decision metadata
-- semantic effect block
+## Síntoma pendiente
+En múltiples casos reales, la página muestra:
+- decisión operativa persistida disponible
+- semantic effect ausente
+- selected/discarded rules ausentes
+- explanation ausente
+- banner `Trace Not Available`
 
-### Inbox UI
-Partially completed:
-- inbox card already links to decision detail
-- inbox decision panel partial has been upgraded
-- final wiring / cleanup of inbox rendering path still pending
-- latest decision hydration is still handled manually in the inbox view
+Esto indica que:
+- existe `InboundDecision`
+- pero no se está resolviendo correctamente el trace o `decision_output`
+- o no existe en la forma que la vista espera
 
-## Important technical conclusions from this session
+## Diagnóstico más probable
+El bug pendiente está en uno o varios de estos puntos:
+1. nombre real del campo o relación usado para `InboundDecision`
+2. recuperación de `RuleEvaluationLog`
+3. estructura real de `payload_json`
+4. diferencia entre el formato de persistencia real y el que esperan los tests
 
-### 1. Source of truth
-The rule engine must remain the single source of decision truth.
+## Decisión arquitectónica tomada
+No crear `/inbox/<id>/` como vista nueva para esta fase.
 
-Target architecture:
-`Email -> Inference -> Rule Engine -> Trace -> Decision Output -> InboundDecision -> UI/Execution`
+Motivo:
+- el problema estaba en el script, no en el routing
+- la ruta necesaria para esta fase es `/inbox/<id>/decision/`
 
-### 2. Decision semantics
-Downstream services should increasingly consume `semantic_effect` instead of reconstructing intent from helper heuristics.
+## Ficheros tocados en la sesión
+- `apps/emailing/views.py`
+- `templates/emailing/inbox.html`
+- `templates/emailing/partials/inbox_email_card.html`
+- `templates/emailing/partials/inbox_decision_panel.html`
+- `apps/emailing/decision_detail.py`
+- `templates/emailing/decision_detail.html`
+- `tmp/fetch_decisions.sh`
 
-### 3. Separation preserved
-The session preserved the intended boundaries:
-- engine != explainability
-- explainability != output
-- output != UI
-- UI != execution
+## Resultado neto de la sesión
+La fase "Inbox Decision Integration Cleanup" queda cerrada desde el punto de vista de:
+- inbox
+- panel de decisión en inbox
+- consistencia básica UI
+- script de validación
 
-## Known remaining issues / cleanup items
-1. Inbox integration still needs final cleanup.
-2. `inbox_view` should be simplified and made more explicit around latest decision hydration.
-3. Potential N+1 risks should be removed by view-level shaping rather than template logic.
-4. `semantic_effect.outcome` may deserve normalization to avoid ambiguity when `is_final=True` but `outcome="normal"`.
+La fase que queda abierta ya no es inbox, sino:
+- **Decision Detail trace recovery**
 
-## Recommended next session focus
-Primary recommendation:
-- finalize inbox decision panel wiring and rendering cleanup
+## Siguiente foco recomendado
+Resolver correctamente `decision_output` y `trace` para que `Decision Detail` pueda mostrar:
+- Selected Rules
+- Discarded Rules
+- Explanation
+- Semantic Effect
+cuando esos datos existan realmente.
 
-Secondary recommendation:
-- start Decision -> Action UI closure if inbox cleanup completes early
-
-## Risk status
-Low.
-
-No major architectural regressions detected.
-Tests passed after semantic final-effect refactor.

@@ -49,6 +49,11 @@ def _extract_trace_from_value(value: Any) -> Optional[dict]:
             if isinstance(nested, dict):
                 return nested
 
+    if isinstance(value, list) and value:
+        first_item = value[0]
+        if isinstance(first_item, dict):
+            return value
+
     return None
 
 
@@ -137,21 +142,36 @@ def _get_trace_from_inbound_decision(decision: Optional[InboundDecision]) -> Opt
     return None
 
 
-def _build_empty_decision_output() -> Dict[str, Any]:
-    return {
-        "selected_rules": [],
-        "discarded_rules": [],
-        "final_effect": None,
-        "explanation": [
-            "No decision trace is available for this email yet.",
-        ],
-    }
+def _semantic_effect_from_decision_output(decision_output: Optional[dict]) -> Optional[dict]:
+    if not isinstance(decision_output, dict):
+        return None
+
+    final_effect = decision_output.get("final_effect") or {}
+    semantic_effect = final_effect.get("semantic_effect")
+
+    if isinstance(semantic_effect, dict) and semantic_effect:
+        return semantic_effect
+
+    return None
+
+
+def _explanation_from_decision_output(decision_output: Optional[dict]) -> list[str]:
+    if not isinstance(decision_output, dict):
+        return []
+
+    explanation = decision_output.get("explanation") or []
+    if isinstance(explanation, list):
+        return [line for line in explanation if isinstance(line, str)]
+
+    return []
 
 
 def get_email_decision_view(email_id: int) -> Dict[str, Any]:
     email = InboundEmail.objects.get(pk=email_id)
 
     inbound_decision = _get_latest_inbound_decision(email)
+    has_operational_decision = inbound_decision is not None
+
     trace = _get_trace_from_inbound_decision(inbound_decision)
     decision_output = _get_decision_output_from_inbound_decision(inbound_decision)
     trace_source = "inbound_decision" if decision_output else None
@@ -168,18 +188,31 @@ def get_email_decision_view(email_id: int) -> Dict[str, Any]:
             decision_output = build_decision_output(trace)
             trace_source = "rule_evaluation_log"
 
-    if decision_output:
-        has_decision = True
+    semantic_effect = _semantic_effect_from_decision_output(decision_output)
+    explanation = _explanation_from_decision_output(decision_output)
+
+    has_decision_output = isinstance(decision_output, dict) and bool(decision_output)
+    has_trace = trace is not None
+    has_trace_details = has_trace or has_decision_output or bool(semantic_effect) or bool(explanation)
+
+    if has_operational_decision and not has_trace_details:
+        detail_state = "operational_only"
+    elif has_trace_details:
+        detail_state = "full"
     else:
-        decision_output = _build_empty_decision_output()
-        has_decision = False
-        trace_source = None
+        detail_state = "empty"
 
     return {
         "email": email,
         "trace": trace,
         "trace_source": trace_source,
-        "has_decision": has_decision,
+        "has_operational_decision": has_operational_decision,
+        "has_decision_output": has_decision_output,
+        "has_trace": has_trace,
+        "has_trace_details": has_trace_details,
+        "detail_state": detail_state,
         "decision_output": decision_output,
+        "semantic_effect": semantic_effect,
+        "explanation": explanation,
         "inbound_decision": inbound_decision,
     }

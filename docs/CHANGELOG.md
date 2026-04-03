@@ -1,63 +1,36 @@
 # CHANGELOG
 
-## 2026-04-02 — CRM Update Engine V2.7 / V2.7.1 / V2.7.2
+## 2026-04-03 — Inbox Decision Integration Cleanup + Decision Detail state cleanup
 
-### V2.7 — Decision UI Integration
-- Added `get_email_decision_view(email_id)` as UI-facing decision reader.
-- Added `email_decision_detail` view and route for decision inspection.
-- Added decision-detail navigation from inbox cards.
-- Refactored `templates/emailing/decision_detail.html` to render:
-  - selected rules
-  - discarded rules
-  - final effect
-  - explanation
-- Added dedicated tests for:
-  - decision detail render
-  - empty state
-  - 404 behavior
-  - inbox link visibility
+### Hecho
+- Se estabilizó la integración del decision panel en inbox.
+- Se limpió el script de fetch para usar solo rutas válidas.
+- Se corrigieron roturas introducidas durante refactors intermedios en `views.py`.
+- Se restauraron imports y views requeridas por `urls.py`.
+- Se alineó `inbox_email_card.html` con los tests usando el label:
+  - `View decision`
+- Se mejoró la semántica de `Decision Detail`:
+  - antes: podía mostrar decisión operativa y a la vez `Decision Not Available`
+  - ahora: distingue correctamente el caso `Trace Not Available`
 
-### V2.7.1 — Decision Persistence Alignment
-- Confirmed `RuleEvaluationLog` as source of rule trace persistence.
-- Refactored trace lookup to use `source_type="inbound_email"` and `source_id=str(email.id)`.
-- Confirmed `InboundDecision` uses `inbound_email` and `payload_json`.
-- Refactored decision view consumption to prefer persisted decision data and fallback to rule logs.
+### Resultado visible
+- `/inbox/` estable
+- `/inbox/<id>/decision/` renderiza
+- la decisión operativa persistida se muestra correctamente
+- desaparece la contradicción visual previa entre decisión operativa y estado vacío total
 
-### V2.7.2 — Semantic Final Effect
-- Extended `final_effect` trace event with `semantic_effect`.
-- Preserved compatibility with existing `final_effect=True` behavior.
-- Added semantic fields:
-  - `rule`
-  - `proposal_type`
-  - `payload`
-  - `priority`
-  - `outcome`
-  - `is_final`
-- Updated inbound decision derivation to use semantic effect as primary source.
-- Reduced dependence on downstream heuristics for action type inference.
-- Verified tests remain green across:
-  - `apps.updates`
-  - `apps.updates.test_decision_output`
-  - `apps.emailing.tests_crm_update_engine`
+### Pendiente
+- `apps.emailing.test_decision_detail` no queda completamente verde
+- `decision_detail.py` no reconstruye correctamente `decision_output` / `trace` para los casos reales probados
+- no aparecen aún:
+  - Selected Rules
+  - Discarded Rules
+  - Explanation
+  - Semantic Effect
+  en los casos donde deberían recuperarse desde persistencia o logs
 
-### Inbox UI work completed this session
-- Refactored `templates/emailing/decision_detail.html` to show:
-  - persisted operational decision
-  - semantic effect
-  - explanation
-  - selected/discarded rules
-- Refactored `templates/emailing/partials/inbox_decision_panel.html` to display:
-  - action type
-  - status
-  - priority
-  - score
-  - approval requirement
-  - automation reason
-  - semantic effect summary
-  - top explanation lines
-  - risk flags
-
-### Known remaining work
-- `inbox_decision_panel.html` exists but inbox integration still needs final wiring review.
-- `inbox_view` currently hydrates decision state manually in Python; this should be cleaned up and optimized.
-- Potential N+1 / view-template coupling still needs final cleanup in inbox rendering path.
+### Nota
+No se introdujo nueva persistencia.
+No se modificó el Rule Engine.
+No se modificó explainability.
+No se introdujo LLM.

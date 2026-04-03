@@ -1,86 +1,82 @@
 # ROADMAP
 
-## Current phase
-Decision Engine consolidation and UI operationalization.
+## Estado actual
+### Fase completada
+- Rule Engine determinista
+- RULE_TRACE estructurado
+- Explainability layer
+- Decision Output layer
+- Persistencia de trace y decisión operativa
+- Decision Detail View funcional a nivel base
+- Inbox Decision Panel integrado
+- Inbox Decision Integration Cleanup cerrado
+
+### Fase parcialmente completada
+- Decision Detail enriched recovery
+  - decisión operativa: sí
+  - trace/output enriquecido: parcial / pendiente
 
 ---
 
-## Completed
+## Próxima fase inmediata
+### Decision Detail Trace Recovery
+Objetivo:
+- resolver correctamente `decision_output` y `trace`
 
-### CRM Update Engine
-- V2.0 rule-based core
-- V2.1 declarative conditions
-- V2.2 trace semantics refinement
-- V2.3 structured trace and decision model
-- V2.4 trace normalization and query helpers
-- V2.5 explainability layer
-- V2.6 decision output layer
-- V2.7 decision UI integration
-- V2.7.1 decision persistence alignment
-- V2.7.2 semantic final effect
+Entregables:
+- `Selected Rules`
+- `Discarded Rules`
+- `Explanation`
+- `Semantic Effect`
+cuando existan realmente
 
-### Emailing / Inbox Intelligence
-- inbound interpretation model
-- inbound decision model
-- decision apply / dismiss services
-- decision detail view
-- semantic effect visible in detail UI
-- upgraded inbox decision panel partial
+Criterio de cierre:
+- `apps.emailing.test_decision_detail` en verde
+- al menos un caso real renderiza salida enriquecida
 
 ---
 
-## In progress
+## Siguiente fase después
+### Decision → Action UI
+Sin implementar aún.
 
-### Inbox decision integration cleanup
-Status: active
+Objetivo:
+- exponer apply / dismiss / estado de ejecución de forma limpia
 
-Pending:
-- finalize decision panel wiring in inbox card composition
-- simplify `inbox_view` data shaping
-- reduce view/template coupling
-- ensure clean latest-decision hydration path
-
----
-
-## Next
-
-### V2.8 — Decision Action UI Closure
-Goal:
-turn suggested decisions into a clean visible action workflow.
-
-Expected scope:
-- apply / dismiss state feedback in inbox
-- visible execution state
-- clearer automation visibility
-- refined operational decision presentation
-
-### V2.9 — Policy-aware execution
-Goal:
-make execution policy explicit and rule-compatible.
-
-Expected scope:
-- approval-aware routing
-- blocked actions visibility
-- action constraints by policy
-- better automation reason surface
-
-### V3.0 — Decision Console / Chat Console foundation
-Goal:
-make decision traces conversationally explorable.
-
-Expected scope:
-- trace narrative view
-- semantic effect summary
-- decision history thread
-- human validation support
+Posibles elementos:
+- estado visible de sugerida / aplicada / descartada
+- feedback inmediato en inbox
+- coherencia entre inbox y detail
 
 ---
 
-## Long-term direction
-The product is evolving from a CRM with AI features into:
+## Fase posterior
+### Decision Execution Boundary
+Objetivo:
+- formalizar la frontera entre:
+  - decision engine
+  - approval layer
+  - execution layer
 
-`Decision System with CRM surfaces`
+Esto debe permitir:
+- ejecutar decisiones de forma controlada
+- mantener trazabilidad
+- evitar side effects ambiguos
 
-Core principle:
-- the rule engine remains the deterministic source of truth
-- UI, automation, and future LLM layers consume that truth rather than inventing it
+---
+
+## Fase posterior
+### UI coherence & navigation cleanup
+Objetivo:
+- homogeneizar navegación entre:
+  - inbox
+  - decision detail
+  - outbox
+  - recommendations/tasks/opportunities
+
+---
+
+## Nota estratégica
+La prioridad inmediata ya no es inbox.
+La prioridad inmediata es:
+- **hacer fiable la reconstrucción del detalle de decisión**
