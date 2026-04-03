@@ -16,13 +16,16 @@ from apps.recommendations.services.external_actions import ensure_external_actio
 from .execution_actions import (
     RecommendationExecutionError,
     advance_opportunity,
-    create_reply_draft_from_recommendation,
     mark_opportunity_lost,
     materialize_task_from_recommendation,
     normalized,
     resolve_opportunity_for_recommendation,
 )
 from .execution_adapters import get_execution_adapters
+from .execution_engine import (
+    build_execution_request_from_recommendation,
+    execute_execution_request,
+)
 
 
 @dataclass
@@ -74,6 +77,24 @@ def execute_recommendation_service(
     recommendation_type = normalized(getattr(recommendation, "recommendation_type", ""))
     adapters = get_execution_adapters()
 
+    if recommendation_type == "reply_strategy":
+        request = build_execution_request_from_recommendation(
+            recommendation,
+            actor=actor,
+        )
+        result = execute_execution_request(
+            request,
+            recommendation=recommendation,
+            mark_executed=mark_executed,
+        )
+        result["adapters"] = {
+            "mail_provider": adapters.mail_provider,
+            "calendar_provider": adapters.calendar_provider,
+            "llm_provider": adapters.llm_provider,
+            "execution_mode": adapters.execution_mode,
+        }
+        return result
+
     result = ExecutionResult(
         executor=actor,
         recommendation_id=recommendation.id,
@@ -86,22 +107,7 @@ def execute_recommendation_service(
         },
     )
 
-    if recommendation_type == "reply_strategy":
-        outbound = create_reply_draft_from_recommendation(recommendation)
-        intent, created = ensure_external_action_intent_for_recommendation(recommendation)
-        if intent is not None:
-            result.side_effects.append(
-                "external_intent_created" if created else "external_intent_reused"
-            )
-        intent, created = ensure_external_action_intent_for_recommendation(recommendation)
-        if intent is not None:
-            result.side_effects.append(
-                "external_intent_created" if created else "external_intent_reused"
-            )
-        result.created_entities["outbound_email_id"] = outbound.id
-        result.side_effects.append("draft_created")
-
-    elif recommendation_type == "followup":
+    if recommendation_type == "followup":
         task = materialize_task_from_recommendation(recommendation)
         result.created_entities["task_id"] = task.id
         result.side_effects.append("task_materialized")
@@ -145,6 +151,12 @@ def execute_recommendation_service(
         task = materialize_task_from_recommendation(recommendation)
         result.created_entities["task_id"] = task.id
         result.side_effects.append("task_materialized_fallback")
+
+    intent, created = ensure_external_action_intent_for_recommendation(recommendation)
+    if intent is not None:
+        result.side_effects.append(
+            "external_intent_created" if created else "external_intent_reused"
+        )
 
     if mark_executed:
         _mark_recommendation_executed(recommendation)

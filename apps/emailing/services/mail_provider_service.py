@@ -4,7 +4,8 @@ from typing import Any
 
 from apps.providers.mail_provider import DraftEnvelope
 from apps.providers.mail_registry_v2 import get_mail_provider_by_key
-from apps.providers.mail_runtime import resolve_mail_account
+from apps.providers.mail_runtime import resolve_mail_account, resolve_mail_account_ref
+from apps.tenancy.models import MailboxAccount
 
 
 def prepare_provider_draft(
@@ -17,9 +18,14 @@ def prepare_provider_draft(
     reply_to_message_id: str | None = None,
     thread_ref: str | None = None,
     account_key: str | None = None,
+    mailbox_account: MailboxAccount | int | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    account = resolve_mail_account(account_key)
+    if mailbox_account is not None:
+        account = resolve_mail_account_ref(mailbox_account)
+    else:
+        account = resolve_mail_account(account_key)
+
     provider = get_mail_provider_by_key(account.provider)
 
     result = provider.create_draft(

@@ -24,6 +24,22 @@ class OutboundEmail(models.Model):
         (STATUS_FAILED, "Failed"),
     ]
 
+    operating_organization = models.ForeignKey(
+        "tenancy.OperatingOrganization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="outbound_emails",
+    )
+
+    mailbox_account = models.ForeignKey(
+        "tenancy.MailboxAccount",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="outbound_emails",
+    )
+
     opportunity = models.ForeignKey(
         "opportunities.Opportunity",
         on_delete=models.CASCADE,
@@ -103,6 +119,22 @@ class InboundEmail(models.Model):
         (REPLY_NEEDS_INFO, "Needs info"),
         (REPLY_UNCLEAR, "Unclear"),
     ]
+
+    operating_organization = models.ForeignKey(
+        "tenancy.OperatingOrganization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="inbound_emails",
+    )
+
+    mailbox_account = models.ForeignKey(
+        "tenancy.MailboxAccount",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="inbound_emails",
+    )
 
     opportunity = models.ForeignKey(
         "opportunities.Opportunity",

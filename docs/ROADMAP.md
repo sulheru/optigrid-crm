@@ -1,82 +1,292 @@
-# ROADMAP
+# OptiGrid CRM — ROADMAP
+
+---
 
 ## Estado actual
-### Fases cerradas
-- Rule Engine determinista
-- RULE_TRACE estructurado
-- Explainability layer
-- Decision Output layer
-- Persistencia de trace y decisión operativa
-- Inbox Decision Panel integrado
-- Decision Detail Trace Recovery
-- Auditoría inicial de readiness para providers / LLM / pluginización
 
-## Hallazgo estratégico actual
-El sistema ya dispone de una base arquitectónica suficiente para plantear pluginización, pero el core aún no está cerrado para operación real completa.
+Sistema en:
 
-La decisión tomada es:
+👉 Producción controlada
 
-**no empezar aún la fase de plugins**
-hasta cerrar primero el núcleo operativo real.
+Capas cerradas:
 
-## Nueva fase inmediata
-### Core Operational Closure
+- Decision Engine ✔
+- Trace & Explainability ✔
+- Decision Output ✔
+- Execution Engine (mínimo) ✔
+- Provider abstraction ✔
 
-Objetivo:
-cerrar el core completo para operación real antes de introducir el sistema de plugins de Sofía.
+Capas pendientes:
 
-### Qué significa “core completo” aquí
-El core debe quedar preparado para:
-- identidad operativa canónica de mailbox / tenant / cuenta
-- ejecución real de acciones
-- separación completa entre decisión y ejecución
-- providers reales de correo
-- configuración operativa consistente
-- producción controlada
+- identidad inbound
+- idempotencia
+- execution logging
+- policy
 
-### Bloques a cerrar
-1. **Canonical Mailbox Identity**
-   - persistencia canónica de mailbox / tenant / operating organization
-   - eliminación de heurísticas frágiles en resolución de cuenta
+---
 
-2. **Execution Engine**
-   - puente explícito decisión → acción
-   - apply real con policy, trazabilidad y errores controlados
+# PHASE 1 — CORE CLOSURE (FINAL)
 
-3. **Real Mail Providers**
-   - SMTP real
-   - M365 real
-   - mantener SMLL encajado sin acoplamiento impropio
+## Objetivo
 
-4. **Provider / Runtime Convergence**
-   - unificar runtime, registry y resolución de cuentas/providers
-   - definir capacidades reales por provider
+Pasar de:
 
-5. **Operational Readiness**
-   - health, errores, límites, seguridad operativa
-   - base suficientemente estable para producción
+👉 Producción controlada  
+a  
+👉 Producción real (sin supervisión)
 
-## Criterio de cierre de fase
-La fase se considerará cerrada cuando:
-- el sistema pueda resolver identidad operativa de correo de forma canónica
-- pueda materializar drafts/acciones por una capa de ejecución real
-- exista al menos un provider de correo real plenamente funcional
-- decisión y ejecución estén separadas y conectadas de forma explícita
-- el sistema esté listo para empezar pluginización sin reabrir el core
+---
 
-## Fase posterior
-### Plugin System / Sofía OS
+## 1. Identidad canónica en inbound (CRÍTICO)
 
-Solo después del cierre del core operativo.
+### Problema
 
-### Objetivo de esa fase posterior
-- convertir capacidades en plugins formales
-- distinguir plugins fijos vs removibles
-- navegación dinámica
-- manifests, lifecycle y config por plugin
+InboundEmail puede existir sin:
 
-## Nota estratégica
-El sistema ya no necesita más refactor conceptual del motor de decisión.
-La prioridad ya no es UI.
-La prioridad inmediata es:
-**cerrar operación real del core**.
+- mailbox_account
+- operating_organization
+
+### Solución
+
+- asignación obligatoria en entrada
+- eliminar resolución heurística
+- validación dura
+
+### Resultado
+
+- consistencia multi-tenant
+- eliminación de ambigüedad
+
+---
+
+## 2. Idempotencia en execution
+
+### Problema
+
+Ejecuciones duplicadas posibles
+
+### Solución
+
+- clave de idempotencia:
+  (recommendation_id + action_type)
+
+- verificación antes de ejecutar
+
+### Resultado
+
+- eliminación de duplicados
+- ejecución segura
+
+---
+
+## 3. Execution Log
+
+### Problema
+
+No hay trazabilidad de ejecución
+
+### Solución
+
+Modelo:
+
+ExecutionLog:
+- request
+- result
+- status
+- timestamps
+
+### Resultado
+
+- auditabilidad
+- debugging real
+- base para replay
+
+---
+
+## 4. Policy mínima
+
+### Problema
+
+No hay control de acciones
+
+### Solución
+
+- permitir:
+  - drafts
+- bloquear:
+  - send
+
+### Resultado
+
+- seguridad operativa
+- control de riesgo
+
+---
+
+## Resultado de Phase 1
+
+Sistema capaz de:
+
+- operar sin supervisión
+- ejecutar acciones con seguridad
+- mantener trazabilidad completa
+- garantizar identidad consistente
+
+---
+
+# PHASE 2 — SMLL PLUGIN (SANDBOX)
+
+## Objetivo
+
+Introducir primer provider real:
+
+👉 SMLL (Simple Mail Local Layer)
+
+---
+
+## Funcionalidad
+
+- envío real en entorno controlado
+- almacenamiento local de mensajes
+- simulación de entrega
+
+---
+
+## Capacidades
+
+- send email (sandbox)
+- draft → send flow completo
+- tracking de envíos
+
+---
+
+## Resultado
+
+- validación end-to-end
+- entorno seguro de pruebas
+- base para providers reales
+
+---
+
+# PHASE 3 — PROVIDERS REALES
+
+## Objetivo
+
+Integración con:
+
+- SMTP
+- Gmail API
+- Microsoft 365
+
+---
+
+## Requisitos
+
+- retry logic
+- error handling
+- rate limiting
+- autenticación segura
+
+---
+
+## Resultado
+
+- sistema listo para producción externa
+
+---
+
+# PHASE 4 — AUTOMATIZACIÓN CONTROLADA
+
+## Objetivo
+
+Permitir ejecución automática
+
+---
+
+## Componentes
+
+- policy engine avanzado
+- niveles de riesgo
+- aprobación humana opcional
+
+---
+
+## Resultado
+
+- automatización progresiva
+- control total de acciones
+
+---
+
+# PHASE 5 — LLM INTEGRATION
+
+## Objetivo
+
+Introducir IA en:
+
+- generación de respuestas
+- clasificación avanzada
+- sugerencias dinámicas
+
+---
+
+## Restricciones
+
+- siempre sobre execution engine
+- nunca acoplado directamente a providers
+
+---
+
+## Resultado
+
+- sistema inteligente + seguro
+
+---
+
+# PHASE 6 — UI & OPERATIONS
+
+## Objetivo
+
+Visibilidad y control
+
+---
+
+## Componentes
+
+- execution dashboard
+- audit logs UI
+- control manual de acciones
+- monitoring
+
+---
+
+## Resultado
+
+- sistema operable por humanos
+
+---
+
+# PRINCIPIOS CLAVE
+
+1. decision ≠ execution ≠ provider
+2. identidad siempre desde BD
+3. no heurísticas en producción
+4. no acciones irreversibles sin control
+5. execution siempre trazable
+
+---
+
+# RESUMEN
+
+Estado actual:
+
+👉 Core casi cerrado
+
+Siguiente paso:
+
+👉 cerrar core completamente
+
+Después:
+
+👉 SMLL → sandbox real
+

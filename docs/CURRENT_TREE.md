@@ -62,6 +62,7 @@
 │   │   │   ├── 0008_inbounddecision_automation_fields.py
 │   │   │   ├── 0008_outboundemail_source_recommendation.py
 │   │   │   ├── 0009_merge_0008_emailing_branches.py
+│   │   │   ├── 0010_mailbox_identity_fields.py
 │   │   │   └── __init__.py
 │   │   ├── models_patch_smll.py
 │   │   ├── models.py
@@ -81,8 +82,6 @@
 │   │   │   ├── reply_generator.py
 │   │   │   └── smll_bootstrap.py
 │   │   ├── smll_adapter.py
-│   │   ├── templates
-│   │   │   └── emailing
 │   │   ├── test_decision_detail.py
 │   │   ├── tests_crm_update_engine.py
 │   │   ├── tests.py
@@ -246,6 +245,7 @@
 │   │   ├── execution_actions.py
 │   │   ├── execution_adapters.py
 │   │   ├── execution_application.py
+│   │   ├── execution_engine.py
 │   │   ├── execution.py
 │   │   ├── __init__.py
 │   │   ├── management
@@ -276,6 +276,7 @@
 │   │   ├── services_llm.py
 │   │   ├── services.py
 │   │   ├── simulation.py
+│   │   ├── tests_execution_engine.py
 │   │   ├── tests_merge.py
 │   │   ├── tests_nba.py
 │   │   ├── tests.py
@@ -407,12 +408,10 @@
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── db.sqlite3
 ├── dev_verify_execute_contact_strategy.py
 ├── dev_verify_execute_followup.py
 ├── dev_verify_execute_reply_strategy.py
 ├── dev_verify_execute_unified.py
-├── docker
 ├── docker-compose.yml
 ├── Dockerfile
 ├── docs
@@ -473,8 +472,7 @@
 ├── refactor_inbox_intelligence_v2.sh
 ├── requirements
 │   └── base.txt
-├── runserver.log
-├── scripts
+├── requirements.txt
 ├── services
 │   ├── adapters
 │   │   ├── __init__.py
@@ -597,7 +595,6 @@
 │   │   ├── app_sidebar.html
 │   │   ├── app_topbar.html
 │   │   └── design_system.html
-│   ├── placeholders
 │   ├── recommendations
 │   │   ├── list.html
 │   │   └── recommendation_list.html.legacy
@@ -606,7 +603,6 @@
 │   └── tasks
 │       └── list.html
 ├── testing.py
-├── tests
 └── typescript
 
-101 directories, 509 files
+95 directories, 511 files

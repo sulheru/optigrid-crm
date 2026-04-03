@@ -4,6 +4,7 @@ from typing import Any
 
 from apps.core.runtime_settings import get_runtime_json_setting
 from apps.providers.mail_provider import MailAccountRef
+from apps.tenancy.models import MailboxAccount
 
 
 DEFAULT_MAIL_PROVIDER_SETTINGS: dict[str, Any] = {
@@ -36,6 +37,28 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
 def get_mail_provider_settings() -> dict[str, Any]:
     override = get_runtime_json_setting("mail_provider", {})
     return _deep_merge(DEFAULT_MAIL_PROVIDER_SETTINGS, override)
+
+
+def resolve_mail_account_ref(mailbox_account: MailboxAccount | int) -> MailAccountRef:
+    if isinstance(mailbox_account, int):
+        mailbox_account = MailboxAccount.objects.select_related("operating_organization").get(
+            pk=mailbox_account
+        )
+
+    if mailbox_account.status != MailboxAccount.Status.ACTIVE:
+        raise ValueError(f"Mailbox account '{mailbox_account.pk}' is not active")
+
+    metadata = dict(mailbox_account.metadata or {})
+    metadata.setdefault("mailbox_account_id", mailbox_account.id)
+    metadata.setdefault("operating_organization_id", mailbox_account.operating_organization_id)
+
+    return MailAccountRef(
+        provider=mailbox_account.provider,
+        account_key=mailbox_account.account_key,
+        mailbox=mailbox_account.email,
+        display_name=mailbox_account.display_name or mailbox_account.email,
+        metadata=metadata,
+    )
 
 
 def resolve_mail_account(account_key: str | None = None) -> MailAccountRef:
