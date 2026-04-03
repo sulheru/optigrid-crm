@@ -7,89 +7,68 @@ OptiGrid CRM
 2026-04-03
 
 ## Fase actual
-Inbox Decision Integration Cleanup cerrado a nivel de inbox y validación runtime básica.
+Decision Detail Trace Recovery cerrada a nivel de contrato de estado y tests.
 
 ## Estado real alcanzado
 
-### Cerrado y estable
-- Inbox renderiza correctamente con `inbox_decision_panel`.
-- La integración view/template quedó funcional.
-- Se corrigieron varios problemas de wiring en `apps/emailing/views.py`.
-- Se restauraron views de outbox/inbox que se habían roto durante refactors intermedios.
-- `inbox_email_card.html` quedó alineado con tests en el label **"View decision"**.
-- El script de fetch fue corregido para usar únicamente rutas existentes:
-  - válido: `/inbox/<id>/decision/`
-  - inválido: `/inbox/<id>/`
+### Cerrado y validado
+- `Decision Detail` ya no confunde explicación con decisión real.
+- El contrato semántico quedó corregido:
+  - una decisión válida requiere evidencia estructural en `selected_rules`, `discarded_rules` o `final_effect`
+  - `explanation` ya no cuenta como señal suficiente de decisión
+- `apps.emailing.test_decision_detail` quedó en verde.
+- La normalización de contexto en `apps/emailing/views_decision.py` quedó alineada con la semántica real del sistema.
+- El template `templates/emailing/decision_detail.html` quedó estable para los estados:
+  - `decision`
+  - `operational`
+  - `empty`
 
-### Estado visual validado
-- Las páginas `/inbox/<id>/decision/` cargan correctamente.
-- Se muestra la decisión operativa persistida:
-  - action_type
-  - status
-  - priority
-  - score
-  - requires approval
-  - automatic
-  - automation reason
-  - risk flags
-- Cuando no hay trace enriquecido, la UI ya no dice falsamente "Decision Not Available" mientras sí muestra una decisión.
-- En su lugar muestra el estado correcto:
-  - **Trace Not Available**
+### Situación técnica consolidada
+La causa del bug no estaba en el Rule Engine ni en `build_decision_output`, sino en la capa de consumo de UI:
+- un `decision_output` con solo `explanation` estaba siendo tratado como decisión real
+- eso hacía que la vista entrara en ramas de render incorrectas
+- el refactor corrigió la interpretación del estado sin tocar el motor determinista
 
-## Problema pendiente principal
-La resolución de `decision_output` / `trace` en `apps/emailing/decision_detail.py` sigue incompleta para datos reales.
+## Decisión arquitectónica importante tomada
+Se mantiene la separación:
+- motor determinista
+- explainability
+- decision output
+- estado de UI
 
-## Síntoma pendiente
-En múltiples casos reales, la página muestra:
-- decisión operativa persistida disponible
-- semantic effect ausente
-- selected/discarded rules ausentes
-- explanation ausente
-- banner `Trace Not Available`
+La UI no debe inferir una decisión a partir de la mera existencia de narrativa explicativa.
 
-Esto indica que:
-- existe `InboundDecision`
-- pero no se está resolviendo correctamente el trace o `decision_output`
-- o no existe en la forma que la vista espera
-
-## Diagnóstico más probable
-El bug pendiente está en uno o varios de estos puntos:
-1. nombre real del campo o relación usado para `InboundDecision`
-2. recuperación de `RuleEvaluationLog`
-3. estructura real de `payload_json`
-4. diferencia entre el formato de persistencia real y el que esperan los tests
-
-## Decisión arquitectónica tomada
-No crear `/inbox/<id>/` como vista nueva para esta fase.
-
-Motivo:
-- el problema estaba en el script, no en el routing
-- la ruta necesaria para esta fase es `/inbox/<id>/decision/`
-
-## Ficheros tocados en la sesión
-- `apps/emailing/views.py`
-- `templates/emailing/inbox.html`
-- `templates/emailing/partials/inbox_email_card.html`
-- `templates/emailing/partials/inbox_decision_panel.html`
-- `apps/emailing/decision_detail.py`
+## Ficheros tocados en esta fase
+- `apps/emailing/views_decision.py`
 - `templates/emailing/decision_detail.html`
-- `tmp/fetch_decisions.sh`
+- revisión de:
+  - `apps/emailing/decision_detail.py`
+  - `apps/updates/decision_output.py`
+  - `apps/updates/explainability.py`
+  - `apps/updates/services.py`
+  - `apps/emailing/test_decision_detail.py`
 
-## Resultado neto de la sesión
-La fase "Inbox Decision Integration Cleanup" queda cerrada desde el punto de vista de:
-- inbox
-- panel de decisión en inbox
-- consistencia básica UI
-- script de validación
+## Resultado neto de la fase
+Queda cerrada la fase:
+- **Decision Detail Trace Recovery**
 
-La fase que queda abierta ya no es inbox, sino:
-- **Decision Detail trace recovery**
+Queda pendiente la siguiente fase estratégica:
+- **auditoría técnica de madurez del proyecto**
 
-## Siguiente foco recomendado
-Resolver correctamente `decision_output` y `trace` para que `Decision Detail` pueda mostrar:
-- Selected Rules
-- Discarded Rules
-- Explanation
-- Semantic Effect
-cuando esos datos existan realmente.
+## Próximo foco recomendado
+Realizar una auditoría técnica estructurada para determinar:
+1. grado real de avance del sistema
+2. distancia a integración de correo real:
+   - SMTP
+   - M365
+   - SMLL
+3. distancia a integración LLM mediante AI Studio en dos roles:
+   - agente interactor interno del sistema
+   - agente escaneador de leads en red
 
+## Riesgo abierto principal
+Aún no existe una auditoría consolidada de readiness por capas. El sistema ha avanzado funcionalmente, pero falta medir de forma estructurada:
+- completitud
+- bloqueos reales
+- readiness de integraciones
+- punto correcto de entrada para LLM

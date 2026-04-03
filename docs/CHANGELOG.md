@@ -1,36 +1,40 @@
 # CHANGELOG
 
-## 2026-04-03 — Inbox Decision Integration Cleanup + Decision Detail state cleanup
+## 2026-04-03 — IMPLEMENTATION — Decision Detail state contract repaired
 
-### Hecho
-- Se estabilizó la integración del decision panel en inbox.
-- Se limpió el script de fetch para usar solo rutas válidas.
-- Se corrigieron roturas introducidas durante refactors intermedios en `views.py`.
-- Se restauraron imports y views requeridas por `urls.py`.
-- Se alineó `inbox_email_card.html` con los tests usando el label:
-  - `View decision`
-- Se mejoró la semántica de `Decision Detail`:
-  - antes: podía mostrar decisión operativa y a la vez `Decision Not Available`
-  - ahora: distingue correctamente el caso `Trace Not Available`
+Se corrige la interpretación semántica del estado en `Decision Detail`.
 
-### Resultado visible
-- `/inbox/` estable
-- `/inbox/<id>/decision/` renderiza
-- la decisión operativa persistida se muestra correctamente
-- desaparece la contradicción visual previa entre decisión operativa y estado vacío total
+### Problema
+La UI estaba tratando como decisión real un `decision_output` que solo contenía `explanation`, sin evidencia estructural de reglas o efecto final.
 
-### Pendiente
-- `apps.emailing.test_decision_detail` no queda completamente verde
-- `decision_detail.py` no reconstruye correctamente `decision_output` / `trace` para los casos reales probados
-- no aparecen aún:
-  - Selected Rules
-  - Discarded Rules
-  - Explanation
-  - Semantic Effect
-  en los casos donde deberían recuperarse desde persistencia o logs
+### Cambio aplicado
+Se refactoriza la normalización de contexto y el render para distinguir correctamente entre:
+- decisión real
+- decisión operativa sin trace enriquecido
+- ausencia de decisión
 
-### Nota
-No se introdujo nueva persistencia.
-No se modificó el Rule Engine.
-No se modificó explainability.
-No se introdujo LLM.
+### Resultado
+`apps.emailing.test_decision_detail` queda en verde.
+
+---
+
+## 2026-04-03 — IMPLEMENTATION — Decision Detail template aligned with backend state
+
+Se ajusta `templates/emailing/decision_detail.html` para depender del estado semántico decidido por backend, en lugar de truthiness ambigua de payloads parciales.
+
+---
+
+## 2026-04-03 — IMPLEMENTATION — Views decision normalization hardened
+
+Se refactoriza `apps/emailing/views_decision.py` para tratar como `decision_output` significativo solo aquel que contiene al menos una de estas evidencias:
+- `selected_rules`
+- `discarded_rules`
+- `final_effect`
+
+`explanation` queda explícitamente fuera del criterio de decisión real.
+
+---
+
+## 2026-04-03 — DOCUMENTATION — Next phase changed from implementation to audit
+
+Tras cerrar `Decision Detail Trace Recovery`, la siguiente fase recomendada pasa a ser una auditoría técnica de madurez del proyecto.
