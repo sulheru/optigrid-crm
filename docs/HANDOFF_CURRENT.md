@@ -7,68 +7,98 @@ OptiGrid CRM
 2026-04-03
 
 ## Fase actual
-Decision Detail Trace Recovery cerrada a nivel de contrato de estado y tests.
+Auditoría técnica realizada.
+Nueva fase activa:
+**Core Operational Closure**
 
-## Estado real alcanzado
+## Decisión estratégica cerrada
+Se aplaza la fase de plugins de Sofía.
 
-### Cerrado y validado
-- `Decision Detail` ya no confunde explicación con decisión real.
-- El contrato semántico quedó corregido:
-  - una decisión válida requiere evidencia estructural en `selected_rules`, `discarded_rules` o `final_effect`
-  - `explanation` ya no cuenta como señal suficiente de decisión
-- `apps.emailing.test_decision_detail` quedó en verde.
-- La normalización de contexto en `apps/emailing/views_decision.py` quedó alineada con la semántica real del sistema.
-- El template `templates/emailing/decision_detail.html` quedó estable para los estados:
-  - `decision`
-  - `operational`
-  - `empty`
+Aunque ya existe base suficiente para pluginización:
+- runtime settings
+- provider abstraction
+- registry base
+- UI shell estable
 
-### Situación técnica consolidada
-La causa del bug no estaba en el Rule Engine ni en `build_decision_output`, sino en la capa de consumo de UI:
-- un `decision_output` con solo `explanation` estaba siendo tratado como decisión real
-- eso hacía que la vista entrara en ramas de render incorrectas
-- el refactor corrigió la interpretación del estado sin tocar el motor determinista
+el core aún no está cerrado para operación real completa.
 
-## Decisión arquitectónica importante tomada
-Se mantiene la separación:
-- motor determinista
-- explainability
-- decision output
-- estado de UI
+Por tanto, la prioridad inmediata pasa a ser cerrar primero el núcleo operativo real del sistema.
 
-La UI no debe inferir una decisión a partir de la mera existencia de narrativa explicativa.
+## Estado real consolidado
 
-## Ficheros tocados en esta fase
-- `apps/emailing/views_decision.py`
-- `templates/emailing/decision_detail.html`
-- revisión de:
-  - `apps/emailing/decision_detail.py`
-  - `apps/updates/decision_output.py`
-  - `apps/updates/explainability.py`
-  - `apps/updates/services.py`
-  - `apps/emailing/test_decision_detail.py`
+### Cerrado y sólido
+- Rule Engine determinista
+- RULE_TRACE estructurado
+- Explainability layer
+- Decision Output layer
+- contrato semántico backend ↔ UI en `Decision Detail`
+- base inicial de provider abstraction
+- runtime settings con override en BD
 
-## Resultado neto de la fase
-Queda cerrada la fase:
-- **Decision Detail Trace Recovery**
+### Parcial pero existente
+- resolución runtime de cuentas de correo
+- provider registry
+- provider runtime para drafts
+- LLM abstraction con provider embebido y Gemini
+- integración SMLL funcional pero acoplada
 
-Queda pendiente la siguiente fase estratégica:
-- **auditoría técnica de madurez del proyecto**
+### No cerrado aún
+- mailbox / tenant / account como identidad operativa canónica
+- execution engine real
+- provider de correo real listo para producción
+- separación convergida decisión → ejecución
+- sidebar / UI guiado por capacidades/plugins
+- plugin system formal
 
-## Próximo foco recomendado
-Realizar una auditoría técnica estructurada para determinar:
-1. grado real de avance del sistema
-2. distancia a integración de correo real:
-   - SMTP
-   - M365
-   - SMLL
-3. distancia a integración LLM mediante AI Studio en dos roles:
-   - agente interactor interno del sistema
-   - agente escaneador de leads en red
+## Hallazgos técnicos clave
+
+### 1. Mailbox identity no canónica
+`provider_router.py` sigue resolviendo mailbox mediante heurísticas y reconoce explícitamente que `InboundEmail/Opportunity` aún no persisten tenant/mailbox de forma canónica.
+
+### 2. Execution aún no existe como capa completa
+`prepare_provider_draft` es una buena base, pero no equivale todavía a un execution engine real.
+
+### 3. Providers no reales
+- `embedded` crea drafts stub
+- `m365` sigue stubbed
+- SMTP aún no existe como provider real
+
+### 4. Sidebar completamente hardcodeado
+La navegación aún no refleja capacidades del sistema.
+
+### 5. Registry/runtime aún no convergidos del todo
+Existe base, pero todavía no un modelo formal único de capacidades, lifecycle y health.
+
+## Nueva prioridad inmediata
+Cerrar el core para operación real completa en este orden:
+
+1. canonical mailbox identity
+2. execution engine
+3. real mail providers
+4. convergence runtime/provider
+5. production readiness básica
+
+## Qué no hacer ahora
+- no empezar aún manifests de plugins
+- no hacer aún sidebar dinámico por plugins
+- no abrir aún uninstall/install de plugins opcionales
+- no entrar aún en Sofía OS como capa formal
+
+## Condición para abrir la siguiente gran fase
+Solo cuando el core operativo quede cerrado se abrirá:
+
+### Plugin System / Sofía OS
+con:
+- plugins fijos
+- plugins removibles
+- navegación declarativa
+- manifests
+- health y lifecycle
 
 ## Riesgo abierto principal
-Aún no existe una auditoría consolidada de readiness por capas. El sistema ha avanzado funcionalmente, pero falta medir de forma estructurada:
-- completitud
-- bloqueos reales
-- readiness de integraciones
-- punto correcto de entrada para LLM
+Empezar plugins demasiado pronto congelaría sobre un núcleo todavía incompleto y obligaría a reabrir:
+- mailbox model
+- execution boundary
+- provider contracts
+
+La decisión tomada evita ese riesgo.

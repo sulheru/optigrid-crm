@@ -9,57 +9,74 @@
 - Persistencia de trace y decisión operativa
 - Inbox Decision Panel integrado
 - Decision Detail Trace Recovery
+- Auditoría inicial de readiness para providers / LLM / pluginización
 
-### Último cierre relevante
-Se corrige el contrato de estado de `Decision Detail`:
-- explicación sola ya no implica decisión
-- UI alineada con semántica real
-- tests de `apps.emailing.test_decision_detail` en verde
+## Hallazgo estratégico actual
+El sistema ya dispone de una base arquitectónica suficiente para plantear pluginización, pero el core aún no está cerrado para operación real completa.
 
-## Próxima fase inmediata
-### Auditoría técnica de madurez del sistema
+La decisión tomada es:
+
+**no empezar aún la fase de plugins**
+hasta cerrar primero el núcleo operativo real.
+
+## Nueva fase inmediata
+### Core Operational Closure
 
 Objetivo:
-medir el estado real del proyecto y cuantificar la distancia a integraciones clave.
+cerrar el core completo para operación real antes de introducir el sistema de plugins de Sofía.
 
-### Áreas a auditar
-- input/inbox
-- decision core
-- state/UI contract
-- execution/apply/send
-- integration/provider layer
+### Qué significa “core completo” aquí
+El core debe quedar preparado para:
+- identidad operativa canónica de mailbox / tenant / cuenta
+- ejecución real de acciones
+- separación completa entre decisión y ejecución
+- providers reales de correo
+- configuración operativa consistente
+- producción controlada
 
-### Auditorías específicas
-1. readiness de correo real:
-   - SMTP
-   - M365
-   - SMLL
-2. readiness de AI Studio / LLM:
-   - agente interactor interno
-   - agente escaneador de leads
+### Bloques a cerrar
+1. **Canonical Mailbox Identity**
+   - persistencia canónica de mailbox / tenant / operating organization
+   - eliminación de heurísticas frágiles en resolución de cuenta
 
-### Entregable de cierre de fase
-- mapa de madurez por capas
-- bloqueos reales
-- roadmap realista de implementación
+2. **Execution Engine**
+   - puente explícito decisión → acción
+   - apply real con policy, trazabilidad y errores controlados
 
-## Fase posterior probable
-### Email Integration Implementation Readiness
-Solo después de la auditoría.
+3. **Real Mail Providers**
+   - SMTP real
+   - M365 real
+   - mantener SMLL encajado sin acoplamiento impropio
 
-Se decidirá qué provider abordar primero:
-- SMTP como vía más directa
-- M365 como integración estructural objetivo
-- SMLL según encaje real de arquitectura
+4. **Provider / Runtime Convergence**
+   - unificar runtime, registry y resolución de cuentas/providers
+   - definir capacidades reales por provider
 
-## Fase posterior probable
-### LLM Entry Boundary
-Objetivo:
-definir el punto correcto de entrada para AI Studio sin romper:
-- determinismo
-- trazabilidad
-- separación entre inferencia y decisión
+5. **Operational Readiness**
+   - health, errores, límites, seguridad operativa
+   - base suficientemente estable para producción
+
+## Criterio de cierre de fase
+La fase se considerará cerrada cuando:
+- el sistema pueda resolver identidad operativa de correo de forma canónica
+- pueda materializar drafts/acciones por una capa de ejecución real
+- exista al menos un provider de correo real plenamente funcional
+- decisión y ejecución estén separadas y conectadas de forma explícita
+- el sistema esté listo para empezar pluginización sin reabrir el core
+
+## Fase posterior
+### Plugin System / Sofía OS
+
+Solo después del cierre del core operativo.
+
+### Objetivo de esa fase posterior
+- convertir capacidades en plugins formales
+- distinguir plugins fijos vs removibles
+- navegación dinámica
+- manifests, lifecycle y config por plugin
 
 ## Nota estratégica
-La prioridad inmediata ya no es seguir refactorizando UI.
-La prioridad inmediata es obtener una visión precisa del grado real de avance del sistema y del esfuerzo restante para providers de correo y LLM.
+El sistema ya no necesita más refactor conceptual del motor de decisión.
+La prioridad ya no es UI.
+La prioridad inmediata es:
+**cerrar operación real del core**.

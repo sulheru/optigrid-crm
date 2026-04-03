@@ -1,60 +1,58 @@
 # NEXT SESSION
 
 ## Objetivo
-Realizar una auditoría técnica estructurada del estado real de OptiGrid CRM.
+Cerrar el primer bloque crítico del core operativo real:
+**canonical mailbox identity + execution boundary audit**
 
-## Preguntas que debe responder la auditoría
-1. ¿Cuán avanzado está realmente el proyecto?
-2. ¿Qué está terminado, qué está parcial y qué falta?
-3. ¿A qué distancia estamos de implementar correo real mediante:
-   - SMTP
-   - Microsoft 365
-   - SMLL
-4. ¿A qué distancia estamos de integrar AI Studio como:
-   - agente interactor del sistema vía LLM
-   - agente escaneador de leads en la red?
+## Preguntas que debe responder la sesión
+1. ¿Dónde debe vivir la identidad operativa canónica de mailbox?
+2. ¿Qué entidades deben persistir:
+   - operating organization
+   - mailbox account
+   - provider
+   - tenant scope
+3. ¿Qué hueco exacto existe entre:
+   - decisión
+   - recomendación
+   - acción ejecutable
+4. ¿Cómo debe verse la primera versión mínima del execution engine?
 
-## Capas a evaluar
-- Input layer
-- Decision layer
-- State layer
-- Execution layer
-- Integration layer
+## Capas a inspeccionar
+- tenancy / mailbox identity
+- emailing input / routing
+- execution / application
+- recommendations / action materialization
+- provider runtime
 
 ## Ficheros prioritarios para inspección
-- `apps/emailing/views.py`
-- `apps/emailing/views_decision.py`
+- `apps/tenancy/models.py`
+- `apps/tenancy/services/domain_resolution.py`
 - `apps/emailing/models.py`
-- `apps/emailing/services/mail_provider_service.py`
 - `apps/emailing/services/provider_router.py`
+- `apps/emailing/services/mail_provider_service.py`
 - `apps/emailing/services/outbound_sender.py`
-- `apps/emailing/services/inbound_analysis_service.py`
-- `apps/emailing/services/inbound_decision_engine.py`
 - `apps/emailing/services/inbound_decision_apply_service.py`
-- `apps/emailing/services/inbound_decision_from_trace.py`
-- `apps/emailing/services/inbound_interpreter.py`
-- `apps/emailing/services/recommendation_bridge.py`
-- `apps/updates/services.py`
-- `apps/updates/decision_output.py`
-- `apps/updates/explainability.py`
-- configuración de settings relevante para providers
+- `apps/recommendations/models.py`
+- `apps/recommendations/execution_application.py`
+- `apps/recommendations/execution.py`
+- `apps/providers/mail_provider.py`
+- `apps/providers/mail_runtime.py`
+- `apps/providers/mail_registry_v2.py`
 
 ## Entregables esperados
-1. matriz de madurez por área
-2. readiness SMTP / M365 / SMLL
-3. readiness AI Studio / LLM
-4. bloqueos técnicos reales
-5. roadmap realista corto y medio plazo
+1. mapa del modelo canónico de mailbox/account/provider
+2. diagnóstico exacto del hueco decisión → ejecución
+3. definición del mínimo execution engine necesario
+4. orden realista de cierre del core operativo
 
 ## No hacer
-- no implementar aún SMTP
-- no implementar aún M365
-- no meter aún LLM
-- no reabrir refactors de Decision Detail salvo que la auditoría detecte bloqueo estructural
+- no empezar aún el sistema de plugins
+- no refactorizar aún el sidebar a navegación dinámica
+- no implementar aún manifests
+- no introducir aún uninstall/install de plugins
 
 ## Criterio de éxito
-Terminar la sesión con una visión clara, basada en código real, de:
-- estado actual
-- huecos críticos
-- prioridad de integraciones
-- punto correcto de entrada para LLM
+Terminar la sesión con una definición clara, basada en código real, de:
+- identidad operativa canónica
+- frontera decisión → ejecución
+- mínimo núcleo restante para declarar el core listo para producción

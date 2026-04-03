@@ -1,5 +1,51 @@
 # CHANGELOG
 
+## 2026-04-03 — AUDIT — Provider/runtime/sidebar audited for plugin readiness
+
+Se auditan los ficheros reales de:
+- `config/settings.py`
+- `apps/core/runtime_settings.py`
+- `apps/emailing/services/mail_provider_service.py`
+- `apps/emailing/services/provider_router.py`
+- `apps/providers/*`
+- `templates/base.html`
+- `templates/partials/app_sidebar.html`
+
+Hallazgos principales:
+- existe base de runtime config y provider abstraction
+- el sidebar sigue hardcodeado
+- `M365` sigue siendo stub
+- `embedded` sigue siendo stub funcional
+- `provider_router` mantiene acoplamiento directo con SMLL
+- mailbox / tenant aún no se persisten de forma canónica
+
+---
+
+## 2026-04-03 — DECISION — Plugin phase postponed until core operational closure
+
+Se decide no iniciar todavía la fase de plugins de Sofía.
+
+Motivo:
+aunque el sistema ya está suficientemente maduro para pluginización arquitectónica, el core aún no está cerrado para operación real completa.
+
+La nueva prioridad pasa a ser:
+- cerrar identidad operativa canónica
+- cerrar execution engine
+- cerrar providers reales
+- cerrar convergencia runtime/provider
+
+---
+
+## 2026-04-03 — STRATEGY — Core must be production-ready before Sofía OS
+
+Se fija como criterio estratégico que el sistema debe quedar preparado para producción real antes de introducir:
+- plugin manifests
+- plugins fijos vs removibles
+- sidebar dinámico por plugins
+- lifecycle formal de plugins
+
+---
+
 ## 2026-04-03 — IMPLEMENTATION — Decision Detail state contract repaired
 
 Se corrige la interpretación semántica del estado en `Decision Detail`.
@@ -32,9 +78,3 @@ Se refactoriza `apps/emailing/views_decision.py` para tratar como `decision_outp
 - `final_effect`
 
 `explanation` queda explícitamente fuera del criterio de decisión real.
-
----
-
-## 2026-04-03 — DOCUMENTATION — Next phase changed from implementation to audit
-
-Tras cerrar `Decision Detail Trace Recovery`, la siguiente fase recomendada pasa a ser una auditoría técnica de madurez del proyecto.
