@@ -1,74 +1,59 @@
-# NEXT SESSION — Core Closure Final
+# Next Session — Entity & Identity Layer (EIL)
 
 ## Objetivo
 
-Cerrar el core para producción real (sin supervisión).
+Diseñar la capa de entidades e identidad del sistema.
 
----
+NO implementar.
 
-## Bloques a implementar
+## Problema a resolver
 
-### 1. Identidad canónica en inbound (CRÍTICO)
+El sistema carece de:
 
-- asignar mailbox_account en entrada
-- eliminar resolución heurística
-- validación obligatoria
+- identidad
+- ownership
+- contexto organizativo
+- modelo de usuarios
 
----
+Esto bloquea:
 
-### 2. Idempotencia en execution
+- control de acceso
+- multi-tenant real
+- integraciones futuras (M365, SMTP)
+- coherencia de datos
 
-- evitar duplicados
-- clave mínima:
-  (recommendation_id + action_type)
+## Enfoque
 
----
+Diseño desde el sistema, no desde el usuario.
 
-### 3. Execution Log
+Principio:
 
-- modelo ExecutionLog
-- persistencia de:
-  - request
-  - result
-  - status
+El sistema es email-driven, no login-driven.
 
----
+## Alcance
 
-### 4. Policy mínima
+Definir:
 
-- permitir:
-  - drafts
-- bloquear:
-  - send
+1. Modelo Organization (entidad)
+2. Modelo User (actor)
+3. Relación email → entidad
+4. Ownership del CRM
+5. Reglas de resolución de dominio
+6. Flujo de creación automática
 
----
+## Importante
 
-## Restricciones
+NO incluir:
 
-- no introducir plugins
-- no tocar UI
-- no introducir LLM
-
----
+- login completo
+- permisos complejos
+- UI de usuarios
+- OAuth / SSO
 
 ## Resultado esperado
 
-Sistema capaz de:
-
-- ejecutar acciones de forma segura
-- evitar duplicados
-- mantener trazabilidad completa
-- operar sin supervisión
-
----
-
-## Siguiente fase
-
-👉 Plugin SMLL
-
-Objetivo:
-
-- entorno sandbox real
-- envío controlado
-- validación end-to-end
+- modelo claro y mínimo
+- sin sobreingeniería
+- listo para implementación progresiva
+- compatible con inbound automático
 

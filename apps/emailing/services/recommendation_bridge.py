@@ -90,12 +90,28 @@ def _infer_recommendation_text(inbound_decision) -> str:
 
 def _infer_confidence(inbound_decision) -> float:
     value = getattr(inbound_decision, "confidence", None)
+    if value is None:
+        value = getattr(inbound_decision, "score", None)
     try:
         if value is None:
             return 0.5
         return float(value)
     except Exception:
         return 0.5
+
+
+def _infer_operating_organization_id(inbound_decision) -> int | None:
+    inbound_email = getattr(inbound_decision, "inbound_email", None)
+    if inbound_email is not None:
+        return getattr(inbound_email, "operating_organization_id", None)
+    return None
+
+
+def _infer_mailbox_account_id(inbound_decision) -> int | None:
+    inbound_email = getattr(inbound_decision, "inbound_email", None)
+    if inbound_email is not None:
+        return getattr(inbound_email, "mailbox_account_id", None)
+    return None
 
 
 def ensure_recommendation_for_inbound_decision(
@@ -108,6 +124,8 @@ def ensure_recommendation_for_inbound_decision(
     recommendation_type = _infer_recommendation_type(inbound_decision)
     recommendation_text = _infer_recommendation_text(inbound_decision)
     confidence = _infer_confidence(inbound_decision)
+    operating_organization_id = _infer_operating_organization_id(inbound_decision)
+    mailbox_account_id = _infer_mailbox_account_id(inbound_decision)
 
     existing = (
         AIRecommendation.objects.filter(
@@ -120,9 +138,18 @@ def ensure_recommendation_for_inbound_decision(
         .first()
     )
     if existing is not None:
+        changed = False
+        if existing.operating_organization_id is None and operating_organization_id is not None:
+            existing.operating_organization_id = operating_organization_id
+            changed = True
+        if existing.mailbox_account_id is None and mailbox_account_id is not None:
+            existing.mailbox_account_id = mailbox_account_id
+            changed = True
+        if changed:
+            existing.save(update_fields=["operating_organization", "mailbox_account"])
         return existing
 
-    return create_recommendation(
+    recommendation = create_recommendation(
         scope_type=scope_type,
         scope_id=scope_id,
         recommendation_type=recommendation_type,
@@ -131,3 +158,15 @@ def ensure_recommendation_for_inbound_decision(
         source=source,
         status=AIRecommendation.STATUS_NEW,
     )
+
+    changed = False
+    if operating_organization_id is not None:
+        recommendation.operating_organization_id = operating_organization_id
+        changed = True
+    if mailbox_account_id is not None:
+        recommendation.mailbox_account_id = mailbox_account_id
+        changed = True
+    if changed:
+        recommendation.save(update_fields=["operating_organization", "mailbox_account"])
+
+    return recommendation

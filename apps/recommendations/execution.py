@@ -1,7 +1,9 @@
-from .execution_actions import RecommendationExecutionError
-from .execution_application import ExecutionResult, execute_recommendation_service
-from .execution_engine import (
-    ExecutionRequest,
+from apps.recommendations.execution_application import (
+    execute_recommendation_service,
+    ExecutionResult,
+)
+from apps.recommendations.execution_engine import (
+    RecommendationExecutionError,
     build_execution_request_from_recommendation,
     execute_execution_request,
 )
@@ -9,7 +11,6 @@ from .execution_engine import (
 __all__ = [
     "RecommendationExecutionError",
     "ExecutionResult",
-    "ExecutionRequest",
     "build_execution_request_from_recommendation",
     "execute_execution_request",
     "execute_recommendation_service",

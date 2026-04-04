@@ -1,5 +1,4 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/models.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -91,6 +90,30 @@ class OutboundEmail(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
+    def clean(self):
+        super().clean()
+
+        if self.mailbox_account_id is None:
+            return
+
+        mailbox_account = self.mailbox_account
+        mailbox_org_id = mailbox_account.operating_organization_id
+
+        if self.operating_organization_id is None:
+            self.operating_organization_id = mailbox_org_id
+        elif self.operating_organization_id != mailbox_org_id:
+            raise ValidationError(
+                {
+                    "operating_organization": (
+                        "operating_organization must match mailbox_account.operating_organization."
+                    )
+                }
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.subject} [{self.status}] [{self.email_type}]"
 
@@ -171,6 +194,32 @@ class InboundEmail(models.Model):
 
     class Meta:
         ordering = ["-received_at", "-created_at"]
+
+    def clean(self):
+        super().clean()
+
+        if self.mailbox_account_id is None:
+            raise ValidationError(
+                {"mailbox_account": "InboundEmail requires canonical mailbox_account."}
+            )
+
+        mailbox_account = self.mailbox_account
+        mailbox_org_id = mailbox_account.operating_organization_id
+
+        if self.operating_organization_id is None:
+            self.operating_organization_id = mailbox_org_id
+        elif self.operating_organization_id != mailbox_org_id:
+            raise ValidationError(
+                {
+                    "operating_organization": (
+                        "operating_organization must match mailbox_account.operating_organization."
+                    )
+                }
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.subject} [{self.reply_type}]"

@@ -1,9 +1,9 @@
-from django.test import SimpleTestCase
+from django.test import TestCase
 
 from apps.emailing.services.mail_provider_service import prepare_provider_draft
 
 
-class MailProviderServiceTests(SimpleTestCase):
+class MailProviderServiceTests(TestCase):
     def test_prepare_provider_draft_returns_provider_context(self):
         result = prepare_provider_draft(
             subject="Hello",

@@ -262,6 +262,8 @@
 │   │   │   ├── 0002_alter_airecommendation_status.py
 │   │   │   ├── 0003_airecommendation_source.py
 │   │   │   ├── 0004_airecommendation_tenant_scope.py
+│   │   │   ├── 0005_executionlog.py
+│   │   │   ├── 0006_alter_airecommendation_options.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── nba.py
@@ -408,6 +410,7 @@
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
+├── db.sqlite3
 ├── dev_verify_execute_contact_strategy.py
 ├── dev_verify_execute_followup.py
 ├── dev_verify_execute_reply_strategy.py
@@ -462,7 +465,6 @@
 ├── HANDOFF_CURRENT.md
 ├── manage.py
 ├── NEXT_SESSION.md
-├── output.txt
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
@@ -605,4 +607,4 @@
 ├── testing.py
 └── typescript
 
-95 directories, 511 files
+95 directories, 513 files

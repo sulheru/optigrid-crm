@@ -14,14 +14,12 @@ from apps.recommendations.models import AIRecommendation
 from apps.recommendations.services.external_actions import ensure_external_action_intent_for_recommendation
 
 from .execution_actions import (
-    RecommendationExecutionError,
     advance_opportunity,
     mark_opportunity_lost,
     materialize_task_from_recommendation,
     normalized,
     resolve_opportunity_for_recommendation,
 )
-from .execution_adapters import get_execution_adapters
 from .execution_engine import (
     build_execution_request_from_recommendation,
     execute_execution_request,
@@ -57,7 +55,7 @@ def _mark_recommendation_executed(recommendation: AIRecommendation):
     if current_status == "executed":
         return
 
-    recommendation.status = "executed"
+    recommendation.status = AIRecommendation.STATUS_EXECUTED
     if hasattr(recommendation, "updated_at"):
         recommendation.updated_at = timezone.now()
 
@@ -75,36 +73,23 @@ def execute_recommendation_service(
     mark_executed: bool = True,
 ) -> dict[str, Any]:
     recommendation_type = normalized(getattr(recommendation, "recommendation_type", ""))
-    adapters = get_execution_adapters()
 
     if recommendation_type == "reply_strategy":
         request = build_execution_request_from_recommendation(
             recommendation,
             actor=actor,
         )
-        result = execute_execution_request(
+        return execute_execution_request(
             request,
             recommendation=recommendation,
             mark_executed=mark_executed,
         )
-        result["adapters"] = {
-            "mail_provider": adapters.mail_provider,
-            "calendar_provider": adapters.calendar_provider,
-            "llm_provider": adapters.llm_provider,
-            "execution_mode": adapters.execution_mode,
-        }
-        return result
 
     result = ExecutionResult(
         executor=actor,
         recommendation_id=recommendation.id,
         status="completed",
-        adapters={
-            "mail_provider": adapters.mail_provider,
-            "calendar_provider": adapters.calendar_provider,
-            "llm_provider": adapters.llm_provider,
-            "execution_mode": adapters.execution_mode,
-        },
+        adapters={},
     )
 
     if recommendation_type == "followup":

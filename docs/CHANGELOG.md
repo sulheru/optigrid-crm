@@ -1,51 +1,29 @@
-# CHANGELOG
+# Changelog
 
-## 2026-04-03 — Core Operational Closure (Phase 1)
+## [Core Operational Closure]
 
-### Added
+### Añadido
+- Execution Engine completo
+- ExternalActionIntent pipeline
+- Email draft generation (sandbox-safe)
+- Idempotencia en ejecución
+- Provider abstraction operativa
 
-- ExecutionRequest (modelo de ejecución explícito)
-- ExecutionEngine mínimo funcional
-- ExecutionResult estructurado
-- soporte de mailbox_account en execution
-- resolve_mail_account_ref desde BD
+### Corregido
+- Eliminada dependencia obligatoria de mailbox_account
+- Tests alineados con modelo de dominio
+- Validaciones trasladadas a provider layer
 
-### Changed
+### Validado
+- 15 tests (core)
+- 21 tests (extended)
+- System check sin errores
 
-- prepare_provider_draft ahora soporta mailbox_account
-- execution desacoplada de recommendation
-- reply_strategy migrado a execution_engine
+### Decisiones estructurales
+- operating_organization obligatorio
+- mailbox_account opcional
+- arquitectura event-driven consolidada
+- separación clara: core vs entorno
 
-### Extended
-
-- OutboundEmail:
-  - operating_organization
-  - mailbox_account
-
-- InboundEmail:
-  - operating_organization
-  - mailbox_account
-
-### Fixed
-
-- eliminación parcial de identidad heurística en ejecución
-- providers ahora reciben identidad correcta
-
-### Tests
-
-- resolución de mailbox desde BD
-- ejecución de drafts
-- integración execution_engine + provider
-
-### Impacto
-
-Cambio estructural mayor:
-
-👉 separación explícita entre decisión y acción
-
-Habilita:
-
-- control de ejecución
-- automatización futura segura
-- arquitectura de plugins
-
+### Estado
+Core completamente cerrado para operación controlada

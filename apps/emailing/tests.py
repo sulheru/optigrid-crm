@@ -1,5 +1,4 @@
-# Ruta: /home/sulheru/OptiGrid_Project/og_pilot/optigrid_crm/apps/emailing/tests.py
-# LLM INFO: Este encabezado contiene la ruta absoluta de origen. Mantenlo para preservar el contexto de ubicación del archivo.
+from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -18,6 +17,7 @@ from apps.emailing.services.inbound_decision_engine import build_inbound_decisio
 from apps.emailing.services.inbound_interpreter import interpret_inbound_email
 from apps.opportunities.models import Opportunity
 from apps.tasks.models import CRMTask
+from apps.tenancy.models import MailboxAccount, OperatingOrganization
 
 
 class DummyOpportunity:
@@ -86,6 +86,17 @@ class InboundAnalysisServiceUnitTest(TestCase):
 
 class ApplyInboundDecisionServiceTest(TestCase):
     def setUp(self):
+        self.org = OperatingOrganization.objects.create(
+            name="OptiGrid",
+            primary_domain="optigrid.test",
+        )
+        self.mailbox = MailboxAccount.objects.create(
+            operating_organization=self.org,
+            email="inbox@optigrid.test",
+            account_key="inbox_main",
+            provider="embedded",
+            display_name="Inbox Main",
+        )
         self.opportunity = Opportunity.objects.create(
             title="Test Opportunity",
             company_name="ACME",
@@ -94,6 +105,8 @@ class ApplyInboundDecisionServiceTest(TestCase):
 
         self.inbound = InboundEmail.objects.create(
             opportunity=self.opportunity,
+            operating_organization=self.org,
+            mailbox_account=self.mailbox,
             from_email="lead@example.com",
             subject="Interested in learning more",
             body="Please send more information.",
@@ -112,6 +125,18 @@ class ApplyInboundDecisionServiceTest(TestCase):
             rationale="Needs more information",
             signals_json={"needs_info": True},
         )
+
+    def test_inbound_email_requires_mailbox_account(self):
+        with self.assertRaises(ValidationError):
+            InboundEmail.objects.create(
+                opportunity=self.opportunity,
+                from_email="lead@example.com",
+                subject="Missing canonical identity",
+                body="Body",
+                status=InboundEmail.STATUS_NEW,
+                reply_type=InboundEmail.REPLY_NEEDS_INFO,
+                received_at=timezone.now(),
+            )
 
     def test_apply_schedule_followup_creates_task(self):
         decision = InboundDecision.objects.create(
@@ -243,6 +268,17 @@ class ApplyInboundDecisionServiceTest(TestCase):
 )
 class AutomationLayerV3Test(TestCase):
     def setUp(self):
+        self.org = OperatingOrganization.objects.create(
+            name="OptiGrid",
+            primary_domain="optigrid.test",
+        )
+        self.mailbox = MailboxAccount.objects.create(
+            operating_organization=self.org,
+            email="inbox@optigrid.test",
+            account_key="inbox_main",
+            provider="embedded",
+            display_name="Inbox Main",
+        )
         self.opportunity = Opportunity.objects.create(
             title="Automation Opportunity",
             company_name="ACME",
@@ -252,6 +288,8 @@ class AutomationLayerV3Test(TestCase):
     def test_analyze_inbound_email_auto_applies_safe_decision(self):
         inbound = InboundEmail.objects.create(
             opportunity=self.opportunity,
+            operating_organization=self.org,
+            mailbox_account=self.mailbox,
             from_email="lead@example.com",
             subject="Need more details",
             body="Please send more information about your services.",
@@ -273,6 +311,8 @@ class AutomationLayerV3Test(TestCase):
     def test_analyze_inbound_email_dedupes_existing_applied_decision(self):
         inbound = InboundEmail.objects.create(
             opportunity=self.opportunity,
+            operating_organization=self.org,
+            mailbox_account=self.mailbox,
             from_email="lead@example.com",
             subject="Need more details",
             body="Please send more information about your services.",
@@ -300,6 +340,8 @@ class AutomationLayerV3Test(TestCase):
     def test_blocked_action_remains_manual(self):
         inbound = InboundEmail.objects.create(
             opportunity=self.opportunity,
+            operating_organization=self.org,
+            mailbox_account=self.mailbox,
             from_email="lead@example.com",
             subject="We are interested",
             body="We are interested and would like to move forward.",

@@ -1,119 +1,51 @@
-# OptiGrid CRM — HANDOFF CURRENT
+# OptiGrid CRM — Handoff Current
 
-## Estado
+## Estado del sistema
 
-El sistema ha alcanzado estado de:
+El core del sistema ha sido completamente cerrado y validado.
 
-👉 Operable en producción controlada
+Componentes operativos:
 
-Se ha completado la capa crítica:
+- Rule Engine (determinista)
+- RULE_TRACE estructurado
+- Explainability layer
+- Decision Output layer
+- Execution Engine (drafts habilitados)
+- Provider abstraction (mail)
+- Recommendation Bridge
+- Idempotencia por (recommendation_id, action_type)
 
-- Execution Engine (mínimo funcional)
-- Integración con provider
-- Identidad canónica (parcialmente aplicada)
+Tests:
 
----
+- Core: OK
+- Execution: OK
+- System check: OK
 
-## Arquitectura actual
+## Estado funcional
 
-Flujo operativo:
+El sistema es completamente operativo a nivel interno, pero:
 
-Decision Engine
-→ AIRecommendation
-→ ExecutionRequest
-→ ExecutionEngine
-→ Provider
+- No existe aún ingestión de datos (inbound)
+- No existe entorno de simulación (SMLL)
+- No existe capa de identidad/entidades
 
-Separación lograda:
+Resultado:
 
-- decision ≠ execution ≠ provider
+El sistema está "vivo pero sin mundo".
 
----
+## Decisiones clave tomadas
 
-## Identidad operativa
+- mailbox_account es opcional
+- operating_organization es obligatorio
+- fallback delegado al provider layer
+- el sistema es event-driven (no user-driven)
+- el email es la raíz de identidad
 
-Fuente de verdad:
+## Conclusión
 
-- MailboxAccount (BD)
+El core NO es el problema.
 
-Integración:
+El siguiente paso no es añadir funcionalidad, sino definir:
 
-- execution usa mailbox_account
-- provider recibe identidad real
-
-Limitación:
-
-- inbound aún no garantiza identidad canónica
-
----
-
-## Execution Engine
-
-Componentes:
-
-- ExecutionRequest
-- execute_execution_request
-- ExecutionResult
-
-Cobertura actual:
-
-- reply_strategy (completo)
-- resto → legacy execution
-
----
-
-## Providers
-
-Estado:
-
-- interfaz estable
-- integración funcional en drafts
-
-Limitaciones:
-
-- sin envío real
-- sin gestión de errores externos
-
----
-
-## Riesgos activos
-
-1. inbound sin identidad canónica
-2. ausencia de idempotencia
-3. falta de execution logging
-4. ausencia de policy de ejecución
-
----
-
-## Qué funciona
-
-- generación de drafts con contexto real
-- ejecución desacoplada
-- pipeline completo operativo
-
----
-
-## Qué NO está cerrado
-
-- identidad inbound
-- control de duplicados
-- trazabilidad de ejecución
-- control de acciones
-
----
-
-## Nivel de madurez
-
-👉 Sistema listo para sandbox real
-
-No listo aún para:
-
-- automatización completa
-- multi-tenant abierto
-
----
-
-## Siguiente objetivo
-
-👉 Cierre completo del core
-
+→ quién posee los datos
+→ cómo se estructura la identidad
