@@ -1,59 +1,54 @@
-# Next Session — Entity & Identity Layer (EIL)
+Vamos a trabajar sobre OptiGrid CRM — EIL Implementation (Phase 1).
 
-## Objetivo
+Contexto:
 
-Diseñar la capa de entidades e identidad del sistema.
+El diseño de Entity & Identity Layer está completamente definido.
 
-NO implementar.
+Existe:
 
-## Problema a resolver
+- modelo conceptual completo
+- decisiones cerradas sobre:
+  - tenancy
+  - email identity
+  - CRM entities
+  - candidate layer
+  - SMLL sandbox
+  - monetización
 
-El sistema carece de:
+Objetivo:
 
-- identidad
-- ownership
-- contexto organizativo
-- modelo de usuarios
+Implementar EIL en Django.
 
-Esto bloquea:
+Alcance:
 
-- control de acceso
-- multi-tenant real
-- integraciones futuras (M365, SMTP)
-- coherencia de datos
+- models.py completos
+- relaciones entre entidades
+- campos mínimos necesarios
+- migraciones
 
-## Enfoque
+Servicios mínimos:
 
-Diseño desde el sistema, no desde el usuario.
+- resolve_email_identity(email)
+- resolve_organization(email_identity)
+- create_provisional_organization(domain)
 
-Principio:
+Restricciones:
 
-El sistema es email-driven, no login-driven.
+- no login
+- no permisos
+- no UI
+- no providers externos aún
 
-## Alcance
+Principios:
 
-Definir:
+- determinismo
+- simplicidad
+- no sobre-ingeniería
+- preparado para inbound automático
 
-1. Modelo Organization (entidad)
-2. Modelo User (actor)
-3. Relación email → entidad
-4. Ownership del CRM
-5. Reglas de resolución de dominio
-6. Flujo de creación automática
+Criterio de éxito:
 
-## Importante
-
-NO incluir:
-
-- login completo
-- permisos complejos
-- UI de usuarios
-- OAuth / SSO
-
-## Resultado esperado
-
-- modelo claro y mínimo
-- sin sobreingeniería
-- listo para implementación progresiva
-- compatible con inbound automático
+- se puede procesar un email y asignarlo a una organización
+- no existen datos sin organization
+- el sistema soporta multi-tenant desde el día 1
 

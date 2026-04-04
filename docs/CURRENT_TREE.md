@@ -418,6 +418,7 @@
 ├── docker-compose.yml
 ├── Dockerfile
 ├── docs
+│   ├── ADR_0001_EIL.md
 │   ├── BEHAVIOR_PROMPT.md
 │   ├── CANONICAL_BACKEND.md
 │   ├── CHANGELOG.md
@@ -433,6 +434,7 @@
 │   ├── REQUIREMENTS_SNAPSHOT.txt
 │   ├── ROADMAP_AI_COMMERCIAL_OS.md
 │   ├── ROADMAP.md
+│   ├── ROADMAP_NEXT.md
 │   ├── ROADMAP_V2_AI_COMMERCIAL_OS.md
 │   ├── ROADMAP_V3_AI_COMMERCIAL_OS.md
 │   ├── SESSION_LOG_2026_03_08.md
@@ -454,6 +456,7 @@
 │   ├── SESSION_LOG_2026_04_02.md
 │   ├── SESSION_LOG_2026_04_02_V2_6.md
 │   ├── SESSION_LOG_2026_04_03.md
+│   ├── SESSION_LOG_2026_04_04.md
 │   └── SESSION_LOG.md
 ├── dump_llm_context.sh
 ├── fcheck.sh
@@ -464,7 +467,6 @@
 ├── frun.sh
 ├── HANDOFF_CURRENT.md
 ├── manage.py
-├── NEXT_SESSION.md
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
 ├── parche.py
@@ -607,4 +609,4 @@
 ├── testing.py
 └── typescript
 
-95 directories, 513 files
+95 directories, 515 files

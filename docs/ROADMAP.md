@@ -1,292 +1,85 @@
-# OptiGrid CRM — ROADMAP
-
----
+# Roadmap — OptiGrid CRM
 
 ## Estado actual
 
-Sistema en:
-
-👉 Producción controlada
-
-Capas cerradas:
-
-- Decision Engine ✔
-- Trace & Explainability ✔
-- Decision Output ✔
-- Execution Engine (mínimo) ✔
-- Provider abstraction ✔
-
-Capas pendientes:
-
-- identidad inbound
-- idempotencia
-- execution logging
-- policy
+CORE: COMPLETADO
 
 ---
 
-# PHASE 1 — CORE CLOSURE (FINAL)
+## Fase 2 — Entity & Identity Layer (EIL)
 
-## Objetivo
+Objetivo:
 
-Pasar de:
+Definir quién posee los datos y cómo se organiza el sistema.
 
-👉 Producción controlada  
-a  
-👉 Producción real (sin supervisión)
+Incluye:
 
----
-
-## 1. Identidad canónica en inbound (CRÍTICO)
-
-### Problema
-
-InboundEmail puede existir sin:
-
-- mailbox_account
-- operating_organization
-
-### Solución
-
-- asignación obligatoria en entrada
-- eliminar resolución heurística
-- validación dura
-
-### Resultado
-
-- consistencia multi-tenant
-- eliminación de ambigüedad
+- Organization model
+- User model
+- Email identity mapping
+- Domain ownership resolution
+- Multi-tenant base
 
 ---
 
-## 2. Idempotencia en execution
+## Fase 3 — SMLL (Sandbox Mail Loop Layer)
 
-### Problema
+Objetivo:
 
-Ejecuciones duplicadas posibles
+Crear entorno cerrado de simulación de correo.
 
-### Solución
+Incluye:
 
-- clave de idempotencia:
-  (recommendation_id + action_type)
-
-- verificación antes de ejecutar
-
-### Resultado
-
-- eliminación de duplicados
-- ejecución segura
+- mailbox interna
+- loop inbound/outbound
+- generación automática de eventos
+- testing end-to-end
 
 ---
 
-## 3. Execution Log
+## Fase 4 — Inbound Real
 
-### Problema
+Objetivo:
 
-No hay trazabilidad de ejecución
+Conectar el sistema con el mundo real.
 
-### Solución
+Incluye:
 
-Modelo:
-
-ExecutionLog:
-- request
-- result
-- status
-- timestamps
-
-### Resultado
-
-- auditabilidad
-- debugging real
-- base para replay
+- IMAP / Gmail / M365 ingestion
+- webhook ingestion
+- normalización de emails
 
 ---
 
-## 4. Policy mínima
+## Fase 5 — Outbound Real
 
-### Problema
+Objetivo:
 
-No hay control de acciones
+Ejecutar acciones reales.
 
-### Solución
+Incluye:
 
-- permitir:
-  - drafts
-- bloquear:
-  - send
-
-### Resultado
-
-- seguridad operativa
-- control de riesgo
-
----
-
-## Resultado de Phase 1
-
-Sistema capaz de:
-
-- operar sin supervisión
-- ejecutar acciones con seguridad
-- mantener trazabilidad completa
-- garantizar identidad consistente
-
----
-
-# PHASE 2 — SMLL PLUGIN (SANDBOX)
-
-## Objetivo
-
-Introducir primer provider real:
-
-👉 SMLL (Simple Mail Local Layer)
-
----
-
-## Funcionalidad
-
-- envío real en entorno controlado
-- almacenamiento local de mensajes
-- simulación de entrega
-
----
-
-## Capacidades
-
-- send email (sandbox)
-- draft → send flow completo
+- SMTP
+- M365 send
 - tracking de envíos
 
 ---
 
-## Resultado
+## Fase 6 — LLM Layer
 
-- validación end-to-end
-- entorno seguro de pruebas
-- base para providers reales
+Objetivo:
 
----
+Aumentar capacidad de decisión del sistema.
 
-# PHASE 3 — PROVIDERS REALES
-
-## Objetivo
-
-Integración con:
-
-- SMTP
-- Gmail API
-- Microsoft 365
-
----
-
-## Requisitos
-
-- retry logic
-- error handling
-- rate limiting
-- autenticación segura
-
----
-
-## Resultado
-
-- sistema listo para producción externa
-
----
-
-# PHASE 4 — AUTOMATIZACIÓN CONTROLADA
-
-## Objetivo
-
-Permitir ejecución automática
-
----
-
-## Componentes
-
-- policy engine avanzado
-- niveles de riesgo
-- aprobación humana opcional
-
----
-
-## Resultado
-
-- automatización progresiva
-- control total de acciones
-
----
-
-# PHASE 5 — LLM INTEGRATION
-
-## Objetivo
-
-Introducir IA en:
+Incluye:
 
 - generación de respuestas
 - clasificación avanzada
-- sugerencias dinámicas
+- aprendizaje continuo
 
 ---
 
-## Restricciones
+## Principio rector
 
-- siempre sobre execution engine
-- nunca acoplado directamente a providers
-
----
-
-## Resultado
-
-- sistema inteligente + seguro
-
----
-
-# PHASE 6 — UI & OPERATIONS
-
-## Objetivo
-
-Visibilidad y control
-
----
-
-## Componentes
-
-- execution dashboard
-- audit logs UI
-- control manual de acciones
-- monitoring
-
----
-
-## Resultado
-
-- sistema operable por humanos
-
----
-
-# PRINCIPIOS CLAVE
-
-1. decision ≠ execution ≠ provider
-2. identidad siempre desde BD
-3. no heurísticas en producción
-4. no acciones irreversibles sin control
-5. execution siempre trazable
-
----
-
-# RESUMEN
-
-Estado actual:
-
-👉 Core casi cerrado
-
-Siguiente paso:
-
-👉 cerrar core completamente
-
-Después:
-
-👉 SMLL → sandbox real
+No añadir complejidad antes de tener contexto.
 

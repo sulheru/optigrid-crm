@@ -1,51 +1,76 @@
-# OptiGrid CRM — Handoff Current
+# OptiGrid CRM — HANDOFF NEXT
 
-## Estado del sistema
+## Estado actual
 
-El core del sistema ha sido completamente cerrado y validado.
+El core del sistema está completamente cerrado y validado:
 
-Componentes operativos:
-
-- Rule Engine (determinista)
-- RULE_TRACE estructurado
-- Explainability layer
-- Decision Output layer
-- Execution Engine (drafts habilitados)
-- Provider abstraction (mail)
+- Rule Engine determinista
+- Explainability
+- Decision Output
+- Execution Engine (drafts only)
+- Provider abstraction
 - Recommendation Bridge
-- Idempotencia por (recommendation_id, action_type)
+- Idempotencia
 
-Tests:
+Se ha diseñado completamente la capa:
 
-- Core: OK
-- Execution: OK
-- System check: OK
+👉 Entity & Identity Layer (EIL)
 
-## Estado funcional
+---
 
-El sistema es completamente operativo a nivel interno, pero:
+## Qué existe conceptualmente (no implementado aún)
 
-- No existe aún ingestión de datos (inbound)
-- No existe entorno de simulación (SMLL)
-- No existe capa de identidad/entidades
+### Identidad / Tenancy
 
-Resultado:
+- OperatingOrganization (tenant canónico)
+- Domain
+- EmailIdentity
+- Membership
+- User
 
-El sistema está "vivo pero sin mundo".
+### CRM
 
-## Decisiones clave tomadas
+- Company
+- Contact (interlocutor híbrido)
+- Candidate layer (CompanyCandidate, ContactCandidate)
 
-- mailbox_account es opcional
-- operating_organization es obligatorio
-- fallback delegado al provider layer
-- el sistema es event-driven (no user-driven)
-- el email es la raíz de identidad
+### LLM Context
 
-## Conclusión
+- organization.description
+- organization.llm_context_summary
 
-El core NO es el problema.
+### Monetización
 
-El siguiente paso no es añadir funcionalidad, sino definir:
+- plan_type
+- plan_status
+- is_internal
 
-→ quién posee los datos
-→ cómo se estructura la identidad
+---
+
+## SMLL definido
+
+- organizaciones sandbox
+- dominios `.sim`
+- aislamiento total
+- herencia de perfil, no de identidad
+
+---
+
+## Automatizaciones (visión)
+
+- lista con descripción humana
+- switch on/off
+- preparado para evolución futura
+
+---
+
+## Siguiente paso
+
+👉 IMPLEMENTACIÓN EIL (Django models + servicios mínimos)
+
+Sin:
+
+- login
+- permisos complejos
+- UI
+
