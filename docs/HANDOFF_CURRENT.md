@@ -1,76 +1,107 @@
-# OptiGrid CRM — HANDOFF NEXT
+# HANDOFF_CURRENT — OptiGrid CRM
+Fecha: 2026-04-05
+Sesión: EIL Implementation (Phase 1)
 
 ## Estado actual
+La sesión ha terminado con el sistema en estado consistente y validado.
 
-El core del sistema está completamente cerrado y validado:
+### Validado en esta sesión
+- entorno Python reconstruido y operativo
+- dependencias instaladas correctamente
+- migraciones regeneradas y aplicadas
+- `tenancy` refactorizado y estabilizado
+- coexistencia controlada entre capa legacy y capa EIL nueva
+- seed persistente de dominios públicos en BD
+- integración inicial de EIL en pipeline
 
-- Rule Engine determinista
-- Explainability
-- Decision Output
-- Execution Engine (drafts only)
-- Provider abstraction
-- Recommendation Bridge
-- Idempotencia
+## Componentes EIL ya introducidos
+### Legacy preservado
+- `OperatingOrganization`
+- `CorporateDomain`
+- `Identity`
+- `CorporateMembership`
+- `MailboxAccount`
 
-Se ha diseñado completamente la capa:
+### Capa nueva EIL
+- `PublicEmailDomain`
+- `EmailIdentity`
 
-👉 Entity & Identity Layer (EIL)
+## Servicios EIL operativos
+Ubicación:
+- `apps/tenancy/services/domain_resolution.py`
 
----
+Funciones introducidas/estabilizadas:
+- `extract_domain_from_email`
+- `is_public_email_domain`
+- `resolve_operating_organization_from_domain`
+- `resolve_operating_organization_from_email`
+- `create_provisional_organization`
+- `resolve_email_identity`
+- `resolve_organization`
 
-## Qué existe conceptualmente (no implementado aún)
+## Integraciones realizadas
+### Ingest
+- `services/email_ingest.py`
+  - asegura contexto EIL
+  - resuelve identidad y organización antes de continuar pipeline
 
-### Identidad / Tenancy
+### CRM update engine
+- `apps/crm_update_engine/entrypoints.py`
+  - añade resolución EIL antes de facts/inferences/proposals/recommendations
 
-- OperatingOrganization (tenant canónico)
-- Domain
-- EmailIdentity
-- Membership
-- User
+### SMLL / bootstrap
+- `apps/emailing/services/smll_bootstrap.py`
+  - mantiene compatibilidad con `MailboxAccount`
+  - asegura organización/dominio de simulación
 
-### CRM
+### Provider routing
+- `apps/emailing/services/provider_router.py`
+  - mantiene `MailboxAccount` como identidad canónica de provider/runtime
+  - evita heurística ambigua
 
-- Company
-- Contact (interlocutor híbrido)
-- Candidate layer (CompanyCandidate, ContactCandidate)
+## Seed de dominios públicos
+Migración añadida:
+- `apps/tenancy/migrations/0002_seed_public_email_domains.py`
 
-### LLM Context
+Dominios seedados:
+- gmail.com
+- googlemail.com
+- outlook.com
+- hotmail.com
+- live.com
+- msn.com
+- yahoo.com
+- ymail.com
+- icloud.com
+- me.com
+- proton.me
+- protonmail.com
+- aol.com
 
-- organization.description
-- organization.llm_context_summary
+## Tests validados
+Suites en verde:
+- `apps.tenancy.tests_identity`
+- `apps.simulated_personas.tests_runtime`
+- `apps.emailing.tests_smll_integration`
+- `apps.recommendations.tests_execution_engine`
 
-### Monetización
+## Conclusión
+La fase 1 de EIL queda cerrada a nivel fundacional:
+- tenancy coherente
+- EIL introducido sin romper legacy
+- seed público persistente
+- puntos de entrada iniciales integrados
+- bloque crítico de tests en verde
 
-- plan_type
-- plan_status
-- is_internal
+## Riesgos pendientes
+- `EmailIdentity` aún no es la capa primaria en todo el sistema
+- muchos consumers siguen dependiendo de `MailboxAccount`
+- aún no se ha refactorizado de forma amplia `apps/emailing/models.py`
+- falta extensión de EIL a más puntos inbound/outbound
 
----
-
-## SMLL definido
-
-- organizaciones sandbox
-- dominios `.sim`
-- aislamiento total
-- herencia de perfil, no de identidad
-
----
-
-## Automatizaciones (visión)
-
-- lista con descripción humana
-- switch on/off
-- preparado para evolución futura
-
----
-
-## Siguiente paso
-
-👉 IMPLEMENTACIÓN EIL (Django models + servicios mínimos)
-
-Sin:
-
-- login
-- permisos complejos
-- UI
-
+## Recomendación
+La siguiente sesión debe centrarse en:
+1. profundización EIL
+2. extensión del resolver a más consumers
+3. consolidación de persistencia de identidad/organización en el pipeline
+4. solo después, continuar con Entity Manager

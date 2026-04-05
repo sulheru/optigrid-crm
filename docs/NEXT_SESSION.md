@@ -1,54 +1,68 @@
-Vamos a trabajar sobre OptiGrid CRM — EIL Implementation (Phase 1).
+# NEXT_SESSION — OptiGrid CRM
+Sesión siguiente recomendada: EIL Integration Deepening (Phase 2)
 
-Contexto:
+## Objetivo
+Extender EIL más allá de tenancy e ingest inicial, para que la resolución canónica de identidad y organización impregne más partes del pipeline sin romper compatibilidad con legacy.
 
-El diseño de Entity & Identity Layer está completamente definido.
+## Punto de partida
+Ya está hecho:
+- `OperatingOrganization`, `CorporateDomain`, `Identity`, `CorporateMembership`, `MailboxAccount`
+- `PublicEmailDomain`, `EmailIdentity`
+- `domain_resolution.py`
+- seed de dominios públicos
+- integración inicial en:
+  - `services/email_ingest.py`
+  - `apps/crm_update_engine/entrypoints.py`
 
-Existe:
+Todo el bloque crítico de tests ejecutado en esta sesión quedó en verde.
 
-- modelo conceptual completo
-- decisiones cerradas sobre:
-  - tenancy
-  - email identity
-  - CRM entities
-  - candidate layer
-  - SMLL sandbox
-  - monetización
+## Objetivos concretos de la siguiente sesión
+### 1. Ampliar integración EIL
+Revisar e integrar EIL en:
+- `apps/emailing/models.py`
+- `apps/emailing/services/mail_provider_service.py`
+- `apps/providers/mail_runtime.py`
+- `apps/emailing/services/provider_router.py` si requiere ajuste adicional
+- posibles puntos de persistencia inbound/outbound
 
-Objetivo:
+### 2. Persistencia más explícita
+Evaluar si ciertos modelos de correo deben guardar:
+- `operating_organization`
+- `mailbox_account`
+- referencia indirecta o derivable a `EmailIdentity`
 
-Implementar EIL en Django.
+### 3. Mantener compatibilidad
+No eliminar todavía:
+- `MailboxAccount`
+- `CorporateDomain`
+- `Identity`
 
-Alcance:
+Se mantiene estrategia de coexistencia controlada.
 
-- models.py completos
-- relaciones entre entidades
-- campos mínimos necesarios
-- migraciones
+### 4. Cerrar criterio arquitectónico
+Definir con claridad:
+- qué capa es canónica para provider/runtime
+- qué capa es canónica para resolución EIL
+- cuándo y cómo converger en fases posteriores
 
-Servicios mínimos:
-
-- resolve_email_identity(email)
-- resolve_organization(email_identity)
-- create_provisional_organization(domain)
-
-Restricciones:
-
+## Restricciones
 - no login
 - no permisos
 - no UI
-- no providers externos aún
+- no providers externos nuevos
+- no sustitución masiva de legacy por búsqueda y reemplazo global
+- no romper SMLL ni execution engine
 
-Principios:
+## Criterio de éxito
+Al terminar la siguiente sesión:
+- más puntos del pipeline usarán resolución EIL
+- el sistema seguirá en verde
+- quedará más claro el camino hacia Entity Manager
 
-- determinismo
-- simplicidad
-- no sobre-ingeniería
-- preparado para inbound automático
-
-Criterio de éxito:
-
-- se puede procesar un email y asignarlo a una organización
-- no existen datos sin organization
-- el sistema soporta multi-tenant desde el día 1
-
+## Orden recomendado
+1. briefing rápido
+2. inspección de ficheros críticos
+3. refactorización controlada
+4. tests
+5. debriefing
+6. continuidad

@@ -1,85 +1,72 @@
-# Roadmap — OptiGrid CRM
+# ROADMAP — OptiGrid CRM
+Actualizado: 2026-04-05
 
-## Estado actual
+## Estado global
+El proyecto ha superado una fase importante de saneamiento estructural y estabilización del núcleo de tenancy/identity.
 
-CORE: COMPLETADO
+## Fases
 
----
-
-## Fase 2 — Entity & Identity Layer (EIL)
-
-Objetivo:
-
-Definir quién posee los datos y cómo se organiza el sistema.
-
+### Fase A — Core Closure
+Estado: completado funcionalmente
 Incluye:
+- rule engine
+- rule trace
+- explainability
+- decision output
+- execution policy
+- provider abstraction inicial
 
-- Organization model
-- User model
-- Email identity mapping
-- Domain ownership resolution
-- Multi-tenant base
-
----
-
-## Fase 3 — SMLL (Sandbox Mail Loop Layer)
-
-Objetivo:
-
-Crear entorno cerrado de simulación de correo.
-
+### Fase B — EIL Foundation
+Estado: completada en esta sesión
 Incluye:
+- `OperatingOrganization`
+- `CorporateDomain`
+- `Identity`
+- `CorporateMembership`
+- `MailboxAccount`
+- `PublicEmailDomain`
+- `EmailIdentity`
+- seed de dominios públicos
+- `domain_resolution.py`
+- integración inicial en ingest y entrypoints
 
-- mailbox interna
-- loop inbound/outbound
-- generación automática de eventos
-- testing end-to-end
+### Fase C — EIL Integration Deepening
+Estado: siguiente fase
+Pendiente:
+- extender EIL a más consumers
+- revisar modelos de correo
+- consolidar persistencia de organización/identidad
+- clarificar relación operativa entre `MailboxAccount` y `EmailIdentity`
 
----
+### Fase D — Entity Manager
+Estado: pendiente, pero ya desbloqueado conceptualmente
+Dependencia:
+- cerrar mejor integración EIL primero
 
-## Fase 4 — Inbound Real
+### Fase E — SMLL Expansion
+Estado: parcialmente operativo
+Ya validado:
+- runtime básico
+- bootstrap
+- integración mínima
+Pendiente:
+- aprovechar EIL más profundamente en simulación y flujos de correo
 
-Objetivo:
-
-Conectar el sistema con el mundo real.
-
+### Fase F — Producción controlada
+Pendiente
 Incluye:
+- mayor hardening
+- convergencia de capas legacy y nuevas
+- revisión de políticas de migración y versionado
+- consolidación de provider/runtime
 
-- IMAP / Gmail / M365 ingestion
-- webhook ingestion
-- normalización de emails
+## Prioridad inmediata
+1. EIL Integration Deepening
+2. Entity Manager
+3. expansión funcional posterior
 
----
-
-## Fase 5 — Outbound Real
-
-Objetivo:
-
-Ejecutar acciones reales.
-
-Incluye:
-
-- SMTP
-- M365 send
-- tracking de envíos
-
----
-
-## Fase 6 — LLM Layer
-
-Objetivo:
-
-Aumentar capacidad de decisión del sistema.
-
-Incluye:
-
-- generación de respuestas
-- clasificación avanzada
-- aprendizaje continuo
-
----
-
-## Principio rector
-
-No añadir complejidad antes de tener contexto.
-
+## Nota estratégica
+La decisión correcta ahora es evolución incremental:
+- coexistencia controlada
+- refactorización por capas
+- evitar sustituciones masivas de conceptos legacy

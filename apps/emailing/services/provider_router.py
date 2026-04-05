@@ -21,7 +21,7 @@ def resolve_provider_mailbox(email, *, mailbox_account=None):
         )
 
     raise ValueError(
-        "SMLL requiere identidad canónica persistida: mailbox_account explícito "
+        "SMLL requiere mailbox_account canónico persistido: mailbox_account explícito "
         "o email.mailbox_account presente. "
         "La resolución heurística en runtime está deshabilitada."
     )

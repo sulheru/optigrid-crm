@@ -53,16 +53,7 @@
 │   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_remove_emailthread_linked_company_and_more.py
-│   │   │   ├── 0003_alter_outboundemail_options_and_more.py
-│   │   │   ├── 0004_outboundemail_email_type.py
-│   │   │   ├── 0005_inboundemail.py
-│   │   │   ├── 0006_outboundemail_source_inbound.py
-│   │   │   ├── 0007_inboundinterpretation_inbounddecision.py
-│   │   │   ├── 0008_inbounddecision_automation_fields.py
-│   │   │   ├── 0008_outboundemail_source_recommendation.py
-│   │   │   ├── 0009_merge_0008_emailing_branches.py
-│   │   │   ├── 0010_mailbox_identity_fields.py
+│   │   │   ├── 0002_initial.py
 │   │   │   └── __init__.py
 │   │   ├── models_patch_smll.py
 │   │   ├── models.py
@@ -95,7 +86,6 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_activityevent_delete_event.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services.py
@@ -108,8 +98,7 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_rename_external_ac_intent__f9bc7f_idx_external_ac_intent__32184c_idx_and_more.py
-│   │   │   ├── 0003_externalactionintent_tenant_scope.py
+│   │   │   ├── 0002_initial.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── providers
@@ -132,7 +121,6 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_remove_factrecord_confidence_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services.py
@@ -144,7 +132,6 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_remove_inferencerecord_inference_value_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services.py
@@ -208,8 +195,6 @@
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
 │   │   │   ├── 0002_initial.py
-│   │   │   ├── 0003_opportunity_source_recommendation.py
-│   │   │   ├── 0004_opportunity_last_analyzed_at.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services
@@ -259,11 +244,6 @@
 │   │   ├── merge_runtime.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_alter_airecommendation_status.py
-│   │   │   ├── 0003_airecommendation_source.py
-│   │   │   ├── 0004_airecommendation_tenant_scope.py
-│   │   │   ├── 0005_executionlog.py
-│   │   │   ├── 0006_alter_airecommendation_options.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── nba.py
@@ -291,7 +271,6 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_rename_sim_persona_org_active_idx_simulated_p_operati_be4ec5_idx_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── runtime
@@ -327,9 +306,6 @@
 │   │   │   └── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_alter_crmtask_task_type.py
-│   │   │   ├── 0003_crmtask_opportunity_crmtask_source_and_more.py
-│   │   │   ├── 0004_crmtask_is_revoked.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services
@@ -343,9 +319,7 @@
 │   │   ├── __init__.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_seed_default_orgs.py
-│   │   │   ├── 0003_identity_and_corporate_domains.py
-│   │   │   ├── 0004_alter_corporatedomain_options_and_more.py
+│   │   │   ├── 0002_seed_public_email_domains.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── services
@@ -366,8 +340,6 @@
 │   │   │       └── replay_version.py
 │   │   ├── migrations
 │   │   │   ├── 0001_initial.py
-│   │   │   ├── 0002_remove_crmupdateproposal_approval_required_and_more.py
-│   │   │   ├── 0003_ruleevaluationlog_and_more.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
 │   │   ├── rule_engine.py
@@ -399,7 +371,6 @@
 │   └── reco_ops_2026_03_09
 │       ├── models.py.bak
 │       └── views.py.bak
-├── CHANGELOG.md
 ├── ch_test.sh
 ├── cleansession.sh
 ├── cleartmp.sh
@@ -465,7 +436,6 @@
 ├── fix_django_app_names.sh
 ├── flog.sh
 ├── frun.sh
-├── HANDOFF_CURRENT.md
 ├── manage.py
 ├── parche_opportunities_template_kpi.py
 ├── parche_opportunities_view.py
@@ -609,4 +579,4 @@
 ├── testing.py
 └── typescript
 
-95 directories, 515 files
+95 directories, 485 files

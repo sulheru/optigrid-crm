@@ -145,11 +145,19 @@ def create_simulated_inbound_email(
 ):
     opportunity = create_opportunity(from_email)
 
-    return InboundEmail.objects.create(
-        opportunity=opportunity,
-        source_outbound=source_outbound,
-        from_email=from_email,
-        subject=subject,
-        body=body,
-        received_at=timezone.now(),
-    )
+    create_kwargs = {
+        "opportunity": opportunity,
+        "source_outbound": source_outbound,
+        "from_email": from_email,
+        "subject": subject,
+        "body": body,
+        "received_at": timezone.now(),
+    }
+
+    if mailbox_account is not None:
+        if "mailbox_account" in {f.name for f in InboundEmail._meta.concrete_fields}:
+            create_kwargs["mailbox_account"] = mailbox_account
+        if "operating_organization" in {f.name for f in InboundEmail._meta.concrete_fields}:
+            create_kwargs["operating_organization"] = mailbox_account.operating_organization
+
+    return InboundEmail.objects.create(**create_kwargs)
