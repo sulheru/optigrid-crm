@@ -1,44 +1,34 @@
-from __future__ import annotations
-
 from apps.emailing.smll_adapter import inbound_to_smll, smll_to_outbound
+from apps.emailing.services.smll_bootstrap import ensure_generic_persona
 from apps.simulated_personas.runtime.smll_engine import build_simulated_reply
-from apps.tenancy.models import MailboxAccount
-
-
-def resolve_provider_mailbox(email, *, mailbox_account=None):
-    if mailbox_account is not None:
-        return mailbox_account
-
-    direct_mailbox = getattr(email, "mailbox_account", None)
-    if direct_mailbox is not None:
-        return direct_mailbox
-
-    mailbox_account_id = getattr(email, "mailbox_account_id", None)
-    if mailbox_account_id:
-        return MailboxAccount.objects.get(
-            pk=mailbox_account_id,
-            status=MailboxAccount.Status.ACTIVE,
-        )
-
-    raise ValueError(
-        "SMLL requiere mailbox_account canónico persistido: mailbox_account explícito "
-        "o email.mailbox_account presente. "
-        "La resolución heurística en runtime está deshabilitada."
-    )
+from apps.tenancy.services.eil_context import ensure_email_eil_context
+from services.email_ingest import process_email_message
 
 
 def process_email_with_provider(email, *, mailbox_account):
-    resolved_mailbox = resolve_provider_mailbox(
+    context = ensure_email_eil_context(
         email,
         mailbox_account=mailbox_account,
+        require_mailbox=True,
+        require_address=True,
+        persist=True,
     )
 
-    smll_input = inbound_to_smll(email, mailbox_account=resolved_mailbox)
+    mailbox = context["mailbox_account"]
+
+    # 🔥 GARANTIZAR PERSONA
+    ensure_generic_persona(mailbox)
+
+    smll_input = inbound_to_smll(email, mailbox_account=mailbox)
 
     result = build_simulated_reply(
-        operating_organization=resolved_mailbox.operating_organization,
+        operating_organization=context["operating_organization"],
         incoming_message=smll_input,
-        mailbox_account=resolved_mailbox,
+        mailbox_account=mailbox,
     )
 
     return smll_to_outbound(email, result)
+
+
+def route_inbound_email(email):
+    return process_email_message(email)

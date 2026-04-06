@@ -37,6 +37,23 @@ class SMLLIntegrationV1Tests(TestCase):
         self.assertEqual(OutboundEmail.objects.count(), before_outbound + 1)
         self.assertEqual(Opportunity.objects.count(), before_opps + 1)
 
+        self.assertEqual(
+            getattr(email, "_resolved_email_identity", None).email,
+            "test@company.com",
+        )
+        self.assertEqual(
+            getattr(reply, "_resolved_email_identity", None).email,
+            "test@company.com",
+        )
+        self.assertEqual(
+            getattr(email, "_resolved_operating_organization", None).id,
+            mailbox.operating_organization_id,
+        )
+        self.assertEqual(
+            getattr(reply, "_resolved_operating_organization", None).id,
+            mailbox.operating_organization_id,
+        )
+
         reply.refresh_from_db()
         email.refresh_from_db()
 
@@ -46,3 +63,6 @@ class SMLLIntegrationV1Tests(TestCase):
         self.assertEqual(reply.generated_by, "smll")
         self.assertEqual(reply.status, OutboundEmail.STATUS_DRAFT)
         self.assertEqual(reply.email_type, OutboundEmail.TYPE_FOLLOWUP)
+        self.assertEqual(email.operating_organization_id, mailbox.operating_organization_id)
+        self.assertEqual(reply.operating_organization_id, mailbox.operating_organization_id)
+        self.assertEqual(reply.mailbox_account_id, mailbox.id)
